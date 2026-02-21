@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+/* Custom variant: dark mode when .dark is on an ancestor (e.g. html) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Light theme: light backgrounds, dark text, brand orange primary (logo accent). */
+:root {
+  --theme-background: #ffffff;
+  --theme-surface: #f9fafb;
+  --theme-foreground: #111827;
+  --theme-foreground-muted: #6b7280;
+  --theme-border: #e5e7eb;
+  --theme-primary: #f9a825;
+  --theme-primary-hover: #f7941d;
+  --theme-primary-foreground: #000000;
+  --theme-accent: #f9a825;
+  --theme-surface-muted: #fff8e7;
+  --theme-success: #10b981;
+  --theme-error: #ef4444;
+  --theme-warning: #f59e0b;
+}
+
+/* Dark theme: from footer-logo.png — black #000000, white #FFFFFF, orange #F9A825. */
+.dark {
+  --theme-background: #000000;
+  --theme-surface: #0a0a0a;
+  --theme-foreground: #ffffff;
+  --theme-foreground-muted: #a3a3a3;
+  --theme-border: #262626;
+  --theme-primary: #f9a825;
+  --theme-primary-hover: #f7941d;
+  --theme-primary-foreground: #000000;
+  --theme-accent: #f9a825;
+  --theme-surface-muted: #1a1a1a;
+  --theme-success: #34d399;
+  --theme-error: #f87171;
+  --theme-warning: #fbbf24;
+}
+
+/* Tailwind v4 theme: map semantic names to CSS variables for utilities (bg-background, text-foreground, etc.) */
+@theme {
+  --color-background: var(--theme-background);
+  --color-surface: var(--theme-surface);
+  --color-foreground: var(--theme-foreground);
+  --color-foreground-muted: var(--theme-foreground-muted);
+  --color-border: var(--theme-border);
+  --color-primary: var(--theme-primary);
+  --color-primary-hover: var(--theme-primary-hover);
+  --color-primary-foreground: var(--theme-primary-foreground);
+  --color-accent: var(--theme-accent);
+  --color-surface-muted: var(--theme-surface-muted);
+  --color-success: var(--theme-success);
+  --color-error: var(--theme-error);
+  --color-warning: var(--theme-warning);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+}
