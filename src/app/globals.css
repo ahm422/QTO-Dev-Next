@@ -3,34 +3,34 @@
 /* Custom variant: dark mode when .dark is on an ancestor (e.g. html) */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Light theme: light backgrounds, dark text, brand orange primary (logo accent). */
+/* Light theme: light backgrounds, dark text, brand orange from logo (DEV). */
 :root {
   --theme-background: #ffffff;
   --theme-surface: #f9fafb;
   --theme-foreground: #111827;
   --theme-foreground-muted: #6b7280;
   --theme-border: #e5e7eb;
-  --theme-primary: #f9a825;
-  --theme-primary-hover: #f7941d;
+  --theme-primary: #f48b22;
+  --theme-primary-hover: #e07e1e;
   --theme-primary-foreground: #000000;
-  --theme-accent: #f9a825;
-  --theme-surface-muted: #fff8e7;
+  --theme-accent: #f48b22;
+  --theme-surface-muted: #fff5eb;
   --theme-success: #10b981;
   --theme-error: #ef4444;
   --theme-warning: #f59e0b;
 }
 
-/* Dark theme: from footer-logo.png — black #000000, white #FFFFFF, orange #F9A825. */
+/* Dark theme: from footer-logo.png — black #000000, white #FFFFFF, orange from logo #F48B22. */
 .dark {
   --theme-background: #000000;
   --theme-surface: #0a0a0a;
   --theme-foreground: #ffffff;
   --theme-foreground-muted: #a3a3a3;
   --theme-border: #262626;
-  --theme-primary: #f9a825;
-  --theme-primary-hover: #f7941d;
+  --theme-primary: #f48b22;
+  --theme-primary-hover: #e07e1e;
   --theme-primary-foreground: #000000;
-  --theme-accent: #f9a825;
+  --theme-accent: #f48b22;
   --theme-surface-muted: #1a1a1a;
   --theme-success: #34d399;
   --theme-error: #f87171;
@@ -52,12 +52,25 @@
   --color-success: var(--theme-success);
   --color-error: var(--theme-error);
   --color-warning: var(--theme-warning);
+  /* Font families: General Sans (headings), Inter (body). Variables are set on html by layout. */
+  --font-heading: var(--font-general-sans), ui-sans-serif, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, sans-serif;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
+/* Body: Inter (also set via layout body className). Headings: General Sans. */
 body {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
 }

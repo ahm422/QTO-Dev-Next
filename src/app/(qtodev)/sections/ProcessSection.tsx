@@ -21,7 +21,7 @@ export function ProcessSection() {
         <div className="grid md:grid-cols-4 gap-8 mt-12">
           {steps.map((step, i) => (
             <div key={i} className="relative">
-              <div className="text-5xl font-bold text-foreground-muted mb-4">{step.number}</div>
+              <div className="font-heading text-5xl font-bold text-foreground-muted mb-4">{step.number}</div>
               <h3 className="text-lg font-bold mb-2">{step.title}</h3>
               <p className="text-foreground-muted text-sm">{step.description}</p>
               {i < steps.length - 1 && (

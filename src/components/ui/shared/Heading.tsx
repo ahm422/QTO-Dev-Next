@@ -9,12 +9,12 @@ interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
 
 export function Heading({ level = 2, className, children, ...props }: HeadingProps) {
   const sizeMap = {
-    1: "text-5xl font-bold",
-    2: "text-4xl font-bold",
-    3: "text-3xl font-bold",
-    4: "text-2xl font-bold",
-    5: "text-xl font-semibold",
-    6: "text-lg font-semibold",
+    1: "font-heading text-5xl font-bold",
+    2: "font-heading text-4xl font-bold",
+    3: "font-heading text-3xl font-bold",
+    4: "font-heading text-2xl font-bold",
+    5: "font-heading text-xl font-semibold",
+    6: "font-heading text-lg font-semibold",
   };
 
   const Tag = `h${level}` as const;
