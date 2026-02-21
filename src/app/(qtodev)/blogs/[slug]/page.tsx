@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getBlogBySlug, getRelatedBlogPosts } from '@/lib/blog';
+import { getBlogBySlug, getRelatedBlogPosts, getAllBlogPosts } from '@/lib/blog';
 import { ArticleHeader } from './_components/ArticleHeader';
 import { ArticleBody } from './_components/ArticleBody';
 import { ArticleSidebar } from './_components/ArticleSidebar';
@@ -36,6 +36,11 @@ export async function generateMetadata({ params }: BlogDetailPageProps) {
       images: post.coverImage?.url ? [{ url: post.coverImage.url }] : [],
     },
   };
+}
+
+export async function generateStaticParams() {
+  const posts = await getAllBlogPosts();
+  return posts.map((p) => ({ slug: p.slug }));
 }
 
 export default async function BlogDetailPage({

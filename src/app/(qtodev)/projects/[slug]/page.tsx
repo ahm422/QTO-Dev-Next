@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getProjectBySlug } from "@/content/projects";
+import { getProjectBySlug, getAllProjects } from "@/content/projects";
 import { CaseStudyHero } from "./components/CaseStudyHero";
 import { ProjectAbout } from "./components/ProjectAbout";
 import { ProblemSolution } from "./components/ProblemSolution";
@@ -35,6 +35,11 @@ export async function generateMetadata({ params }: PageProps) {
       type: "article",
     },
   };
+}
+
+export async function generateStaticParams() {
+  const projects = await getAllProjects();
+  return projects.map((p) => ({ slug: p.slug }));
 }
 
 export default async function ProjectDetailPage({ params }: PageProps) {

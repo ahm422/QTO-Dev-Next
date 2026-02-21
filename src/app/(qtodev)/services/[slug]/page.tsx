@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getServiceBySlug } from "@/content/services";
+import { services } from "@/data/services";
 import { HeroBanner } from "./components/HeroBanner";
 import { OverviewSection } from "./components/OverviewSection";
 import { ProcessTimeline } from "./components/ProcessTimeline";
@@ -37,6 +38,10 @@ export async function generateMetadata({ params }: PageProps) {
       type: "website",
     },
   };
+}
+
+export function generateStaticParams() {
+  return services.map((s) => ({ slug: s.slug }));
 }
 
 export default async function ServiceOfferingPage({ params }: PageProps) {
