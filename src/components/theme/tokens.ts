@@ -1,14 +1,14 @@
 /**
  * Centralized theme tokens for QTO Dev.
  * Colors derived from brand logos:
- * - Light theme: light backgrounds, dark text, orange primary (from logo accent).
- * - Dark theme: from footer-logo.png — black #000000, white #FFFFFF (QTO text), orange #F9A825 (DEV text).
+ * - Light theme: light backgrounds, dark text, orange primary (from logo).
+ * - Dark theme: from footer-logo.png — black #000000, white #FFFFFF (QTO text), orange #F48B22 (DEV text).
  */
 
 export const colors = {
-  /** Brand orange from logo (DEV) — #F9A825 */
-  primary: "#F9A825",
-  accent: "#F9A825",
+  /** Brand orange from logo (DEV) — #F48B22 */
+  primary: "#F48B22",
+  accent: "#F48B22",
   success: "#10B981",
   error: "#EF4444",
   warning: "#F59E0B",
@@ -29,34 +29,34 @@ export const colors = {
   },
 };
 
-/** Light theme: light backgrounds, dark text, brand orange primary (logo accent). */
+/** Light theme: light backgrounds, dark text, brand orange from logo. */
 export const lightTheme = {
   background: "#FFFFFF",
   surface: "#F9FAFB",
   foreground: "#111827",
   foregroundMuted: "#6B7280",
   border: "#E5E7EB",
-  primary: "#F9A825",
-  primaryHover: "#F7941D",
+  primary: "#F48B22",
+  primaryHover: "#E07E1E",
   primaryForeground: "#000000",
-  accent: "#F9A825",
-  surfaceMuted: "#FFF8E7",
+  accent: "#F48B22",
+  surfaceMuted: "#FFF5EB",
   success: "#10B981",
   error: "#EF4444",
   warning: "#F59E0B",
 } as const;
 
-/** Dark theme: from footer-logo.png — black bg #000000, white text #FFFFFF, orange #F9A825. */
+/** Dark theme: from footer-logo.png — black bg #000000, white text #FFFFFF, orange #F48B22. */
 export const darkTheme = {
   background: "#000000",
   surface: "#0a0a0a",
   foreground: "#FFFFFF",
   foregroundMuted: "#a3a3a3",
   border: "#262626",
-  primary: "#F9A825",
-  primaryHover: "#F7941D",
+  primary: "#F48B22",
+  primaryHover: "#E07E1E",
   primaryForeground: "#000000",
-  accent: "#F9A825",
+  accent: "#F48B22",
   surfaceMuted: "#1a1a1a",
   success: "#34D399",
   error: "#F87171",

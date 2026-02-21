@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { cn } from "@/components/theme/cn";
+import { generalSans, inter } from "./fonts";
 
 const themeScript = `
 (function() {
@@ -27,11 +29,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={cn(generalSans.variable, inter.variable)}
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="antialiased bg-background text-foreground">
+      <body
+        className={cn(
+          inter.className,
+          "antialiased bg-background text-foreground"
+        )}
+      >
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

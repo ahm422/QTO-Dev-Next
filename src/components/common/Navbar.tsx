@@ -26,7 +26,7 @@ export function Navbar() {
             <div className="relative h-8 w-auto min-w-[2rem]">
               <SiteLogo priority />
             </div>
-            <span className="hidden sm:inline font-semibold text-foreground">
+            <span className="hidden sm:inline font-heading font-semibold text-foreground">
               QTO Dev
             </span>
           </Link>
