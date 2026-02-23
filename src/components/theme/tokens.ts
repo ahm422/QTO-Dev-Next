@@ -8,6 +8,10 @@
 export const colors = {
   /** Brand orange from logo (DEV) — #F48B22 */
   primary: "#F48B22",
+  /** Golden CTA for header buttons (Book a Call, Get Quote) — #D4A82F */
+  ctaGold: "#D4A82F",
+  /** Light text on CTA gold — #F5F5F5 */
+  ctaGoldForeground: "#F5F5F5",
   accent: "#F48B22",
   success: "#10B981",
   error: "#EF4444",
@@ -39,6 +43,8 @@ export const lightTheme = {
   primary: "#F48B22",
   primaryHover: "#E07E1E",
   primaryForeground: "#000000",
+  ctaGold: "#D4A82F",
+  ctaGoldForeground: "#F5F5F5",
   accent: "#F48B22",
   surfaceMuted: "#FFF5EB",
   success: "#10B981",
@@ -56,6 +62,8 @@ export const darkTheme = {
   primary: "#F48B22",
   primaryHover: "#E07E1E",
   primaryForeground: "#000000",
+  ctaGold: "#D4A82F",
+  ctaGoldForeground: "#F5F5F5",
   accent: "#F48B22",
   surfaceMuted: "#1a1a1a",
   success: "#34D399",
