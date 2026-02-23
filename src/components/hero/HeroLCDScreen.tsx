@@ -67,23 +67,24 @@ export function HeroLCDScreen({ scrollTriggerRef }: HeroLCDScreenProps) {
       if (!wrapper || !trigger) return;
 
       if (reducedMotion) {
-        gsap.set(wrapper, { opacity: 1, y: 0 });
+        gsap.set(wrapper, { opacity: 1, y: 0, scale: 1 });
         return;
       }
 
       // Pin the hero: page stays still, LCD reveals over "Sites that move", then unpin to scroll.
       gsap.fromTo(
         wrapper,
-        { opacity: 0, y: 80 },
+        { opacity: 0, y: 60, scale: 0.98 },
         {
           opacity: 1,
           y: 0,
-          ease: "none",
+          scale: 1,
+          ease: "power2.out",
           scrollTrigger: {
             trigger,
             start: "top top",
             end: "+=600",       // 600px of scroll while hero is pinned
-            scrub: 0.8,
+            scrub: 1,
             pin: true,          // hero stays fixed in viewport
             pinSpacing: true,   // push content below so layout is correct after unpin
           },
@@ -103,14 +104,14 @@ export function HeroLCDScreen({ scrollTriggerRef }: HeroLCDScreenProps) {
   }, [reducedMotion]);
 
   return (
-    <div ref={wrapperRef} className="relative w-full max-w-4xl mx-auto">
+    <div ref={wrapperRef} className="relative w-full max-w-5xl mx-auto max-h-full overflow-hidden">
       {/* Monitor frame: thin bezel, optional stand */}
-      <div className="w-full max-w-4xl">
+      <div className="w-full max-w-5xl">
         <div className="overflow-hidden rounded-lg border-4 border-neutral-700 bg-neutral-800 shadow-2xl shadow-black/50 ring-1 ring-neutral-600 md:rounded-xl">
           {/* Inner screen: hero content (heading, subtext, CTAs) inside LCD */}
           <div
             ref={contentRef}
-            className="relative flex min-h-[320px] flex-col justify-center overflow-hidden bg-neutral-900 px-6 py-10 md:min-h-[380px] md:px-10 md:py-14"
+            className="relative flex min-h-[340px] flex-col justify-center overflow-hidden bg-neutral-900 px-6 py-10 md:min-h-[400px] md:px-10 md:py-14"
           >
             {/* Optional video background */}
             {videoSrc && (
