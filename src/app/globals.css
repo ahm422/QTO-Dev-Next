@@ -20,6 +20,9 @@
   --theme-success: #10b981;
   --theme-error: #ef4444;
   --theme-warning: #f59e0b;
+  /* Hero section (homepage): dark charcoal background, high-contrast foreground for Img3 style */
+  --hero-bg: #1a1a1a;
+  --hero-fg: #ffffff;
 }
 
 /* Dark theme: from footer-logo.png — black #000000, white #FFFFFF, orange from logo #F48B22. */
@@ -58,6 +61,8 @@
   --color-success: var(--theme-success);
   --color-error: var(--theme-error);
   --color-warning: var(--theme-warning);
+  --color-hero-bg: var(--hero-bg);
+  --color-hero-fg: var(--hero-fg);
   /* Font families: General Sans (headings), Inter (body). Variables are set on html by layout. */
   --font-heading: var(--font-general-sans), ui-sans-serif, sans-serif;
   --font-body: var(--font-inter), ui-sans-serif, sans-serif;
@@ -79,4 +84,14 @@ h4,
 h5,
 h6 {
   font-family: var(--font-heading);
+}
+
+/* Hero LCD screen: in-screen text cycle fade */
+@keyframes lcd-text-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
