@@ -12,7 +12,7 @@ export function HeroSection() {
       ref={sectionRef}
       className="relative h-screen overflow-hidden bg-hero-bg text-hero-fg"
     >
-      {/* Single viewport: background headline + LCD centered; pinned while LCD reveals */}
+      {/* Single viewport: background headline + LCD aligned to headline top; pinned while LCD reveals */}
       <div className="relative h-full">
         {/* Background layer: "SITES THAT MOVE" — lowest z-index */}
         <div
@@ -30,9 +30,11 @@ export function HeroSection() {
           </p>
         </div>
 
-        {/* LCD layer: centered in wide space, revealed on scroll — above background text */}
-        <div className="absolute inset-0 z-20 flex items-center justify-center px-4">
-          <HeroLCDScreen scrollTriggerRef={sectionRef} />
+        {/* LCD layer: starts slightly below headline so full LCD is visible when revealed; constrained to hero */}
+        <div className="absolute inset-0 z-20 flex flex-col pt-20 md:pt-28 overflow-hidden px-4">
+          <div className="flex-1 min-h-0 flex justify-center items-start">
+            <HeroLCDScreen scrollTriggerRef={sectionRef} />
+          </div>
         </div>
       </div>
     </section>
