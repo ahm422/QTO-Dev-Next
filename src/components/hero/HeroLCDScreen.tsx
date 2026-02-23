@@ -26,11 +26,19 @@ function useReducedMotion(): boolean {
 }
 
 export interface HeroLCDScreenProps {
-  /** Ref to the hero section; scroll progress drives the LCD reveal */
+  /** Ref to the hero section; used as pin target so the page doesn't move during reveal */
   scrollTriggerRef?: React.RefObject<HTMLElement | null>;
+  /** Optional ref for ScrollTrigger start (e.g. sentinel at doc top) so pin starts at scroll 0 */
+  triggerRef?: React.RefObject<HTMLElement | null>;
+  /** When true, sentinel is mounted so triggerRef.current is set (for dependency) */
+  triggerReady?: boolean;
 }
 
-export function HeroLCDScreen({ scrollTriggerRef }: HeroLCDScreenProps) {
+export function HeroLCDScreen({
+  scrollTriggerRef,
+  triggerRef,
+  triggerReady,
+}: HeroLCDScreenProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -59,39 +67,41 @@ export function HeroLCDScreen({ scrollTriggerRef }: HeroLCDScreenProps) {
     return () => obs.disconnect();
   }, [hasVideo]);
 
-  // Scroll-triggered reveal: LCD in wide space, hidden at first, appears slowly as user scrolls
+  // Scroll-triggered reveal: pin the hero so the page doesn't move; LCD reveals over "SITES THAT MOVE".
+  // Use sentinel as trigger when provided so pin starts at scroll 0 (headline stays visible).
   useGSAP(
     () => {
       const wrapper = wrapperRef.current;
-      const trigger = scrollTriggerRef?.current ?? wrapper;
-      if (!wrapper || !trigger) return;
+      const section = scrollTriggerRef?.current;
+      const triggerEl = triggerRef?.current ?? section;
+      if (!wrapper || !section) return;
 
       if (reducedMotion) {
         gsap.set(wrapper, { opacity: 1, y: 0, scale: 1 });
         return;
       }
 
-      // Pin the hero: page stays still, LCD reveals over "Sites that move", then unpin to scroll.
+      // Pin the hero section (not the LCD): page stays still from scroll 0, LCD reveals, then unpin.
       gsap.fromTo(
         wrapper,
-        { opacity: 0, y: 60, scale: 0.98 },
+        { opacity: 0, y: 80, scale: 0.98 },
         {
           opacity: 1,
           y: 0,
           scale: 1,
           ease: "power2.out",
           scrollTrigger: {
-            trigger,
+            trigger: triggerEl,
             start: "top top",
-            end: "+=600",       // 600px of scroll while hero is pinned
-            scrub: 1,
-            pin: true,          // hero stays fixed in viewport
-            pinSpacing: true,   // push content below so layout is correct after unpin
+            end: "+=600",
+            scrub: 0.8,
+            pin: section,
+            pinSpacing: true,
           },
         }
       );
     },
-    { dependencies: [reducedMotion, scrollTriggerRef] }
+    { dependencies: [reducedMotion, scrollTriggerRef, triggerRef, triggerReady] }
   );
 
   // Cycle through text lines (and optional video) inside the screen
@@ -104,14 +114,14 @@ export function HeroLCDScreen({ scrollTriggerRef }: HeroLCDScreenProps) {
   }, [reducedMotion]);
 
   return (
-    <div ref={wrapperRef} className="relative w-full max-w-5xl mx-auto max-h-full overflow-hidden">
+    <div ref={wrapperRef} className="relative w-full max-w-4xl mx-auto max-h-[calc(100vh-10rem)]">
       {/* Monitor frame: thin bezel, optional stand */}
-      <div className="w-full max-w-5xl">
+      <div className="w-full max-w-4xl">
         <div className="overflow-hidden rounded-lg border-4 border-neutral-700 bg-neutral-800 shadow-2xl shadow-black/50 ring-1 ring-neutral-600 md:rounded-xl">
           {/* Inner screen: hero content (heading, subtext, CTAs) inside LCD */}
           <div
             ref={contentRef}
-            className="relative flex min-h-[340px] flex-col justify-center overflow-hidden bg-neutral-900 px-6 py-10 md:min-h-[400px] md:px-10 md:py-14"
+            className="relative flex min-h-[320px] flex-col justify-center overflow-hidden bg-neutral-900 px-6 py-10 md:min-h-[380px] md:px-10 md:py-14"
           >
             {/* Optional video background */}
             {videoSrc && (
