@@ -3,7 +3,7 @@ import { AwardsCertificationsSection } from "./sections/AwardsCertificationsSect
 import { AboutCompanySection } from "./sections/AboutCompanySection";
 import { OurServicesSection } from "./sections/OurServicesSection";
 import { SuccessStoriesSection } from "./sections/SuccessStoriesSection";
-import { ProcessSection } from "./sections/ProcessSection";
+import { HowWeWorkSection } from "./sections/HowWeWorkSection";
 import { HighlightsSection } from "./sections/HighlightsSection";
 import { CTASection } from "./sections/CTASection";
 
@@ -14,8 +14,8 @@ export default function HomePage() {
       <AwardsCertificationsSection />
       <AboutCompanySection />
       <OurServicesSection />
+      <HowWeWorkSection />
       <SuccessStoriesSection />
-      <ProcessSection />
       <HighlightsSection />
       <CTASection />
     </>
