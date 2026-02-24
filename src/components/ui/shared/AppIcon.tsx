@@ -1,0 +1,128 @@
+"use client";
+
+import {
+  faBars,
+  faBolt,
+  faBuilding,
+  faBullseye,
+  faCartShopping,
+  faChartLine,
+  faCheck,
+  faCloud,
+  faCompass,
+  faEnvelope,
+  faFlaskVial,
+  faGear,
+  faGlobe,
+  faHammer,
+  faLaptopCode,
+  faLocationDot,
+  faLock,
+  faMagnifyingGlass,
+  faMobileScreen,
+  faMoon,
+  faPalette,
+  faPhone,
+  faRobot,
+  faRocket,
+  faServer,
+  faShapes,
+  faShieldHalved,
+  faSun,
+  faUniversalAccess,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { cn } from "@/components/theme/cn";
+
+/** Font Awesome solid icon name. Add new names and map entries below when needed. */
+export type AppIconName =
+  | "laptop-code"
+  | "mobile-screen"
+  | "palette"
+  | "chart-line"
+  | "cloud"
+  | "robot"
+  | "server"
+  | "shapes"
+  | "bolt"
+  | "lock"
+  | "universal-access"
+  | "globe"
+  | "envelope"
+  | "phone"
+  | "location-dot"
+  | "cart-shopping"
+  | "building"
+  | "bullseye"
+  | "compass"
+  | "hammer"
+  | "flask-vial"
+  | "rocket"
+  | "check"
+  | "shield-halved"
+  | "gear"
+  | "magnifying-glass"
+  | "sun"
+  | "moon"
+  | "bars"
+  | "xmark";
+
+const iconMap: Record<AppIconName, IconDefinition> = {
+  "laptop-code": faLaptopCode,
+  "mobile-screen": faMobileScreen,
+  palette: faPalette,
+  "chart-line": faChartLine,
+  cloud: faCloud,
+  robot: faRobot,
+  server: faServer,
+  shapes: faShapes,
+  bolt: faBolt,
+  lock: faLock,
+  "universal-access": faUniversalAccess,
+  globe: faGlobe,
+  envelope: faEnvelope,
+  phone: faPhone,
+  "location-dot": faLocationDot,
+  "cart-shopping": faCartShopping,
+  building: faBuilding,
+  bullseye: faBullseye,
+  compass: faCompass,
+  hammer: faHammer,
+  "flask-vial": faFlaskVial,
+  rocket: faRocket,
+  check: faCheck,
+  "shield-halved": faShieldHalved,
+  gear: faGear,
+  "magnifying-glass": faMagnifyingGlass,
+  sun: faSun,
+  moon: faMoon,
+  bars: faBars,
+  xmark: faXmark,
+};
+
+interface AppIconProps {
+  name: AppIconName;
+  className?: string;
+  size?: "sm" | "base" | "lg" | "xl";
+}
+
+const sizeMap = {
+  sm: "text-lg",
+  base: "text-2xl",
+  lg: "text-4xl",
+  xl: "text-5xl",
+};
+
+export function AppIcon({ name, className, size = "base" }: AppIconProps) {
+  const icon = iconMap[name];
+  if (!icon) return null;
+  return (
+    <FontAwesomeIcon
+      icon={icon}
+      className={cn(sizeMap[size], "shrink-0", className)}
+      aria-hidden
+    />
+  );
+}

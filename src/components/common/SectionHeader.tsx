@@ -1,3 +1,4 @@
+import { cn } from "@/components/theme/cn";
 import { Heading } from "@/components/ui/shared/Heading";
 import { Text } from "@/components/ui/shared/Text";
 
@@ -7,6 +8,8 @@ interface SectionHeaderProps {
   titleHighlight?: string;
   description?: string;
   subtitle?: string;
+  /** Optional class for the subtitle wrapper (e.g. text-primary for gold label) */
+  subtitleClassName?: string;
   centered?: boolean;
   /** Optional id for the heading (e.g. for aria-labelledby on the section) */
   headingId?: string;
@@ -17,6 +20,7 @@ export function SectionHeader({
   titleHighlight,
   description,
   subtitle,
+  subtitleClassName,
   centered = true,
   headingId,
 }: SectionHeaderProps) {
@@ -40,11 +44,21 @@ export function SectionHeader({
 
   return (
     <div className={centered ? "text-center" : ""}>
-      {subtitle && (
-        <Text size="sm" color="muted" className="uppercase tracking-wide mb-2">
-          {subtitle}
-        </Text>
-      )}
+      {subtitle &&
+        (subtitleClassName ? (
+          <span
+            className={cn(
+              "text-sm uppercase tracking-wide mb-2 block",
+              subtitleClassName
+            )}
+          >
+            {subtitle}
+          </span>
+        ) : (
+          <Text size="sm" color="muted" className="uppercase tracking-wide mb-2">
+            {subtitle}
+          </Text>
+        ))}
       <Heading level={2} className="mb-4" id={headingId}>
         {titleContent}
       </Heading>

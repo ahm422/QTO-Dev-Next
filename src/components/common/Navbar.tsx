@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HeaderCTAButton } from "@/components/common/HeaderCTAButton";
 import { SiteLogo } from "@/components/common/SiteLogo";
+import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { useState } from "react";
 import { useTheme } from "@/components/theme/ThemeProvider";
 
@@ -68,15 +69,7 @@ export function Navbar() {
               className="rounded-lg border border-border p-2 text-foreground hover:bg-surface-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:p-2.5"
               onClick={toggleTheme}
             >
-              {theme === "dark" ? (
-                <svg viewBox="0 0 24 24" className="h-5 w-5 lg:h-6 lg:w-6" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-                  ) : (
-                <svg viewBox="0 0 24 24" className="h-5 w-5 lg:h-6 lg:w-6" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              )}
+              <AppIcon name={theme === "dark" ? "sun" : "moon"} size="sm" className="h-5 w-5 lg:h-6 lg:w-6" />
             </button>
             <HeaderCTAButton href="/contact?intent=book-call" className="lg:px-5 lg:py-2.5 lg:text-base">
               Book a Call
@@ -92,13 +85,7 @@ export function Navbar() {
             className="inline-flex md:hidden items-center justify-center rounded-md border border-border p-2 text-foreground hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:p-2.5"
             onClick={() => setIsMenuOpen((prev) => !prev)}
           >
-            <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2">
-              {isMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
-              )}
-            </svg>
+            <AppIcon name={isMenuOpen ? "xmark" : "bars"} size="sm" className="h-5 w-5 sm:h-6 sm:w-6" />
           </button>
         </div>
 
@@ -130,15 +117,7 @@ export function Navbar() {
                   className="rounded-lg border border-border p-2 text-foreground hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   onClick={toggleTheme}
                 >
-                  {theme === "dark" ? (
-                    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                  ) : (
-                    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                  )}
+                  <AppIcon name={theme === "dark" ? "sun" : "moon"} size="sm" className="h-5 w-5" />
                 </button>
               </div>
             <div className="mt-4 grid grid-cols-2 gap-2">

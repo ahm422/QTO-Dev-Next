@@ -5,6 +5,8 @@ import { Heading } from "@/components/ui/shared/Heading";
 import { Text } from "@/components/ui/shared/Text";
 import { aboutCompanyConfig } from "@/config/aboutCompany";
 import { aboutData } from "@/data/about";
+import { AppIcon } from "@/components/ui/shared/AppIcon";
+import type { AppIconName } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
 
 /** Format stat value for display (e.g. 20500 → "20.5 k", 200 → "200") */
@@ -156,9 +158,7 @@ export function AboutCompanySection() {
                     "bg-white/15 border border-primary-foreground/20 text-primary-foreground"
                   )}
                 >
-                  <span className="text-sm" aria-hidden>
-                    {tag.icon}
-                  </span>
+                  <AppIcon name={tag.icon as AppIconName} size="sm" className="text-sm" />
                   <span className="text-sm font-medium">{tag.label}</span>
                 </span>
               ))}

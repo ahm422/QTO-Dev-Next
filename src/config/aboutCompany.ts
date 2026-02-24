@@ -17,8 +17,8 @@ export const aboutCompanyConfig = {
 
   /** Pill-style tags (label + icon for Back-End Development, Product Design, etc.) */
   tags: [
-    { label: "Back-End Development", icon: "⌘" },
-    { label: "Product Design", icon: "◇" },
+    { label: "Back-End Development", icon: "server" },
+    { label: "Product Design", icon: "shapes" },
   ],
 
   /** Circular CTA on the image card */

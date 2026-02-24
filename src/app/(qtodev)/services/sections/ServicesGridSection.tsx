@@ -3,6 +3,8 @@ import { services } from "@/data/services";
 import { Container } from "@/components/common/Container";
 import { Card } from "@/components/ui/shared/Card";
 import { Button } from "@/components/ui/shared/Button";
+import { AppIcon } from "@/components/ui/shared/AppIcon";
+import type { AppIconName } from "@/components/ui/shared/AppIcon";
 
 export function ServicesGridSection() {
   return (
@@ -11,7 +13,7 @@ export function ServicesGridSection() {
         <div className="grid md:grid-cols-2 gap-8">
           {services.map((service) => (
             <Card key={service.id} className="p-8">
-              <div className="text-5xl mb-6">{service.icon}</div>
+              <AppIcon name={service.icon as AppIconName} size="xl" className="mb-6" />
               <h2 className="text-2xl font-bold mb-3">{service.title}</h2>
               <p className="text-foreground-muted mb-6">{service.description}</p>
 
