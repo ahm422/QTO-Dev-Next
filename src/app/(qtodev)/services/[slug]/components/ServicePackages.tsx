@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { WebDevelopmentServiceData } from "@/content/services/web-development";
+import { AppIcon } from "@/components/ui/shared/AppIcon";
 
 interface ServicePackagesProps {
   service: WebDevelopmentServiceData;
@@ -17,7 +18,7 @@ const serviceAreas = [
   "Maintenance & Scaling",
 ];
 
-const areaIcons = ["⚡", "☁️", "🛒", "🏢", "🎯", "📈"];
+const areaIcons = ["bolt", "cloud", "cart-shopping", "building", "bullseye", "chart-line"] as const;
 
 export function ServicePackages({ service }: ServicePackagesProps) {
   const [activeTab, setActiveTab] = useState(0);
@@ -32,7 +33,7 @@ export function ServicePackages({ service }: ServicePackagesProps) {
         <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {serviceAreas.map((area, idx) => (
             <div key={area} className="rounded-xl border border-border bg-surface p-4 text-center text-sm font-medium text-foreground-muted">
-              <span className="mb-2 block text-xl" aria-hidden="true">{areaIcons[idx]}</span>
+              <AppIcon name={areaIcons[idx]} size="base" className="mb-2 block" />
               {area}
             </div>
           ))}

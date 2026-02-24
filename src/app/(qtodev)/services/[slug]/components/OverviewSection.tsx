@@ -1,12 +1,13 @@
 import Image from "next/image";
 import { WebDevelopmentServiceData } from "@/content/services/web-development";
+import { AppIcon } from "@/components/ui/shared/AppIcon";
 
 interface OverviewSectionProps {
   service: WebDevelopmentServiceData;
   blurDataURL: string;
 }
 
-const iconSet = ["✓", "🛡️", "🚀", "⚙️", "📈", "🔍"];
+const iconSet = ["check", "shield-halved", "rocket", "gear", "chart-line", "magnifying-glass"] as const;
 
 export function OverviewSection({ service, blurDataURL }: OverviewSectionProps) {
   return (
@@ -22,7 +23,7 @@ export function OverviewSection({ service, blurDataURL }: OverviewSectionProps) 
             {service.overviewBenefits.map((benefit, idx) => (
               <li key={benefit} className="flex items-start gap-3 text-sm text-foreground-muted">
                 <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary" aria-hidden="true">
-                  {iconSet[idx % iconSet.length]}
+                  <AppIcon name={iconSet[idx % iconSet.length]} size="sm" />
                 </span>
                 <span>{benefit}</span>
               </li>

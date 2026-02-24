@@ -1,10 +1,11 @@
 import { WebDevelopmentServiceData } from "@/content/services/web-development";
+import { AppIcon } from "@/components/ui/shared/AppIcon";
 
 interface ProcessTimelineProps {
   service: WebDevelopmentServiceData;
 }
 
-const stepIcons = ["🧭", "🎨", "🏗️", "💻", "🧪", "🚀"];
+const stepIcons = ["compass", "palette", "hammer", "laptop-code", "flask-vial", "rocket"] as const;
 
 export function ProcessTimeline({ service }: ProcessTimelineProps) {
   return (
@@ -26,7 +27,7 @@ export function ProcessTimeline({ service }: ProcessTimelineProps) {
                   ) : null}
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-primary">Step {number}</span>
-                    <span aria-hidden="true" className="text-xl">{stepIcons[idx % stepIcons.length]}</span>
+                    <AppIcon name={stepIcons[idx % stepIcons.length]} size="base" />
                   </div>
                   <h3 className="mt-3 text-base font-semibold text-foreground">{step.title}</h3>
                   <ul className="mt-3 list-disc space-y-1.5 pl-5 text-xs leading-6 text-foreground-muted">
