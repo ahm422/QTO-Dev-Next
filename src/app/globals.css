@@ -95,3 +95,17 @@ h6 {
     opacity: 1;
   }
 }
+
+/* Awards / Collaborations: infinite horizontal marquee (Lovable-style) */
+@keyframes collaborations-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.collaborations-marquee-track {
+  animation: collaborations-marquee var(--marquee-duration, 40s) linear infinite;
+}
