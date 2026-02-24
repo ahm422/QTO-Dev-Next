@@ -14,3 +14,13 @@ export interface Service {
   /** Override for "Learn more" link; defaults to /services/{slug} */
   learnMoreHref?: string;
 }
+
+export interface WorkProcessStep {
+  order: number;
+  title: string;
+  description: string;
+  /**
+   * Optional icon identifier; mapped to AppIconName where rendered.
+   */
+  icon?: string;
+}
