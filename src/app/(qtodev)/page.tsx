@@ -9,6 +9,7 @@ import { FeaturedWorkSection } from "./sections/FeaturedWorkSection";
 import { WhyChooseUsSection } from "./sections/WhyChooseUsSection";
 import { StatsNumbersSection } from "./sections/StatsNumbersSection";
 import { TestimonialsSection } from "./sections/TestimonialsSection";
+import { IndustriesSection } from "./sections/IndustriesSection";
 import { HighlightsSection } from "./sections/HighlightsSection";
 import { CTASection } from "./sections/CTASection";
 
@@ -25,6 +26,7 @@ export default function HomePage() {
       <WhyChooseUsSection />
       <StatsNumbersSection />
       <TestimonialsSection />
+      <IndustriesSection />
       <SuccessStoriesSection />
       <HighlightsSection />
       <CTASection />
