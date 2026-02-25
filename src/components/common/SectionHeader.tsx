@@ -63,7 +63,11 @@ export function SectionHeader({
         {titleContent}
       </Heading>
       {description && (
-        <Text size="lg" color="muted" className="max-w-2xl mx-auto">
+        <Text
+          size="lg"
+          color="muted"
+          className={cn("max-w-2xl", centered && "mx-auto")}
+        >
           {description}
         </Text>
       )}
