@@ -8,6 +8,8 @@ interface HeaderCTAButtonProps {
   children: React.ReactNode;
   className?: string;
   onClick?: () => void;
+  /** Optional aria-label for accessibility when visible text is generic */
+  ariaLabel?: string;
 }
 
 /**
@@ -21,11 +23,13 @@ export function HeaderCTAButton({
   children,
   className,
   onClick,
+  ariaLabel,
 }: HeaderCTAButtonProps) {
   return (
     <Link
       href={href}
       onClick={onClick}
+      aria-label={ariaLabel}
       className={cn(
         "group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",

@@ -7,6 +7,7 @@ import { HowWeWorkSection } from "./sections/HowWeWorkSection";
 import { PortfolioSection } from "./sections/PortfolioSection";
 import { FeaturedWorkSection } from "./sections/FeaturedWorkSection";
 import { WhyChooseUsSection } from "./sections/WhyChooseUsSection";
+import { EngagementModelsSection } from "./sections/EngagementModelsSection";
 import { StatsNumbersSection } from "./sections/StatsNumbersSection";
 import { TestimonialsSection } from "./sections/TestimonialsSection";
 import { IndustriesSection } from "./sections/IndustriesSection";
@@ -27,6 +28,7 @@ export default function HomePage() {
       <StatsNumbersSection />
       <TestimonialsSection />
       <IndustriesSection />
+      <EngagementModelsSection />
       <SuccessStoriesSection />
       <HighlightsSection />
       <CTASection />
