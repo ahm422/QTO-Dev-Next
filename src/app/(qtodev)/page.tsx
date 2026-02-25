@@ -4,6 +4,7 @@ import { AboutCompanySection } from "./sections/AboutCompanySection";
 import { OurServicesSection } from "./sections/OurServicesSection";
 import { SuccessStoriesSection } from "./sections/SuccessStoriesSection";
 import { HowWeWorkSection } from "./sections/HowWeWorkSection";
+import { PortfolioSection } from "./sections/PortfolioSection";
 import { HighlightsSection } from "./sections/HighlightsSection";
 import { CTASection } from "./sections/CTASection";
 
@@ -15,6 +16,7 @@ export default function HomePage() {
       <AboutCompanySection />
       <OurServicesSection />
       <HowWeWorkSection />
+      <PortfolioSection />
       <SuccessStoriesSection />
       <HighlightsSection />
       <CTASection />
