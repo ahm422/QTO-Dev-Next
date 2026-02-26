@@ -6,6 +6,15 @@ export function formatDate(date: string | Date): string {
   });
 }
 
+/** Short date format for post meta (e.g. "25 Jan 2026") */
+export function formatDateShort(date: string | Date): string {
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
 export function slugify(text: string): string {
   return text
     .toLowerCase()

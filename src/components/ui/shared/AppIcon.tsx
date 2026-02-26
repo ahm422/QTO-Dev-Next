@@ -1,13 +1,16 @@
 "use client";
 
 import {
+  faArrowRight,
   faBars,
   faBolt,
   faBuilding,
   faBullseye,
+  faCalendar,
   faCartShopping,
   faChartLine,
   faCheck,
+  faClock,
   faCloud,
   faCompass,
   faEnvelope,
@@ -38,6 +41,7 @@ import { cn } from "@/components/theme/cn";
 
 /** Font Awesome solid icon name. Add new names and map entries below when needed. */
 export type AppIconName =
+  | "arrow-right"
   | "laptop-code"
   | "mobile-screen"
   | "palette"
@@ -67,9 +71,12 @@ export type AppIconName =
   | "sun"
   | "moon"
   | "bars"
-  | "xmark";
+  | "xmark"
+  | "calendar"
+  | "clock";
 
 const iconMap: Record<AppIconName, IconDefinition> = {
+  "arrow-right": faArrowRight,
   "laptop-code": faLaptopCode,
   "mobile-screen": faMobileScreen,
   palette: faPalette,
@@ -100,6 +107,8 @@ const iconMap: Record<AppIconName, IconDefinition> = {
   moon: faMoon,
   bars: faBars,
   xmark: faXmark,
+  calendar: faCalendar,
+  clock: faClock,
 };
 
 interface AppIconProps {
