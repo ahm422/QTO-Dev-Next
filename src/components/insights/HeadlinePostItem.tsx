@@ -24,8 +24,7 @@ export function HeadlinePostItem({ post, titleMaxLength = 50 }: HeadlinePostItem
   const iconName = getCategoryIcon(post.category);
 
   return (
-    <li>
-      <Link
+    <Link
         href={`/blogs/${post.slug}`}
         className={cn(
           "relative flex items-center gap-4 p-4 rounded-xl border bg-background",
@@ -60,6 +59,5 @@ export function HeadlinePostItem({ post, titleMaxLength = 50 }: HeadlinePostItem
         </div>
         <AppIcon name="arrow-right" size="sm" className="shrink-0 text-foreground-muted group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
       </Link>
-    </li>
   );
 }
