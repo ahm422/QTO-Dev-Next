@@ -10,6 +10,8 @@ interface SectionHeaderProps {
   subtitle?: string;
   /** Optional class for the subtitle wrapper (e.g. text-primary for gold label) */
   subtitleClassName?: string;
+  /** When true, render subtitle as a pill (rounded-full, bg-primary/10) */
+  subtitlePill?: boolean;
   centered?: boolean;
   /** Optional id for the heading (e.g. for aria-labelledby on the section) */
   headingId?: string;
@@ -21,6 +23,7 @@ export function SectionHeader({
   description,
   subtitle,
   subtitleClassName,
+  subtitlePill,
   centered = true,
   headingId,
 }: SectionHeaderProps) {
@@ -45,10 +48,11 @@ export function SectionHeader({
   return (
     <div className={centered ? "text-center" : ""}>
       {subtitle &&
-        (subtitleClassName ? (
+        (subtitleClassName || subtitlePill ? (
           <span
             className={cn(
               "text-sm uppercase tracking-wide mb-2 block",
+              subtitlePill && "inline-block rounded-full px-3 py-1.5 bg-primary/10",
               subtitleClassName
             )}
           >
