@@ -1,12 +1,14 @@
 import { CTA } from "@/components/common/CTA";
+import { servicesPageConfig } from "@/config/servicesPage";
 
 export function ServicesCTASection() {
+  const { cta } = servicesPageConfig;
   return (
     <CTA
-      title="Ready to Get Started?"
-      description="Let's discuss which service is right for your business"
-      primaryButtonText="Schedule a Call"
-      primaryButtonHref="/contact"
+      title={cta.title}
+      description={cta.description}
+      primaryButtonText={cta.primaryButtonText}
+      primaryButtonHref={cta.primaryButtonHref}
     />
   );
 }
