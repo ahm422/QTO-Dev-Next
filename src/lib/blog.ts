@@ -30,10 +30,29 @@ export async function getRelatedBlogPosts(
  * Get all blog posts sorted by date
  */
 export async function getAllBlogPosts(): Promise<BlogPost[]> {
-  return blogPosts.sort(
+  return [...blogPosts].sort(
     (a, b) =>
       new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
   );
+}
+
+/**
+ * Get latest blog posts (first N by date, for Insights "Latest Posts")
+ */
+export async function getLatestBlogPosts(limit: number): Promise<BlogPost[]> {
+  const sorted = await getAllBlogPosts();
+  return sorted.slice(0, limit);
+}
+
+/**
+ * Get headline blog posts (next N after latest, for Insights "Headline Posts")
+ */
+export async function getHeadlineBlogPosts(
+  limit: number,
+  skipCount: number = 2
+): Promise<BlogPost[]> {
+  const sorted = await getAllBlogPosts();
+  return sorted.slice(skipCount, skipCount + limit);
 }
 
 /**
