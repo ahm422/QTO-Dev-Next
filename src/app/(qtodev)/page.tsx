@@ -10,6 +10,7 @@ import { WhyChooseUsSection } from "./sections/WhyChooseUsSection";
 import { EngagementModelsSection } from "./sections/EngagementModelsSection";
 import { FAQsSection } from "./sections/FAQsSection";
 import { InsightsSection } from "./sections/InsightsSection";
+import { PartnerUpSection } from "./sections/PartnerUpSection";
 import { StatsNumbersSection } from "./sections/StatsNumbersSection";
 import { TestimonialsSection } from "./sections/TestimonialsSection";
 import { IndustriesSection } from "./sections/IndustriesSection";
@@ -33,6 +34,7 @@ export default function HomePage() {
       <EngagementModelsSection />
       <FAQsSection />
       <InsightsSection />
+      <PartnerUpSection />
       <SuccessStoriesSection />
       <HighlightsSection />
       <CTASection />
