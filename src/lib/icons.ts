@@ -16,7 +16,9 @@ import {
   faEnvelope,
   faFlaskVial,
   faGear,
+  faGlobe,
   faHammer,
+  faHeart,
   faLaptopCode,
   faLocationDot,
   faLock,
@@ -25,6 +27,7 @@ import {
   faMoon,
   faPalette,
   faPhone,
+  faPlane,
   faRobot,
   faRocket,
   faServer,
@@ -33,7 +36,6 @@ import {
   faSun,
   faUniversalAccess,
   faXmark,
-  faGlobe,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Prevent FA from adding its own CSS (we use inline SVG only).
@@ -54,6 +56,7 @@ library.add(
   faGear,
   faGlobe,
   faHammer,
+  faHeart,
   faLaptopCode,
   faLocationDot,
   faLock,
@@ -62,6 +65,7 @@ library.add(
   faMoon,
   faPalette,
   faPhone,
+  faPlane,
   faRobot,
   faRocket,
   faServer,

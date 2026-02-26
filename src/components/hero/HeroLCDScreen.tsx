@@ -1,17 +1,19 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { Button } from "@/components/ui/shared/Button";
 import { heroConfig } from "@/config/hero";
+import { AppIcon } from "@/components/ui/shared/AppIcon";
+import { cn } from "@/components/theme/cn";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const LCD_CYCLE_MS = 3500;
+const LCD_CYCLE_MS = 4000;
 
 function useReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
@@ -25,12 +27,41 @@ function useReducedMotion(): boolean {
   return reduced;
 }
 
+/** Build heading with optional highlighted word */
+function HeroHeading() {
+  const { heading, headingHighlight } = heroConfig;
+  if (!headingHighlight || !heading.includes(headingHighlight)) {
+    return (
+      <h1 className="font-heading text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl xl:text-6xl">
+        {heading}
+      </h1>
+    );
+  }
+  const parts = heading.split(headingHighlight);
+  return (
+    <h1 className="font-heading text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl xl:text-6xl">
+      {parts.map((part, i) => (
+        <span key={i}>
+          {part}
+          {i < parts.length - 1 && (
+            <span className="text-primary">{headingHighlight}</span>
+          )}
+        </span>
+      ))}
+    </h1>
+  );
+}
+
+const ctaBase =
+  "inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black";
+const ctaPrimaryStyles =
+  "px-6 py-3 text-lg bg-primary text-primary-foreground hover:bg-primary-hover shadow-lg shadow-primary/20 hover:shadow-primary/30";
+const ctaSecondaryStyles =
+  "px-6 py-3 text-lg border-2 border-white/80 text-white hover:bg-white/10";
+
 export interface HeroLCDScreenProps {
-  /** Ref to the hero section; used as pin target so the page doesn't move during reveal */
   scrollTriggerRef?: React.RefObject<HTMLElement | null>;
-  /** Optional ref for ScrollTrigger start (e.g. sentinel at doc top) so pin starts at scroll 0 */
   triggerRef?: React.RefObject<HTMLElement | null>;
-  /** When true, sentinel is mounted so triggerRef.current is set (for dependency) */
   triggerReady?: boolean;
 }
 
@@ -48,8 +79,9 @@ export function HeroLCDScreen({
   const videoSrc = hasVideo ? heroConfig.lcdVideos[0] : null;
   const lines = heroConfig.lcdTextLines;
   const currentLine = lines[slideIndex];
+  const primaryHref = heroConfig.ctaPrimaryHref;
+  const secondaryHref = heroConfig.ctaSecondaryHref;
 
-  // Lazy-play video when LCD is in view
   useEffect(() => {
     const wrapper = wrapperRef.current;
     const video = videoRef.current;
@@ -67,44 +99,59 @@ export function HeroLCDScreen({
     return () => obs.disconnect();
   }, [hasVideo]);
 
-  // Scroll-triggered reveal: pin the hero so the page doesn't move; LCD reveals over "SITES THAT MOVE".
-  // Use sentinel as trigger when provided so pin starts at scroll 0 (headline stays visible).
   useGSAP(
     () => {
       const wrapper = wrapperRef.current;
       const section = scrollTriggerRef?.current;
       const triggerEl = triggerRef?.current ?? section;
-      if (!wrapper || !section) return;
+      // All targets must be valid DOM elements in the document (avoids ScrollTrigger "reading 'end'" error)
+      const ready =
+        wrapper?.isConnected &&
+        triggerEl?.isConnected &&
+        section?.isConnected;
+      if (!wrapper || !triggerEl || !section || !ready) {
+        gsap.set(wrapper, { opacity: 1, y: 0, scale: 1 });
+        return;
+      }
 
       if (reducedMotion) {
         gsap.set(wrapper, { opacity: 1, y: 0, scale: 1 });
         return;
       }
 
-      // Pin the hero section (not the LCD): page stays still from scroll 0, LCD reveals, then unpin.
-      gsap.fromTo(
-        wrapper,
-        { opacity: 0, y: 80, scale: 0.98 },
-        {
+      try {
+        gsap.fromTo(
+          wrapper,
+          { opacity: 0, y: 80, scale: 0.98 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: triggerEl,
+              start: "top top",
+              end: "+=600",
+              scrub: 0.8,
+              pin: section,
+              pinSpacing: true,
+            },
+          }
+        );
+      } catch {
+        // Fallback if ScrollTrigger fails (e.g. refs not ready or invalid)
+        gsap.to(wrapper, {
           opacity: 1,
           y: 0,
           scale: 1,
+          duration: 1,
           ease: "power2.out",
-          scrollTrigger: {
-            trigger: triggerEl,
-            start: "top top",
-            end: "+=600",
-            scrub: 0.8,
-            pin: section,
-            pinSpacing: true,
-          },
-        }
-      );
+        });
+      }
     },
     { dependencies: [reducedMotion, scrollTriggerRef, triggerRef, triggerReady] }
   );
 
-  // Cycle through text lines (and optional video) inside the screen
   useEffect(() => {
     if (reducedMotion) return;
     const interval = setInterval(() => {
@@ -114,20 +161,21 @@ export function HeroLCDScreen({
   }, [reducedMotion]);
 
   return (
-    <div ref={wrapperRef} className="relative w-full max-w-4xl mx-auto max-h-[calc(100vh-10rem)]">
-      {/* Monitor frame: thin bezel, optional stand */}
+    <div
+      ref={wrapperRef}
+      className="relative w-full max-w-4xl mx-auto max-h-[calc(100vh-12rem)]"
+    >
       <div className="w-full max-w-4xl">
-        <div className="overflow-hidden rounded-lg border-4 border-neutral-700 bg-neutral-800 shadow-2xl shadow-black/50 ring-1 ring-neutral-600 md:rounded-xl">
-          {/* Inner screen: hero content (heading, subtext, CTAs) inside LCD */}
+        {/* Refined frame: softer border, professional shadow */}
+        <div className="overflow-hidden rounded-xl border-2 border-white/10 bg-black/95 shadow-2xl shadow-black/60 ring-1 ring-white/5 backdrop-blur-sm">
           <div
             ref={contentRef}
-            className="relative flex min-h-[320px] flex-col justify-center overflow-hidden bg-neutral-900 px-6 py-10 md:min-h-[380px] md:px-10 md:py-14"
+            className="relative flex min-h-[340px] flex-col justify-center overflow-hidden px-6 py-10 md:min-h-[400px] md:px-12 md:py-16"
           >
-            {/* Optional video background */}
             {videoSrc && (
               <video
                 ref={videoRef}
-                className="absolute inset-0 h-full w-full object-cover opacity-30"
+                className="absolute inset-0 h-full w-full object-cover opacity-25"
                 src={videoSrc}
                 muted
                 loop
@@ -136,49 +184,61 @@ export function HeroLCDScreen({
                 aria-hidden
               />
             )}
-            {/* Hero content: heading, subtext, CTAs — high contrast on dark */}
+
             <div className="relative z-10 flex flex-col items-center text-center">
-              <h1 className="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
-                {heroConfig.heading}
-              </h1>
-              <p className="mb-6 max-w-2xl text-base text-white/90 md:text-lg lg:text-xl">
+              <HeroHeading />
+              <p className="mt-4 mb-8 max-w-2xl text-base leading-relaxed text-white/90 md:text-lg lg:text-xl">
                 {heroConfig.subtext}
               </p>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Button
-                  size="lg"
-                  variant="primary"
-                  className="bg-primary text-primary-foreground hover:bg-primary-hover"
-                >
-                  {heroConfig.ctaPrimary}
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-white text-white hover:bg-white/10"
-                >
-                  {heroConfig.ctaSecondary}
-                </Button>
+
+              <div className="flex flex-wrap items-center justify-center gap-4">
+                {primaryHref ? (
+                  <Link
+                    href={primaryHref}
+                    className={cn(ctaBase, ctaPrimaryStyles)}
+                  >
+                    {heroConfig.ctaPrimary}
+                    <AppIcon name="arrow-right" size="sm" className="shrink-0" />
+                  </Link>
+                ) : (
+                  <span className={cn(ctaBase, ctaPrimaryStyles)}>
+                    {heroConfig.ctaPrimary}
+                  </span>
+                )}
+                {secondaryHref ? (
+                  <Link
+                    href={secondaryHref}
+                    className={cn(ctaBase, ctaSecondaryStyles)}
+                  >
+                    {heroConfig.ctaSecondary}
+                  </Link>
+                ) : (
+                  <span className={cn(ctaBase, ctaSecondaryStyles)}>
+                    {heroConfig.ctaSecondary}
+                  </span>
+                )}
               </div>
             </div>
-            {/* Optional cycling tagline (subtle, below main content or as ticker) */}
+
             {lines.length > 0 && (
-              <p
-                key={slideIndex}
-                className="relative z-10 mt-6 text-center font-heading text-sm font-semibold uppercase tracking-wide text-white/70 md:text-base"
-                style={
-                  reducedMotion
-                    ? undefined
-                    : { animation: "lcd-text-fade 0.6s ease-out" }
-                }
-              >
-                {currentLine}
-              </p>
+              <div className="relative z-10 mt-8 flex flex-col items-center">
+                <div className="h-px w-16 bg-white/30 mb-4" aria-hidden />
+                <p
+                  key={slideIndex}
+                  className="text-center font-heading text-sm font-semibold uppercase tracking-widest text-white/60 md:text-base"
+                  style={
+                    reducedMotion
+                      ? undefined
+                      : { animation: "lcd-text-fade 0.6s ease-out" }
+                  }
+                >
+                  {currentLine}
+                </p>
+              </div>
             )}
           </div>
         </div>
-        {/* Optional stand */}
-        <div className="mx-auto mt-2 h-3 w-24 rounded-b bg-neutral-700 md:mt-3 md:h-4 md:w-32" />
+        <div className="mx-auto mt-3 h-2 w-20 rounded-b-full bg-white/10 md:mt-4 md:h-2.5 md:w-28" />
       </div>
     </div>
   );

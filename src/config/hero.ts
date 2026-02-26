@@ -7,12 +7,15 @@ export const heroConfig = {
   /** Large decorative background headline (Img2 style) */
   backgroundHeadline: "SITES THAT MOVE",
 
-  /** Primary foreground copy */
+  /** Primary foreground copy; optional word to highlight in primary color */
   heading: "Beautiful Web Solutions for Modern Business",
+  headingHighlight: "Beautiful",
   subtext:
-    "We build fast, scalable, and beautiful web applications that drive growth",
+    "We build fast, scalable, and beautiful web applications that drive growth.",
   ctaPrimary: "Get Started",
+  ctaPrimaryHref: "/contact",
   ctaSecondary: "Learn More",
+  ctaSecondaryHref: "/about",
 
   /** LCD screen: rotating text lines (cycle through these) */
   lcdTextLines: [
