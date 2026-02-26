@@ -1,33 +1,127 @@
-import { projects } from "@/data/projects";
-import Link from "next/link";
-import { Container } from "@/components/common/Container";
-import { Card } from "@/components/ui/shared/Card";
-import { Badge } from "@/components/ui/shared/Badge";
+"use client";
 
-export function ProjectsGridSection() {
+import Link from "next/link";
+import Image from "next/image";
+import { Container } from "@/components/common/Container";
+import { SectionHeader } from "@/components/common/SectionHeader";
+import { Card } from "@/components/ui/shared/Card";
+import { AppIcon } from "@/components/ui/shared/AppIcon";
+import { Reveal } from "@/components/animations/Reveal";
+import { cn } from "@/components/theme/cn";
+import { projectsPageConfig } from "@/config/projectsPage";
+import type { Project } from "@/types/project";
+
+const HEADING_ID = "projects-grid-heading";
+
+interface ProjectsGridSectionProps {
+  projects: Project[];
+}
+
+export function ProjectsGridSection({ projects }: ProjectsGridSectionProps) {
+  const { grid } = projectsPageConfig;
+
   return (
-    <section className="py-16">
-      <Container>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project) => (
-            <Link key={project.id} href={`/projects/${project.slug}`}>
-              <Card className="overflow-hidden h-full hover:shadow-lg cursor-pointer">
-                <div className="h-48 bg-primary/80"></div>
-                <div className="p-6">
-                  <h3 className="font-bold text-lg mb-2">{project.title}</h3>
-                  <p className="text-foreground-muted text-sm mb-4">{project.shortDescription}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {project.tags.map((tag, i) => (
-                      <Badge key={i} variant="secondary" size="sm">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </Card>
-            </Link>
-          ))}
-        </div>
+    <section
+      className={cn(
+        "relative py-20 md:py-28 overflow-hidden",
+        "bg-surface-muted border-y border-border"
+      )}
+      aria-labelledby={HEADING_ID}
+    >
+      {/* Soft gradient orbs for depth */}
+      <div
+        className="pointer-events-none absolute top-0 right-0 w-[520px] h-[360px] rounded-full bg-primary/[0.05] blur-3xl -translate-y-1/2"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute bottom-0 left-0 w-[420px] h-[300px] rounded-full bg-primary/[0.04] blur-3xl translate-y-1/2"
+        aria-hidden
+      />
+
+      <Container className="relative">
+        <Reveal staggerSelector="[data-reveal]">
+          <div data-reveal className="mb-14 md:mb-16">
+            <SectionHeader
+              subtitle={grid.subtitle}
+              subtitleClassName="text-primary font-semibold tracking-widest"
+              subtitlePill
+              title={grid.title}
+              titleHighlight={grid.titleHighlight}
+              description={grid.description}
+              headingId={HEADING_ID}
+            />
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+            {projects.map((project) => (
+              <div key={project.id} data-reveal>
+                <Link
+                  href={`/projects/${project.slug}`}
+                  className={cn(
+                    "group block h-full rounded-2xl overflow-hidden",
+                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-muted"
+                  )}
+                  aria-label={`View project: ${project.title}`}
+                >
+                  <Card
+                    className={cn(
+                      "relative h-full flex flex-col rounded-2xl overflow-hidden",
+                      "border-t-4 border-t-primary",
+                      "shadow-lg shadow-black/5 hover:shadow-xl hover:shadow-primary/10",
+                      "transition-all duration-300 hover:-translate-y-1",
+                      "focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-surface-muted focus-within:outline-none"
+                    )}
+                  >
+                    {/* Subtle corner gradient on hover */}
+                    <div
+                      className="pointer-events-none absolute top-0 right-0 z-10 w-32 h-32 bg-gradient-to-bl from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      aria-hidden
+                    />
+                    {/* Image or placeholder — aspect 16/10 */}
+                    <div className="relative w-full aspect-[16/10] overflow-hidden bg-muted">
+                      {project.image ? (
+                        <Image
+                          src={project.image}
+                          alt=""
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div
+                          className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5"
+                          aria-hidden
+                        />
+                      )}
+                    </div>
+                    <div className="relative p-6 md:p-7 flex flex-col flex-1">
+                      <h2 className="text-2xl md:text-3xl font-heading font-bold tracking-tight text-foreground mb-3">
+                        {project.title}
+                      </h2>
+                      <p className="text-foreground-muted mb-4 flex-1 leading-relaxed">
+                        {project.shortDescription}
+                      </p>
+                      <div className="flex flex-wrap gap-2 mb-5">
+                        {project.tags.map((tag, i) => (
+                          <span
+                            key={i}
+                            className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:underline">
+                        {grid.viewProjectLabel}
+                        <AppIcon name="arrow-right" size="sm" className="shrink-0 transition-transform duration-300 group-hover:translate-x-0.5" />
+                      </span>
+                    </div>
+                  </Card>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </Reveal>
       </Container>
     </section>
   );
