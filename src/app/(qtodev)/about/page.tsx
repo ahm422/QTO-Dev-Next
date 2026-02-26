@@ -1,27 +1,27 @@
 import { AboutHeroSection } from "./sections/AboutHeroSection";
 import { CompanySnapshotSection } from "./sections/CompanySnapshotSection";
-import { MissionSection } from "./sections/MissionSection";
+import { MissionVisionSection } from "./sections/MissionVisionSection";
 import { ValuesSection } from "./sections/ValuesSection";
-import { VisionSection } from "./sections/VisionSection";
 import { WhatWeDoSection } from "./sections/WhatWeDoSection";
 import { TrustSection } from "./sections/TrustSection";
 import { CTA } from "@/components/common/CTA";
+import { aboutPageConfig } from "@/config/aboutPage";
 
 export default function AboutPage() {
+  const { cta } = aboutPageConfig;
   return (
     <>
       <AboutHeroSection />
       <CompanySnapshotSection />
-      <MissionSection />
+      <MissionVisionSection />
       <ValuesSection />
-      <VisionSection />
       <WhatWeDoSection />
       <TrustSection />
       <CTA
-        title="Let's Work Together"
-        description="Ready to partner with a team that cares about your success?"
-        primaryButtonText="Schedule a Call"
-        primaryButtonHref="/contact"
+        title={cta.title}
+        description={cta.description}
+        primaryButtonText={cta.primaryButtonText}
+        primaryButtonHref={cta.primaryButtonHref}
       />
     </>
   );
