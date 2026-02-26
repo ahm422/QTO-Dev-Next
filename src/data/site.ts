@@ -36,6 +36,7 @@ export const footerSections: FooterSection[] = [
       { label: "FAQs", href: "#faqs" },
       { label: "Insights", href: "#insights" },
       { label: "Let's Partner Up", href: "#partner-up" },
+      { label: "Let's Build Something Real", href: "#build-something-real" },
       { label: "Support", href: "#support" },
     ],
   },

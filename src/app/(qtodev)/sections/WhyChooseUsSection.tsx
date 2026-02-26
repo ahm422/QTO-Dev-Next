@@ -45,7 +45,7 @@ export function WhyChooseUsSection() {
 
   return (
     <section
-      className="py-16 md:py-20 bg-[#FDF8ED]"
+      className="py-16 md:py-20 bg-[#FDF8ED] dark:bg-[#0f0f0f]"
       aria-labelledby={HEADING_ID}
     >
       <Container>
@@ -60,7 +60,7 @@ export function WhyChooseUsSection() {
             </Text>
             <Link
               href={whyChooseUsConfig.ctaHref}
-              className="inline-flex items-center gap-2 w-fit font-semibold bg-primary text-primary-foreground px-5 py-2.5 rounded-lg shadow-sm hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              className="inline-flex items-center gap-2 w-fit font-semibold bg-primary text-primary-foreground px-5 py-2.5 rounded-lg shadow-sm hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#FDF8ED] dark:focus-visible:ring-offset-[#0f0f0f]"
             >
               {whyChooseUsConfig.ctaLabel}
               <svg
@@ -87,7 +87,7 @@ export function WhyChooseUsSection() {
             aria-roledescription="carousel"
             aria-label="Why choose us benefits"
             tabIndex={0}
-            className="rounded-2xl bg-primary text-white p-6 sm:p-8 shadow-lg min-h-[240px] flex flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#FDF8ED]"
+            className="rounded-2xl bg-primary text-white p-6 sm:p-8 shadow-lg min-h-[240px] flex flex-col border border-black/10 dark:border-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#FDF8ED] dark:focus-visible:ring-offset-[#0f0f0f]"
           >
             <span
               className="text-white/80 text-xs font-medium uppercase tracking-wider mb-3 block"

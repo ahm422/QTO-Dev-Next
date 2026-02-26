@@ -2,7 +2,6 @@ import { HeroSection } from "./sections/HeroSection";
 import { AwardsCertificationsSection } from "./sections/AwardsCertificationsSection";
 import { AboutCompanySection } from "./sections/AboutCompanySection";
 import { OurServicesSection } from "./sections/OurServicesSection";
-import { SuccessStoriesSection } from "./sections/SuccessStoriesSection";
 import { HowWeWorkSection } from "./sections/HowWeWorkSection";
 import { PortfolioSection } from "./sections/PortfolioSection";
 import { FeaturedWorkSection } from "./sections/FeaturedWorkSection";
@@ -11,11 +10,10 @@ import { EngagementModelsSection } from "./sections/EngagementModelsSection";
 import { FAQsSection } from "./sections/FAQsSection";
 import { InsightsSection } from "./sections/InsightsSection";
 import { PartnerUpSection } from "./sections/PartnerUpSection";
+import { BuildSomethingRealSection } from "./sections/BuildSomethingRealSection";
 import { StatsNumbersSection } from "./sections/StatsNumbersSection";
 import { TestimonialsSection } from "./sections/TestimonialsSection";
 import { IndustriesSection } from "./sections/IndustriesSection";
-import { HighlightsSection } from "./sections/HighlightsSection";
-import { CTASection } from "./sections/CTASection";
 
 export default function HomePage() {
   return (
@@ -35,9 +33,7 @@ export default function HomePage() {
       <FAQsSection />
       <InsightsSection />
       <PartnerUpSection />
-      <SuccessStoriesSection />
-      <HighlightsSection />
-      <CTASection />
+      <BuildSomethingRealSection />
     </>
   );
 }
