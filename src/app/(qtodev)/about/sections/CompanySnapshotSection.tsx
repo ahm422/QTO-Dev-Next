@@ -1,36 +1,79 @@
+"use client";
+
 import { aboutData } from "@/data/about";
 import { Container } from "@/components/common/Container";
+import { SectionHeader } from "@/components/common/SectionHeader";
 import { Card } from "@/components/ui/shared/Card";
+import { Reveal } from "@/components/animations/Reveal";
+import { aboutPageConfig } from "@/config/aboutPage";
+
+const HEADING_ID = "about-company-snapshot-heading";
+
+const STATS = [
+  { label: "Founded", value: aboutData.company.founded },
+  { label: "Team Members", value: aboutData.company.team },
+  { label: "Happy Clients", value: aboutData.company.clients },
+  { label: "Projects Delivered", value: aboutData.company.projects },
+] as const;
 
 export function CompanySnapshotSection() {
+  const { companySnapshot } = aboutPageConfig;
+
   return (
-    <section className="py-16 bg-surface">
-      <Container>
-        <h2 className="text-3xl font-bold text-center mb-12">Our Story</h2>
+    <section
+      className="relative py-20 md:py-28 overflow-hidden bg-surface-muted border-y border-border"
+      aria-labelledby={HEADING_ID}
+    >
+      {/* Soft gradient orbs for depth */}
+      <div
+        className="pointer-events-none absolute top-0 right-0 w-[520px] h-[360px] rounded-full bg-primary/[0.05] blur-3xl -translate-y-1/2"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute bottom-0 left-0 w-[420px] h-[300px] rounded-full bg-primary/[0.04] blur-3xl translate-y-1/2"
+        aria-hidden
+      />
 
-        <div className="grid md:grid-cols-4 gap-6 mb-12">
-          {[
-            { label: "Founded", value: aboutData.company.founded },
-            { label: "Team Members", value: aboutData.company.team },
-            { label: "Happy Clients", value: aboutData.company.clients },
-            { label: "Projects Delivered", value: aboutData.company.projects },
-          ].map((stat, i) => (
-            <Card key={i} className="p-6 text-center">
-              <div className="text-3xl font-bold text-primary mb-2">
-                {stat.value}
+      <Container className="relative">
+        <Reveal staggerSelector="[data-reveal]">
+          <div data-reveal className="mb-14 md:mb-16">
+            <SectionHeader
+              subtitle={companySnapshot.subtitle}
+              subtitleClassName="text-primary font-semibold tracking-widest"
+              subtitlePill
+              title={companySnapshot.title}
+              titleHighlight={companySnapshot.titleHighlight}
+              description={companySnapshot.description}
+              headingId={HEADING_ID}
+            />
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-8 lg:gap-10 mb-12">
+            {STATS.map((stat, i) => (
+              <div key={stat.label} data-reveal>
+                <Card className="p-6 md:p-7 text-center rounded-2xl border border-border bg-surface shadow-sm hover:shadow-md transition-shadow duration-300 h-full flex flex-col justify-center">
+                  <div className="text-3xl md:text-4xl font-bold text-primary mb-2 font-heading">
+                    {stat.value}
+                  </div>
+                  <p className="text-foreground-muted text-sm md:text-base">
+                    {stat.label}
+                  </p>
+                </Card>
               </div>
-              <p className="text-foreground-muted">{stat.label}</p>
-            </Card>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <Card className="p-8 bg-surface-muted">
-          <p className="text-lg text-foreground-muted leading-relaxed">
-            Since {aboutData.company.founded}, QTO Development has been at the forefront of
-            digital transformation. We've worked with startups to enterprises, delivering
-            innovative solutions that solve real business challenges.
-          </p>
-        </Card>
+          <div data-reveal>
+            <Card className="p-8 md:p-9 rounded-2xl bg-surface border border-border shadow-sm">
+              <p className="text-lg text-foreground-muted leading-relaxed">
+                Since {aboutData.company.founded}, {aboutData.company.name} has
+                been at the forefront of digital transformation. We&apos;ve worked
+                with startups to enterprises, delivering innovative solutions
+                that solve real business challenges.
+              </p>
+            </Card>
+          </div>
+        </Reveal>
       </Container>
     </section>
   );
