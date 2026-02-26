@@ -1,7 +1,11 @@
+"use client";
+
 import { Container } from "@/components/common/Container";
-import { Card } from "@/components/ui/shared/Card";
+import { SectionHeader } from "@/components/common/SectionHeader";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import type { AppIconName } from "@/components/ui/shared/AppIcon";
+import { Reveal } from "@/components/animations/Reveal";
+import { cn } from "@/components/theme/cn";
 import type { WorkProcessStep } from "@/types/service";
 
 const SECTION_HEADING_ID = "how-we-work-heading";
@@ -54,60 +58,88 @@ const howWeWorkSteps: WorkProcessStep[] = [
 export function HowWeWorkSection() {
   return (
     <section
-      className="bg-[#0b1120] py-16 md:py-20"
+      className={cn(
+        "relative overflow-hidden bg-black py-20 md:py-28",
+        "border-y border-white/5"
+      )}
       aria-labelledby={SECTION_HEADING_ID}
     >
-      <Container>
-        <div className="text-center">
-          <span className="mb-3 block text-xs font-semibold uppercase tracking-[0.2em] text-cta-gold">
-            How We Work
-          </span>
-          <h2
-            id={SECTION_HEADING_ID}
-            className="font-heading text-3xl font-bold leading-tight text-white md:text-4xl"
-          >
-            Our Custom Software Development Process
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-300 md:text-base">
-            A clear, six-step delivery framework—from first workshop to long-term support—designed
-            to reduce risk and keep you confident at every stage.
-          </p>
-        </div>
+      {/* Subtle gradient and glow for depth */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        aria-hidden
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(244,139,34,0.06) 0%, transparent 50%), radial-gradient(ellipse 60% 40% at 20% 100%, rgba(244,139,34,0.04) 0%, transparent 50%)",
+        }}
+      />
 
-        <div className="mt-10 grid gap-6 md:mt-12 md:gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {howWeWorkSteps.map((step) => {
-            const stepNumber = String(step.order).padStart(2, "0");
-            return (
-              <Card
-                key={step.title}
-                className="flex h-full flex-col justify-between border-border/40 bg-surface/5 p-6 text-left"
-              >
-                <div>
-                  <div className="mb-4 flex items-center justify-between">
-                    <span className="inline-flex items-center justify-center rounded-lg bg-cta-gold/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-cta-gold">
-                      Step {stepNumber}
-                    </span>
-                    {step.icon && (
-                      <AppIcon
-                        name={step.icon as AppIconName}
-                        size="base"
-                        className="text-cta-gold"
-                      />
-                    )}
+      <Container className="relative">
+        <Reveal staggerSelector="[data-reveal]">
+          <div data-reveal className="mb-14 md:mb-16 text-white">
+            <SectionHeader
+              subtitle="HOW WE WORK"
+              subtitleClassName="text-primary font-semibold tracking-[0.2em]"
+              subtitlePill
+              title="Our Custom Software Development Process"
+              titleHighlight="Process"
+              headingId={SECTION_HEADING_ID}
+              centered
+            />
+            <p className="mx-auto mt-4 max-w-2xl text-center text-base leading-relaxed text-white/80 md:text-lg">
+              A clear, six-step delivery framework—from first workshop to long-term support—designed
+              to reduce risk and keep you confident at every stage.
+            </p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            {howWeWorkSteps.map((step) => {
+              const stepNumber = String(step.order).padStart(2, "0");
+              return (
+                <div
+                  key={step.title}
+                  data-reveal
+                  className={cn(
+                    "group relative flex flex-col rounded-2xl border border-white/10 bg-white/[0.06] p-6 md:p-8",
+                    "transition-all duration-300 hover:border-primary/30 hover:bg-white/[0.08] hover:shadow-xl hover:shadow-primary/5"
+                  )}
+                >
+                  {/* Step number: large, subtle, top-right */}
+                  <span
+                    className="absolute right-5 top-5 font-heading text-4xl font-bold tabular-nums text-white/5 md:text-5xl"
+                    aria-hidden
+                  >
+                    {stepNumber}
+                  </span>
+
+                  <div className="relative flex flex-1 flex-col">
+                    <div className="mb-4 flex items-start justify-between gap-4">
+                      <span className="inline-flex items-center rounded-lg bg-primary/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
+                        Step {stepNumber}
+                      </span>
+                      {step.icon && (
+                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
+                          <AppIcon
+                            name={step.icon as AppIconName}
+                            size="lg"
+                            className="shrink-0"
+                          />
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="font-heading text-lg font-semibold text-white md:text-xl">
+                      {step.title}
+                    </h3>
+                    <p className="mt-3 flex-1 text-sm leading-relaxed text-white/80 md:text-base">
+                      {step.description}
+                    </p>
                   </div>
-                  <h3 className="text-base font-semibold text-white md:text-lg">
-                    {step.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-300 md:text-base">
-                    {step.description}
-                  </p>
                 </div>
-              </Card>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </Reveal>
       </Container>
     </section>
   );
 }
-

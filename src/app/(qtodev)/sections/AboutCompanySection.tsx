@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/common/Container";
@@ -8,6 +10,7 @@ import { aboutData } from "@/data/about";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import type { AppIconName } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
+import { Reveal } from "@/components/animations/Reveal";
 
 /** Format stat value for display (e.g. 20500 → "20.5 k", 200 → "200") */
 function formatStat(value: number): string {
@@ -17,8 +20,10 @@ function formatStat(value: number): string {
   return String(value);
 }
 
-const IMAGE_ALT_OFFICE = "Office collaboration scene";
-const IMAGE_ALT_MEETING = "Team meeting or workshop";
+const IMAGE_OFFICE = "/images/career.jpg";
+const IMAGE_MEETING = "/images/businessperformance.jpg";
+const IMAGE_ALT_OFFICE = "Office and career at our company";
+const IMAGE_ALT_MEETING = "Business performance and teamwork";
 
 export function AboutCompanySection() {
   const { subtitle, title, description, tags, exploreMoreLabel, exploreMoreHref, statLabels } =
@@ -29,69 +34,76 @@ export function AboutCompanySection() {
   return (
     <section
       className={cn(
-        "relative py-16 md:py-20 bg-primary border-t border-b border-primary-foreground/10 overflow-hidden"
+        "relative py-20 md:py-28 overflow-hidden",
+        "bg-gradient-to-br from-primary via-primary to-[#c96f1a]",
+        "border-t border-b border-primary-foreground/10"
       )}
       aria-labelledby="about-company-heading"
     >
-      {/* Optional decorative wavy corners */}
+      {/* Soft gradient orbs for depth */}
       <div
-        className="pointer-events-none absolute top-0 left-0 w-32 h-32 opacity-20"
+        className="pointer-events-none absolute -top-24 -left-24 w-96 h-96 rounded-full bg-white/10 blur-3xl"
         aria-hidden
-      >
-        <svg viewBox="0 0 100 100" className="w-full h-full text-primary-foreground/30">
-          <path
-            fill="currentColor"
-            d="M0 50 Q25 20 50 50 T100 50 V0 H0 Z"
-          />
-        </svg>
-      </div>
+      />
       <div
-        className="pointer-events-none absolute bottom-0 right-0 w-40 h-40 opacity-20"
+        className="pointer-events-none absolute bottom-0 right-0 w-80 h-80 rounded-full bg-black/15 blur-3xl"
         aria-hidden
-      >
-        <svg viewBox="0 0 100 100" className="w-full h-full text-primary-foreground/30">
-          <path
-            fill="currentColor"
-            d="M100 50 Q75 80 50 50 T0 50 V100 H100 Z"
-          />
-        </svg>
-      </div>
+      />
+      {/* Subtle grid pattern */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.06]"
+        aria-hidden
+        style={{
+          backgroundImage: `linear-gradient(to right, currentColor 1px, transparent 1px),
+            linear-gradient(to bottom, currentColor 1px, transparent 1px)`,
+          backgroundSize: "48px 48px",
+        }}
+      />
 
       <Container className="relative">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+        <Reveal staggerSelector="[data-reveal]">
+          <div
+            data-reveal
+            className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center"
+          >
           {/* Left column: imagery + CTA — order second on mobile so content appears first */}
           <div className="relative order-2 lg:order-1 flex justify-center lg:justify-start">
-            <div className="relative w-full max-w-md aspect-[4/3]">
-              {/* Larger card (background) */}
-              <div className="absolute inset-0 rounded-2xl overflow-hidden shadow-lg bg-surface-muted">
+            <div className="relative w-full max-w-[420px] lg:max-w-[480px] aspect-[4/3]">
+              {/* Larger card (background) — elevated with shadow */}
+              <div className="absolute inset-0 rounded-2xl overflow-hidden bg-surface-muted shadow-xl ring-1 ring-black/10 ring-inset">
                 <Image
-                  src="/images/about-company/office-collab.svg"
+                  src={IMAGE_OFFICE}
                   alt={IMAGE_ALT_OFFICE}
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
-                  unoptimized
+                />
+                {/* Subtle gradient overlay so CTA and card edges read well */}
+                <div
+                  className="absolute inset-0 pointer-events-none rounded-2xl"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(0,0,0,0.03) 0%, transparent 50%, rgba(0,0,0,0.08) 100%)",
+                  }}
                 />
               </div>
-              {/* Smaller overlapping card (bottom-right) */}
-              <div className="absolute -right-4 -bottom-4 w-[60%] aspect-[4/3] rounded-2xl overflow-hidden shadow-lg border-2 border-primary bg-surface-muted z-10">
+              {/* Smaller overlapping card (bottom-right) — framed */}
+              <div className="absolute -right-2 -bottom-2 md:-right-4 md:-bottom-4 w-[58%] aspect-[4/3] rounded-2xl overflow-hidden bg-surface-muted z-10 shadow-2xl ring-2 ring-white/90 ring-offset-2 ring-offset-primary">
                 <Image
-                  src="/images/about-company/meeting-workshop.svg"
+                  src={IMAGE_MEETING}
                   alt={IMAGE_ALT_MEETING}
                   fill
                   sizes="(max-width: 1024px) 60vw, 30vw"
                   className="object-cover"
-                  unoptimized
                 />
               </div>
               {/* Circular Explore More CTA (top-right of larger card) */}
               <Link
                 href={exploreMoreHref}
                 className={cn(
-                  "absolute top-4 right-4 z-20 w-16 h-16 rounded-full bg-black text-white",
+                  "absolute top-4 right-4 z-20 w-16 h-16 rounded-full bg-black text-white shadow-lg",
                   "flex items-center justify-center",
                   "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary",
-                  "hover:opacity-90 transition-opacity"
+                  "hover:scale-105 hover:shadow-xl transition-all duration-200"
                 )}
                 aria-label="Explore more"
               >
@@ -174,7 +186,8 @@ export function AboutCompanySection() {
               ))}
             </div>
           </div>
-        </div>
+          </div>
+        </Reveal>
       </Container>
     </section>
   );

@@ -109,3 +109,41 @@ h6 {
 .collaborations-marquee-track {
   animation: collaborations-marquee var(--marquee-duration, 40s) linear infinite;
 }
+
+/* Industries: continuous horizontal scroll (duplicate strip, -50% translate) */
+.industries-marquee-track {
+  animation: collaborations-marquee var(--industries-marquee-duration, 50s) linear infinite;
+}
+
+/* Reusable scroll-reveal / section entrance (use with animation utilities; respect reduced motion in JS) */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Subtle primary glow for CTAs or hero frame */
+@keyframes glow-primary {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(244, 139, 34, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px 2px rgba(244, 139, 34, 0.25);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collaborations-marquee-track,
+  .industries-marquee-track,
+  .animate-fade-in-up,
+  .animate-glow-primary {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

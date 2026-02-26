@@ -10,6 +10,7 @@ import { partnerUpConfig } from "@/config/partnerUp";
 import { testimonialsItems } from "@/data/testimonials";
 import { cn } from "@/components/theme/cn";
 import type { TestimonialItem } from "@/types/testimonials";
+import { Reveal } from "@/components/animations/Reveal";
 
 const HEADING_ID = "partner-up-heading";
 
@@ -22,7 +23,7 @@ function goNext(index: number, total: number) {
 }
 
 const cardClass =
-  "rounded-xl shadow-sm bg-background border border-border p-6 md:p-8";
+  "rounded-2xl shadow-md bg-background/95 border border-border p-6 sm:p-8 md:p-8";
 
 export function PartnerUpSection() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -54,24 +55,43 @@ export function PartnerUpSection() {
   return (
     <section
       id="partner-up"
-      className="py-16 md:py-20 bg-[#FBF6EA] dark:bg-[#1a1914]"
+      className={cn(
+        "relative py-20 md:py-28 overflow-hidden",
+        "bg-gradient-to-b from-surface via-surface-muted/50 to-surface",
+        "border-y border-border/80"
+      )}
       aria-labelledby={HEADING_ID}
     >
-      <Container>
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
-          {/* Left column: header, testimonial card, contact block */}
-          <div className="flex flex-col gap-6">
-            <SectionHeader
-              subtitle={partnerUpConfig.subtitle}
-              subtitleClassName="text-primary"
-              title={partnerUpConfig.title}
-              titleHighlight={partnerUpConfig.titleHighlight}
-              headingId={HEADING_ID}
-              centered={false}
-            />
+      {/* Soft gradient orbs */}
+      <div
+        className="pointer-events-none absolute top-1/4 -left-40 w-80 h-80 rounded-full bg-primary/[0.06] blur-3xl"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute bottom-1/4 -right-40 w-96 h-96 rounded-full bg-primary/[0.05] blur-3xl"
+        aria-hidden
+      />
+
+      <Container className="relative">
+        <Reveal staggerSelector="[data-reveal]">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
+            {/* Left column: header, testimonial card, contact block */}
+            <div className="flex flex-col gap-8" data-reveal>
+              <SectionHeader
+                subtitle={partnerUpConfig.subtitle}
+                subtitleClassName="text-primary font-semibold"
+                subtitlePill
+                title={partnerUpConfig.title}
+                titleHighlight={partnerUpConfig.titleHighlight}
+                headingId={HEADING_ID}
+                centered={false}
+              />
 
             {items.length > 0 && (
-              <div className={cardClass}>
+              <div className={cn(
+                cardClass,
+                "rounded-2xl shadow-lg shadow-black/5 border-primary/10 hover:border-primary/20 transition-colors"
+              )}>
                 <div
                   role="region"
                   aria-roledescription="carousel"
@@ -79,10 +99,10 @@ export function PartnerUpSection() {
                 >
                   <div className="flex items-start gap-4 mb-6">
                     <div
-                      className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0"
+                      className="w-14 h-14 rounded-2xl bg-primary/15 border border-primary/20 flex items-center justify-center shrink-0"
                       aria-hidden
                     >
-                      <span className="text-primary font-semibold text-lg">
+                      <span className="text-primary font-bold text-xl">
                         {activeItem?.authorName?.charAt(0) ?? "?"}
                       </span>
                     </div>
@@ -96,7 +116,7 @@ export function PartnerUpSection() {
                     </div>
                   </div>
                   <blockquote
-                    className="text-foreground text-base leading-relaxed mb-6"
+                    className="text-foreground text-base sm:text-lg leading-relaxed mb-6 font-medium"
                     aria-live="polite"
                     aria-atomic="true"
                   >
@@ -112,7 +132,7 @@ export function PartnerUpSection() {
                       <button
                         type="button"
                         onClick={handlePrev}
-                        className="p-2 rounded-full bg-surface-muted text-foreground-muted hover:text-foreground hover:bg-border focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                        className="p-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-colors"
                         aria-label="Previous testimonial"
                       >
                         <svg
@@ -137,9 +157,9 @@ export function PartnerUpSection() {
                             type="button"
                             onClick={() => setActiveIndex(i)}
                             className={cn(
-                              "w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+                              "w-3 h-3 rounded-full transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                               i === activeIndex
-                                ? "bg-primary"
+                                ? "bg-primary scale-110"
                                 : "bg-foreground-muted/40 hover:bg-foreground-muted/60"
                             )}
                             aria-label={`Slide ${i + 1}`}
@@ -150,7 +170,7 @@ export function PartnerUpSection() {
                       <button
                         type="button"
                         onClick={handleNext}
-                        className="p-2 rounded-full bg-surface-muted text-foreground-muted hover:text-foreground hover:bg-border focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                        className="p-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-colors"
                         aria-label="Next testimonial"
                       >
                         <svg
@@ -175,40 +195,49 @@ export function PartnerUpSection() {
             )}
 
             {/* Contact block */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-6 text-foreground-muted text-sm">
-              <div className="flex items-start gap-3">
-                <AppIcon name="location-dot" size="sm" className="text-primary mt-0.5 shrink-0" />
-                <div>
-                  <p className="font-medium text-foreground">
+            <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-6">
+              <div className="flex items-start gap-4 rounded-xl border border-border/80 bg-background/80 p-4 sm:p-5 shadow-sm w-full sm:w-auto sm:min-w-[200px]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <AppIcon name="location-dot" size="sm" />
+                </div>
+                <div className="text-sm text-foreground-muted min-w-0">
+                  <p className="font-semibold text-foreground">
                     {partnerUpConfig.locationLine1}
                   </p>
                   <p>{partnerUpConfig.locationLine2}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <AppIcon name="phone" size="sm" className="text-primary shrink-0" />
+              <div className="flex items-center gap-4 rounded-xl border border-border/80 bg-background/80 p-4 sm:p-5 shadow-sm w-full sm:w-auto sm:min-w-[200px]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <AppIcon name="phone" size="sm" />
+                </div>
                 <a
                   href={`tel:${partnerUpConfig.phone.replace(/\s/g, "")}`}
-                  className="font-medium text-foreground hover:text-primary transition-colors"
+                  className="font-semibold text-foreground hover:text-primary transition-colors text-sm"
                 >
                   {partnerUpConfig.phone}
                 </a>
               </div>
-              <div className="flex items-center gap-3">
-                <AppIcon name="envelope" size="sm" className="text-primary shrink-0" />
+              <div className="flex items-center gap-4 rounded-xl border border-border/80 bg-background/80 p-4 sm:p-5 shadow-sm w-full sm:w-auto sm:min-w-[200px]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <AppIcon name="envelope" size="sm" />
+                </div>
                 <a
                   href={`mailto:${partnerUpConfig.email}`}
-                  className="font-medium text-foreground hover:text-primary transition-colors"
+                  className="font-semibold text-foreground hover:text-primary transition-colors text-sm break-all"
                 >
                   {partnerUpConfig.email}
                 </a>
               </div>
             </div>
-          </div>
+            </div>
 
-          {/* Right column: form card */}
-          <PartnerUpForm />
-        </div>
+            {/* Right column: form card */}
+            <div data-reveal>
+              <PartnerUpForm />
+            </div>
+          </div>
+        </Reveal>
       </Container>
     </section>
   );
@@ -275,28 +304,37 @@ function PartnerUpForm() {
   };
 
   return (
-    <div className={cardClass}>
-      <span className="text-sm uppercase tracking-wide text-primary font-medium block mb-4">
+    <div className={cn(
+      cardClass,
+      "relative overflow-hidden rounded-2xl border-primary/10 shadow-lg shadow-black/5",
+      "ring-1 ring-black/[0.03] dark:ring-white/[0.04]"
+    )}>
+      <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl bg-primary/30" aria-hidden />
+      <span className="text-xs sm:text-sm uppercase tracking-wider text-primary font-semibold block mb-4">
         {partnerUpConfig.introLine}
       </span>
-      <ul className="space-y-2 mb-6" role="list">
-        <li className="flex items-center gap-2 text-foreground text-sm">
-          <AppIcon name="check" size="sm" className="text-primary shrink-0" />
+      <ul className="space-y-3 mb-6" role="list">
+        <li className="flex items-center gap-3 text-foreground text-sm">
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-success/15 text-success">
+            <AppIcon name="check" size="sm" />
+          </span>
           {partnerUpConfig.bullet1}
         </li>
-        <li className="flex items-center gap-2 text-foreground text-sm">
-          <AppIcon name="check" size="sm" className="text-primary shrink-0" />
+        <li className="flex items-center gap-3 text-foreground text-sm">
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-success/15 text-success">
+            <AppIcon name="check" size="sm" />
+          </span>
           {partnerUpConfig.bullet2}
         </li>
       </ul>
 
-      <h3 className="text-lg font-semibold text-foreground mb-6">
+      <h3 className="font-heading text-xl font-semibold text-foreground mb-6">
         {partnerUpConfig.formTitle}
       </h3>
 
       {submitted ? (
-        <div className="bg-success/15 border border-success rounded-lg p-6 text-center">
-          <p className="text-success font-semibold">
+        <div className="rounded-2xl bg-success/15 border border-success/40 p-8 text-center shadow-inner">
+          <p className="text-success font-semibold text-lg">
             Thank you for reaching out! We&apos;ll get back to you soon.
           </p>
         </div>
@@ -343,7 +381,7 @@ function PartnerUpForm() {
               placeholder={partnerUpConfig.messagePlaceholder}
               rows={5}
               required
-              className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow"
             />
           </div>
 

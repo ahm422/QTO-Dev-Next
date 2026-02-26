@@ -28,30 +28,37 @@ export function HeadlinePostItem({ post, titleMaxLength = 50 }: HeadlinePostItem
       <Link
         href={`/blogs/${post.slug}`}
         className={cn(
-          "flex items-center gap-3 p-3 rounded-lg border border-border bg-background",
-          "hover:bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
-          "transition-colors"
+          "relative flex items-center gap-4 p-4 rounded-xl border bg-background",
+          "border-border hover:border-primary/25 hover:bg-primary/[0.04]",
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+          "transition-all duration-200",
+          "group"
         )}
       >
+        {/* Left accent on hover */}
         <span
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface-muted text-primary"
+          className={cn(
+            "absolute left-0 top-0 bottom-0 w-1 rounded-l-xl bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          )}
+          aria-hidden
+        />
+        <span
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 text-primary group-hover:bg-primary/15 group-hover:border-primary/30 transition-colors"
           aria-hidden
         >
           <AppIcon name={iconName} size="sm" />
         </span>
         <div className="min-w-0 flex-1">
-          <span className="text-xs text-foreground-muted uppercase tracking-wide">
-            {post.category}
-          </span>
-          <span className="text-xs text-foreground-muted mx-2">·</span>
-          <span className="text-xs text-foreground-muted">
-            {formatDateShort(post.publishedAt)}
-          </span>
-          <p className="text-sm font-medium text-foreground mt-0.5 truncate">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-foreground-muted">
+            <span className="uppercase tracking-wide font-medium">{post.category}</span>
+            <span>·</span>
+            <span>{formatDateShort(post.publishedAt)}</span>
+          </div>
+          <p className="text-sm font-semibold text-foreground mt-1 truncate group-hover:text-primary transition-colors">
             {truncateText(post.title, titleMaxLength)}
           </p>
         </div>
-        <AppIcon name="arrow-right" size="sm" className="shrink-0 text-foreground-muted" />
+        <AppIcon name="arrow-right" size="sm" className="shrink-0 text-foreground-muted group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
       </Link>
     </li>
   );

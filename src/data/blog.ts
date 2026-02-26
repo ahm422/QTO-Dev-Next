@@ -30,9 +30,9 @@ export const blogPosts: BlogPost[] = [
     featured: true,
     category: "Web Development",
     tags: ["Next.js", "React", "Tutorial"],
-    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=400&fit=crop",
+    image: "/images/career.jpg",
     coverImage: {
-      url: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&h=600&fit=crop",
+      url: "/images/career.jpg",
       alt: "Getting Started with Next.js 14"
     },
     readingTime: 8,
@@ -64,9 +64,9 @@ export const blogPosts: BlogPost[] = [
     featured: true,
     category: "Performance",
     tags: ["Performance", "Optimization", "Web Vitals"],
-    image: "https://images.unsplash.com/photo-1516534775068-bb57e5ab928e?w=800&h=400&fit=crop",
+    image: "/images/businessperformance.jpg",
     coverImage: {
-      url: "https://images.unsplash.com/photo-1516534775068-bb57e5ab928e?w=1200&h=600&fit=crop",
+      url: "/images/businessperformance.jpg",
       alt: "Web Performance Optimization"
     },
     readingTime: 12,
@@ -98,9 +98,9 @@ export const blogPosts: BlogPost[] = [
     featured: false,
     category: "React",
     tags: ["React", "Best Practices", "JavaScript"],
-    image: "https://images.unsplash.com/photo-1633356122544-f134324ef6db?w=800&h=400&fit=crop",
+    image: "/images/leadgeneration.jpg",
     coverImage: {
-      url: "https://images.unsplash.com/photo-1633356122544-f134324ef6db?w=1200&h=600&fit=crop",
+      url: "/images/leadgeneration.jpg",
       alt: "React Best Practices"
     },
     readingTime: 10,
@@ -133,9 +133,9 @@ export const blogPosts: BlogPost[] = [
     featured: false,
     category: "CSS",
     tags: ["Tailwind CSS", "CSS", "Styling"],
-    image: "https://images.unsplash.com/photo-1518611505868-d7380f0ce2e2?w=800&h=400&fit=crop",
+    image: "/images/senior-estimator.jpg",
     coverImage: {
-      url: "https://images.unsplash.com/photo-1518611505868-d7380f0ce2e2?w=1200&h=600&fit=crop",
+      url: "/images/senior-estimator.jpg",
       alt: "Tailwind CSS Guide"
     },
     readingTime: 15,

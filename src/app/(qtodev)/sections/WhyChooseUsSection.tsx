@@ -3,10 +3,12 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Container } from "@/components/common/Container";
-import { Heading } from "@/components/ui/shared/Heading";
-import { Text } from "@/components/ui/shared/Text";
+import { SectionHeader } from "@/components/common/SectionHeader";
 import { whyChooseUsConfig } from "@/config/whyChooseUs";
 import { whyChooseUsItems } from "@/data/whyChooseUs";
+import { AppIcon } from "@/components/ui/shared/AppIcon";
+import { Reveal } from "@/components/animations/Reveal";
+import { cn } from "@/components/theme/cn";
 
 const HEADING_ID = "why-choose-us-heading";
 
@@ -45,119 +47,185 @@ export function WhyChooseUsSection() {
 
   return (
     <section
-      className="py-16 md:py-20 bg-[#FDF8ED]"
+      className={cn(
+        "relative py-20 md:py-28 overflow-hidden",
+        "bg-surface-muted border-y border-border"
+      )}
       aria-labelledby={HEADING_ID}
     >
-      <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          {/* Left column: heading, body, CTA */}
-          <div className="flex flex-col gap-4">
-            <Heading level={2} className="text-foreground" id={HEADING_ID}>
-              {whyChooseUsConfig.heading}
-            </Heading>
-            <Text size="lg" color="muted" className="max-w-xl">
-              {whyChooseUsConfig.body}
-            </Text>
-            <Link
-              href={whyChooseUsConfig.ctaHref}
-              className="inline-flex items-center gap-2 w-fit font-semibold bg-primary text-primary-foreground px-5 py-2.5 rounded-lg shadow-sm hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+      {/* Soft gradient for depth */}
+      <div
+        className="pointer-events-none absolute bottom-0 left-0 w-[400px] h-[300px] rounded-full bg-primary/[0.05] blur-3xl translate-y-1/2"
+        aria-hidden
+      />
+
+      <Container className="relative">
+        <Reveal staggerSelector="[data-reveal]">
+          <div
+            className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16 items-center"
+            data-reveal
+          >
+            {/* Left: heading, body, CTA */}
+            <div className="flex flex-col gap-6" data-reveal>
+              <SectionHeader
+                subtitle="WHY CHOOSE US"
+                subtitleClassName="text-primary font-semibold tracking-widest"
+                subtitlePill
+                title={whyChooseUsConfig.heading}
+                titleHighlight="Choose"
+                description={whyChooseUsConfig.body}
+                headingId={HEADING_ID}
+                centered={false}
+              />
+              <Link
+                href={whyChooseUsConfig.ctaHref}
+                className={cn(
+                  "inline-flex w-fit items-center gap-2 rounded-xl bg-primary px-5 py-3 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/20",
+                  "hover:bg-primary-hover hover:shadow-primary/25 transition-all duration-200",
+                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                )}
+              >
+                {whyChooseUsConfig.ctaLabel}
+                <AppIcon name="arrow-right" size="sm" className="shrink-0" />
+              </Link>
+            </div>
+
+            {/* Right: carousel card */}
+            <div
+              ref={carouselRef}
+              role="region"
+              aria-roledescription="carousel"
+              aria-label="Why choose us benefits"
+              tabIndex={0}
+              data-reveal
+              className={cn(
+                "relative overflow-hidden rounded-2xl h-[360px] sm:h-[380px] md:h-[400px] flex flex-col",
+                "bg-gradient-to-br from-primary via-primary to-primary/90",
+                "border border-primary/30 shadow-2xl shadow-primary/20",
+                "ring-2 ring-white/10 ring-inset",
+                "p-6 sm:p-8 md:p-9",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              )}
             >
-              {whyChooseUsConfig.ctaLabel}
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+              {/* Top accent bar */}
+              <div
+                className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                aria-hidden
+              />
+              {/* Corner glow */}
+              <div
+                className="pointer-events-none absolute -top-20 -right-20 h-40 w-40 rounded-full bg-white/10 blur-3xl"
+                aria-hidden
+              />
+              <div
+                className="pointer-events-none absolute bottom-0 left-0 h-32 w-32 rounded-full bg-black/10 blur-2xl"
+                aria-hidden
+              />
+
+              <span
+                className="relative inline-flex w-fit items-center gap-2 rounded-full border border-white/25 bg-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white shadow-sm"
                 aria-hidden
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 8l4 4m0 0l-4 4m4-4H3"
-                />
-              </svg>
-            </Link>
-          </div>
-
-          {/* Right column: carousel card */}
-          <div
-            ref={carouselRef}
-            role="region"
-            aria-roledescription="carousel"
-            aria-label="Why choose us benefits"
-            tabIndex={0}
-            className="rounded-2xl bg-primary text-white p-6 sm:p-8 shadow-lg min-h-[240px] flex flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#FDF8ED]"
-          >
-            <span
-              className="text-white/80 text-xs font-medium uppercase tracking-wider mb-3 block"
-              aria-hidden
-            >
-              {whyChooseUsConfig.cardLabel}
-            </span>
-            {currentItem && (
-              <>
-                <h3 className="font-heading text-xl sm:text-2xl font-bold text-white mb-2">
-                  {currentItem.title}
-                </h3>
-                <p className="text-white/90 text-sm sm:text-base flex-1">
-                  {currentItem.description}
-                </p>
-              </>
-            )}
-            <div
-              className="flex items-center gap-2 mt-6"
-              role="group"
-              aria-label="Carousel navigation"
-            >
-              <button
-                type="button"
-                onClick={goPrev}
-                className="w-10 h-10 rounded-full bg-black/80 text-white flex items-center justify-center hover:bg-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
-                aria-label="Previous benefit"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={goNext}
-                className="w-10 h-10 rounded-full bg-black/80 text-white flex items-center justify-center hover:bg-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
-                aria-label="Next benefit"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
-              <span className="text-white/70 text-sm tabular-nums ml-2" aria-live="polite">
-                {currentIndex + 1} / {items.length}
+                <span className="h-1.5 w-1.5 rounded-full bg-white/90" />
+                {whyChooseUsConfig.cardLabel}
               </span>
+
+              {currentItem && (
+                <div className="relative mt-6 flex flex-1 flex-col min-h-0 overflow-hidden">
+                  <div className="h-px w-12 bg-white/30 mb-5 shrink-0" aria-hidden />
+                  <h3 className="font-heading text-2xl font-bold leading-tight text-white sm:text-3xl shrink-0">
+                    {currentItem.title}
+                  </h3>
+                  <p className="mt-4 flex-1 min-h-0 overflow-y-auto text-base leading-relaxed text-white/95 sm:text-lg max-w-xl pr-1">
+                    {currentItem.description}
+                  </p>
+                </div>
+              )}
+
+              <div
+                className="relative mt-8 flex items-center justify-between gap-4 pt-6 border-t border-white/15"
+                role="group"
+                aria-label="Carousel navigation"
+              >
+                <div className="flex items-center gap-2">
+                  {items.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setCurrentIndex(i)}
+                      className={cn(
+                        "h-2 rounded-full transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary",
+                        i === currentIndex
+                          ? "w-8 bg-white shadow-sm"
+                          : "w-2 bg-white/50 hover:bg-white/70"
+                      )}
+                      aria-label={`Go to benefit ${i + 1}`}
+                      aria-current={i === currentIndex ? "true" : undefined}
+                    />
+                  ))}
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={goPrev}
+                    className={cn(
+                      "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/25 bg-white/15 text-white shadow-sm",
+                      "hover:bg-white/25 hover:border-white/35 transition-all duration-200",
+                      "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
+                    )}
+                    aria-label="Previous benefit"
+                  >
+                    <svg
+                      className="h-5 w-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                  </button>
+                  <span
+                    className="min-w-[3ch] text-center font-heading text-sm font-medium tabular-nums text-white/90"
+                    aria-live="polite"
+                  >
+                    {currentIndex + 1} / {items.length}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={goNext}
+                    className={cn(
+                      "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/25 bg-white/15 text-white shadow-sm",
+                      "hover:bg-white/25 hover:border-white/35 transition-all duration-200",
+                      "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
+                    )}
+                    aria-label="Next benefit"
+                  >
+                    <svg
+                      className="h-5 w-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </Reveal>
       </Container>
     </section>
   );

@@ -18,6 +18,7 @@ import {
   faGear,
   faGlobe,
   faHammer,
+  faHeart,
   faLaptopCode,
   faLocationDot,
   faLock,
@@ -26,6 +27,7 @@ import {
   faMoon,
   faPalette,
   faPhone,
+  faPlane,
   faRobot,
   faRocket,
   faServer,
@@ -73,7 +75,9 @@ export type AppIconName =
   | "bars"
   | "xmark"
   | "calendar"
-  | "clock";
+  | "clock"
+  | "heart"
+  | "plane";
 
 const iconMap: Record<AppIconName, IconDefinition> = {
   "arrow-right": faArrowRight,
@@ -99,6 +103,8 @@ const iconMap: Record<AppIconName, IconDefinition> = {
   hammer: faHammer,
   "flask-vial": faFlaskVial,
   rocket: faRocket,
+  heart: faHeart,
+  plane: faPlane,
   check: faCheck,
   "shield-halved": faShieldHalved,
   gear: faGear,
