@@ -8,6 +8,7 @@ import { PortfolioSection } from "./sections/PortfolioSection";
 import { FeaturedWorkSection } from "./sections/FeaturedWorkSection";
 import { WhyChooseUsSection } from "./sections/WhyChooseUsSection";
 import { EngagementModelsSection } from "./sections/EngagementModelsSection";
+import { FAQsSection } from "./sections/FAQsSection";
 import { StatsNumbersSection } from "./sections/StatsNumbersSection";
 import { TestimonialsSection } from "./sections/TestimonialsSection";
 import { IndustriesSection } from "./sections/IndustriesSection";
@@ -29,6 +30,7 @@ export default function HomePage() {
       <TestimonialsSection />
       <IndustriesSection />
       <EngagementModelsSection />
+      <FAQsSection />
       <SuccessStoriesSection />
       <HighlightsSection />
       <CTASection />
