@@ -1,26 +1,36 @@
 "use client";
 
-import { useState } from "react";
 import { Container } from "@/components/common/Container";
+import { cn } from "@/components/theme/cn";
 
-const categories = ["All", "Web Development", "Performance", "React", "CSS"];
+interface BlogFilterBarSectionProps {
+  categories: string[];
+  activeCategory: string;
+  onCategoryChange: (category: string) => void;
+}
 
-export function BlogFilterBarSection() {
-  const [activeCategory, setActiveCategory] = useState("All");
-
+export function BlogFilterBarSection({
+  categories,
+  activeCategory,
+  onCategoryChange,
+}: BlogFilterBarSectionProps) {
   return (
-    <section className="py-8 border-b border-border">
+    <section className="py-8 bg-surface border-b border-border" aria-label="Filter by category">
       <Container>
-        <div className="flex flex-wrap gap-3">
+        <div role="group" className="flex flex-wrap gap-3 justify-center">
           {categories.map((category) => (
             <button
               key={category}
-              onClick={() => setActiveCategory(category)}
-              className={`px-4 py-2 rounded-full font-medium transition-colors ${
+              type="button"
+              onClick={() => onCategoryChange(category)}
+              aria-current={activeCategory === category ? "true" : undefined}
+              className={cn(
+                "px-6 py-2.5 rounded-full font-medium transition-colors",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
                 activeCategory === category
                   ? "bg-primary text-primary-foreground"
-                  : "bg-surface-muted text-foreground-muted hover:bg-border"
-              }`}
+                  : "bg-surface-muted text-foreground border border-border hover:bg-background hover:border-primary/30"
+              )}
             >
               {category}
             </button>
