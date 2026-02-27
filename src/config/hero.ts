@@ -39,18 +39,7 @@ export const heroConfig = {
   ],
 
   /**
-   * LCD screen: hero videos (Pexels assets). Paths are relative to /public.
-   * Rotate between these to keep the hero feeling alive.
-   */
-  lcdVideos: [
-    "/videos/hero/3130284-uhd_3840_2160_30fps.mp4",
-    "/videos/hero/5473797-uhd_4096_2160_25fps.mp4",
-    "/videos/hero/6804109-uhd_4096_2160_25fps.mp4",
-    "/videos/hero/6963743-hd_1920_1080_25fps.mp4",
-  ] as const,
-
-  /**
-   * Hero-specific images (Pexels). Used for subtle strips/collages around the LCD.
+   * Hero-specific images (Pexels). Used for LCD background and strips/collages around the LCD.
    * Paths are relative to /public.
    */
   heroImages: [

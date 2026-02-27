@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -71,40 +71,27 @@ export function HeroLCDScreen({
 }: HeroLCDScreenProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const imageStripRef = useRef<HTMLDivElement>(null);
   const [slideIndex, setSlideIndex] = useState(0);
-  const [videoIndex, setVideoIndex] = useState(0);
-  const [videoErrorCount, setVideoErrorCount] = useState(0);
+  const [imageIndex, setImageIndex] = useState(0);
   const reducedMotion = useReducedMotion();
-  const hasVideo = heroConfig.lcdVideos.length > 0;
-  const hasAvailableVideo =
-    hasVideo && videoErrorCount < heroConfig.lcdVideos.length;
-  const videoSrc = hasAvailableVideo
-    ? heroConfig.lcdVideos[videoIndex % heroConfig.lcdVideos.length]
+  const heroImages = heroConfig.heroImages ?? [];
+  const hasLcdImage = heroImages.length > 0;
+  const lcdImageSrc = hasLcdImage
+    ? heroImages[imageIndex % heroImages.length]
     : null;
   const lines = heroConfig.lcdTextLines;
   const currentLine = lines[slideIndex];
   const primaryHref = heroConfig.ctaPrimaryHref;
   const secondaryHref = heroConfig.ctaSecondaryHref;
-  const heroImages = heroConfig.heroImages ?? [];
 
   useEffect(() => {
-    const wrapper = wrapperRef.current;
-    const video = videoRef.current;
-    if (!wrapper || !video || !hasVideo) return;
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) video.play().catch(() => {});
-          else video.pause();
-        });
-      },
-      { threshold: 0.25 }
-    );
-    obs.observe(wrapper);
-    return () => obs.disconnect();
-  }, [hasVideo]);
+    if (reducedMotion || !hasLcdImage || heroImages.length <= 1) return;
+    const interval = setInterval(() => {
+      setImageIndex((i) => (i + 1) % heroImages.length);
+    }, LCD_CYCLE_MS * 2);
+    return () => clearInterval(interval);
+  }, [reducedMotion, hasLcdImage, heroImages.length]);
 
   useGSAP(
     () => {
@@ -165,27 +152,6 @@ export function HeroLCDScreen({
     return () => clearInterval(interval);
   }, [reducedMotion]);
 
-  useEffect(() => {
-    if (reducedMotion || !hasVideo || heroConfig.lcdVideos.length <= 1) return;
-    const interval = setInterval(() => {
-      setVideoIndex((i) => (i + 1) % heroConfig.lcdVideos.length);
-    }, LCD_CYCLE_MS * 2);
-    return () => clearInterval(interval);
-  }, [reducedMotion, hasVideo]);
-
-  const handleVideoError = useCallback(() => {
-    setVideoErrorCount((count) => {
-      const nextCount = count + 1;
-      if (
-        heroConfig.lcdVideos.length > 1 &&
-        nextCount <= heroConfig.lcdVideos.length
-      ) {
-        setVideoIndex((i) => (i + 1) % heroConfig.lcdVideos.length);
-      }
-      return nextCount;
-    });
-  }, []);
-
   return (
     <div
       ref={wrapperRef}
@@ -199,18 +165,13 @@ export function HeroLCDScreen({
             ref={contentRef}
             className="relative flex min-h-[380px] flex-col justify-center overflow-hidden px-6 py-12 md:min-h-[480px] md:px-14 md:py-20"
           >
-            {/* Video background with gradient overlay for text legibility */}
-            {videoSrc && (
+            {/* Image background with gradient overlay for text legibility */}
+            {lcdImageSrc && (
               <>
-                <video
-                  ref={videoRef}
+                <img
+                  src={lcdImageSrc}
+                  alt=""
                   className="absolute inset-0 h-full w-full object-cover opacity-50"
-                  src={videoSrc}
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  onError={handleVideoError}
                   aria-hidden
                 />
                 <div
