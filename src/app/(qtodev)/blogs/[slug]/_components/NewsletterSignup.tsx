@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, useState } from 'react';
+import { AppIcon } from '@/components/ui/shared/AppIcon';
 
 export function NewsletterSignup() {
   const [email, setEmail] = useState('');
@@ -22,7 +23,7 @@ export function NewsletterSignup() {
 
       if (response.ok) {
         setStatus('success');
-        setMessage('✓ Successfully subscribed!');
+        setMessage('Successfully subscribed to the newsletter.');
         setEmail('');
       } else {
         setStatus('error');
@@ -43,8 +44,9 @@ export function NewsletterSignup() {
 
   return (
     <div className="bg-surface p-4 rounded-lg border border-border">
-      <h3 className="font-bold text-sm text-foreground mb-3 uppercase tracking-wide">
-        📧 Stay Updated
+      <h3 className="font-bold text-sm text-foreground mb-3 uppercase tracking-wide flex items-center gap-2">
+        <AppIcon name="envelope" size="sm" className="text-primary" />
+        Stay Updated
       </h3>
       <form onSubmit={handleSubmit} className="space-y-3">
         <input
@@ -66,11 +68,15 @@ export function NewsletterSignup() {
       </form>
       {message && (
         <p
-          className={`mt-2 text-xs font-medium ${
+          className={`mt-2 flex items-center gap-2 text-xs font-medium ${
             status === 'success' ? 'text-success' : 'text-error'
           }`}
+          aria-live="polite"
         >
-          {message}
+          {status === 'success' && (
+            <AppIcon name="circle-check" size="sm" className="text-success" />
+          )}
+          <span>{message}</span>
         </p>
       )}
     </div>

@@ -65,8 +65,8 @@ export default async function BlogDetailPage({
       <ArticleHeader post={post} />
 
       {/* Two-Column Content Area */}
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-10 md:py-14 lg:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12 items-start">
           {/* Main Content (2/3) */}
           <div className="lg:col-span-2">
             <ArticleBody post={post} />

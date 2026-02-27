@@ -1,12 +1,14 @@
+import { AppIcon } from '@/components/ui/shared/AppIcon';
+
 interface KeyTakeawaysProps {
   takeaways: string[];
 }
 
 export function KeyTakeaways({ takeaways }: KeyTakeawaysProps) {
   return (
-    <div className="my-8 p-6 bg-primary/10 border-l-4 border-primary rounded-r-lg">
+    <section className="my-8 p-6 bg-primary/10 border-l-4 border-primary rounded-r-lg">
       <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
-        <span className="text-xl">💡</span>
+        <AppIcon name="lightbulb" size="sm" className="text-primary" />
         Key Takeaways
       </h3>
       <ul className="space-y-3">
@@ -20,6 +22,6 @@ export function KeyTakeaways({ takeaways }: KeyTakeawaysProps) {
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   );
 }

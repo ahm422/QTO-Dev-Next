@@ -18,8 +18,12 @@ import {
   faGear,
   faGlobe,
   faHammer,
+  faHeadphones,
   faHeart,
   faLaptopCode,
+  faLightbulb,
+  faLink,
+  faList,
   faLocationDot,
   faLock,
   faMagnifyingGlass,
@@ -31,17 +35,19 @@ import {
   faRobot,
   faRocket,
   faServer,
+  faShareNodes,
   faShapes,
   faShieldHalved,
   faSun,
   faUniversalAccess,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+import { faLinkedinIn, faXTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { cn } from "@/components/theme/cn";
 
-/** Font Awesome solid icon name. Add new names and map entries below when needed. */
+/** Font Awesome icon name (solid + brands). Add new names and map entries below when needed. */
 export type AppIconName =
   | "arrow-right"
   | "laptop-code"
@@ -77,7 +83,15 @@ export type AppIconName =
   | "calendar"
   | "clock"
   | "heart"
-  | "plane";
+  | "plane"
+  | "headphones"
+  | "lightbulb"
+  | "link"
+  | "list"
+  | "share-nodes"
+  | "circle-check"
+  | "x-twitter"
+  | "linkedin-in";
 
 const iconMap: Record<AppIconName, IconDefinition> = {
   "arrow-right": faArrowRight,
@@ -106,6 +120,12 @@ const iconMap: Record<AppIconName, IconDefinition> = {
   heart: faHeart,
   plane: faPlane,
   check: faCheck,
+  headphones: faHeadphones,
+  lightbulb: faLightbulb,
+  link: faLink,
+  list: faList,
+  "share-nodes": faShareNodes,
+  "circle-check": faCheck,
   "shield-halved": faShieldHalved,
   gear: faGear,
   "magnifying-glass": faMagnifyingGlass,
@@ -115,6 +135,8 @@ const iconMap: Record<AppIconName, IconDefinition> = {
   xmark: faXmark,
   calendar: faCalendar,
   clock: faClock,
+  "x-twitter": faXTwitter,
+  "linkedin-in": faLinkedinIn,
 };
 
 interface AppIconProps {
