@@ -1,14 +1,50 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HeroLCDScreen } from "@/components/hero/HeroLCDScreen";
 import { heroConfig } from "@/config/hero";
 import { useHeroScrollSentinel } from "@/contexts/HeroScrollContext";
 import { cn } from "@/components/theme/cn";
 
+function useReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const handler = () => setReduced(mq.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  return reduced;
+}
+
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const heroScroll = useHeroScrollSentinel();
+  const reducedMotion = useReducedMotion();
+
+  const backgroundHeadlines =
+    heroConfig.backgroundHeadlines && heroConfig.backgroundHeadlines.length > 0
+      ? heroConfig.backgroundHeadlines
+      : [heroConfig.backgroundHeadline];
+
+  const [headlineIndex, setHeadlineIndex] = useState(0);
+
+  useEffect(() => {
+    if (reducedMotion || backgroundHeadlines.length <= 1) return;
+
+    const interval = window.setInterval(() => {
+      setHeadlineIndex((index) => (index + 1) % backgroundHeadlines.length);
+    }, 4500);
+
+    return () => window.clearInterval(interval);
+  }, [backgroundHeadlines.length, reducedMotion]);
+
+  const currentBackgroundHeadline =
+    backgroundHeadlines[headlineIndex] ?? heroConfig.backgroundHeadline;
 
   return (
     <section
@@ -33,13 +69,17 @@ export function HeroSection() {
           aria-hidden
         >
           <p
-            className="font-heading text-center font-bold uppercase tracking-wide text-hero-fg/10 select-none whitespace-nowrap px-4"
+            key={currentBackgroundHeadline}
+            className={cn(
+              "font-heading text-center font-bold uppercase tracking-wide text-hero-fg/10 select-none px-4",
+              !reducedMotion && "hero-headline-animated"
+            )}
             style={{
               fontSize: "clamp(5rem, 22vw, 18rem)",
               lineHeight: 1,
             }}
           >
-            {heroConfig.backgroundHeadline}
+            {currentBackgroundHeadline}
           </p>
         </div>
 
