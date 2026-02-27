@@ -1,14 +1,22 @@
 'use client';
 
 import { useState } from 'react';
+import { AppIcon } from '@/components/ui/shared/AppIcon';
+import { cn } from '@/components/theme/cn';
 
 interface ShareButtonsProps {
-  title: string;
   slug: string;
+  title?: string;
   className?: string;
+  variant?: 'inline' | 'card';
 }
 
-export function ShareButtons({ title, slug, className = '' }: ShareButtonsProps) {
+export function ShareButtons({
+  slug,
+  title,
+  className = '',
+  variant = 'inline',
+}: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
 
   const shareUrl =
@@ -18,6 +26,7 @@ export function ShareButtons({ title, slug, className = '' }: ShareButtonsProps)
 
   const handleCopyLink = async () => {
     try {
+      if (!shareUrl) return;
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -27,76 +36,100 @@ export function ShareButtons({ title, slug, className = '' }: ShareButtonsProps)
   };
 
   const shareOnTwitter = () => {
+    if (!shareUrl) return;
+    const text = title || 'Check out this article';
     window.open(
-      `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(shareUrl)}`,
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+        text
+      )}&url=${encodeURIComponent(shareUrl)}`,
       '_blank'
     );
   };
 
   const shareOnLinkedIn = () => {
+    if (!shareUrl) return;
     window.open(
-      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+        shareUrl
+      )}`,
       '_blank'
     );
   };
 
+  const isCard = variant === 'card';
+
+  const containerClasses = isCard
+    ? cn(
+        'bg-surface p-4 rounded-lg border border-border flex flex-col gap-3',
+        className
+      )
+    : cn('flex items-center gap-3', className);
+
+  const buttonsRowClasses = isCard
+    ? 'flex justify-center gap-3'
+    : 'flex items-center gap-3';
+
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
-      <button
-        onClick={handleCopyLink}
-        className="p-2 hover:bg-surface-muted rounded-lg transition-colors"
-        title="Copy link"
-        aria-label="Copy link to article"
-      >
-        {copied ? (
-          <span className="text-xs font-medium text-green-600">✓ Copied</span>
-        ) : (
-          <svg
-            className="w-5 h-5 text-foreground-muted"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-            />
-          </svg>
-        )}
-      </button>
-
-      <button
-        onClick={shareOnTwitter}
-        className="p-2 hover:bg-surface-muted rounded-lg transition-colors"
-        title="Share on Twitter/X"
-        aria-label="Share on Twitter"
-      >
-        <svg
-          className="w-5 h-5 text-foreground-muted"
-          fill="currentColor"
-          viewBox="0 0 24 24"
+    <section className={containerClasses} aria-label="Share this article">
+      {isCard && (
+        <p className="text-xs font-semibold text-foreground-muted uppercase tracking-wide text-center">
+          Share
+        </p>
+      )}
+      <div className={buttonsRowClasses}>
+        <button
+          onClick={handleCopyLink}
+          className={cn(
+            'inline-flex items-center gap-2 rounded-lg transition-colors',
+            isCard
+              ? 'px-3 py-2 bg-background border border-border hover:bg-surface-muted text-xs font-medium'
+              : 'px-2 py-1 hover:bg-surface-muted'
+          )}
+          title="Copy link"
+          aria-label="Copy link to article"
         >
-          <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 8-1 8-5.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
-        </svg>
-      </button>
+          <AppIcon
+            name={copied ? 'circle-check' : 'link'}
+            size="sm"
+            className={copied ? 'text-success' : 'text-foreground-muted'}
+          />
+          <span className="text-xs font-medium">
+            {copied ? 'Copied' : 'Copy link'}
+          </span>
+        </button>
 
-      <button
-        onClick={shareOnLinkedIn}
-        className="p-2 hover:bg-surface-muted rounded-lg transition-colors"
-        title="Share on LinkedIn"
-        aria-label="Share on LinkedIn"
-      >
-        <svg
-          className="w-5 h-5 text-foreground-muted"
-          fill="currentColor"
-          viewBox="0 0 24 24"
+        <button
+          onClick={shareOnTwitter}
+          className={cn(
+            'flex items-center justify-center rounded-lg border border-border hover:bg-surface-muted transition-colors',
+            isCard ? 'p-3 bg-background' : 'p-2'
+          )}
+          title="Share on X (Twitter)"
+          aria-label="Share on X (Twitter)"
         >
-          <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
-          <circle cx={4} cy={4} r={2} />
-        </svg>
-      </button>
-    </div>
+          <AppIcon
+            name="x-twitter"
+            size="sm"
+            className="text-foreground-muted"
+          />
+        </button>
+
+        <button
+          onClick={shareOnLinkedIn}
+          className={cn(
+            'flex items-center justify-center rounded-lg border border-border hover:bg-surface-muted transition-colors',
+            isCard ? 'p-3 bg-background' : 'p-2'
+          )}
+          title="Share on LinkedIn"
+          aria-label="Share on LinkedIn"
+        >
+          <AppIcon
+            name="linkedin-in"
+            size="sm"
+            className="text-foreground-muted"
+          />
+        </button>
+      </div>
+    </section>
   );
 }
