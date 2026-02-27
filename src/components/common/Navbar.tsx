@@ -71,10 +71,10 @@ export function Navbar() {
             >
               <AppIcon name={theme === "dark" ? "sun" : "moon"} size="sm" className="h-5 w-5 lg:h-6 lg:w-6" />
             </button>
-            <HeaderCTAButton href="/contact?intent=book-call" className="lg:px-5 lg:py-2.5 lg:text-base">
+            <HeaderCTAButton href="/book-a-call" className="lg:px-5 lg:py-2.5 lg:text-base">
               Book a Call
             </HeaderCTAButton>
-            <HeaderCTAButton href="/contact?intent=get-quote" className="lg:px-5 lg:py-2.5 lg:text-base">
+            <HeaderCTAButton href="/get-a-quote" className="lg:px-5 lg:py-2.5 lg:text-base">
               Get Quote
             </HeaderCTAButton>
           </div>
@@ -122,14 +122,14 @@ export function Navbar() {
               </div>
             <div className="mt-4 grid grid-cols-2 gap-2">
                 <HeaderCTAButton
-                  href="/contact?intent=book-call"
+                  href="/book-a-call"
                   onClick={() => setIsMenuOpen(false)}
                   className="w-full justify-center"
                 >
                   Book a Call
                 </HeaderCTAButton>
                 <HeaderCTAButton
-                  href="/contact?intent=get-quote"
+                  href="/get-a-quote"
                   onClick={() => setIsMenuOpen(false)}
                   className="w-full justify-center"
                 >
