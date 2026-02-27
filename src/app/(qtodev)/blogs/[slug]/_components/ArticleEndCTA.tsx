@@ -12,7 +12,7 @@ export function ArticleEndCTA() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center sm:items-stretch">
           <a
-            href="/contact"
+            href="/book-a-call"
             className="px-8 py-3 bg-primary-foreground text-primary font-semibold rounded-lg hover:opacity-90 transition-colors shadow-lg hover:shadow-xl"
           >
             Book a Call
