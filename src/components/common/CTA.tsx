@@ -13,6 +13,8 @@ interface CTAProps {
   primaryButtonHref?: string;
   secondaryButtonText?: string;
   secondaryButtonHref?: string;
+  onPrimaryClick?: () => void;
+  onSecondaryClick?: () => void;
 }
 
 export function CTA({
@@ -22,6 +24,8 @@ export function CTA({
   primaryButtonHref = "/contact",
   secondaryButtonText,
   secondaryButtonHref,
+  onPrimaryClick,
+  onSecondaryClick,
 }: CTAProps) {
   return (
     <section className="relative bg-primary py-20 md:py-24 lg:py-28 overflow-hidden">
@@ -65,6 +69,7 @@ export function CTA({
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
               href={primaryButtonHref}
+              onClick={onPrimaryClick}
               className={cn(
                 "group inline-flex items-center justify-center gap-2.5 font-semibold rounded-xl transition-all duration-300",
                 "px-7 py-3.5 text-lg",
@@ -83,6 +88,7 @@ export function CTA({
             {secondaryButtonText && (
               <Link
                 href={secondaryButtonHref || "#"}
+                onClick={onSecondaryClick}
                 className={cn(
                   "inline-flex items-center justify-center font-semibold rounded-xl border-2 border-primary-foreground/80 text-primary-foreground px-6 py-3 text-base",
                   "hover:bg-primary-foreground/10 transition-all duration-300",
