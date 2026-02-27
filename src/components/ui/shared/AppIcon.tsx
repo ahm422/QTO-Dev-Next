@@ -2,6 +2,7 @@
 
 import {
   faArrowRight,
+  faArrowTrendUp,
   faBars,
   faBolt,
   faBuilding,
@@ -21,6 +22,7 @@ import {
   faHeadphones,
   faHeart,
   faLaptopCode,
+  faLayerGroup,
   faLightbulb,
   faLink,
   faList,
@@ -38,8 +40,11 @@ import {
   faShareNodes,
   faShapes,
   faShieldHalved,
+  faStar,
   faSun,
+  faUsers,
   faUniversalAccess,
+  faWandSparkles,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { faLinkedinIn, faXTwitter } from "@fortawesome/free-brands-svg-icons";
@@ -91,7 +96,12 @@ export type AppIconName =
   | "share-nodes"
   | "circle-check"
   | "x-twitter"
-  | "linkedin-in";
+  | "linkedin-in"
+  | "sparkles"
+  | "arrow-trending-up"
+  | "layers"
+  | "star"
+  | "users";
 
 const iconMap: Record<AppIconName, IconDefinition> = {
   "arrow-right": faArrowRight,
@@ -127,6 +137,8 @@ const iconMap: Record<AppIconName, IconDefinition> = {
   "share-nodes": faShareNodes,
   "circle-check": faCheck,
   "shield-halved": faShieldHalved,
+  star: faStar,
+  users: faUsers,
   gear: faGear,
   "magnifying-glass": faMagnifyingGlass,
   sun: faSun,
@@ -137,6 +149,9 @@ const iconMap: Record<AppIconName, IconDefinition> = {
   clock: faClock,
   "x-twitter": faXTwitter,
   "linkedin-in": faLinkedinIn,
+  sparkles: faWandSparkles,
+  "arrow-trending-up": faArrowTrendUp,
+  layers: faLayerGroup,
 };
 
 interface AppIconProps {

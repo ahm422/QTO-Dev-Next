@@ -11,10 +11,6 @@ const HEADING_ID = "benefits-heading";
 export function BenefitsSection() {
   const { benefits } = careersPageConfig;
 
-  if (!benefits.items || benefits.items.length === 0) {
-    return null;
-  }
-
   return (
     <section
       className={cn(

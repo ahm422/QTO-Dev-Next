@@ -12,10 +12,6 @@ const HEADING_ID = "why-work-with-us-heading";
 export function WhyWorkWithUsSection() {
   const { whyWork } = careersPageConfig;
 
-  if (!whyWork.items || whyWork.items.length === 0) {
-    return null;
-  }
-
   return (
     <section
       className="relative py-20 md:py-28 bg-background"
