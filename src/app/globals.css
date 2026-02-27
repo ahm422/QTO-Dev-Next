@@ -96,6 +96,22 @@ h6 {
   }
 }
 
+/* Hero background headline: subtle entrance when cycling phrases */
+@keyframes hero-headline-fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-headline-animated {
+  animation: hero-headline-fade 0.8s ease-out;
+}
+
 /* Awards / Collaborations: infinite horizontal marquee (Lovable-style) */
 @keyframes collaborations-marquee {
   from {
@@ -142,7 +158,8 @@ h6 {
   .collaborations-marquee-track,
   .industries-marquee-track,
   .animate-fade-in-up,
-  .animate-glow-primary {
+  .animate-glow-primary,
+  .hero-headline-animated {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }

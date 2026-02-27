@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -27,7 +27,6 @@ function useReducedMotion(): boolean {
   return reduced;
 }
 
-/** Build heading with optional highlighted word */
 function HeroHeading() {
   const { heading, headingHighlight } = heroConfig;
   if (!headingHighlight || !heading.includes(headingHighlight)) {
@@ -53,7 +52,7 @@ function HeroHeading() {
 }
 
 const ctaBase =
-  "inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black";
+  "inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black";
 const ctaPrimaryStyles =
   "px-6 py-3 text-lg bg-primary text-primary-foreground hover:bg-primary-hover shadow-lg shadow-primary/20 hover:shadow-primary/30";
 const ctaSecondaryStyles =
@@ -73,14 +72,22 @@ export function HeroLCDScreen({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const imageStripRef = useRef<HTMLDivElement>(null);
   const [slideIndex, setSlideIndex] = useState(0);
+  const [videoIndex, setVideoIndex] = useState(0);
+  const [videoErrorCount, setVideoErrorCount] = useState(0);
   const reducedMotion = useReducedMotion();
   const hasVideo = heroConfig.lcdVideos.length > 0;
-  const videoSrc = hasVideo ? heroConfig.lcdVideos[0] : null;
+  const hasAvailableVideo =
+    hasVideo && videoErrorCount < heroConfig.lcdVideos.length;
+  const videoSrc = hasAvailableVideo
+    ? heroConfig.lcdVideos[videoIndex % heroConfig.lcdVideos.length]
+    : null;
   const lines = heroConfig.lcdTextLines;
   const currentLine = lines[slideIndex];
   const primaryHref = heroConfig.ctaPrimaryHref;
   const secondaryHref = heroConfig.ctaSecondaryHref;
+  const heroImages = heroConfig.heroImages ?? [];
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -104,52 +111,50 @@ export function HeroLCDScreen({
       const wrapper = wrapperRef.current;
       const section = scrollTriggerRef?.current;
       const triggerEl = triggerRef?.current ?? section;
-      // All targets must be valid DOM elements in the document (avoids ScrollTrigger "reading 'end'" error)
       const ready =
-        wrapper?.isConnected &&
-        triggerEl?.isConnected &&
-        section?.isConnected;
+        wrapper?.isConnected && triggerEl?.isConnected && section?.isConnected;
+
       if (!wrapper || !triggerEl || !section || !ready) {
-        gsap.set(wrapper, { opacity: 1, y: 0, scale: 1 });
+        gsap.set(wrapper, { opacity: 1, y: 0 });
         return;
       }
 
       if (reducedMotion) {
-        gsap.set(wrapper, { opacity: 1, y: 0, scale: 1 });
+        gsap.set(wrapper, { opacity: 1, y: 0 });
         return;
       }
 
       try {
-        gsap.fromTo(
+        const tween = gsap.fromTo(
           wrapper,
-          { opacity: 0, y: 80, scale: 0.98 },
+          { opacity: 0, y: 30 },
           {
             opacity: 1,
             y: 0,
-            scale: 1,
             ease: "power2.out",
+            force3D: true,
             scrollTrigger: {
               trigger: triggerEl,
               start: "top top",
-              end: "+=600",
-              scrub: 0.8,
+              end: "+=400",
+              scrub: 0.4,
               pin: section,
               pinSpacing: true,
             },
           }
         );
+
+        const spacer = (tween.scrollTrigger as unknown as { spacer?: HTMLElement })?.spacer;
+        if (spacer) {
+          spacer.style.background = "var(--hero-bg, #1a1a1a)";
+        }
       } catch {
-        // Fallback if ScrollTrigger fails (e.g. refs not ready or invalid)
-        gsap.to(wrapper, {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 1,
-          ease: "power2.out",
-        });
+        gsap.set(wrapper, { opacity: 1, y: 0 });
       }
     },
-    { dependencies: [reducedMotion, scrollTriggerRef, triggerRef, triggerReady] }
+    {
+      dependencies: [reducedMotion, scrollTriggerRef, triggerRef, triggerReady],
+    }
   );
 
   useEffect(() => {
@@ -160,45 +165,76 @@ export function HeroLCDScreen({
     return () => clearInterval(interval);
   }, [reducedMotion]);
 
+  useEffect(() => {
+    if (reducedMotion || !hasVideo || heroConfig.lcdVideos.length <= 1) return;
+    const interval = setInterval(() => {
+      setVideoIndex((i) => (i + 1) % heroConfig.lcdVideos.length);
+    }, LCD_CYCLE_MS * 2);
+    return () => clearInterval(interval);
+  }, [reducedMotion, hasVideo]);
+
+  const handleVideoError = useCallback(() => {
+    setVideoErrorCount((count) => {
+      const nextCount = count + 1;
+      if (
+        heroConfig.lcdVideos.length > 1 &&
+        nextCount <= heroConfig.lcdVideos.length
+      ) {
+        setVideoIndex((i) => (i + 1) % heroConfig.lcdVideos.length);
+      }
+      return nextCount;
+    });
+  }, []);
+
   return (
     <div
       ref={wrapperRef}
-      className="relative w-full max-w-4xl mx-auto max-h-[calc(100vh-12rem)]"
+      className="relative w-full max-w-6xl mx-auto"
+      style={{ opacity: 0, willChange: "transform, opacity" }}
     >
-      <div className="w-full max-w-4xl">
-        {/* Refined frame: softer border, professional shadow */}
-        <div className="overflow-hidden rounded-xl border-2 border-white/10 bg-black/95 shadow-2xl shadow-black/60 ring-1 ring-white/5 backdrop-blur-sm">
+      <div className="w-full">
+        {/* LCD frame — no backdrop-blur, no ring, GPU-friendly */}
+        <div className="overflow-hidden rounded-xl border border-white/10 bg-black/95 shadow-2xl shadow-black/50">
           <div
             ref={contentRef}
-            className="relative flex min-h-[340px] flex-col justify-center overflow-hidden px-6 py-10 md:min-h-[400px] md:px-12 md:py-16"
+            className="relative flex min-h-[380px] flex-col justify-center overflow-hidden px-6 py-12 md:min-h-[480px] md:px-14 md:py-20"
           >
+            {/* Video background with gradient overlay for text legibility */}
             {videoSrc && (
-              <video
-                ref={videoRef}
-                className="absolute inset-0 h-full w-full object-cover opacity-25"
-                src={videoSrc}
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                aria-hidden
-              />
+              <>
+                <video
+                  ref={videoRef}
+                  className="absolute inset-0 h-full w-full object-cover opacity-50"
+                  src={videoSrc}
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  onError={handleVideoError}
+                  aria-hidden
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/40"
+                  aria-hidden
+                />
+              </>
             )}
 
             <div className="relative z-10 flex flex-col items-center text-center">
               <HeroHeading />
-              <p className="mt-4 mb-8 max-w-2xl text-base leading-relaxed text-white/90 md:text-lg lg:text-xl">
-                {heroConfig.subtext}
-              </p>
 
-              <div className="flex flex-wrap items-center justify-center gap-4">
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
                 {primaryHref ? (
                   <Link
                     href={primaryHref}
                     className={cn(ctaBase, ctaPrimaryStyles)}
                   >
                     {heroConfig.ctaPrimary}
-                    <AppIcon name="arrow-right" size="sm" className="shrink-0" />
+                    <AppIcon
+                      name="arrow-right"
+                      size="sm"
+                      className="shrink-0"
+                    />
                   </Link>
                 ) : (
                   <span className={cn(ctaBase, ctaPrimaryStyles)}>
@@ -221,11 +257,10 @@ export function HeroLCDScreen({
             </div>
 
             {lines.length > 0 && (
-              <div className="relative z-10 mt-8 flex flex-col items-center">
-                <div className="h-px w-16 bg-white/30 mb-4" aria-hidden />
+              <div className="pointer-events-none absolute inset-x-0 bottom-5 z-10 flex justify-center md:bottom-6">
                 <p
                   key={slideIndex}
-                  className="text-center font-heading text-sm font-semibold uppercase tracking-widest text-white/60 md:text-base"
+                  className="text-center font-heading text-xs font-medium uppercase tracking-widest text-white/50 md:text-sm"
                   style={
                     reducedMotion
                       ? undefined
@@ -238,8 +273,32 @@ export function HeroLCDScreen({
             )}
           </div>
         </div>
+        {/* LCD chin */}
         <div className="mx-auto mt-3 h-2 w-20 rounded-b-full bg-white/10 md:mt-4 md:h-2.5 md:w-28" />
       </div>
+
+      {/* Image strip — CSS-only transform, no separate ScrollTrigger */}
+      {heroImages.length > 0 && (
+        <div
+          ref={imageStripRef}
+          className="pointer-events-none mt-6 hidden justify-center gap-3 px-4 md:flex"
+          aria-hidden
+        >
+          {heroImages.slice(0, 4).map((src) => (
+            <div
+              key={src}
+              className="relative h-20 w-32 overflow-hidden rounded-lg border border-white/10 bg-white/5 shadow-lg shadow-black/40"
+            >
+              <img
+                src={src}
+                alt=""
+                loading="lazy"
+                className="h-full w-full object-cover opacity-80"
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
