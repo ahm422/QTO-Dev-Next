@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/shared/Card";
+import { Card } from "@/components/ui/card";
 import { services } from "@/data/services";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";

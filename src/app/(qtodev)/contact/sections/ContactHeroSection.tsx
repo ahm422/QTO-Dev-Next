@@ -1,6 +1,5 @@
 import { Container } from "@/components/common/Container";
 import { Heading } from "@/components/ui/shared/Heading";
-import { Button } from "@/components/ui/shared/Button";
 
 export function ContactHeroSection() {
   return (

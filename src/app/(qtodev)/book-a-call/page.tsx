@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { ContactLayout } from "@/components/contact/ContactLayout";
 import { TrustStrip } from "@/components/marketing/TrustStrip";
-import { Input } from "@/components/ui/shared/Input";
-import { Button } from "@/components/ui/shared/Button";
+import { FormInput } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/shared/Text";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { analytics } from "@/lib/analytics";
@@ -211,7 +211,7 @@ export default function BookACallPage() {
                   Contact
                 </p>
                 <div className="grid gap-6 md:grid-cols-2">
-                  <Input
+                  <FormInput
                     label="Full name"
                     name="name"
                     value={formData.name}
@@ -221,7 +221,7 @@ export default function BookACallPage() {
                     required
                     error={errors.name}
                   />
-                  <Input
+                  <FormInput
                     label="Work email"
                     name="email"
                     type="email"
@@ -232,7 +232,7 @@ export default function BookACallPage() {
                     required
                     error={errors.email}
                   />
-                  <Input
+                  <FormInput
                     label="Company"
                     name="company"
                     value={formData.company}
@@ -240,7 +240,7 @@ export default function BookACallPage() {
                     placeholder="Acme Inc."
                     autoComplete="organization"
                   />
-                  <Input
+                  <FormInput
                     label="Role"
                     name="role"
                     value={formData.role}
@@ -334,21 +334,21 @@ export default function BookACallPage() {
                   Call preferences
                 </p>
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  <Input
+                  <FormInput
                     label="Preferred time of day"
                     name="preferredTime"
                     value={formData.preferredTime}
                     onChange={handleChange}
                     placeholder="e.g. 9–11am"
                   />
-                  <Input
+                  <FormInput
                     label="Timezone"
                     name="timezone"
                     value={formData.timezone}
                     onChange={handleChange}
                     placeholder="e.g. PST, CET"
                   />
-                  <Input
+                  <FormInput
                     label="Preferred channel"
                     name="channel"
                     value={formData.channel}

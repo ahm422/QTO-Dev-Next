@@ -1,5 +1,5 @@
 import { Container } from "@/components/common/Container";
-import { Card } from "@/components/ui/shared/Card";
+import { Card } from "@/components/ui/card";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 
 export function ContactDetailsSection() {

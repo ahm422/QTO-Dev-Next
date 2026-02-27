@@ -3,8 +3,8 @@
 import { useState, useCallback, useEffect } from "react";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
-import { Input } from "@/components/ui/shared/Input";
-import { Button } from "@/components/ui/shared/Button";
+import { FormInput } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { partnerUpConfig } from "@/config/partnerUp";
 import { testimonialsItems } from "@/data/testimonials";
@@ -341,7 +341,7 @@ function PartnerUpForm() {
       ) : (
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <Input
+            <FormInput
               label={partnerUpConfig.nameLabel}
               type="text"
               name="name"
@@ -350,7 +350,7 @@ function PartnerUpForm() {
               placeholder={partnerUpConfig.namePlaceholder}
               required
             />
-            <Input
+            <FormInput
               label={partnerUpConfig.emailLabel}
               type="email"
               name="email"
@@ -361,7 +361,7 @@ function PartnerUpForm() {
             />
           </div>
 
-          <Input
+          <FormInput
             label={partnerUpConfig.phoneLabel}
             type="tel"
             name="phone"
@@ -410,7 +410,6 @@ function PartnerUpForm() {
 
           <Button
             type="submit"
-            variant="primary"
             size="lg"
             className="w-full"
             disabled={submitting}

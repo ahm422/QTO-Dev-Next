@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BlogPost } from "@/types/blog";
-import { Card } from "@/components/ui/shared/Card";
-import { Badge } from "@/components/ui/shared/Badge";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Text } from "@/components/ui/shared/Text";
 import { Heading } from "@/components/ui/shared/Heading";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
@@ -41,7 +41,7 @@ export function LatestPostCard({
           ) : null}
         </div>
         <div className="flex flex-1 flex-col p-5 sm:p-6 text-left">
-          <Badge variant="primary" className="mb-3 w-fit text-xs font-medium">
+          <Badge variant="default" className="mb-3 w-fit text-xs font-medium">
             {post.category}
           </Badge>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-foreground-muted mb-2">

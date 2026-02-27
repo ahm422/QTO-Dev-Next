@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 /* Custom variant: dark mode when .dark is on an ancestor (e.g. html) */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -23,6 +25,39 @@
   /* Hero section (homepage): dark charcoal background, high-contrast foreground for Img3 style */
   --hero-bg: #1a1a1a;
   --hero-fg: #ffffff;
+  --radius: 0.625rem;
+  /* shadcn semantic tokens mapped to existing theme (single source of truth) */
+  --background: var(--theme-background);
+  --foreground: var(--theme-foreground);
+  --card: var(--theme-surface);
+  --card-foreground: var(--theme-foreground);
+  --popover: var(--theme-background);
+  --popover-foreground: var(--theme-foreground);
+  --primary: var(--theme-primary);
+  --primary-foreground: var(--theme-primary-foreground);
+  --secondary: var(--theme-surface-muted);
+  --secondary-foreground: var(--theme-foreground);
+  --muted: var(--theme-surface-muted);
+  --muted-foreground: var(--theme-foreground-muted);
+  --accent: var(--theme-accent);
+  --accent-foreground: var(--theme-primary-foreground);
+  --destructive: var(--theme-error);
+  --border: var(--theme-border);
+  --input: var(--theme-border);
+  --ring: var(--theme-primary);
+  --chart-1: var(--theme-primary);
+  --chart-2: var(--theme-success);
+  --chart-3: #3b82f6;
+  --chart-4: var(--theme-cta-gold);
+  --chart-5: var(--theme-warning);
+  --sidebar: var(--theme-surface);
+  --sidebar-foreground: var(--theme-foreground);
+  --sidebar-primary: var(--theme-primary);
+  --sidebar-primary-foreground: var(--theme-primary-foreground);
+  --sidebar-accent: var(--theme-surface-muted);
+  --sidebar-accent-foreground: var(--theme-foreground);
+  --sidebar-border: var(--theme-border);
+  --sidebar-ring: var(--theme-primary);
 }
 
 /* Dark theme: from footer-logo.png — black #000000, white #FFFFFF, orange from logo #F48B22. */
@@ -42,6 +77,38 @@
   --theme-success: #34d399;
   --theme-error: #f87171;
   --theme-warning: #fbbf24;
+  /* shadcn semantic tokens mapped to existing dark theme */
+  --background: var(--theme-background);
+  --foreground: var(--theme-foreground);
+  --card: var(--theme-surface);
+  --card-foreground: var(--theme-foreground);
+  --popover: var(--theme-surface);
+  --popover-foreground: var(--theme-foreground);
+  --primary: var(--theme-primary);
+  --primary-foreground: var(--theme-primary-foreground);
+  --secondary: var(--theme-surface-muted);
+  --secondary-foreground: var(--theme-foreground);
+  --muted: var(--theme-surface-muted);
+  --muted-foreground: var(--theme-foreground-muted);
+  --accent: var(--theme-accent);
+  --accent-foreground: var(--theme-primary-foreground);
+  --destructive: var(--theme-error);
+  --border: var(--theme-border);
+  --input: var(--theme-border);
+  --ring: var(--theme-primary);
+  --chart-1: var(--theme-primary);
+  --chart-2: var(--theme-success);
+  --chart-3: #60a5fa;
+  --chart-4: var(--theme-cta-gold);
+  --chart-5: var(--theme-warning);
+  --sidebar: var(--theme-surface);
+  --sidebar-foreground: var(--theme-foreground);
+  --sidebar-primary: var(--theme-primary);
+  --sidebar-primary-foreground: var(--theme-primary-foreground);
+  --sidebar-accent: var(--theme-surface-muted);
+  --sidebar-accent-foreground: var(--theme-foreground);
+  --sidebar-border: var(--theme-border);
+  --sidebar-ring: var(--theme-primary);
 }
 
 /* Tailwind v4 theme: map semantic names to CSS variables for utilities (bg-background, text-foreground, etc.) */
@@ -112,6 +179,34 @@ h6 {
   animation: hero-headline-fade 0.8s ease-out;
 }
 
+/* Hero LCD content: staggered entrance (heading, subtext, CTAs) */
+@keyframes hero-content-fade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hero-content-fade {
+  animation: hero-content-fade 0.5s ease-out forwards;
+}
+
+.animation-delay-150 {
+  animation-delay: 150ms;
+}
+
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+
+.animation-fill-backwards {
+  animation-fill-mode: backwards;
+}
+
 /* Awards / Collaborations: infinite horizontal marquee (Lovable-style) */
 @keyframes collaborations-marquee {
   from {
@@ -159,8 +254,59 @@ h6 {
   .industries-marquee-track,
   .animate-fade-in-up,
   .animate-glow-primary,
-  .hero-headline-animated {
+  .hero-headline-animated,
+  .animate-hero-content-fade {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }

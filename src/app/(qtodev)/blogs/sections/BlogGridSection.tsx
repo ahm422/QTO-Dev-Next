@@ -2,8 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
-import { Card } from "@/components/ui/shared/Card";
-import { Badge } from "@/components/ui/shared/Badge";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Reveal } from "@/components/animations/Reveal";
 import { cn } from "@/components/theme/cn";
 import { blogsPageConfig } from "@/config/blogsPage";
@@ -96,7 +96,7 @@ export function BlogGridSection({ posts }: BlogGridSectionProps) {
                       </div>
                       <div className="relative p-6 md:p-7 flex flex-col flex-1">
                         <div className="flex items-center justify-between mb-2">
-                          <Badge variant="secondary" size="sm">
+                          <Badge variant="secondary" className="text-xs">
                             {post.category}
                           </Badge>
                           <span className="text-xs text-foreground-muted">{post.readingTime} min read</span>

@@ -4,8 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { ContactLayout } from "@/components/contact/ContactLayout";
 import { TrustStrip } from "@/components/marketing/TrustStrip";
-import { Input } from "@/components/ui/shared/Input";
-import { Button } from "@/components/ui/shared/Button";
+import { FormInput } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/shared/Text";
 import { FormStepper } from "@/components/contact/FormStepper";
 import { analytics } from "@/lib/analytics";
@@ -225,7 +225,7 @@ export default function GetAQuotePage() {
                     </p>
                   )}
                 </div>
-                <Input
+                <FormInput
                   label="Industry"
                   name="industry"
                   value={formData.industry}
@@ -236,7 +236,7 @@ export default function GetAQuotePage() {
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
-              <Input
+              <FormInput
                 label="Company size"
                 name="companySize"
                 value={formData.companySize}
@@ -308,7 +308,7 @@ export default function GetAQuotePage() {
               </div>
 
               <div className="space-y-4">
-                <Input
+                <FormInput
                   label="Desired start date"
                   name="startDate"
                   type="text"
@@ -316,7 +316,7 @@ export default function GetAQuotePage() {
                   onChange={(e) => setField("startDate", e.target.value)}
                   placeholder="e.g. Next month, Q3, specific date"
                 />
-                <Input
+                <FormInput
                   label="Ideal launch window"
                   name="launchWindow"
                   type="text"
@@ -383,14 +383,14 @@ export default function GetAQuotePage() {
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
-              <Input
+              <FormInput
                 label="Critical integrations (optional)"
                 name="integrations"
                 value={formData.integrations}
                 onChange={(e) => setField("integrations", e.target.value)}
                 placeholder="e.g. Stripe, HubSpot, internal APIs"
               />
-              <Input
+              <FormInput
                 label="How will you measure success?"
                 name="successCriteria"
                 value={formData.successCriteria}
@@ -400,7 +400,7 @@ export default function GetAQuotePage() {
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
-              <Input
+              <FormInput
                 label="Full name"
                 name="name"
                 value={formData.name}
@@ -410,7 +410,7 @@ export default function GetAQuotePage() {
                 required
                 error={errors.name}
               />
-              <Input
+              <FormInput
                 label="Work email"
                 name="email"
                 type="email"
@@ -421,14 +421,14 @@ export default function GetAQuotePage() {
                 required
                 error={errors.email}
               />
-              <Input
+              <FormInput
                 label="Company"
                 name="company"
                 value={formData.company}
                 onChange={(e) => setField("company", e.target.value)}
                 placeholder="Acme Inc."
               />
-              <Input
+              <FormInput
                 label="Company website (optional)"
                 name="website"
                 value={formData.website}
