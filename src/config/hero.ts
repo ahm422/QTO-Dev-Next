@@ -3,6 +3,8 @@
  * Edit here to change background headline, LCD text lines, and media sources.
  */
 
+import { PEXELS_TECH_IMAGES } from "./pexelsImages";
+
 export const heroConfig = {
   /**
    * Large decorative background headlines (wide hero typography).
@@ -40,13 +42,13 @@ export const heroConfig = {
 
   /**
    * Hero-specific images (Pexels). Used for LCD background and strips/collages around the LCD.
-   * Paths are relative to /public.
+   * Sourced from shared Pexels tech imagery (issue #60).
    */
   heroImages: [
-    "/images/pexels-thisisengineering-3861958.jpg",
-    "/images/pexels-thisisengineering-3861964.jpg",
-    "/images/pexels-thisisengineering-3861967.jpg",
-    "/images/pexels-kevin-ku-92347-577585.jpg",
-    "/images/pexels-olia-danilevich-4974912.jpg",
+    PEXELS_TECH_IMAGES[0],
+    PEXELS_TECH_IMAGES[1],
+    PEXELS_TECH_IMAGES[2],
+    PEXELS_TECH_IMAGES[3],
+    PEXELS_TECH_IMAGES[4],
   ] as const,
 } as const;

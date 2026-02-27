@@ -6,6 +6,7 @@ import { Container } from "@/components/common/Container";
 import { Heading } from "@/components/ui/shared/Heading";
 import { Text } from "@/components/ui/shared/Text";
 import { aboutCompanyConfig } from "@/config/aboutCompany";
+import { PEXELS_TECH_IMAGES, PEXELS_ALT_TECH } from "@/config/pexelsImages";
 import { aboutData } from "@/data/about";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import type { AppIconName } from "@/components/ui/shared/AppIcon";
@@ -20,10 +21,10 @@ function formatStat(value: number): string {
   return String(value);
 }
 
-const IMAGE_OFFICE = "/images/career.jpg";
-const IMAGE_MEETING = "/images/businessperformance.jpg";
-const IMAGE_ALT_OFFICE = "Office and career at our company";
-const IMAGE_ALT_MEETING = "Business performance and teamwork";
+const IMAGE_OFFICE = PEXELS_TECH_IMAGES[0];
+const IMAGE_MEETING = PEXELS_TECH_IMAGES[1];
+const IMAGE_ALT_OFFICE = PEXELS_ALT_TECH[0];
+const IMAGE_ALT_MEETING = PEXELS_ALT_TECH[1];
 
 export function AboutCompanySection() {
   const { subtitle, title, description, tags, exploreMoreLabel, exploreMoreHref, statLabels } =
