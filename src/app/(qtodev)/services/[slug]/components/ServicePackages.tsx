@@ -4,6 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { WebDevelopmentServiceData } from "@/content/services/web-development";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
+import { Container } from "@/components/common/Container";
+import { SectionHeader } from "@/components/common/SectionHeader";
+import { Reveal } from "@/components/animations/Reveal";
 
 interface ServicePackagesProps {
   service: WebDevelopmentServiceData;
@@ -24,65 +27,92 @@ export function ServicePackages({ service }: ServicePackagesProps) {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <section className="py-14 md:py-20" aria-labelledby="service-packages-heading">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 id="service-packages-heading" className="text-2xl font-bold text-foreground md:text-3xl">
-          Our Web Development Service Packages
-        </h2>
+    <section className="relative overflow-hidden py-16 md:py-20 lg:py-24 bg-background" aria-labelledby="service-packages-heading">
+      <div
+        className="pointer-events-none absolute bottom-0 right-0 h-56 w-72 rounded-full bg-primary/[0.05] blur-3xl translate-y-1/3 translate-x-1/4"
+        aria-hidden
+      />
 
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {serviceAreas.map((area, idx) => (
-            <div key={area} className="rounded-xl border border-border bg-surface p-4 text-center text-sm font-medium text-foreground-muted">
-              <AppIcon name={areaIcons[idx]} size="base" className="mb-2 block" />
-              {area}
-            </div>
-          ))}
-        </div>
+      <Container size="xl" className="relative">
+        <Reveal staggerSelector="[data-reveal]">
+          <div data-reveal className="max-w-3xl">
+            <SectionHeader
+              subtitle="Packages"
+              subtitleClassName="text-primary font-semibold tracking-[0.2em]"
+              subtitlePill
+              title="Our web development service packages"
+              headingId="service-packages-heading"
+              centered={false}
+            />
+          </div>
 
-        <div className="mt-8 rounded-2xl border border-border bg-surface p-5 md:p-8">
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-            {service.packages.map((pkg, idx) => (
-              <button
-                key={pkg.name}
-                type="button"
-                onClick={() => setActiveTab(idx)}
-                className={`rounded-lg border px-4 py-3 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
-                  activeTab === idx
-                    ? "border-primary bg-primary/15 text-primary"
-                    : "border-border bg-background text-foreground-muted hover:bg-surface-muted"
-                }`}
-                aria-label={`${pkg.name} package details`}
+          <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            {serviceAreas.map((area, idx) => (
+              <div
+                key={area}
+                data-reveal
+                className="flex flex-col items-center rounded-xl border border-border bg-surface p-4 text-center text-sm font-medium text-foreground-muted shadow-sm ring-1 ring-black/[0.02] transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/25 hover:bg-primary/5 hover:text-foreground"
               >
-                <p className="text-sm font-semibold">{pkg.name}</p>
-                <p className="text-xs text-foreground-muted">{pkg.timeline}</p>
-              </button>
+                <span className="mb-2 rounded-lg bg-primary/10 p-2 text-primary ring-1 ring-primary/15">
+                  <AppIcon name={areaIcons[idx]} size="base" />
+                </span>
+                {area}
+              </div>
             ))}
           </div>
 
-          <div className="mt-6 rounded-xl border border-border bg-surface-muted p-5">
-            <p className="text-sm font-semibold text-foreground">{service.packages[activeTab].name}</p>
-            <p className="mt-1 text-lg font-bold text-foreground">{service.packages[activeTab].price}</p>
-            <p className="text-sm text-foreground-muted">Timeline: {service.packages[activeTab].timeline}</p>
-
-            <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-foreground-muted">
-              {service.packages[activeTab].features.map((feature) => (
-                <li key={feature}>{feature}</li>
+          <div className="mt-10 rounded-2xl border border-border bg-surface p-6 shadow-lg shadow-black/5 ring-1 ring-black/[0.03] md:p-8" data-reveal>
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+              {service.packages.map((pkg, idx) => (
+                <button
+                  key={pkg.name}
+                  type="button"
+                  onClick={() => setActiveTab(idx)}
+                  className={`rounded-xl border px-4 py-3.5 text-left text-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface ${
+                    activeTab === idx
+                      ? "border-primary bg-primary/15 text-primary ring-2 ring-primary/30"
+                      : "border-border bg-background text-foreground-muted hover:border-primary/20 hover:bg-surface-muted"
+                  }`}
+                  aria-label={`${pkg.name} package details`}
+                >
+                  <p className="font-semibold">{pkg.name}</p>
+                  <p className="mt-0.5 text-xs text-foreground-muted">{pkg.timeline}</p>
+                </button>
               ))}
-            </ul>
+            </div>
 
-            <p className="mt-4 text-sm text-foreground-muted">
-              <span className="font-semibold text-foreground">Ideal for:</span> {service.packages[activeTab].idealFor}
-            </p>
+            <div className="mt-6 rounded-xl border border-primary/20 bg-surface-muted/80 p-6 shadow-inner ring-1 ring-primary/10 md:p-7">
+              <p className="text-sm font-semibold text-foreground">
+                {service.packages[activeTab].name}
+              </p>
+              <p className="mt-2 text-2xl font-bold tracking-tight text-foreground">
+                {service.packages[activeTab].price}
+              </p>
+              <p className="text-sm text-foreground-muted">
+                Timeline: {service.packages[activeTab].timeline}
+              </p>
 
-            <Link
-              href="/contact?intent=detailed-proposal"
-              className="mt-5 inline-flex items-center justify-center rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
-            >
-              Get Detailed Proposal
-            </Link>
+              <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-relaxed text-foreground-muted">
+                {service.packages[activeTab].features.map((feature) => (
+                  <li key={feature}>{feature}</li>
+                ))}
+              </ul>
+
+              <p className="mt-5 text-sm text-foreground-muted">
+                <span className="font-semibold text-foreground">Ideal for:</span>{" "}
+                {service.packages[activeTab].idealFor}
+              </p>
+
+              <Link
+                href="/contact?intent=detailed-proposal"
+                className="mt-6 inline-flex min-h-[44px] w-full items-center justify-center rounded-xl bg-primary px-5 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-muted"
+              >
+                Get detailed proposal
+              </Link>
+            </div>
           </div>
-        </div>
-      </div>
+        </Reveal>
+      </Container>
     </section>
   );
 }

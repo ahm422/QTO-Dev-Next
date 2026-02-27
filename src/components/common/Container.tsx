@@ -4,7 +4,8 @@ import { cn } from "@/components/theme/cn";
 
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-  size?: "sm" | "md" | "lg";
+  /** sm: 768px, md: 1024px, lg: 1280px, xl: 1536px, full: 100% */
+  size?: "sm" | "md" | "lg" | "xl" | "full";
 }
 
 export function Container({
@@ -17,6 +18,8 @@ export function Container({
     sm: "max-w-3xl",
     md: "max-w-5xl",
     lg: "max-w-7xl",
+    xl: "max-w-screen-2xl",
+    full: "max-w-full",
   };
 
   return (
