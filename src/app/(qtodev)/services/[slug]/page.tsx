@@ -53,7 +53,7 @@ export default async function ServiceOfferingPage({ params }: PageProps) {
   }
 
   return (
-    <div className="scroll-smooth bg-background text-foreground">
+    <main className="scroll-smooth bg-background text-foreground" aria-label="Service details">
       {/* 1. Sticky Navbar rendered globally in (qtodev)/layout.tsx */}
 
       {/* 2. Hero Banner */}
@@ -81,6 +81,6 @@ export default async function ServiceOfferingPage({ params }: PageProps) {
       <ContactCTA />
 
       {/* 10. Deep Footer rendered globally in (qtodev)/layout.tsx */}
-    </div>
+    </main>
   );
 }
