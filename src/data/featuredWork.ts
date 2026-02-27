@@ -1,13 +1,14 @@
 import type { FeaturedWorkItem } from "@/types/featuredWork";
+import { PEXELS_TECH_IMAGES } from "@/config/pexelsImages";
 
-/** Photo/image assets from public/images/ (JPG/PNG) so images render correctly */
+/** Pexels tech imagery for featured work (issue #60). */
 const SECTION_IMAGES = [
-  "/images/leadgeneration.jpg",
-  "/images/laborhealth.png",
-  "/images/businessperformance.jpg",
-  "/images/career.jpg",
-  "/images/Flooring-1.jpg",
-  "/images/senior-estimator.jpg",
+  PEXELS_TECH_IMAGES[0],
+  PEXELS_TECH_IMAGES[1],
+  PEXELS_TECH_IMAGES[2],
+  PEXELS_TECH_IMAGES[3],
+  PEXELS_TECH_IMAGES[4],
+  PEXELS_TECH_IMAGES[5],
 ] as const;
 
 /**

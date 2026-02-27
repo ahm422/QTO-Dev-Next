@@ -1,8 +1,9 @@
 import type { TestimonialItem } from "@/types/testimonials";
+import { PEXELS_TECH_IMAGES } from "@/config/pexelsImages";
 
 /**
  * Testimonial items for the homepage (issue #26).
- * Uses images from public/images/ when available.
+ * Uses Pexels tech imagery from public/images/ (issue #60).
  */
 export const testimonialsItems: TestimonialItem[] = [
   {
@@ -12,7 +13,7 @@ export const testimonialsItems: TestimonialItem[] = [
     authorName: "Sarah Chan",
     authorTitle: "CTO",
     company: "NetFlow Inc.",
-    thumbnailUrl: "/images/leadgeneration.jpg",
+    thumbnailUrl: PEXELS_TECH_IMAGES[4],
     videoUrl: undefined,
   },
   {
@@ -22,6 +23,6 @@ export const testimonialsItems: TestimonialItem[] = [
     authorName: "Marcus Reid",
     authorTitle: "Product Director",
     company: "TechFlow",
-    thumbnailUrl: "/images/laborhealth.png",
+    thumbnailUrl: PEXELS_TECH_IMAGES[5],
   },
 ];

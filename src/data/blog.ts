@@ -1,4 +1,5 @@
 import { BlogPost } from "@/types/blog";
+import { PEXELS_TECH_IMAGES } from "@/config/pexelsImages";
 
 export const blogPosts: BlogPost[] = [
   {
@@ -30,10 +31,10 @@ export const blogPosts: BlogPost[] = [
     featured: true,
     category: "Web Development",
     tags: ["Next.js", "React", "Tutorial"],
-    image: "/images/career.jpg",
+    image: PEXELS_TECH_IMAGES[0],
     coverImage: {
-      url: "/images/career.jpg",
-      alt: "Getting Started with Next.js 14"
+      url: PEXELS_TECH_IMAGES[0],
+      alt: "Next.js development and modern web stack"
     },
     readingTime: 8,
   },
@@ -64,10 +65,10 @@ export const blogPosts: BlogPost[] = [
     featured: true,
     category: "Performance",
     tags: ["Performance", "Optimization", "Web Vitals"],
-    image: "/images/businessperformance.jpg",
+    image: PEXELS_TECH_IMAGES[1],
     coverImage: {
-      url: "/images/businessperformance.jpg",
-      alt: "Web Performance Optimization"
+      url: PEXELS_TECH_IMAGES[1],
+      alt: "Web performance and optimization"
     },
     readingTime: 12,
   },
@@ -98,10 +99,10 @@ export const blogPosts: BlogPost[] = [
     featured: false,
     category: "React",
     tags: ["React", "Best Practices", "JavaScript"],
-    image: "/images/leadgeneration.jpg",
+    image: PEXELS_TECH_IMAGES[2],
     coverImage: {
-      url: "/images/leadgeneration.jpg",
-      alt: "React Best Practices"
+      url: PEXELS_TECH_IMAGES[2],
+      alt: "React and front-end development"
     },
     readingTime: 10,
   },
@@ -133,10 +134,10 @@ export const blogPosts: BlogPost[] = [
     featured: false,
     category: "CSS",
     tags: ["Tailwind CSS", "CSS", "Styling"],
-    image: "/images/senior-estimator.jpg",
+    image: PEXELS_TECH_IMAGES[3],
     coverImage: {
-      url: "/images/senior-estimator.jpg",
-      alt: "Tailwind CSS Guide"
+      url: PEXELS_TECH_IMAGES[3],
+      alt: "Tailwind CSS and modern UI styling"
     },
     readingTime: 15,
   },
