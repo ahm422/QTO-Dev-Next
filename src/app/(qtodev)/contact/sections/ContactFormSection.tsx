@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Container } from "@/components/common/Container";
-import { Input } from "@/components/ui/shared/Input";
-import { Button } from "@/components/ui/shared/Button";
+import { FormInput } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export function ContactFormSection() {
   const [formData, setFormData] = useState({
@@ -55,7 +55,7 @@ export function ContactFormSection() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
-                <Input
+                <FormInput
                   label="Name"
                   type="text"
                   name="name"
@@ -64,7 +64,7 @@ export function ContactFormSection() {
                   placeholder="Your name"
                   required
                 />
-                <Input
+                <FormInput
                   label="Email"
                   type="email"
                   name="email"
@@ -75,7 +75,7 @@ export function ContactFormSection() {
                 />
               </div>
 
-              <Input
+              <FormInput
                 label="Subject"
                 type="text"
                 name="subject"
@@ -100,7 +100,7 @@ export function ContactFormSection() {
                 />
               </div>
 
-              <Button type="submit" variant="primary" size="lg" className="w-full">
+              <Button type="submit" size="lg" className="w-full">
                 Send Message
               </Button>
             </form>

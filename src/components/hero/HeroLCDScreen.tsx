@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { heroConfig } from "@/config/hero";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/components/theme/cn";
 
 if (typeof window !== "undefined") {
@@ -29,16 +30,14 @@ function useReducedMotion(): boolean {
 
 function HeroHeading() {
   const { heading, headingHighlight } = heroConfig;
+  const headingClasses =
+    "font-heading font-bold leading-tight text-white tracking-tight text-3xl sm:text-4xl md:text-5xl lg:text-6xl";
   if (!headingHighlight || !heading.includes(headingHighlight)) {
-    return (
-      <h1 className="font-heading text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl xl:text-6xl">
-        {heading}
-      </h1>
-    );
+    return <h1 className={headingClasses}>{heading}</h1>;
   }
   const parts = heading.split(headingHighlight);
   return (
-    <h1 className="font-heading text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl xl:text-6xl">
+    <h1 className={headingClasses}>
       {parts.map((part, i) => (
         <span key={i}>
           {part}
@@ -50,13 +49,6 @@ function HeroHeading() {
     </h1>
   );
 }
-
-const ctaBase =
-  "inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black";
-const ctaPrimaryStyles =
-  "px-6 py-3 text-lg bg-primary text-primary-foreground hover:bg-primary-hover shadow-lg shadow-primary/20 hover:shadow-primary/30";
-const ctaSecondaryStyles =
-  "px-6 py-3 text-lg border-2 border-white/80 text-white hover:bg-white/10";
 
 export interface HeroLCDScreenProps {
   scrollTriggerRef?: React.RefObject<HTMLElement | null>;
@@ -183,36 +175,48 @@ export function HeroLCDScreen({
 
             <div className="relative z-10 flex flex-col items-center text-center">
               <HeroHeading />
-
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+              {heroConfig.subtext && (
+                <p
+                  className={cn(
+                    "mt-4 max-w-2xl text-base text-white/85 md:text-lg",
+                    !reducedMotion && "animate-hero-content-fade animation-delay-150 animation-fill-backwards"
+                  )}
+                >
+                  {heroConfig.subtext}
+                </p>
+              )}
+              <div
+                className={cn(
+                  "mt-8 flex flex-wrap items-center justify-center gap-4",
+                  !reducedMotion && "animate-hero-content-fade animation-delay-300 animation-fill-backwards"
+                )}
+              >
                 {primaryHref ? (
-                  <Link
-                    href={primaryHref}
-                    className={cn(ctaBase, ctaPrimaryStyles)}
-                  >
-                    {heroConfig.ctaPrimary}
-                    <AppIcon
-                      name="arrow-right"
-                      size="sm"
-                      className="shrink-0"
-                    />
-                  </Link>
+                  <Button asChild size="lg" className="shadow-lg shadow-primary/20">
+                    <Link href={primaryHref}>
+                      {heroConfig.ctaPrimary}
+                      <AppIcon
+                        name="arrow-right"
+                        size="sm"
+                        className="shrink-0"
+                      />
+                    </Link>
+                  </Button>
                 ) : (
-                  <span className={cn(ctaBase, ctaPrimaryStyles)}>
+                  <Button size="lg" className="shadow-lg shadow-primary/20">
                     {heroConfig.ctaPrimary}
-                  </span>
+                  </Button>
                 )}
                 {secondaryHref ? (
-                  <Link
-                    href={secondaryHref}
-                    className={cn(ctaBase, ctaSecondaryStyles)}
-                  >
-                    {heroConfig.ctaSecondary}
-                  </Link>
+                  <Button asChild variant="outline" size="lg" className="border-white/80 bg-transparent text-white hover:bg-white/10 hover:text-white">
+                    <Link href={secondaryHref}>
+                      {heroConfig.ctaSecondary}
+                    </Link>
+                  </Button>
                 ) : (
-                  <span className={cn(ctaBase, ctaSecondaryStyles)}>
+                  <Button variant="outline" size="lg" className="border-white/80 bg-transparent text-white hover:bg-white/10 hover:text-white">
                     {heroConfig.ctaSecondary}
-                  </span>
+                  </Button>
                 )}
               </div>
             </div>

@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/shared/Card";
+import { Card } from "@/components/ui/card";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
 

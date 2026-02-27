@@ -3,8 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
-import { Card } from "@/components/ui/shared/Card";
-import { Badge } from "@/components/ui/shared/Badge";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Reveal } from "@/components/animations/Reveal";
 import { cn } from "@/components/theme/cn";
 import { blogsPageConfig } from "@/config/blogsPage";
@@ -93,7 +93,7 @@ export function FeaturedPostsSection() {
                       </div>
                       <div className="relative p-6 md:p-7 flex flex-col flex-1">
                         <div className="flex items-center justify-between mb-2">
-                          <Badge variant="primary">{post.category}</Badge>
+                          <Badge variant="default">{post.category}</Badge>
                           <span className="text-sm text-foreground-muted">{post.readingTime} min read</span>
                         </div>
                         <h2 className="text-2xl font-heading font-bold tracking-tight text-foreground mb-2">

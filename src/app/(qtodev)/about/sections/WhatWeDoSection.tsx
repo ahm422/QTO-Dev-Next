@@ -3,7 +3,7 @@
 import { aboutData } from "@/data/about";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
-import { Card } from "@/components/ui/shared/Card";
+import { Card } from "@/components/ui/card";
 import { Reveal } from "@/components/animations/Reveal";
 import { aboutPageConfig } from "@/config/aboutPage";
 import { cn } from "@/components/theme/cn";

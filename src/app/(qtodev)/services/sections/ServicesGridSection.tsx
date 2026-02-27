@@ -4,8 +4,8 @@ import Link from "next/link";
 import { services } from "@/data/services";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
-import { Card } from "@/components/ui/shared/Card";
-import { Button } from "@/components/ui/shared/Button";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import type { AppIconName } from "@/components/ui/shared/AppIcon";
 import { Reveal } from "@/components/animations/Reveal";
@@ -111,8 +111,8 @@ export function ServicesGridSection() {
                       )}
                     >
                       <Button
-                        variant="primary"
-                        size="md"
+                        variant="default"
+                        size="default"
                         className="w-full inline-flex items-center justify-center gap-2 group/btn shadow-md group-hover:shadow-lg transition-shadow duration-300"
                       >
                         {grid.learnMoreLabel}

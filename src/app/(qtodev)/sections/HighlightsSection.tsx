@@ -1,6 +1,6 @@
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
-import { Card } from "@/components/ui/shared/Card";
+import { Card } from "@/components/ui/card";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 
 export function HighlightsSection() {
