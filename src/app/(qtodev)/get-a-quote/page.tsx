@@ -5,7 +5,16 @@ import Link from "next/link";
 import { ContactLayout } from "@/components/contact/ContactLayout";
 import { TrustStrip } from "@/components/marketing/TrustStrip";
 import { FormInput } from "@/components/ui/input";
+import { FormTextarea } from "@/components/ui/textarea";
+import {
+  FormSelect,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { Text } from "@/components/ui/shared/Text";
 import { FormStepper } from "@/components/contact/FormStepper";
 import { analytics } from "@/lib/analytics";
@@ -195,36 +204,23 @@ export default function GetAQuotePage() {
                 Tell us what you’re building and why now.
               </Text>
               <div className="grid gap-6 md:grid-cols-2">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Project type
-                  </label>
-                  <select
-                    name="projectType"
-                    value={formData.projectType}
-                    onChange={(e) => setField("projectType", e.target.value)}
-                    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    required
-                    aria-invalid={!!errors.projectType}
-                  >
-                    <option value="">Select an option</option>
-                    <option value="new-build">New web or mobile product</option>
-                    <option value="modernisation">
-                      Modernising existing product
-                    </option>
-                    <option value="extension">
-                      Feature/module for current product
-                    </option>
-                    <option value="internal-tool">
-                      Internal tool or automation
-                    </option>
-                  </select>
-                  {errors.projectType && (
-                    <p className="mt-1 text-sm text-error">
-                      {errors.projectType}
-                    </p>
-                  )}
-                </div>
+                <FormSelect
+                  label="Project type"
+                  value={formData.projectType}
+                  onValueChange={(v) => setField("projectType", v)}
+                  error={errors.projectType}
+                  required
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select an option" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="new-build">New web or mobile product</SelectItem>
+                    <SelectItem value="modernisation">Modernising existing product</SelectItem>
+                    <SelectItem value="extension">Feature/module for current product</SelectItem>
+                    <SelectItem value="internal-tool">Internal tool or automation</SelectItem>
+                  </SelectContent>
+                </FormSelect>
                 <FormInput
                   label="Industry"
                   name="industry"
@@ -245,24 +241,16 @@ export default function GetAQuotePage() {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">
-                What are you trying to achieve?
-              </label>
-              <textarea
-                name="goals"
-                value={formData.goals}
-                onChange={(e) => setField("goals", e.target.value)}
-                rows={5}
-                placeholder="Share the context, problem, and what success would look like."
-                className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                required
-                aria-invalid={!!errors.goals}
-              />
-              {errors.goals && (
-                <p className="mt-1 text-sm text-error">{errors.goals}</p>
-              )}
-            </div>
+            <FormTextarea
+              label="What are you trying to achieve?"
+              name="goals"
+              value={formData.goals}
+              onChange={(e) => setField("goals", e.target.value)}
+              rows={5}
+              placeholder="Share the context, problem, and what success would look like."
+              required
+              error={errors.goals}
+            />
           </div>
         );
       case 1:
@@ -273,9 +261,7 @@ export default function GetAQuotePage() {
             </Text>
             <div className="grid gap-6 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Budget range
-                </label>
+                <Label className="block text-foreground mb-2">Budget range</Label>
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     { value: "<25k", label: "Under $25k" },
@@ -283,25 +269,22 @@ export default function GetAQuotePage() {
                     { value: "75k-150k", label: "$75k – $150k" },
                     { value: ">150k", label: "Above $150k" },
                   ].map((option) => (
-                    <button
+                    <Button
                       key={option.value}
                       type="button"
+                      variant={formData.budgetRange === option.value ? "default" : "outline"}
+                      className="justify-start text-left"
                       onClick={() =>
                         setField("budgetRange", option.value as BudgetRange)
                       }
-                      className={`rounded-lg border px-3 py-2 text-sm text-left transition-colors ${
-                        formData.budgetRange === option.value
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-border bg-background hover:border-primary/40"
-                      }`}
                       aria-pressed={formData.budgetRange === option.value}
                     >
                       {option.label}
-                    </button>
+                    </Button>
                   ))}
                 </div>
                 {errors.budgetRange && (
-                  <p className="mt-1 text-sm text-error">
+                  <p className="mt-1 text-sm text-destructive">
                     {errors.budgetRange}
                   </p>
                 )}
@@ -329,32 +312,29 @@ export default function GetAQuotePage() {
             </div>
 
             <div>
-              <p className="mb-2 text-sm font-medium text-foreground">
+              <Label className="block text-foreground mb-2">
                 How urgent is this project?
-              </p>
+              </Label>
               <div className="flex flex-wrap gap-2">
                 {[
                   { value: "exploring", label: "Exploring options" },
                   { value: "soon", label: "Soon (this quarter)" },
                   { value: "urgent", label: "Urgent (this month)" },
                 ].map((option) => (
-                  <button
+                  <Button
                     key={option.value}
                     type="button"
+                    variant={formData.urgency === option.value ? "default" : "outline"}
+                    className="rounded-full"
                     onClick={() => setField("urgency", option.value)}
-                    className={`rounded-full border px-4 py-2 text-sm transition-colors ${
-                      formData.urgency === option.value
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border bg-background hover:border-primary/40"
-                    }`}
                     aria-pressed={formData.urgency === option.value}
                   >
                     {option.label}
-                  </button>
+                  </Button>
                 ))}
               </div>
               {errors.urgency && (
-                <p className="mt-1 text-sm text-error">{errors.urgency}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.urgency}</p>
               )}
             </div>
           </div>
@@ -363,24 +343,16 @@ export default function GetAQuotePage() {
       default:
         return (
           <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">
-                Key features or requirements
-              </label>
-              <textarea
-                name="features"
-                value={formData.features}
-                onChange={(e) => setField("features", e.target.value)}
-                rows={4}
-                placeholder="List the most important features or flows you have in mind."
-                className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                required
-                aria-invalid={!!errors.features}
-              />
-              {errors.features && (
-                <p className="mt-1 text-sm text-error">{errors.features}</p>
-              )}
-            </div>
+            <FormTextarea
+              label="Key features or requirements"
+              name="features"
+              value={formData.features}
+              onChange={(e) => setField("features", e.target.value)}
+              rows={4}
+              placeholder="List the most important features or flows you have in mind."
+              required
+              error={errors.features}
+            />
 
             <div className="grid gap-6 md:grid-cols-2">
               <FormInput

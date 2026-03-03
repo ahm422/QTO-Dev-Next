@@ -4,6 +4,14 @@ import { useState } from "react";
 import { ContactLayout } from "@/components/contact/ContactLayout";
 import { TrustStrip } from "@/components/marketing/TrustStrip";
 import { FormInput } from "@/components/ui/input";
+import { FormTextarea } from "@/components/ui/textarea";
+import {
+  FormSelect,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/shared/Text";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
@@ -256,76 +264,59 @@ export default function BookACallPage() {
                   Project context
                 </p>
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-1">
-                      Project type
-                    </label>
-                    <select
-                      name="projectType"
-                      value={formData.projectType}
-                      onChange={handleChange}
-                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
-                      aria-invalid={!!errors.projectType}
-                    >
-                      <option value="">Select an option</option>
-                      <option value="new-build">New product or platform</option>
-                      <option value="modernisation">Modernising existing product</option>
-                      <option value="extension">Feature or module extension</option>
-                      <option value="audit">Architecture or code audit</option>
-                    </select>
-                    {errors.projectType && (
-                      <p className="mt-1 text-sm text-error">{errors.projectType}</p>
-                    )}
-                  </div>
+                  <FormSelect
+                    label="Project type"
+                    value={formData.projectType}
+                    onValueChange={(v) => handleChange({ target: { name: "projectType", value: v } } as React.ChangeEvent<HTMLSelectElement>)}
+                    error={errors.projectType}
+                    required
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select an option" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="new-build">New product or platform</SelectItem>
+                      <SelectItem value="modernisation">Modernising existing product</SelectItem>
+                      <SelectItem value="extension">Feature or module extension</SelectItem>
+                      <SelectItem value="audit">Architecture or code audit</SelectItem>
+                    </SelectContent>
+                  </FormSelect>
 
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-1">
-                      Budget range
-                    </label>
-                    <select
-                      name="budgetRange"
-                      value={formData.budgetRange}
-                      onChange={handleChange}
-                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
-                      aria-invalid={!!errors.budgetRange}
-                    >
-                      <option value="">Choose a range</option>
-                      <option value="<25k">Under $25k</option>
-                      <option value="25k-75k">$25k – $75k</option>
-                      <option value="75k-150k">$75k – $150k</option>
-                      <option value=">150k">Above $150k</option>
-                    </select>
-                    {errors.budgetRange && (
-                      <p className="mt-1 text-sm text-error">
-                        {errors.budgetRange}
-                      </p>
-                    )}
-                  </div>
+                  <FormSelect
+                    label="Budget range"
+                    value={formData.budgetRange}
+                    onValueChange={(v) => handleChange({ target: { name: "budgetRange", value: v } } as React.ChangeEvent<HTMLSelectElement>)}
+                    error={errors.budgetRange}
+                    required
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Choose a range" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="<25k">Under $25k</SelectItem>
+                      <SelectItem value="25k-75k">$25k – $75k</SelectItem>
+                      <SelectItem value="75k-150k">$75k – $150k</SelectItem>
+                      <SelectItem value=">150k">Above $150k</SelectItem>
+                    </SelectContent>
+                  </FormSelect>
 
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-1">
-                      Ideal timeline
-                    </label>
-                    <select
-                      name="timeline"
-                      value={formData.timeline}
-                      onChange={handleChange}
-                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
-                      aria-invalid={!!errors.timeline}
-                    >
-                      <option value="">Select an option</option>
-                      <option value="asap">As soon as possible</option>
-                      <option value="1-3-months">Within 1–3 months</option>
-                      <option value="3-6-months">In 3–6 months</option>
-                      <option value="6plus">6+ months from now</option>
-                    </select>
-                    {errors.timeline && (
-                      <p className="mt-1 text-sm text-error">{errors.timeline}</p>
-                    )}
-                  </div>
+                  <FormSelect
+                    label="Ideal timeline"
+                    value={formData.timeline}
+                    onValueChange={(v) => handleChange({ target: { name: "timeline", value: v } } as React.ChangeEvent<HTMLSelectElement>)}
+                    error={errors.timeline}
+                    required
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select an option" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="asap">As soon as possible</SelectItem>
+                      <SelectItem value="1-3-months">Within 1–3 months</SelectItem>
+                      <SelectItem value="3-6-months">In 3–6 months</SelectItem>
+                      <SelectItem value="6plus">6+ months from now</SelectItem>
+                    </SelectContent>
+                  </FormSelect>
                 </div>
               </div>
 
@@ -362,24 +353,16 @@ export default function BookACallPage() {
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground-muted">
                   Agenda
                 </p>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    What would you like to discuss?
-                  </label>
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    rows={5}
+                <FormTextarea
+                  label="What would you like to discuss?"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  rows={5}
                     placeholder="Share a short overview of your product, team, and what you’d like help with."
-                    className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    required
-                    aria-invalid={!!errors.message}
-                  />
-                  {errors.message && (
-                    <p className="mt-1 text-sm text-error">{errors.message}</p>
-                  )}
-                </div>
+                  required
+                  error={errors.message}
+                />
               </div>
 
               <div className="flex flex-col items-stretch gap-3 pt-2">

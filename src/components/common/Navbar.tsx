@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HeaderCTAButton } from "@/components/common/HeaderCTAButton";
 import { SiteLogo } from "@/components/common/SiteLogo";
+import { Button } from "@/components/ui/button";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { useState } from "react";
 import { useTheme } from "@/components/theme/ThemeProvider";
@@ -63,14 +64,16 @@ export function Navbar() {
           </div>
 
           <div className="hidden md:flex shrink-0 items-center gap-2 lg:gap-3">
-            <button
+            <Button
               type="button"
+              variant="outline"
+              size="icon"
               aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
-              className="rounded-lg border border-border p-2 text-foreground hover:bg-surface-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:p-2.5"
+              className="lg:size-10"
               onClick={toggleTheme}
             >
               <AppIcon name={theme === "dark" ? "sun" : "moon"} size="sm" className="h-5 w-5 lg:h-6 lg:w-6" />
-            </button>
+            </Button>
             <HeaderCTAButton href="/book-a-call" className="lg:px-5 lg:py-2.5 lg:text-base">
               Book a Call
             </HeaderCTAButton>
@@ -79,14 +82,16 @@ export function Navbar() {
             </HeaderCTAButton>
           </div>
 
-          <button
+          <Button
             type="button"
+            variant="outline"
+            size="icon"
             aria-label="Toggle navigation menu"
-            className="inline-flex md:hidden items-center justify-center rounded-md border border-border p-2 text-foreground hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:p-2.5"
+            className="inline-flex md:hidden sm:size-9"
             onClick={() => setIsMenuOpen((prev) => !prev)}
           >
             <AppIcon name={isMenuOpen ? "xmark" : "bars"} size="sm" className="h-5 w-5 sm:h-6 sm:w-6" />
-          </button>
+          </Button>
         </div>
 
         {isMenuOpen ? (
@@ -111,15 +116,16 @@ export function Navbar() {
               })}
             </nav>
             <div className="mt-4 flex items-center gap-2">
-                <button
-                  type="button"
-                  aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
-                  className="rounded-lg border border-border p-2 text-foreground hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                  onClick={toggleTheme}
-                >
-                  <AppIcon name={theme === "dark" ? "sun" : "moon"} size="sm" className="h-5 w-5" />
-                </button>
-              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+                onClick={toggleTheme}
+              >
+                <AppIcon name={theme === "dark" ? "sun" : "moon"} size="sm" className="h-5 w-5" />
+              </Button>
+            </div>
             <div className="mt-4 grid grid-cols-2 gap-2">
                 <HeaderCTAButton
                   href="/book-a-call"
