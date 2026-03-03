@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { Container } from "@/components/common/Container";
 import { FormInput } from "@/components/ui/input";
+import { FormTextarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export function ContactFormSection() {
   const [formData, setFormData] = useState({
@@ -47,11 +49,11 @@ export function ContactFormSection() {
           <h2 className="text-3xl font-bold mb-8 text-center">Send us a Message</h2>
 
           {submitted ? (
-            <div className="bg-success/15 border border-success rounded-lg p-6 text-center">
-              <p className="text-success font-semibold">
+            <Alert variant="success" className="p-6 text-center">
+              <AlertDescription className="text-success font-semibold m-0">
                 Thank you for reaching out! We'll get back to you soon.
-              </p>
-            </div>
+              </AlertDescription>
+            </Alert>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
@@ -85,20 +87,15 @@ export function ContactFormSection() {
                 required
               />
 
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Message
-                </label>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder="Tell us more about your project..."
-                  rows={6}
-                  required
-                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-              </div>
+              <FormTextarea
+                label="Message"
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                placeholder="Tell us more about your project..."
+                rows={6}
+                required
+              />
 
               <Button type="submit" size="lg" className="w-full">
                 Send Message

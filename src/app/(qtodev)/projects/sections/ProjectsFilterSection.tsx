@@ -1,7 +1,7 @@
 "use client";
 
 import { Container } from "@/components/common/Container";
-import { cn } from "@/components/theme/cn";
+import { Button } from "@/components/ui/button";
 
 interface ProjectsFilterSectionProps {
   categories: string[];
@@ -19,21 +19,16 @@ export function ProjectsFilterSection({
       <Container>
         <div role="group" className="flex flex-wrap gap-3 justify-center">
           {categories.map((category) => (
-            <button
+            <Button
               key={category}
               type="button"
+              variant={activeCategory === category ? "default" : "outline"}
+              className="rounded-full px-6"
               onClick={() => onCategoryChange(category)}
               aria-current={activeCategory === category ? "true" : undefined}
-              className={cn(
-                "px-6 py-2.5 rounded-full font-medium transition-colors",
-                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
-                activeCategory === category
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-surface-muted text-foreground border border-border hover:bg-background hover:border-primary/30"
-              )}
             >
               {category}
-            </button>
+            </Button>
           ))}
         </div>
       </Container>

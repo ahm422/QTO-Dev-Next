@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { FormInput } from "@/components/ui/input";
+import { FormTextarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { partnerUpConfig } from "@/config/partnerUp";
@@ -370,20 +371,15 @@ function PartnerUpForm() {
             placeholder={partnerUpConfig.phonePlaceholder}
           />
 
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              {partnerUpConfig.messageLabel}
-            </label>
-            <textarea
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              placeholder={partnerUpConfig.messagePlaceholder}
-              rows={5}
-              required
-              className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow"
-            />
-          </div>
+          <FormTextarea
+            label={partnerUpConfig.messageLabel}
+            name="message"
+            value={formData.message}
+            onChange={handleChange}
+            placeholder={partnerUpConfig.messagePlaceholder}
+            rows={5}
+            required
+          />
 
           <div className="flex flex-wrap gap-6">
             <label className="flex items-center gap-2 cursor-pointer text-sm text-foreground-muted">
