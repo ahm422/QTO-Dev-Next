@@ -201,7 +201,11 @@ function FormSelect({
   const id = idProp ?? (label ? label.replace(/\s+/g, "-").toLowerCase() : undefined) ?? generatedId
   const childArray = React.Children.toArray(children)
   const withTriggerId = childArray.map((child, index) => {
-    if (index === 0 && React.isValidElement(child) && child.props?.id === undefined) {
+    if (
+      index === 0 &&
+      React.isValidElement(child) &&
+      (child as React.ReactElement<{ id?: string }>).props?.id === undefined
+    ) {
       return React.cloneElement(child as React.ReactElement<{ id?: string }>, { id })
     }
     return child
