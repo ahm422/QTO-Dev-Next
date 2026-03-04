@@ -1,19 +1,11 @@
-import Link from "next/link";
 import { Container } from "@/components/common/Container";
 import { Heading } from "@/components/ui/shared/Heading";
-import { Breadcrumbs } from "@/components/common/Breadcrumbs";
-import { AppIcon } from "@/components/ui/shared/AppIcon";
-import { cn } from "@/components/theme/cn";
 import { blogsPageConfig } from "@/config/blogsPage";
 
 const HEADING_ID = "blogs-hero-heading";
 
 export function BlogsHeroSection() {
   const { hero } = blogsPageConfig;
-  const breadcrumbItems = [
-    { label: "Home", href: "/" },
-    { label: hero.breadcrumbLabel },
-  ];
 
   return (
     <section
@@ -32,7 +24,7 @@ export function BlogsHeroSection() {
             lineHeight: 1,
           }}
         >
-          Blog
+          Insights
         </p>
       </div>
 
@@ -48,32 +40,16 @@ export function BlogsHeroSection() {
 
       <Container className="relative z-20">
         <div className="max-w-2xl">
-          <div className="text-primary-foreground/85 [&_a]:text-primary-foreground [&_a:hover]:text-primary-foreground/90">
-            <Breadcrumbs items={breadcrumbItems} />
-          </div>
           <Heading
             id={HEADING_ID}
             level={1}
-            className="text-primary-foreground mb-6 mt-5 font-heading tracking-tight"
+            className="text-primary-foreground mb-6 font-heading tracking-tight"
           >
             {hero.heading}
           </Heading>
           <p className="text-xl md:text-2xl text-primary-foreground/90 mb-10 leading-relaxed max-w-xl">
             {hero.subhead}
           </p>
-          <Link
-            href={hero.ctaHref}
-            className={cn(
-              "group inline-flex items-center gap-3 font-semibold rounded-xl transition-all duration-300",
-              "px-7 py-3.5 text-lg",
-              "bg-primary-foreground text-primary hover:bg-primary-foreground/95",
-              "shadow-xl shadow-black/15 hover:shadow-2xl hover:shadow-black/20 hover:-translate-y-0.5",
-              "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
-            )}
-          >
-            {hero.ctaText}
-            <AppIcon name="arrow-right" size="sm" className="shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
-          </Link>
         </div>
       </Container>
     </section>

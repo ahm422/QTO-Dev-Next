@@ -5,12 +5,10 @@
 
 export const blogsPageConfig = {
   hero: {
-    heading: "Our Blog",
+    heading: "Insights & Articles",
     subhead:
-      "Insights, tips, and best practices from our team of experts.",
+      "Stay updated with industry trends, technology insights, business automation strategies, and expert development guides from our team.",
     breadcrumbLabel: "Blog",
-    ctaText: "Subscribe",
-    ctaHref: "/contact",
   },
   featured: {
     subtitle: "FEATURED",
@@ -33,9 +31,9 @@ export const blogsPageConfig = {
     placeholderText: "More articles coming soon.",
   },
   cta: {
-    title: "Stay in the loop",
-    description: "Get the latest posts and updates delivered to your inbox.",
-    primaryButtonText: "Subscribe",
+    title: "Ready to Build Your Next Project?",
+    description: "Turn ideas from our articles into real-world solutions with a team that ships high-performance software.",
+    primaryButtonText: "Request a Free Consultation",
     primaryButtonHref: "/contact",
   },
 } as const;

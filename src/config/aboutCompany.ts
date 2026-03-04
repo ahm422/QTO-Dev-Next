@@ -15,19 +15,19 @@ export const aboutCompanyConfig = {
   description:
     "We partner with businesses to build scalable technology solutions. From back-end systems to product design, we bring clarity and execution to every project.",
 
-  /** Pill-style tags (label + icon for Back-End Development, Product Design, etc.) */
-  tags: [
-    { label: "Back-End Development", icon: "server" },
-    { label: "Product Design", icon: "shapes" },
-  ],
+  /** Pill-style tags (label + icon) — cleaned up per content request */
+  tags: [],
 
   /** Circular CTA on the image card */
   exploreMoreLabel: "EXPLORE MORE",
   exploreMoreHref: "/about",
 
   /**
-   * Stat labels only. Values are taken from aboutData.company
-   * in order: projects, clients, team (formatted in section as "20.5 k" style).
+   * Stats displayed as value + label (homepage About section).
    */
-  statLabels: ["Projects Done", "Happy Clients", "Team Members"],
+  stats: [
+    { value: "200+", label: "Successful Projects Delivered" },
+    { value: "150+", label: "Satisfied Clients Worldwide" },
+    { value: "45+", label: "Skilled Professionals" },
+  ],
 } as const;

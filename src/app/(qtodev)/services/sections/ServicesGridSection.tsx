@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { services } from "@/data/services";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
@@ -61,6 +62,23 @@ export function ServicesGridSection() {
                     "focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-surface-muted focus-within:outline-none"
                   )}
                 >
+                  {/* Background image with gradient overlay */}
+                  {service.image && (
+                    <div
+                      className="pointer-events-none absolute inset-0 -z-10"
+                      aria-hidden
+                    >
+                      <Image
+                        src={service.image}
+                        alt={service.imageAlt ?? ""}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover"
+                        priority={false}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-br from-surface/95 via-surface/92 to-surface/90 group-hover:from-surface/90 group-hover:via-surface/85 group-hover:to-surface/85 transition-colors duration-300" />
+                    </div>
+                  )}
                   {/* Subtle corner gradient on hover */}
                   <div
                     className="pointer-events-none absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"

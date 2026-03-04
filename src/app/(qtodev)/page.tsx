@@ -1,5 +1,4 @@
 import { HeroSection } from "./sections/HeroSection";
-import { AwardsCertificationsSection } from "./sections/AwardsCertificationsSection";
 import { AboutCompanySection } from "./sections/AboutCompanySection";
 import { OurServicesSection } from "./sections/OurServicesSection";
 import { HowWeWorkSection } from "./sections/HowWeWorkSection";
@@ -19,7 +18,6 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <AwardsCertificationsSection />
       <AboutCompanySection />
       <OurServicesSection />
       <HowWeWorkSection />

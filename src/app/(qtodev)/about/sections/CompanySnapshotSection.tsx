@@ -10,10 +10,9 @@ import { aboutPageConfig } from "@/config/aboutPage";
 const HEADING_ID = "about-company-snapshot-heading";
 
 const STATS = [
-  { label: "Founded", value: aboutData.company.founded },
-  { label: "Team Members", value: aboutData.company.team },
-  { label: "Happy Clients", value: aboutData.company.clients },
-  { label: "Projects Delivered", value: aboutData.company.projects },
+  { label: "Successful Projects Delivered", value: "200+" },
+  { label: "Satisfied Clients Worldwide", value: "150+" },
+  { label: "Skilled Professionals", value: "45+" },
 ] as const;
 
 export function CompanySnapshotSection() {
@@ -66,10 +65,9 @@ export function CompanySnapshotSection() {
           <div data-reveal>
             <Card className="p-8 md:p-9 rounded-2xl bg-surface border border-border shadow-sm">
               <p className="text-lg text-foreground-muted leading-relaxed">
-                Since {aboutData.company.founded}, {aboutData.company.name} has
-                been at the forefront of digital transformation. We&apos;ve worked
-                with startups to enterprises, delivering innovative solutions
-                that solve real business challenges.
+                At QTO Dev, we focus on secure, scalable, and performance-driven software that helps
+                organizations operate smarter and grow faster. From custom web platforms to enterprise
+                ERP and automation, our team brings deep technical expertise to every engagement.
               </p>
             </Card>
           </div>

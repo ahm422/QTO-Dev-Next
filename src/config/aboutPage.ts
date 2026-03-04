@@ -5,9 +5,10 @@
 
 export const aboutPageConfig = {
   hero: {
-    heading: "About QTO Dev",
+    pageHeading: "About QTO Dev",
+    heading: "Empowering Businesses Through Intelligent Technology",
     subhead:
-      "We're a team of passionate developers and designers creating digital solutions that drive real business results.",
+      "At QTO Dev, we specialize in building secure, scalable, and performance-driven software solutions. Our expertise spans custom web platforms, enterprise ERP systems, and workflow automation tools designed to help organizations operate smarter and grow faster in a competitive digital landscape.",
     ctaText: "Learn More",
     ctaHref: "/contact",
     breadcrumbLabel: "About",
