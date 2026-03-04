@@ -16,7 +16,7 @@ export const aboutCompanyConfig = {
     "We partner with businesses to build scalable technology solutions. From back-end systems to product design, we bring clarity and execution to every project.",
 
   /** Pill-style tags (label + icon) — cleaned up per content request */
-  tags: [],
+  tags: [] as Array<{ icon: string; label: string }>,
 
   /** Circular CTA on the image card */
   exploreMoreLabel: "EXPLORE MORE",
