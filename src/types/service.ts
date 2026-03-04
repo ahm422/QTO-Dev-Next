@@ -6,6 +6,10 @@ export interface Service {
   shortDescription: string;
   icon: string;
   features: string[];
+  /** Optional background image for service cards */
+  image?: string;
+  /** Optional alt text for background image (used where appropriate) */
+  imageAlt?: string;
   relatedProjects?: string[];
   /** Two columns of bullets for detail panel (left column, right column) */
   bulletColumns?: [string[], string[]];

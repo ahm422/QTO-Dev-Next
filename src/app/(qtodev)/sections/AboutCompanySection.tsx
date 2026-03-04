@@ -7,19 +7,10 @@ import { Heading } from "@/components/ui/shared/Heading";
 import { Text } from "@/components/ui/shared/Text";
 import { aboutCompanyConfig } from "@/config/aboutCompany";
 import { PEXELS_TECH_IMAGES, PEXELS_ALT_TECH } from "@/config/pexelsImages";
-import { aboutData } from "@/data/about";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import type { AppIconName } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
 import { Reveal } from "@/components/animations/Reveal";
-
-/** Format stat value for display (e.g. 20500 → "20.5 k", 200 → "200") */
-function formatStat(value: number): string {
-  if (value >= 1000) {
-    return `${(value / 1000).toFixed(1)} k`;
-  }
-  return String(value);
-}
 
 const IMAGE_OFFICE = PEXELS_TECH_IMAGES[0];
 const IMAGE_MEETING = PEXELS_TECH_IMAGES[1];
@@ -27,10 +18,8 @@ const IMAGE_ALT_OFFICE = PEXELS_ALT_TECH[0];
 const IMAGE_ALT_MEETING = PEXELS_ALT_TECH[1];
 
 export function AboutCompanySection() {
-  const { subtitle, title, description, tags, exploreMoreLabel, exploreMoreHref, statLabels } =
+  const { subtitle, title, description, tags, exploreMoreLabel, exploreMoreHref, stats } =
     aboutCompanyConfig;
-  const { projects, clients, team } = aboutData.company;
-  const statValues = [projects, clients, team];
 
   return (
     <section
@@ -177,12 +166,12 @@ export function AboutCompanySection() {
               ))}
             </div>
             <div className="grid grid-cols-3 gap-4 md:gap-6">
-              {statLabels.map((label, i) => (
+              {stats.map((stat, i) => (
                 <div key={i} className="text-center md:text-left">
                   <div className="text-2xl md:text-3xl font-bold text-white tabular-nums">
-                    {formatStat(statValues[i] ?? 0)}
+                    {stat.value}
                   </div>
-                  <p className="text-sm text-primary-foreground/80 mt-1">{label}</p>
+                  <p className="text-sm text-primary-foreground/80 mt-1">{stat.label}</p>
                 </div>
               ))}
             </div>

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/common/Container";
 import { Heading } from "@/components/ui/shared/Heading";
-import { Breadcrumbs } from "@/components/common/Breadcrumbs";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
 import { projectsPageConfig } from "@/config/projectsPage";
@@ -10,10 +9,6 @@ const HEADING_ID = "projects-hero-heading";
 
 export function ProjectsHeroSection() {
   const { hero } = projectsPageConfig;
-  const breadcrumbItems = [
-    { label: "Home", href: "/" },
-    { label: hero.breadcrumbLabel },
-  ];
 
   return (
     <section
@@ -48,13 +43,10 @@ export function ProjectsHeroSection() {
 
       <Container className="relative z-20">
         <div className="max-w-2xl">
-          <div className="text-primary-foreground/85 [&_a]:text-primary-foreground [&_a:hover]:text-primary-foreground/90">
-            <Breadcrumbs items={breadcrumbItems} />
-          </div>
           <Heading
             id={HEADING_ID}
             level={1}
-            className="text-primary-foreground mb-6 mt-5 font-heading tracking-tight"
+            className="text-primary-foreground mb-6 font-heading tracking-tight"
           >
             {hero.heading}
           </Heading>

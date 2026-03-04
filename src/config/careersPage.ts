@@ -1,8 +1,8 @@
 export const careersPageConfig = {
   hero: {
-    heading: "Build Your Career With QTO Dev",
+    heading: "Build Your Career With QTO DEV.",
     subhead:
-      "Join a focused team of builders shipping high-impact digital products for ambitious companies around the world.",
+      "We are always looking for passionate developers, designers, and problem-solvers to join our growing team. If you’re driven by innovation and excellence, we’d love to hear from you.",
     primaryCtaText: "View Open Roles",
     primaryCtaHref: "#open-roles",
     secondaryCtaText: "Learn About QTO Dev",

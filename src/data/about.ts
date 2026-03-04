@@ -30,20 +30,12 @@ export const aboutData = {
   ],
   whatWeDo: [
     {
-      title: "Web Development",
-      description: "Build powerful web applications using modern technologies",
+      title: "Web & Mobile Applications",
+      description: "Deliver high-performance web and mobile apps tailored to your business workflows.",
     },
     {
-      title: "Mobile Apps",
-      description: "Create native and cross-platform mobile applications",
-    },
-    {
-      title: "UI/UX Design",
-      description: "Design beautiful and intuitive user interfaces",
-    },
-    {
-      title: "Consulting",
-      description: "Provide strategic technology consulting and planning",
+      title: "Technology Consulting",
+      description: "Provide strategic guidance on architecture, performance, and platform choices.",
     },
   ],
 };

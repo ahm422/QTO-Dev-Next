@@ -20,11 +20,11 @@ export const heroConfig = {
   backgroundHeadline: "SITES THAT MOVE",
 
   /** Primary foreground copy; optional word to highlight in primary color */
-  heading: "Beautiful Web Solutions for Modern Business",
-  headingHighlight: "Beautiful",
+  heading: "Engineering Smart Digital Solutions for Growing Businesses",
+  headingHighlight: "Smart Digital Solutions",
   subtext:
-    "We craft expressive, performant web experiences that turn attention into action.",
-  ctaPrimary: "Get Started",
+    "We design and develop high-performance web applications, ERP systems, and business automation platforms that help companies scale efficiently and operate smarter.",
+  ctaPrimary: "Request a Free Consultation",
   ctaPrimaryHref: "/contact",
   ctaSecondary: "View Services",
   ctaSecondaryHref: "/services",

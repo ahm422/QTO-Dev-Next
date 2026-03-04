@@ -7,7 +7,7 @@ export const servicesPageConfig = {
   hero: {
     heading: "Our Services",
     subhead:
-      "Comprehensive technology solutions designed to accelerate your business growth",
+      "We deliver end-to-end digital solutions tailored to your business needs. From custom development to enterprise-grade systems, we build scalable, secure, and future-ready software.",
     ctaText: "Get in Touch",
     ctaHref: "/contact",
     breadcrumbLabel: "Services",

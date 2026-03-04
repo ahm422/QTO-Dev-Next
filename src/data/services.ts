@@ -1,4 +1,5 @@
 import { Service } from "@/types/service";
+import { PEXELS_TECH_IMAGES, PEXELS_ALT_TECH } from "@/config/pexelsImages";
 
 export const services: Service[] = [
   {
@@ -27,12 +28,14 @@ export const services: Service[] = [
       ["SPA & MPA Architecture", "API Development", "SEO-Ready"],
     ],
     technologyTags: ["React", "Next.js", "TypeScript", "Node.js", "Python"],
+    image: PEXELS_TECH_IMAGES[0],
+    imageAlt: PEXELS_ALT_TECH[0],
   },
   {
     id: "2",
     slug: "mobile-development",
-    title: "Mobile Development",
-    shortDescription: "Native and cross-platform mobile applications",
+    title: "Mobile App Development",
+    shortDescription: "Native and cross-platform mobile app experiences",
     description:
       "We deliver native and cross-platform mobile apps that feel at home on iOS and Android. From concept to App Store deployment, we focus on performance, offline support, and seamless integration with your backend.",
     icon: "mobile-screen",
@@ -50,6 +53,8 @@ export const services: Service[] = [
       ["Push Notifications", "Offline Support", "Real-time Sync"],
     ],
     technologyTags: ["React Native", "Swift", "Kotlin", "Flutter"],
+    image: PEXELS_TECH_IMAGES[1],
+    imageAlt: PEXELS_ALT_TECH[1],
   },
   {
     id: "3",
@@ -73,6 +78,8 @@ export const services: Service[] = [
       ["Accessibility (a11y)", "Conversion Optimization", "Visual Design"],
     ],
     technologyTags: ["Figma", "Adobe XD", "Prototyping", "Design Systems"],
+    image: PEXELS_TECH_IMAGES[2],
+    imageAlt: PEXELS_ALT_TECH[2],
   },
   {
     id: "4",
@@ -96,6 +103,8 @@ export const services: Service[] = [
       ["Technology Strategy", "Code Review", "Best Practices"],
     ],
     technologyTags: ["Architecture", "DevOps", "Security", "Strategy"],
+    image: PEXELS_TECH_IMAGES[3],
+    imageAlt: PEXELS_ALT_TECH[3],
   },
   {
     id: "5",
@@ -119,12 +128,14 @@ export const services: Service[] = [
       ["Monitoring & Observability", "Container Orchestration", "Cost Optimization"],
     ],
     technologyTags: ["AWS", "Docker", "Kubernetes", "Terraform", "GitHub Actions"],
+    image: PEXELS_TECH_IMAGES[4],
+    imageAlt: PEXELS_ALT_TECH[4],
   },
   {
     id: "6",
     slug: "ai-machine-learning",
-    title: "AI & Machine Learning",
-    shortDescription: "Intelligent solutions powered by data and ML",
+    title: "Generative AI",
+    shortDescription: "Intelligent solutions powered by data, ML, and LLMs",
     description:
       "We build intelligent features and ML-powered products that leverage your data. From recommendation engines to custom models, we help you integrate AI in a practical, scalable way that delivers real business value.",
     icon: "robot",
@@ -142,5 +153,7 @@ export const services: Service[] = [
       ["NLP & Computer Vision", "Model Deployment", "MLOps"],
     ],
     technologyTags: ["Python", "TensorFlow", "PyTorch", "MLOps", "LLMs"],
+    image: PEXELS_TECH_IMAGES[5],
+    imageAlt: PEXELS_ALT_TECH[5],
   },
 ];

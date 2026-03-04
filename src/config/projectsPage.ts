@@ -5,20 +5,20 @@
 
 export const projectsPageConfig = {
   hero: {
-    heading: "Our Portfolio",
+    heading: "Our Projects",
     subhead:
-      "Explore our latest projects and case studies showcasing innovative solutions delivered for clients worldwide.",
+      "Explore our portfolio of successful digital solutions delivered to startups, enterprises, and growing businesses across various industries.",
     ctaText: "Get In Touch",
     ctaHref: "/contact",
     breadcrumbLabel: "Projects",
   },
   grid: {
-    subtitle: "OUR WORK",
-    title: "Selected Projects & Case Studies",
-    titleHighlight: "Selected",
+    subtitle: "OUR PROJECTS",
+    title: "Our Projects",
+    titleHighlight: "Projects",
     description:
-      "From e-commerce and SaaS to mobile and web—here’s a sample of the solutions we’ve built.",
-    viewProjectLabel: "View case",
+      "Explore our portfolio of successful digital solutions delivered to startups, enterprises, and growing businesses across various industries.",
+    viewProjectLabel: "View project",
   },
   filter: {
     allLabel: "All",
