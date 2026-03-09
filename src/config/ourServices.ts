@@ -19,4 +19,7 @@ export const ourServicesConfig = {
 
   /** Label for the "Learn more" link in the detail panel */
   learnMoreLabel: "Learn more →",
+
+  /** Label for the CTA button that navigates to the full Services page */
+  exploreMoreLabel: "Explore more services",
 } as const;

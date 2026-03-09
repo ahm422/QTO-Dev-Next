@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
@@ -64,30 +65,73 @@ export function OurServicesSection() {
                   key={service.id}
                   href={getLearnMoreHref(service)}
                   className={cn(
-                    "rounded-xl border-2 p-5 sm:p-6 flex flex-col items-center justify-center text-center",
+                    "group relative overflow-hidden rounded-xl border-2 p-5 sm:p-6 flex flex-col items-center justify-center text-center",
                     "min-h-[130px] sm:min-h-[150px] transition-all duration-200",
-                    "bg-surface border-border hover:border-primary/40 hover:shadow-md",
+                    "bg-surface border-border/60 hover:border-primary/50 hover:shadow-lg hover:-translate-y-0.5",
                     "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-muted"
                   )}
                 >
-                  <span
-                    className={cn(
-                      "w-12 h-12 rounded-xl flex items-center justify-center mb-3 transition-colors",
-                      "bg-surface-muted text-foreground-muted group-hover:text-primary group-hover:bg-primary/15"
-                    )}
-                  >
-                    <AppIcon
-                      name={service.icon as AppIconName}
-                      size="lg"
-                      className="shrink-0"
-                    />
-                  </span>
-                  <span className="font-semibold text-foreground text-sm sm:text-base leading-tight">
-                    {service.title}
-                  </span>
+                  {service.image && (
+                    <div
+                      className="pointer-events-none absolute inset-0 -z-10"
+                      aria-hidden
+                    >
+                      <Image
+                        src={service.image}
+                        alt={service.imageAlt ?? ""}
+                        fill
+                        sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                        className="object-cover"
+                        priority={false}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-br from-surface/95 via-surface/92 to-surface/90 group-hover:from-surface/90 group-hover:via-surface/85 group-hover:to-surface/85 transition-colors duration-300" />
+                    </div>
+                  )}
+
+                  <div className="relative z-10 flex flex-col items-center">
+                    <span
+                      className={cn(
+                        "w-12 h-12 rounded-xl flex items-center justify-center mb-3 transition-colors",
+                        "bg-surface-muted text-foreground-muted group-hover:text-primary group-hover:bg-primary/15"
+                      )}
+                    >
+                      <AppIcon
+                        name={service.icon as AppIconName}
+                        size="lg"
+                        className="shrink-0"
+                      />
+                    </span>
+                    <span className="font-semibold text-foreground text-sm sm:text-base leading-tight">
+                      {service.title}
+                    </span>
+                  </div>
                 </Link>
               ))}
             </div>
+          </div>
+
+          <div
+            data-reveal
+            className="mt-10 flex justify-center"
+          >
+            <Link
+              href="/services"
+              className={cn(
+                "group inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm sm:text-base font-semibold",
+                "bg-primary text-primary-foreground hover:bg-primary/90",
+                "shadow-lg shadow-black/10 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-muted"
+              )}
+            >
+              {ourServicesConfig.exploreMoreLabel}
+              <span className="inline-flex items-center justify-center rounded-full bg-primary-foreground/15 p-1">
+                <AppIcon
+                  name="arrow-right"
+                  size="sm"
+                  className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
+                />
+              </span>
+            </Link>
           </div>
         </Reveal>
       </Container>
