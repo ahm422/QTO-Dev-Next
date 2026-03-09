@@ -13,7 +13,7 @@ const SECTION_HEADING_ID = "how-we-work-heading";
 const howWeWorkSteps: WorkProcessStep[] = [
   {
     order: 1,
-    title: "Discovery",
+    title: "Requirements Gathering",
     description:
       "We dig into your goals, users, and constraints to define a clear problem statement and success metrics.",
     icon: "magnifying-glass",
@@ -41,7 +41,7 @@ const howWeWorkSteps: WorkProcessStep[] = [
   },
   {
     order: 5,
-    title: "Launch",
+    title: "Deployment",
     description:
       "We coordinate releases, monitoring, and rollback plans so going live feels controlled—not chaotic.",
     icon: "rocket",
