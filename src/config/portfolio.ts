@@ -1,17 +1,17 @@
 /**
- * Portfolio section copy (issue #18).
- * Left-aligned header, title with gold highlight, tagline, and View All CTA.
+ * Portfolio section copy (issue #18, #72).
+ * Centered "Our Featured Work" header and View All CTA.
  */
 
 export const portfolioConfig = {
-  /** Small uppercase label above the main title (e.g. "PORTFOLIO") */
-  subtitle: "PORTFOLIO",
+  /** Small uppercase label above the main title */
+  subtitle: "OUR FEATURED WORK",
 
   /** Main section title; titleHighlight is wrapped in primary/gold */
-  title: "Custom Software Development Highlights",
+  title: "Our Featured Work",
 
   /** Word within title to highlight (primary/gold) */
-  titleHighlight: "Highlights",
+  titleHighlight: "Featured",
 
   /** Tagline below the main title */
   description:

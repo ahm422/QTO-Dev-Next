@@ -1,4 +1,5 @@
 import type { PortfolioCase } from "@/types/portfolio";
+import { PEXELS_TECH_IMAGES, PEXELS_ALT_TECH } from "@/config/pexelsImages";
 
 export const portfolioCases: PortfolioCase[] = [
   {
@@ -7,6 +8,8 @@ export const portfolioCases: PortfolioCase[] = [
     industry: "FINTECH",
     initial: "F",
     gradient: "blue-purple",
+    image: PEXELS_TECH_IMAGES[0],
+    imageAlt: PEXELS_ALT_TECH[0],
   },
   {
     caseNumber: "02",
@@ -14,6 +17,8 @@ export const portfolioCases: PortfolioCase[] = [
     industry: "HEALTHCARE",
     initial: "M",
     gradient: "grey",
+    image: PEXELS_TECH_IMAGES[1],
+    imageAlt: PEXELS_ALT_TECH[1],
   },
   {
     caseNumber: "03",
@@ -21,6 +26,8 @@ export const portfolioCases: PortfolioCase[] = [
     industry: "E-COMMERCE",
     initial: "S",
     gradient: "dark",
+    image: PEXELS_TECH_IMAGES[2],
+    imageAlt: PEXELS_ALT_TECH[2],
   },
   {
     caseNumber: "04",
@@ -28,6 +35,8 @@ export const portfolioCases: PortfolioCase[] = [
     industry: "EDUCATION",
     initial: "L",
     gradient: "orange",
+    image: PEXELS_TECH_IMAGES[5],
+    imageAlt: PEXELS_ALT_TECH[5],
   },
   {
     caseNumber: "05",
@@ -35,6 +44,8 @@ export const portfolioCases: PortfolioCase[] = [
     industry: "REAL ESTATE",
     initial: "P",
     gradient: "green",
+    image: PEXELS_TECH_IMAGES[4],
+    imageAlt: PEXELS_ALT_TECH[4],
   },
   {
     caseNumber: "06",
@@ -42,5 +53,7 @@ export const portfolioCases: PortfolioCase[] = [
     industry: "LOGISTICS",
     initial: "G",
     gradient: "red",
+    image: PEXELS_TECH_IMAGES[3],
+    imageAlt: PEXELS_ALT_TECH[3],
   },
 ];
