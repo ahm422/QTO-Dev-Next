@@ -21,6 +21,8 @@ export const featuredWorkItems: FeaturedWorkItem[] = [
     caseNumber: "01",
     title: "FinFlow Inc.",
     category: "FINTECH",
+    description:
+      "Payment infrastructure and analytics platform for modern finance teams. Streamlined reconciliation and real-time reporting.",
     slug: "finflow-inc",
     image: SECTION_IMAGES[0],
     order: 1,
@@ -30,6 +32,8 @@ export const featuredWorkItems: FeaturedWorkItem[] = [
     caseNumber: "02",
     title: "MediTrack Health",
     category: "HEALTHCARE",
+    description:
+      "Patient and wellness tracking app with secure records and care coordination. Built for clinics and telehealth.",
     slug: "meditrack-health",
     image: SECTION_IMAGES[1],
     order: 2,
@@ -39,6 +43,8 @@ export const featuredWorkItems: FeaturedWorkItem[] = [
     caseNumber: "03",
     title: "ShopVerse",
     category: "E-COMMERCE",
+    description:
+      "Headless commerce and storefront for brands scaling online. Custom checkout, inventory, and multi-channel sales.",
     slug: "shopverse",
     image: SECTION_IMAGES[2],
     order: 3,
@@ -48,6 +54,8 @@ export const featuredWorkItems: FeaturedWorkItem[] = [
     caseNumber: "04",
     title: "GreenChain Logistics",
     category: "LOGISTICS",
+    description:
+      "End-to-end supply chain visibility and route optimization. Reduces emissions and delivery times for fleet operators.",
     slug: "greenchain-logistics",
     image: SECTION_IMAGES[3],
     order: 4,
@@ -57,6 +65,8 @@ export const featuredWorkItems: FeaturedWorkItem[] = [
     caseNumber: "05",
     title: "PropWise Realty",
     category: "REAL ESTATE",
+    description:
+      "Property listings, virtual tours, and deal management for agents and developers. From search to closing.",
     slug: "propwise-realty",
     image: SECTION_IMAGES[4],
     order: 5,
@@ -66,6 +76,8 @@ export const featuredWorkItems: FeaturedWorkItem[] = [
     caseNumber: "06",
     title: "LearnHub Education",
     category: "EDUCATION",
+    description:
+      "Learning management and course platform for schools and training providers. Assessments, progress tracking, and certifications.",
     slug: "learnhub-education",
     image: SECTION_IMAGES[5],
     order: 6,

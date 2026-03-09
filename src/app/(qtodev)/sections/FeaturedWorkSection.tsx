@@ -9,6 +9,8 @@ import { featuredWorkItems } from "@/data/featuredWork";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
 
+const SLIDE_TRANSITION_MS = 300;
+
 function useReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
   useEffect(() => {
@@ -31,15 +33,15 @@ function getBackgroundLabel(item: (typeof featuredWorkItems)[0], index: number):
 
 export function FeaturedWorkSection() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [displayIndex, setDisplayIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [stripWidth, setStripWidth] = useState(0);
   const reducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
   const items = featuredWorkItems;
   const activeItem = items[activeIndex];
-
-  const sectionHeightVh = items.length * 100;
+  const displayItem = items[displayIndex];
 
   useEffect(() => {
     const strip = stripRef.current;
@@ -50,60 +52,37 @@ export function FeaturedWorkSection() {
     return () => ro.disconnect();
   }, [items.length]);
 
+  // When activeIndex changes, run fade-out then update displayIndex then fade-in (skip if reduced motion)
   useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
+    if (activeIndex === displayIndex) return;
+    if (reducedMotion) {
+      setDisplayIndex(activeIndex);
+      return;
+    }
+    setIsTransitioning(true);
+  }, [activeIndex, displayIndex, reducedMotion]);
 
-    const onScroll = () => {
-      const rect = section.getBoundingClientRect();
-      const sectionTop = rect.top + window.scrollY;
-      const sectionHeight = section.offsetHeight;
-      const scrollable = sectionHeight - window.innerHeight;
-      if (scrollable <= 0) {
-        setScrollProgress(0);
-        setActiveIndex(0);
-        return;
-      }
-      const progress = Math.max(0, Math.min(1, (window.scrollY - sectionTop) / scrollable));
-      setScrollProgress(progress);
-      const index = Math.min(
-        Math.floor(progress * items.length),
-        items.length - 1
-      );
-      setActiveIndex(index);
-    };
+  useEffect(() => {
+    if (!isTransitioning) return;
+    const t = setTimeout(() => {
+      setDisplayIndex(activeIndex);
+      setIsTransitioning(false);
+    }, SLIDE_TRANSITION_MS);
+    return () => clearTimeout(t);
+  }, [isTransitioning, activeIndex]);
 
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [items.length]);
-
-  const scrollToSlide = useCallback(
-    (index: number) => {
-      const section = sectionRef.current;
-      if (!section) return;
-      const rect = section.getBoundingClientRect();
-      const sectionTop = rect.top + window.scrollY;
-      const sectionHeight = section.offsetHeight;
-      const scrollable = Math.max(0, sectionHeight - window.innerHeight);
-      const progress = items.length <= 1 ? 0 : index / (items.length - 1);
-      const targetScroll = sectionTop + progress * scrollable;
-      window.scrollTo({ top: targetScroll, behavior: "smooth" });
-    },
-    [items.length]
-  );
+  // Background strip: drive by displayIndex so it moves with the slide (no scroll)
+  const stripProgress = items.length <= 1 ? 0 : displayIndex / Math.max(1, items.length - 1);
+  const stripScrollWidth = stripWidth > 0 ? stripWidth / 2 : 0;
+  const stripTranslateX = -stripProgress * stripScrollWidth;
 
   const goPrev = useCallback(() => {
-    const next = activeIndex <= 0 ? items.length - 1 : activeIndex - 1;
-    setActiveIndex(next);
-    scrollToSlide(next);
-  }, [items.length, activeIndex, scrollToSlide]);
+    setActiveIndex((i) => (i <= 0 ? items.length - 1 : i - 1));
+  }, [items.length]);
 
   const goNext = useCallback(() => {
-    const next = activeIndex >= items.length - 1 ? 0 : activeIndex + 1;
-    setActiveIndex(next);
-    scrollToSlide(next);
-  }, [items.length, activeIndex, scrollToSlide]);
+    setActiveIndex((i) => (i >= items.length - 1 ? 0 : i + 1));
+  }, [items.length]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -119,14 +98,12 @@ export function FeaturedWorkSection() {
 
   if (items.length === 0) return null;
 
-  const stripScrollWidth = stripWidth > 0 ? stripWidth / 2 : 0;
-  const translateX = -scrollProgress * stripScrollWidth;
+  const contentOpacity = reducedMotion ? 1 : isTransitioning ? 0 : 1;
 
   return (
     <div
       ref={sectionRef}
-      className="relative w-full bg-black text-white"
-      style={{ height: `${sectionHeightVh}vh` }}
+      className="relative w-full min-h-screen bg-black text-white"
       aria-label="Featured work"
     >
       {/* Soft gradient accents */}
@@ -139,8 +116,8 @@ export function FeaturedWorkSection() {
         }}
       />
 
-      <div className="sticky top-0 left-0 z-10 w-full h-screen overflow-hidden flex flex-col">
-        {/* Background strip */}
+      <div className="relative z-10 flex min-h-screen w-full flex-col overflow-hidden">
+        {/* Background strip: position driven by active slide index (no scroll) */}
         <div
           className="absolute inset-0 flex items-center pointer-events-none overflow-hidden"
           aria-hidden
@@ -149,10 +126,10 @@ export function FeaturedWorkSection() {
             ref={stripRef}
             className={cn(
               "flex gap-10 md:gap-20 whitespace-nowrap pl-6 md:pl-10 font-heading text-white/20 uppercase tracking-[0.2em] text-2xl md:text-4xl lg:text-5xl font-semibold",
-              !reducedMotion && "transition-transform duration-100"
+              !reducedMotion && "transition-transform duration-500 ease-out"
             )}
             style={{
-              transform: stripWidth > 0 ? `translateX(${translateX}px)` : undefined,
+              transform: stripWidth > 0 ? `translateX(${stripTranslateX}px)` : undefined,
             }}
           >
             {[...items, ...items].map((item, index) => (
@@ -163,15 +140,21 @@ export function FeaturedWorkSection() {
           </div>
         </div>
 
-        <div className="relative z-10 flex-1 flex flex-col justify-center min-h-0">
+        <div className="relative z-10 flex min-h-screen flex-1 flex-col justify-center">
           <div
             role="region"
             aria-roledescription="carousel"
             aria-label="Featured projects"
             className="flex flex-col h-full"
           >
-            <div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,420px)_1fr] gap-10 lg:gap-16 items-stretch flex-1 min-h-0 px-4 sm:px-6 lg:px-10">
-              {/* Left: details */}
+            <div
+              className={cn(
+                "grid grid-cols-1 lg:grid-cols-[minmax(300px,420px)_1fr] gap-10 lg:gap-16 items-stretch flex-1 min-h-0 px-4 sm:px-6 lg:px-10 transition-opacity",
+                reducedMotion ? "" : "duration-300 ease-out"
+              )}
+              style={{ opacity: contentOpacity }}
+            >
+              {/* Left: project name and short description */}
               <div className="order-2 lg:order-1 flex flex-col justify-center">
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center gap-3">
@@ -180,30 +163,32 @@ export function FeaturedWorkSection() {
                       className="font-heading text-sm font-semibold tabular-nums text-white/70"
                       aria-hidden
                     >
-                      {activeItem.caseNumber}
+                      {displayItem.caseNumber}
                     </span>
                   </div>
                   <h2 className="font-heading text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl leading-tight">
-                    {activeItem.title}
+                    {displayItem.title}
                   </h2>
                   <span className="inline-flex w-fit rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white/80">
-                    {activeItem.category}
+                    {displayItem.category}
                   </span>
+                  {displayItem.description && (
+                    <p className="mt-2 text-sm md:text-base text-white/70 leading-relaxed max-w-lg">
+                      {displayItem.description}
+                    </p>
+                  )}
                 </div>
               </div>
 
               {/* Right: image */}
               <div className="order-1 lg:order-2 relative w-full max-w-4xl max-h-[42vh] sm:max-h-[48vh] lg:max-h-[56vh] aspect-[3/4] lg:aspect-[4/3] rounded-2xl overflow-hidden bg-black/80 justify-self-center lg:justify-self-end self-center shadow-2xl ring-2 ring-white/10">
                 <Image
-                  src={activeItem.image}
+                  src={displayItem.image}
                   alt=""
                   fill
-                  className={cn(
-                    "object-cover",
-                    reducedMotion ? "" : "transition-opacity duration-300"
-                  )}
+                  className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 60vw"
-                  priority={activeIndex === 0}
+                  priority={displayIndex === 0}
                 />
               </div>
             </div>
@@ -217,13 +202,13 @@ export function FeaturedWorkSection() {
 
                 <div className="flex flex-wrap items-center gap-4 sm:gap-6">
                   <Link
-                    href={`/projects/${activeItem.slug}`}
+                    href={`/projects/${displayItem.slug}`}
                     className={cn(
                       "inline-flex items-center gap-2 rounded-xl border-2 border-white/30 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white",
                       "hover:border-primary hover:bg-primary/20 hover:text-white transition-all duration-200",
                       "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                     )}
-                    aria-label={`View project: ${activeItem.title}`}
+                    aria-label={`View project: ${displayItem.title}`}
                   >
                     {featuredWorkConfig.viewProjectLabel}
                     <AppIcon name="arrow-right" size="sm" className="shrink-0" />

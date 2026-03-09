@@ -7,6 +7,8 @@ export interface FeaturedWorkItem {
   caseNumber: string;
   title: string;
   category: string;
+  /** Short description for the Featured Work section (issue #73). */
+  description?: string;
   slug: string;
   image: string;
   order?: number;
