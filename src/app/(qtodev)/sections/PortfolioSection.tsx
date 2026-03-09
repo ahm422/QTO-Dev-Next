@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { portfolioConfig } from "@/config/portfolio";
@@ -10,7 +11,7 @@ import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Reveal } from "@/components/animations/Reveal";
 import { cn } from "@/components/theme/cn";
 
-const SECTION_HEADING_ID = "portfolio-heading";
+const SECTION_HEADING_ID = "featured-work-heading";
 
 const gradientClasses: Record<PortfolioGradientKey, string> = {
   "blue-purple": "from-primary to-cta-gold",
@@ -28,62 +29,77 @@ function PortfolioCard({
   item: PortfolioCase;
   isLink: boolean;
 }) {
-  const content = (
+  const cardContent = (
     <>
-      <div className="absolute right-4 top-4">
-        <span
-          className="inline-flex rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary"
-          aria-hidden
-        >
-          Case {item.caseNumber}
-        </span>
-      </div>
-      <div className="flex flex-col items-center pt-8 pb-6">
-        <div
-          className={cn(
-            "flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br shadow-lg text-2xl font-bold text-white ring-2 ring-white/10",
-            gradientClasses[item.gradient]
-          )}
-        >
-          <span aria-hidden>{item.initial}</span>
+      {/* Image or gradient placeholder — aspect 16/10 */}
+      <div className="relative w-full aspect-[16/10] overflow-hidden bg-muted">
+        {item.image ? (
+          <Image
+            src={item.image}
+            alt={item.imageAlt ?? ""}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <div
+            className={cn(
+              "absolute inset-0 flex items-center justify-center bg-gradient-to-br text-2xl font-bold text-white ring-2 ring-white/10",
+              gradientClasses[item.gradient]
+            )}
+            aria-hidden
+          >
+            <span>{item.initial}</span>
+          </div>
+        )}
+        <div className="absolute right-4 top-4 z-10">
+          <span
+            className="inline-flex rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary"
+            aria-hidden
+          >
+            Case {item.caseNumber}
+          </span>
         </div>
-        <h3 className="mt-5 text-center font-heading text-xl font-semibold text-foreground">
+      </div>
+      <div className="flex flex-col items-center p-6 text-center">
+        <h3 className="font-heading text-xl font-semibold text-foreground">
           {item.companyName}
         </h3>
         <span className="mt-2 inline-flex rounded-full bg-surface-muted px-3 py-1 text-xs font-medium uppercase tracking-wide text-foreground-muted">
           {item.industry}
         </span>
+        {isLink && (
+          <div className="mt-4 flex justify-center border-t border-border pt-4 opacity-0 transition-opacity group-hover:opacity-100">
+            <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
+              View case
+              <AppIcon name="arrow-right" size="sm" className="shrink-0" />
+            </span>
+          </div>
+        )}
       </div>
-      {isLink && (
-        <div className="flex justify-center border-t border-border pt-4 opacity-0 transition-opacity group-hover:opacity-100">
-          <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
-            View case
-            <AppIcon name="arrow-right" size="sm" className="shrink-0" />
-          </span>
-        </div>
-      )}
     </>
   );
 
   const href = item.slug ? `/projects/${item.slug}` : undefined;
+  const cardClassName = cn(
+    "group relative block rounded-2xl overflow-hidden border border-border bg-surface text-left",
+    "shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/20",
+    "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+  );
 
   if (href) {
     return (
       <Link
         href={href}
-        className="group relative block rounded-2xl border border-border bg-surface p-6 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        className={cardClassName}
         aria-label={`View project: ${item.companyName}`}
       >
-        {content}
+        {cardContent}
       </Link>
     );
   }
 
-  return (
-    <div className="relative rounded-2xl border border-border bg-surface p-6 text-left shadow-sm transition-all duration-300 hover:shadow-md">
-      {content}
-    </div>
-  );
+  return <div className={cardClassName}>{cardContent}</div>;
 }
 
 export function PortfolioSection() {
@@ -103,8 +119,8 @@ export function PortfolioSection() {
 
       <Container className="relative">
         <Reveal staggerSelector="[data-reveal]">
-          <div className="flex flex-col gap-6 sm:flex-row sm:justify-between sm:items-end sm:gap-8">
-            <div data-reveal className="flex-1 min-w-0">
+          <div className="flex flex-col items-center text-center">
+            <div data-reveal className="max-w-2xl">
               <SectionHeader
                 subtitle={portfolioConfig.subtitle}
                 subtitleClassName="text-primary font-semibold tracking-widest"
@@ -113,18 +129,18 @@ export function PortfolioSection() {
                 titleHighlight={portfolioConfig.titleHighlight}
                 description={portfolioConfig.description}
                 headingId={SECTION_HEADING_ID}
-                centered={false}
+                centered={true}
               />
             </div>
             <Link
               data-reveal
               href={portfolioConfig.viewAllHref}
               className={cn(
-                "shrink-0 inline-flex items-center gap-2 rounded-xl border-2 border-primary bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground",
+                "mt-6 inline-flex items-center gap-2 rounded-xl border-2 border-primary bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground",
                 "transition-all duration-200 hover:bg-primary-hover hover:shadow-lg hover:shadow-primary/20",
                 "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               )}
-              aria-label="View all portfolio projects"
+              aria-label="View all featured work"
             >
               {portfolioConfig.viewAllLabel}
               <AppIcon name="arrow-right" size="sm" className="shrink-0" />
