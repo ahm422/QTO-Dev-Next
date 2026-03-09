@@ -1,12 +1,12 @@
 /**
- * About Company section copy (issue #12).
+ * About QTO DEV section copy (issue #68).
  * Section label, title, description, tags, CTA, and stat labels.
  * Stat values come from @/data/about (company.projects, clients, team).
  */
 
 export const aboutCompanyConfig = {
-  /** Small uppercase label with dashes (e.g. "— ABOUT COMPANY —") */
-  subtitle: "ABOUT COMPANY",
+  /** Small uppercase label with dashes (e.g. "— ABOUT QTO DEV —") */
+  subtitle: "About QTO DEV",
 
   /** Main section heading */
   title: "Navigating Tech Horizons Together",

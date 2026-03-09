@@ -18,7 +18,7 @@ const IMAGE_ALT_OFFICE = PEXELS_ALT_TECH[0];
 const IMAGE_ALT_MEETING = PEXELS_ALT_TECH[1];
 
 export function AboutCompanySection() {
-  const { subtitle, title, description, tags, exploreMoreLabel, exploreMoreHref, stats } =
+  const { subtitle, title, description, tags, exploreMoreLabel, exploreMoreHref } =
     aboutCompanyConfig;
 
   return (
@@ -127,7 +127,7 @@ export function AboutCompanySection() {
             </div>
           </div>
 
-          {/* Right column: label, heading, body, tags, stats */}
+          {/* Right column: label, heading, body, CTA, tags */}
           <div className="order-1 lg:order-2 text-primary-foreground">
             <p
               className="text-xs uppercase tracking-widest text-primary-foreground/80 mb-3 flex items-center gap-3"
@@ -151,6 +151,20 @@ export function AboutCompanySection() {
             >
               {description}
             </Text>
+            <div className="mb-8">
+              <Link
+                href={exploreMoreHref}
+                className={cn(
+                  "inline-flex items-center justify-center px-6 py-2.5 rounded-full",
+                  "bg-white text-primary font-semibold text-sm shadow-md",
+                  "hover:bg-primary-foreground hover:text-primary-foreground/90 hover:shadow-lg",
+                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary",
+                  "transition-colors transition-shadow duration-200"
+                )}
+              >
+                About QTO DEV
+              </Link>
+            </div>
             <div className="flex flex-wrap gap-3 mb-8">
               {tags.map((tag, i) => (
                 <span
@@ -163,16 +177,6 @@ export function AboutCompanySection() {
                   <AppIcon name={tag.icon as AppIconName} size="sm" className="text-sm" />
                   <span className="text-sm font-medium">{tag.label}</span>
                 </span>
-              ))}
-            </div>
-            <div className="grid grid-cols-3 gap-4 md:gap-6">
-              {stats.map((stat, i) => (
-                <div key={i} className="text-center md:text-left">
-                  <div className="text-2xl md:text-3xl font-bold text-white tabular-nums">
-                    {stat.value}
-                  </div>
-                  <p className="text-sm text-primary-foreground/80 mt-1">{stat.label}</p>
-                </div>
               ))}
             </div>
           </div>
