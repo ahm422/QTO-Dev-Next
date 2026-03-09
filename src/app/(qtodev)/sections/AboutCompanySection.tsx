@@ -56,7 +56,7 @@ export function AboutCompanySection() {
             data-reveal
             className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center"
           >
-          {/* Left column: imagery + CTA — order second on mobile so content appears first */}
+          {/* Left column: imagery — no Explore More button on the image */}
           <div className="relative order-2 lg:order-1 flex justify-center lg:justify-start">
             <div className="relative w-full max-w-[420px] lg:max-w-[480px] aspect-[4/3]">
               {/* Larger card (background) — elevated with shadow */}
@@ -86,44 +86,6 @@ export function AboutCompanySection() {
                   className="object-cover"
                 />
               </div>
-              {/* Circular Explore More CTA (top-right of larger card) */}
-              <Link
-                href={exploreMoreHref}
-                className={cn(
-                  "absolute top-4 right-4 z-20 w-16 h-16 rounded-full bg-black text-white shadow-lg",
-                  "flex items-center justify-center",
-                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary",
-                  "hover:scale-105 hover:shadow-xl transition-all duration-200"
-                )}
-                aria-label="Explore more"
-              >
-                <svg
-                  viewBox="0 0 64 64"
-                  className="w-full h-full"
-                  aria-hidden
-                >
-                  <defs>
-                    <path
-                      id="about-company-cta-circle"
-                      d="M 32 8 A 24 24 0 1 1 31.99 8"
-                      fill="none"
-                    />
-                  </defs>
-                  <text className="text-[5px] fill-white font-semibold uppercase">
-                    <textPath href="#about-company-cta-circle" startOffset="0">
-                      {exploreMoreLabel}
-                    </textPath>
-                  </text>
-                  <path
-                    d="M28 34 L32 38 L36 34"
-                    stroke="white"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    fill="none"
-                  />
-                </svg>
-              </Link>
             </div>
           </div>
 
