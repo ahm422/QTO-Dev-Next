@@ -163,6 +163,17 @@ h6 {
   }
 }
 
+/* Services hero: static image background using shared Pexels imagery */
+.services-hero-image-bg {
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.4) 55%, transparent 70%),
+    linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.25)),
+    url("/images/pexels-thisisengineering-3861958.jpg");
+  background-size: 160% 160%, cover, cover;
+  background-position: left center, center, center;
+  background-repeat: no-repeat;
+}
+
 /* Hero background headline: subtle entrance when cycling phrases */
 @keyframes hero-headline-fade {
   from {
