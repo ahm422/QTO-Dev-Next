@@ -136,17 +136,17 @@ export default function BookACallPage() {
         subtitle="Share a bit about your product and goals. We’ll use this call to understand your context, explore options, and give you a clear next step—no pressure, no jargon."
         size="xl"
         sideContent={
-          <div className="space-y-6">
-            <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-foreground-muted">
-              <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-primary">
+          <div className="space-y-5 sm:space-y-6">
+            <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em]">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-primary">
                 <AppIcon name="clock" size="sm" className="!text-[10px]" />
                 15–30 min call
               </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-surface-muted px-3 py-1">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-muted px-3 py-1.5 text-foreground-muted">
                 <AppIcon name="headphones" size="sm" className="!text-[10px]" />
                 Senior expert, not sales
               </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-surface-muted px-3 py-1">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-muted px-3 py-1.5 text-foreground-muted">
                 <AppIcon name="bolt" size="sm" className="!text-[10px]" />
                 Follow-up in &lt;24h
               </span>
@@ -154,31 +154,37 @@ export default function BookACallPage() {
 
             <TrustStrip orientation="column" />
 
-            <div className="space-y-3 rounded-2xl border border-border bg-surface-muted/80 p-4 text-sm text-foreground-muted">
-              <p className="font-semibold text-foreground">
+            <div className="space-y-4 rounded-2xl border border-border/70 bg-surface-muted/80 p-4 sm:p-5 shadow-sm text-sm">
+              <p className="font-semibold text-foreground text-[13px] sm:text-sm">
                 What to expect on the call
               </p>
-              <ul className="space-y-2">
-                <li className="flex items-start gap-2">
-                  <span className="mt-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-success/15 text-success">
+              <ul className="space-y-2.5">
+                <li className="flex items-start gap-2.5">
+                  <span className="mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-success/15 text-success">
                     <AppIcon name="check" size="sm" className="!text-[8px]" />
                   </span>
-                  <span>Discovery on goals, constraints, and current product.</span>
+                  <span className="text-foreground-muted leading-snug">
+                    Discovery on goals, constraints, and current product.
+                  </span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-success/15 text-success">
+                <li className="flex items-start gap-2.5">
+                  <span className="mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-success/15 text-success">
                     <AppIcon name="check" size="sm" className="!text-[8px]" />
                   </span>
-                  <span>Concrete ideas on scope, risks, and technical approach.</span>
+                  <span className="text-foreground-muted leading-snug">
+                    Concrete ideas on scope, risks, and technical approach.
+                  </span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-success/15 text-success">
+                <li className="flex items-start gap-2.5">
+                  <span className="mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-success/15 text-success">
                     <AppIcon name="check" size="sm" className="!text-[8px]" />
                   </span>
-                  <span>A simple next step you can act on immediately.</span>
+                  <span className="text-foreground-muted leading-snug">
+                    A simple next step you can act on immediately.
+                  </span>
                 </li>
               </ul>
-              <p className="pt-2 text-xs text-foreground-muted">
+              <p className="pt-1 text-xs text-foreground-muted/90 leading-relaxed">
                 No pressure or hard sell. If we’re not the right fit, we’ll say so and
                 point you in the right direction.
               </p>
