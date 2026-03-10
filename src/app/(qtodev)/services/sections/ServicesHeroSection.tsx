@@ -15,42 +15,22 @@ export function ServicesHeroSection() {
       className="relative py-24 md:py-32 lg:py-36 bg-primary text-primary-foreground overflow-hidden"
       aria-labelledby={HEADING_ID}
     >
-      {/* Decorative background headline */}
+      {/* Static hero backdrop using shared Pexels tech imagery */}
       <div
-        className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center"
+        className="pointer-events-none absolute inset-0 z-10 services-hero-image-bg"
         aria-hidden
-      >
-        <p
-          className="font-heading text-center font-bold uppercase tracking-wide text-primary-foreground/6 select-none whitespace-nowrap px-4"
-          style={{
-            fontSize: "clamp(4rem, 18vw, 14rem)",
-            lineHeight: 1,
-          }}
-        >
-          Services
-        </p>
-      </div>
-
-      {/* Rich gradient overlay for depth */}
-      <div
-        className="pointer-events-none absolute inset-0 z-10"
-        aria-hidden
-        style={{
-          background:
-            "radial-gradient(ellipse 90% 60% at 30% 20%, rgba(255,255,255,0.12) 0%, transparent 45%), radial-gradient(ellipse 70% 50% at 80% 80%, rgba(255,255,255,0.06) 0%, transparent 45%), radial-gradient(ellipse 60% 40% at 50% 50%, rgba(0,0,0,0.03) 0%, transparent 60%)",
-        }}
       />
 
       <Container className="relative z-20">
-        <div className="max-w-2xl">
+        <div className="max-w-2xl rounded-2xl bg-black/65 backdrop-blur-sm px-6 py-8 md:px-8 md:py-10 text-white">
           <Heading
             id={HEADING_ID}
             level={1}
-            className="text-primary-foreground mb-6 font-heading tracking-tight"
+            className="text-white mb-6 font-heading tracking-tight"
           >
             {hero.heading}
           </Heading>
-          <p className="text-xl md:text-2xl text-primary-foreground/90 mb-10 leading-relaxed max-w-xl">
+          <p className="text-xl md:text-2xl text-white/90 mb-10 leading-relaxed max-w-xl">
             {hero.subhead}
           </p>
           <Link
@@ -58,7 +38,7 @@ export function ServicesHeroSection() {
             className={cn(
               "group inline-flex items-center gap-3 font-semibold rounded-xl transition-all duration-300",
               "px-7 py-3.5 text-lg",
-              "bg-primary-foreground text-primary hover:bg-primary-foreground/95",
+              "bg-primary text-primary-foreground hover:bg-primary-hover",
               "shadow-xl shadow-black/15 hover:shadow-2xl hover:shadow-black/20 hover:-translate-y-0.5",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
             )}
