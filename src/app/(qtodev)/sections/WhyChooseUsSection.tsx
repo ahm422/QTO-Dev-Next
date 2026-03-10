@@ -136,7 +136,7 @@ export function WhyChooseUsSection() {
                   <h3 className="font-heading text-2xl font-bold leading-tight text-white sm:text-3xl shrink-0">
                     {currentItem.title}
                   </h3>
-                  <p className="mt-4 flex-1 min-h-0 overflow-y-auto text-base leading-relaxed text-white/95 sm:text-lg max-w-xl pr-1">
+                  <p className="mt-4 flex-1 min-h-0 overflow-y-auto scrollbar-none text-base leading-relaxed text-white/95 sm:text-lg max-w-xl pr-1">
                     {currentItem.description}
                   </p>
                 </div>
