@@ -1,8 +1,5 @@
-import Link from "next/link";
 import { Container } from "@/components/common/Container";
 import { Heading } from "@/components/ui/shared/Heading";
-import { AppIcon } from "@/components/ui/shared/AppIcon";
-import { cn } from "@/components/theme/cn";
 import { servicesPageConfig } from "@/config/servicesPage";
 
 const HEADING_ID = "services-hero-heading";
@@ -30,22 +27,9 @@ export function ServicesHeroSection() {
           >
             {hero.heading}
           </Heading>
-          <p className="text-xl md:text-2xl text-white/90 mb-10 leading-relaxed max-w-xl">
+          <p className="text-xl md:text-2xl text-white/90 mb-0 leading-relaxed max-w-xl">
             {hero.subhead}
           </p>
-          <Link
-            href={hero.ctaHref}
-            className={cn(
-              "group inline-flex items-center gap-3 font-semibold rounded-xl transition-all duration-300",
-              "px-7 py-3.5 text-lg",
-              "bg-primary text-primary-foreground hover:bg-primary-hover",
-              "shadow-xl shadow-black/15 hover:shadow-2xl hover:shadow-black/20 hover:-translate-y-0.5",
-              "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
-            )}
-          >
-            {hero.ctaText}
-            <AppIcon name="arrow-right" size="sm" className="shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
-          </Link>
         </div>
       </Container>
     </section>
