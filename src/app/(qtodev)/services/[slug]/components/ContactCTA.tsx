@@ -111,7 +111,7 @@ export function ContactCTA() {
 
                 <Button
                   type="submit"
-                  className="mt-2 min-h-[44px] w-full hover:-translate-y-0.5 hover:shadow-xl"
+                  className="mt-2 min-h-[44px] w-full sm:w-auto sm:min-h-0 sm:px-6 hover:-translate-y-0.5 hover:shadow-xl"
                 >
                   Send message – we reply in &lt;24h
                 </Button>

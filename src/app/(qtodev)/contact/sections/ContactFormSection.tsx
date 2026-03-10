@@ -97,7 +97,7 @@ export function ContactFormSection() {
                 required
               />
 
-              <Button type="submit" size="lg" className="w-full">
+              <Button type="submit" size="lg" className="w-full sm:w-auto sm:px-6">
                 Send Message
               </Button>
             </form>
