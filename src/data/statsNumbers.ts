@@ -7,7 +7,7 @@ export const statsNumbersItems: StatsNumbersItem[] = [
   {
     id: "projects-delivered",
     label: "Projects Delivered",
-    value: "+120",
+    value: "120+",
     description:
       "High-performance web & mobile applications delivered for startups and enterprises across 15+ countries worldwide.",
     variant: "default",
@@ -23,7 +23,7 @@ export const statsNumbersItems: StatsNumbersItem[] = [
   {
     id: "countries-served",
     label: "Countries Served",
-    value: "+15",
+    value: "15+",
     description:
       "Global reach with teams in multiple time zones, delivering around the clock for clients worldwide.",
     variant: "default",
@@ -31,7 +31,7 @@ export const statsNumbersItems: StatsNumbersItem[] = [
   {
     id: "years-experience",
     label: "Years Experience",
-    value: "+8",
+    value: "8+",
     description:
       "Deep expertise in FinTech, Healthcare, E-Commerce, AdTech, and enterprise-grade SaaS platforms.",
     variant: "dark",
