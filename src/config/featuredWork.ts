@@ -5,13 +5,13 @@
 
 export const featuredWorkConfig = {
   /** Label for "View project" CTA link */
-  viewProjectLabel: "VIEW PROJECT +",
+  viewProjectLabel: "VIEW PROJECT",
 
   /** Label for "Let's talk" CTA link */
   letsTalkLabel: "LET'S TALK +",
 
   /** Bottom-left footer label (e.g. site/project identifier) */
-  footerLabel: "QTO DEV 6 2026",
+  footerLabel: "QTO DEV",
 
   /** href for the "Let's talk" link */
   contactHref: "/contact",
