@@ -15,7 +15,7 @@ export const whyChooseUsConfig = {
   ctaLabel: "See solutions",
 
   /** CTA href (e.g. /solutions or /contact) */
-  ctaHref: "/solutions",
+  ctaHref: "/services",
 
   /** Small uppercase label on the benefit card */
   cardLabel: "WHY QTO DEV?",
