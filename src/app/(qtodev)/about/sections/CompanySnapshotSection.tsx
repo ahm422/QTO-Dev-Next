@@ -10,9 +10,9 @@ import { aboutPageConfig } from "@/config/aboutPage";
 const HEADING_ID = "about-company-snapshot-heading";
 
 const STATS = [
-  { label: "Successful Projects Delivered", value: "200+" },
-  { label: "Satisfied Clients Worldwide", value: "150+" },
-  { label: "Skilled Professionals", value: "45+" },
+  { label: "Product Engineering Roots", value: "Built from the ground up" },
+  { label: "Enterprise-Grade Delivery", value: "Battle-tested delivery discipline" },
+  { label: "Long-Term Partnerships", value: "Relationships that grow with you" },
 ] as const;
 
 export function CompanySnapshotSection() {
@@ -20,7 +20,7 @@ export function CompanySnapshotSection() {
 
   return (
     <section
-      className="relative py-20 md:py-28 overflow-hidden bg-surface-muted border-y border-border"
+      className="relative py-24 md:py-28 lg:py-32 overflow-hidden bg-gradient-to-b from-primary/5 via-surface-muted to-surface-muted border-y border-border"
       aria-labelledby={HEADING_ID}
     >
       {/* Soft gradient orbs for depth */}
@@ -47,27 +47,38 @@ export function CompanySnapshotSection() {
             />
           </div>
 
-          <div className="grid md:grid-cols-4 gap-8 lg:gap-10 mb-12">
+          <div className="grid gap-8 md:grid-cols-3 lg:gap-12 mb-14">
             {STATS.map((stat, i) => (
               <div key={stat.label} data-reveal>
-                <Card className="p-6 md:p-7 text-center rounded-2xl border border-border bg-surface shadow-sm hover:shadow-md transition-shadow duration-300 h-full flex flex-col justify-center">
-                  <div className="text-3xl md:text-4xl font-bold text-primary mb-2 font-heading">
-                    {stat.value}
+                <Card className="group relative h-full overflow-hidden rounded-3xl border border-border/70 bg-surface shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:border-primary/70">
+                  <div className="relative flex h-full flex-col items-center justify-center px-6 py-7 md:px-8 md:py-9 text-center">
+                    <div className="mb-1 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-primary/70">
+                      {stat.label}
+                    </div>
+                    <div className="text-lg md:text-xl font-semibold text-foreground font-heading leading-snug max-w-xs">
+                      {stat.value}
+                    </div>
+                    <span className="mt-3 h-px w-10 rounded-full bg-gradient-to-r from-primary/40 via-primary to-primary/40 opacity-60 group-hover:opacity-100 group-hover:w-14 transition-all duration-300" />
                   </div>
-                  <p className="text-foreground-muted text-sm md:text-base">
-                    {stat.label}
-                  </p>
                 </Card>
               </div>
             ))}
           </div>
 
           <div data-reveal>
-            <Card className="p-8 md:p-9 rounded-2xl bg-surface border border-border shadow-sm">
-              <p className="text-lg text-foreground-muted leading-relaxed">
-                At QTO Dev, we focus on secure, scalable, and performance-driven software that helps
-                organizations operate smarter and grow faster. From custom web platforms to enterprise
-                ERP and automation, our team brings deep technical expertise to every engagement.
+            <Card className="p-8 md:p-10 rounded-2xl bg-surface border border-border/80 shadow-sm md:text-center">
+              <p className="text-lg md:text-xl text-foreground-muted leading-relaxed max-w-3xl mx-auto">
+                <span className="font-semibold text-foreground">
+                  Our journey began with a small team of engineers obsessed with solving hard
+                  problems the right way.
+                </span>
+                <span className="block mt-3">
+                  Today, we combine that same{" "}
+                  <span className="font-semibold text-primary">builder mindset</span> with{" "}
+                  <span className="font-semibold text-primary">mature delivery practices</span> to
+                  help organizations modernize systems, launch new products, and create digital
+                  experiences that stand the test of time.
+                </span>
               </p>
             </Card>
           </div>
