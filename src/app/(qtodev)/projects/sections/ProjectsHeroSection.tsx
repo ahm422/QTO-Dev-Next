@@ -1,8 +1,5 @@
-import Link from "next/link";
 import { Container } from "@/components/common/Container";
 import { Heading } from "@/components/ui/shared/Heading";
-import { AppIcon } from "@/components/ui/shared/AppIcon";
-import { cn } from "@/components/theme/cn";
 import { projectsPageConfig } from "@/config/projectsPage";
 
 const HEADING_ID = "projects-hero-heading";
@@ -43,20 +40,6 @@ export function ProjectsHeroSection() {
           <p className="text-xl md:text-2xl text-white/90 mb-10 leading-relaxed max-w-xl mx-auto animation-delay-150 animate-hero-content-fade animation-fill-backwards">
             {hero.subhead}
           </p>
-          <Link
-            href={hero.ctaHref}
-            className={cn(
-              "group inline-flex items-center gap-3 font-semibold rounded-xl transition-all duration-300",
-              "px-7 py-3.5 text-lg",
-              "bg-white text-black hover:bg-white/95",
-              "shadow-xl shadow-black/15 hover:shadow-2xl hover:shadow-black/20 hover:-translate-y-0.5",
-              "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary",
-              "animation-delay-300 animate-hero-content-fade animation-fill-backwards"
-            )}
-          >
-            {hero.ctaText}
-            <AppIcon name="arrow-right" size="sm" className="shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
-          </Link>
         </div>
       </Container>
     </section>

@@ -8,8 +8,6 @@ export const projectsPageConfig = {
     heading: "Our Projects",
     subhead:
       "Explore our portfolio of successful digital solutions delivered to startups, enterprises, and growing businesses across various industries.",
-    ctaText: "Get In Touch",
-    ctaHref: "/contact",
     breadcrumbLabel: "Projects",
   },
   grid: {
