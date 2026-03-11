@@ -14,11 +14,11 @@ export const aboutPageConfig = {
     breadcrumbLabel: "About",
   },
   companySnapshot: {
-    subtitle: "OUR STORY",
-    title: "Our Story",
-    titleHighlight: "Story",
+    subtitle: "OUR JOURNEY",
+    title: "Our Journey",
+    titleHighlight: "Journey",
     description:
-      "Since our founding, we've been at the forefront of digital transformation—partnering with startups and enterprises alike.",
+      "From our early days as a small engineering-led studio to a trusted technology partner for growing businesses, our journey has been shaped by curiosity, craftsmanship, and long-term relationships.",
   },
   mission: {
     subtitle: "MISSION & VISION",
