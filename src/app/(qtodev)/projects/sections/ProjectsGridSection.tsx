@@ -58,7 +58,7 @@ export function ProjectsGridSection({ projects }: ProjectsGridSectionProps) {
                 <Link
                   href={`/projects/${project.slug}`}
                   className={cn(
-                    "group block h-full rounded-2xl overflow-hidden",
+                    "group block h-full rounded-2xl overflow-hidden will-change-transform",
                     "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-muted"
                   )}
                   aria-label={`View project: ${project.title}`}
@@ -67,14 +67,15 @@ export function ProjectsGridSection({ projects }: ProjectsGridSectionProps) {
                     className={cn(
                       "relative h-full flex flex-col rounded-2xl overflow-hidden",
                       "border-t-4 border-t-primary",
-                      "shadow-lg shadow-black/5 hover:shadow-xl hover:shadow-primary/10",
-                      "transition-all duration-300 hover:-translate-y-1",
+                      "shadow-lg shadow-black/5 hover:shadow-xl hover:shadow-primary/15",
+                      "transition-transform transition-shadow duration-500 ease-out",
+                      "hover:-translate-y-2 hover:rotate-[0.35deg]",
                       "focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-surface-muted focus-within:outline-none"
                     )}
                   >
                     {/* Subtle corner gradient on hover */}
                     <div
-                      className="pointer-events-none absolute top-0 right-0 z-10 w-32 h-32 bg-gradient-to-bl from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      className="pointer-events-none absolute top-0 right-0 z-10 w-32 h-32 bg-gradient-to-bl from-primary/10 via-primary/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                       aria-hidden
                     />
                     {/* Image or placeholder — aspect 16/10 */}
@@ -85,7 +86,7 @@ export function ProjectsGridSection({ projects }: ProjectsGridSectionProps) {
                           alt=""
                           fill
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          className="object-cover transition-transform duration-500 ease-out group-hover:scale-110 group-hover:rotate-[0.4deg]"
                         />
                       ) : (
                         <div

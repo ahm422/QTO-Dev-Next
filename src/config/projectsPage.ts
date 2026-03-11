@@ -11,11 +11,11 @@ export const projectsPageConfig = {
     breadcrumbLabel: "Projects",
   },
   grid: {
-    subtitle: "OUR PROJECTS",
-    title: "Our Projects",
-    titleHighlight: "Projects",
+    subtitle: "CLIENT WORK",
+    title: "Selected Client Work",
+    titleHighlight: "Work",
     description:
-      "Explore our portfolio of successful digital solutions delivered to startups, enterprises, and growing businesses across various industries.",
+      "A curated look at recent digital products and platforms we’ve designed, built, and scaled with our clients.",
     viewProjectLabel: "View project",
   },
   filter: {

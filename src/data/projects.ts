@@ -5,6 +5,7 @@ export const projects: Project[] = [
     id: "1",
     slug: "ecommerce-platform",
     title: "E-commerce Platform Redesign",
+    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=900&h=600&fit=crop",
     shortDescription:
       "High-performance e-commerce web platform redesign that improved conversion rates and checkout speed.",
     description:
@@ -19,6 +20,7 @@ export const projects: Project[] = [
     id: "2",
     slug: "saas-dashboard",
     title: "SaaS Analytics Dashboard",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&h=600&fit=crop",
     shortDescription:
       "Real-time SaaS analytics web app giving small businesses actionable visibility into key metrics.",
     description:
@@ -33,6 +35,7 @@ export const projects: Project[] = [
     id: "3",
     slug: "mobile-fitness-app",
     title: "Fitness Tracking Mobile App",
+    image: "https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?w=900&h=600&fit=crop",
     shortDescription:
       "Cross-platform mobile app that automates workout, nutrition, and progress tracking for users.",
     description:
@@ -47,6 +50,7 @@ export const projects: Project[] = [
     id: "4",
     slug: "startup-website",
     title: "Tech Startup Website",
+    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=900&h=600&fit=crop",
     shortDescription:
       "High-conversion marketing website for a tech startup focused on lead generation and brand credibility.",
     description:
