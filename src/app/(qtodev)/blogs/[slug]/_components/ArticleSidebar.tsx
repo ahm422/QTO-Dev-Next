@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { BlogPost } from '@/types/blog';
 import { TableOfContents } from './TableOfContents';
-import { NewsletterSignup } from './NewsletterSignup';
 import { ShareButtons } from './ShareButtons';
 
 interface ArticleSidebarProps {
@@ -59,9 +58,6 @@ export function ArticleSidebar({ post }: ArticleSidebarProps) {
   return (
     <aside className="space-y-6">
       <div className="lg:sticky lg:top-24 space-y-6">
-        {/* Newsletter Signup */}
-        <NewsletterSignup />
-
         {/* Table of Contents */}
         {headings.length > 0 && <TableOfContents headings={headings} />}
 
