@@ -15,9 +15,9 @@ export function ProjectsHeroSection() {
       className="relative py-24 md:py-32 lg:py-36 bg-primary text-primary-foreground overflow-hidden"
       aria-labelledby={HEADING_ID}
     >
-      {/* Background image (issue #83) */}
+      {/* Background image (issue #83): projects-specific class for image + optional animation */}
       <div
-        className="pointer-events-none absolute inset-0 z-0 page-hero-image-bg"
+        className="pointer-events-none absolute inset-0 z-0 projects-hero-image-bg"
         aria-hidden
       />
 
