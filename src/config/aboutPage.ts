@@ -34,13 +34,6 @@ export const aboutPageConfig = {
     description:
       "The principles that guide our work and our relationships with clients and partners.",
   },
-  whatWeDo: {
-    subtitle: "WHAT WE DO",
-    title: "What We Do",
-    titleHighlight: "Do",
-    description:
-      "From web and mobile to design and consulting—we deliver end-to-end technology solutions.",
-  },
   trust: {
     subtitle: "WHY TRUST US",
     title: "Why Clients Trust Us",

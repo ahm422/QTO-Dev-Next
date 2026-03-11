@@ -2,7 +2,6 @@ import { AboutHeroSection } from "./sections/AboutHeroSection";
 import { CompanySnapshotSection } from "./sections/CompanySnapshotSection";
 import { MissionVisionSection } from "./sections/MissionVisionSection";
 import { ValuesSection } from "./sections/ValuesSection";
-import { WhatWeDoSection } from "./sections/WhatWeDoSection";
 import { TrustSection } from "./sections/TrustSection";
 import { CTA } from "@/components/common/CTA";
 import { aboutPageConfig } from "@/config/aboutPage";
@@ -15,7 +14,6 @@ export default function AboutPage() {
       <CompanySnapshotSection />
       <MissionVisionSection />
       <ValuesSection />
-      <WhatWeDoSection />
       <TrustSection />
       <CTA
         title={cta.title}
