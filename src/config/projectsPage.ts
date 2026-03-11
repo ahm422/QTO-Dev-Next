@@ -21,9 +21,6 @@ export const projectsPageConfig = {
   filter: {
     allLabel: "All",
   },
-  pagination: {
-    placeholderText: "More projects coming soon.",
-  },
   valueSection: {
     subtitle: "WHY OUR WORK MATTERS",
     title: "What You Can Expect",
