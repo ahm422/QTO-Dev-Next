@@ -52,7 +52,7 @@ export const aboutPageConfig = {
     title: "Let's Work Together",
     description:
       "Ready to partner with a team that cares about your success?",
-    primaryButtonText: "Schedule a Call",
+    primaryButtonText: "Lets Chat Or Get In Touch",
     primaryButtonHref: "/contact",
   },
 } as const;
