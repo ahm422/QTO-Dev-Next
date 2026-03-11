@@ -9,7 +9,7 @@ export const aboutPageConfig = {
     heading: "Empowering Businesses Through Intelligent Technology",
     subhead:
       "At QTO Dev, we build secure, scalable, performance-driven software—from custom web platforms and ERP systems to workflow automation tools—so organizations can operate smarter and grow faster.",
-    ctaText: "Learn More",
+    ctaText: "Get In Touch",
     ctaHref: "/contact",
     breadcrumbLabel: "About",
   },
