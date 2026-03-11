@@ -12,12 +12,12 @@ export function AboutHeroSection() {
 
   return (
     <section
-      className="relative py-24 md:py-32 lg:py-36 bg-primary text-primary-foreground overflow-hidden"
+      className="relative flex items-center py-24 md:py-32 lg:py-36 bg-primary text-primary-foreground overflow-hidden min-h-[70vh]"
       aria-labelledby={HEADING_ID}
     >
       {/* Background image */}
       <div
-        className="pointer-events-none absolute inset-0 z-0 page-hero-image-bg"
+        className="pointer-events-none absolute inset-0 z-0 page-hero-image-bg about-hero-bg"
         aria-hidden
       />
 
@@ -45,7 +45,7 @@ export function AboutHeroSection() {
           >
             {hero.heading}
           </Heading>
-          <p className="text-xl md:text-2xl text-white/90 mb-10 leading-relaxed max-w-xl mx-auto animation-delay-150 animate-hero-content-fade animation-fill-backwards">
+          <p className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed max-w-lg mx-auto animation-delay-150 animate-hero-content-fade animation-fill-backwards">
             {hero.subhead}
           </p>
           <Link

@@ -8,7 +8,7 @@ export const aboutPageConfig = {
     pageHeading: "About QTO Dev",
     heading: "Empowering Businesses Through Intelligent Technology",
     subhead:
-      "At QTO Dev, we specialize in building secure, scalable, and performance-driven software solutions. Our expertise spans custom web platforms, enterprise ERP systems, and workflow automation tools designed to help organizations operate smarter and grow faster in a competitive digital landscape.",
+      "At QTO Dev, we build secure, scalable, performance-driven software—from custom web platforms and ERP systems to workflow automation tools—so organizations can operate smarter and grow faster.",
     ctaText: "Learn More",
     ctaHref: "/contact",
     breadcrumbLabel: "About",
