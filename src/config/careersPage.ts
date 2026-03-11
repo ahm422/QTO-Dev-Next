@@ -76,19 +76,19 @@ export const careersPageConfig = {
     title: "A Culture Built Around Craft, Ownership, and Trust",
     titleHighlight: "Culture",
     description:
-      "We’re intentional about who we hire and how we work together. Fewer meetings, more responsibility, and a culture of shipping.",
+      "We hire thoughtfully, trust people with real ownership, and keep meetings light so you can focus on shipping.",
     highlights: [
       {
         title: "Small, Senior-Heavy Teams",
-        body: "Work closely with experienced engineers, designers, and strategists who care about details and outcomes.",
+        body: "Work closely with experienced people who care about craft and outcomes.",
       },
       {
         title: "Bias Toward Shipping",
-        body: "We value clear priorities, quick iterations, and learning from real users over endless planning documents.",
+        body: "Clear priorities, quick iterations, and learning from real users.",
       },
       {
         title: "Respectful Collaboration",
-        body: "No egos, no heroics. Just people who want to build great products together and support each other along the way.",
+        body: "No egos, no heroics—just people who support each other and ship.",
       },
     ],
   },
