@@ -5,6 +5,7 @@ export interface Job {
   location: string;
   employmentType: string;
   applyUrl: string;
+  workMode?: string;
   description?: string;
   tags?: string[];
 }
