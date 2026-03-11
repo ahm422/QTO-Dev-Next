@@ -11,6 +11,22 @@ import { analytics } from "@/lib/analytics";
 
 const HEADING_ID = "open-roles-heading";
 
+function getDisplayLocation(job: Job): string {
+  if (job.workMode === "Remote-friendly") {
+    return `Remote ${job.location}`;
+  }
+
+  if (job.workMode === "Remote") {
+    return `Remote — ${job.location}`;
+  }
+
+  if (job.workMode === "Hybrid") {
+    return `${job.location} (hybrid on-site & remote)`;
+  }
+
+  return job.location;
+}
+
 function JobCard({ job }: { job: Job }) {
   return (
     <li className="h-full">
@@ -30,9 +46,15 @@ function JobCard({ job }: { job: Job }) {
               <dt className="font-medium">Department:</dt>
               <dd>{job.department}</dd>
             </div>
+            {job.workMode && (
+              <div className="flex flex-wrap gap-1.5">
+                <dt className="font-medium">Work Mode:</dt>
+                <dd>{job.workMode}</dd>
+              </div>
+            )}
             <div className="flex flex-wrap gap-1.5">
               <dt className="font-medium">Location:</dt>
-              <dd>{job.location}</dd>
+              <dd>{getDisplayLocation(job)}</dd>
             </div>
             <div className="flex flex-wrap gap-1.5">
               <dt className="font-medium">Type:</dt>
@@ -59,7 +81,7 @@ function JobCard({ job }: { job: Job }) {
         </div>
         <div className="border-t border-border/80 bg-surface-muted/60 px-5 py-4 sm:px-6 flex items-center justify-between gap-3">
           <p className="text-xs sm:text-sm text-foreground-muted">
-            Share a short note about why you’d like to work with QTO Dev and include links to your work.
+            Share a brief note on why you’d love to join QTO Dev and include a few links that best showcase your work.
           </p>
           <Link
             href={job.applyUrl}
@@ -70,6 +92,7 @@ function JobCard({ job }: { job: Job }) {
                 department: job.department,
                 location: job.location,
                 employmentType: job.employmentType,
+                workMode: job.workMode,
               });
             }}
             className={cn(
