@@ -14,7 +14,7 @@ export function BlogsHeroSection() {
     >
       {/* Background image */}
       <div
-        className="pointer-events-none absolute inset-0 z-0 page-hero-image-bg"
+        className="pointer-events-none absolute inset-0 z-0 page-hero-image-bg blogs-hero-bg"
         aria-hidden
       />
 
