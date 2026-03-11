@@ -185,6 +185,23 @@ h6 {
   background-repeat: no-repeat;
 }
 
+/* Projects hero: subtle background float animation (issue #83); disabled when user prefers reduced motion */
+@keyframes projects-hero-float {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .projects-hero-image-bg {
+    animation: projects-hero-float 20s ease-in-out infinite;
+  }
+}
+
 /* Shared page hero background (Services, Projects, Careers, Blog, About, Contact) */
 .page-hero-image-bg {
   background-image:
