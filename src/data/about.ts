@@ -28,14 +28,4 @@ export const aboutData = {
       description: "We maintain the highest standards of honesty and ethics",
     },
   ],
-  whatWeDo: [
-    {
-      title: "Web & Mobile Applications",
-      description: "Deliver high-performance web and mobile apps tailored to your business workflows.",
-    },
-    {
-      title: "Technology Consulting",
-      description: "Provide strategic guidance on architecture, performance, and platform choices.",
-    },
-  ],
 };
