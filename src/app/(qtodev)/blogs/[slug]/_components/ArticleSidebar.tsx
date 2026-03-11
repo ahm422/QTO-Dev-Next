@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { BlogPost } from '@/types/blog';
-import { AppIcon } from '@/components/ui/shared/AppIcon';
 import { TableOfContents } from './TableOfContents';
 import { NewsletterSignup } from './NewsletterSignup';
 import { ShareButtons } from './ShareButtons';
@@ -59,17 +58,7 @@ export function ArticleSidebar({ post }: ArticleSidebarProps) {
 
   return (
     <aside className="space-y-6">
-      {/* Listen to Article Button */}
       <div className="lg:sticky lg:top-24 space-y-6">
-        <button
-          className="w-full py-3 px-4 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary-hover transition-colors flex items-center justify-center gap-2"
-          title="Listen to this article"
-          aria-label="Listen to article"
-        >
-          <AppIcon name="headphones" size="sm" className="text-primary-foreground" />
-          Listen to Article
-        </button>
-
         {/* Newsletter Signup */}
         <NewsletterSignup />
 
