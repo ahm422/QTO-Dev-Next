@@ -45,6 +45,33 @@ cp .env.example .env
 
 2. Set `DATABASE_URL` in `.env` to your PostgreSQL connection string.
 
+   For Supabase (recommended for this project), use the Transaction Pooler URI:
+
+   ```env
+   DATABASE_URL="postgresql://postgres.<project-ref>:<db-password>@aws-<region>.pooler.supabase.com:6543/postgres?sslmode=require"
+   ```
+
+   Notes:
+   - Use your Supabase **Database Password** (not your Supabase account password).
+   - URL-encode password special characters (for example `@` -> `%40`, `&` -> `%26`).
+   - Keep `sslmode=require`.
+
+   Prisma CLI note (important):
+   - For migrations/introspection, set `DIRECT_URL` to Supabase **direct** connection (port 5432).
+   - If the direct host is unreachable from your network, use Supabase **Session pooler** on port `5432` as `DIRECT_URL`.
+   - With Prisma 7 config, run CLI commands by temporarily overriding `DATABASE_URL` with `DIRECT_URL`.
+   - Example:
+
+   ```env
+   DIRECT_URL="postgresql://postgres:<db-password>@db.<project-ref>.supabase.co:5432/postgres?sslmode=require"
+   ```
+
+   Session pooler fallback:
+
+   ```env
+   DIRECT_URL="postgresql://postgres.<project-ref>:<db-password>@aws-<region>.pooler.supabase.com:5432/postgres?sslmode=require"
+   ```
+
 3. Generate the Prisma Client:
 
 ```bash
@@ -54,11 +81,17 @@ npm run prisma:generate
 4. Validate Prisma setup:
 
 ```bash
-npm run prisma:validate
+DATABASE_URL="$DIRECT_URL" npm run prisma:validate
 ```
 
 5. Create/apply migrations after adding models to `prisma/schema.prisma`:
 
 ```bash
 npm run prisma:migrate:dev -- --name init
+```
+
+6. Optional connectivity smoke test:
+
+```bash
+DATABASE_URL="$DIRECT_URL" npx prisma db pull
 ```
