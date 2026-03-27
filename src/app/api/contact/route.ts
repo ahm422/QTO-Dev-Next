@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { createContactSubmission } from "@/services/contactService";
 import { contactSubmissionSchema } from "@/lib/validators/contact";
@@ -6,6 +6,7 @@ import {
   asOptionalHeader,
   formatZodFieldErrors,
 } from "@/lib/validators/http";
+import { apiError, apiSuccess, logApiError, mapApiError } from "@/lib/apiResponses";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,21 +14,16 @@ export async function POST(request: NextRequest) {
     try {
       data = await request.json();
     } catch {
-      return NextResponse.json(
-        { error: "Validation failed", fieldErrors: { body: ["Request body must be valid JSON"] } },
-        { status: 400 }
-      );
+      return apiError(400, "Validation failed", {
+        fieldErrors: { body: ["Request body must be valid JSON"] },
+      });
     }
 
     const parsed = contactSubmissionSchema.safeParse(data);
     if (!parsed.success) {
-      return NextResponse.json(
-        {
-          error: "Validation failed",
-          fieldErrors: formatZodFieldErrors(parsed.error),
-        },
-        { status: 400 }
-      );
+      return apiError(400, "Validation failed", {
+        fieldErrors: formatZodFieldErrors(parsed.error),
+      });
     }
 
     const body = parsed.data;
@@ -43,27 +39,27 @@ export async function POST(request: NextRequest) {
 
     const metadata = (body.metadata as Prisma.InputJsonValue | undefined) ?? null;
 
-    const created = await createContactSubmission({
-      name: body.name,
-      email: body.email,
-      subject: body.subject,
-      message: body.message,
-      source,
-      referrer,
-      userAgent,
-      ip,
-      metadata,
-    });
+    try {
+      const created = await createContactSubmission({
+        name: body.name,
+        email: body.email,
+        subject: body.subject,
+        message: body.message,
+        source,
+        referrer,
+        userAgent,
+        ip,
+        metadata,
+      });
 
-    return NextResponse.json(
-      { success: true, id: created.id },
-      { status: 201 }
-    );
+      return apiSuccess({ id: created.id }, 201);
+    } catch (error) {
+      logApiError("/api/contact", error);
+      const mapped = mapApiError(error);
+      return apiError(mapped.status, mapped.error, mapped.details);
+    }
   } catch (error) {
-    console.error("Contact form error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    logApiError("/api/contact", error);
+    return apiError(500, "Internal server error");
   }
 }
