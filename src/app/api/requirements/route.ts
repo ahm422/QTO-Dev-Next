@@ -37,7 +37,26 @@ export async function POST(request: NextRequest) {
       asOptionalHeader(request.headers.get("x-forwarded-for"))?.split(",")[0]?.trim() ??
       null;
 
-    const metadata = (body.metadata as Prisma.InputJsonValue | undefined) ?? null;
+    const metaBase: Record<string, unknown> =
+      body.metadata &&
+      typeof body.metadata === "object" &&
+      !Array.isArray(body.metadata)
+        ? { ...(body.metadata as Record<string, unknown>) }
+        : {};
+    if (body.questionnaire) {
+      metaBase.questionnaire = body.questionnaire;
+      metaBase.questionnaireVersion = 1;
+    }
+    const phone = body.phone?.trim();
+    if (phone) metaBase.phone = phone;
+    const companyLocation = body.companyLocation?.trim();
+    if (companyLocation) metaBase.companyLocation = companyLocation;
+
+    /** Deep-clone so JSONB only gets plain values (no undefined / non-JSON types). */
+    const metadata: Prisma.InputJsonValue | null =
+      Object.keys(metaBase).length > 0
+        ? (JSON.parse(JSON.stringify(metaBase)) as Prisma.InputJsonValue)
+        : null;
 
     try {
       const created = await createRequirementSubmission({
