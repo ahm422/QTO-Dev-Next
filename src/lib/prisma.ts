@@ -7,10 +7,26 @@ const globalForPrisma = globalThis as unknown as {
   prismaPgPool?: Pool;
 };
 
+const databaseUrl = process.env.DATABASE_URL;
+const rejectUnauthorized = process.env.PGSSL_REJECT_UNAUTHORIZED === "true";
+
+function getPoolConnectionString() {
+  if (!databaseUrl) return databaseUrl;
+
+  const url = new URL(databaseUrl);
+  const sslMode = url.searchParams.get("sslmode");
+  const usesTls = sslMode === "require" || sslMode === "verify-ca" || sslMode === "verify-full";
+
+  if (!usesTls || rejectUnauthorized) return databaseUrl;
+
+  url.searchParams.set("sslmode", "no-verify");
+  return url.toString();
+}
+
 const pool =
   globalForPrisma.prismaPgPool ??
   new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: getPoolConnectionString(),
   });
 
 export const prisma =
