@@ -1,11 +1,6 @@
-export function firstContactFieldError(
-  fieldErrors: Record<string, string[]> | undefined,
-  key: string
-): string | undefined {
-  const list = fieldErrors?.[key];
-  const msg = list?.[0];
-  return typeof msg === "string" && msg.trim() ? msg : undefined;
-}
+import { firstApiFieldError } from "@/lib/validators/http";
+
+export const firstContactFieldError = firstApiFieldError;
 
 export type ContactPostResult =
   | { ok: true }

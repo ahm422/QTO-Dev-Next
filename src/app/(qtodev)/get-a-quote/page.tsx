@@ -17,7 +17,14 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Text } from "@/components/ui/shared/Text";
 import { FormStepper } from "@/components/contact/FormStepper";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { analytics } from "@/lib/analytics";
+import { requirementSubmissionSchema } from "@/lib/validators/requirement";
+import {
+  firstApiFieldError,
+  formatZodFieldErrors,
+} from "@/lib/validators/http";
+import { postRequirementSubmission } from "@/lib/requirementApiClient";
 
 type BudgetRange = "<25k" | "25k-75k" | "75k-150k" | ">150k" | "";
 
@@ -65,10 +72,80 @@ const steps = [
   { id: "details-contact", label: "Details & contact" },
 ];
 
+const QUOTE_KEYS: (keyof QuoteFormData)[] = [
+  "projectType",
+  "industry",
+  "companySize",
+  "goals",
+  "budgetRange",
+  "startDate",
+  "launchWindow",
+  "urgency",
+  "features",
+  "integrations",
+  "successCriteria",
+  "name",
+  "email",
+  "company",
+  "website",
+];
+
+function buildQuotePayload(data: QuoteFormData) {
+  return {
+    intent: "get-quote",
+    source: "get-a-quote",
+    name: data.name,
+    email: data.email,
+    message:
+      data.goals.trim() ||
+      "Get a quote request submitted via Get a Quote page.",
+    company: data.company,
+    website: data.website,
+    projectType: data.projectType,
+    industry: data.industry,
+    companySize: data.companySize,
+    goals: data.goals,
+    budgetRange: data.budgetRange,
+    startDate: data.startDate,
+    launchWindow: data.launchWindow,
+    urgency: data.urgency,
+    features: data.features,
+    integrations: data.integrations,
+    successCriteria: data.successCriteria,
+  };
+}
+
+function zodFieldErrorsToQuoteErrors(
+  raw: Record<string, string[]>
+): QuoteFormErrors {
+  const next: QuoteFormErrors = {};
+  for (const key of QUOTE_KEYS) {
+    const msg = raw[key]?.[0];
+    if (msg) next[key] = msg;
+  }
+  const messageErr = raw.message?.[0];
+  if (messageErr) next.goals = messageErr;
+  return next;
+}
+
+function apiFieldErrorsToQuote(
+  fieldErrors: Record<string, string[]> | undefined
+): QuoteFormErrors {
+  const next: QuoteFormErrors = {};
+  for (const key of QUOTE_KEYS) {
+    const msg = firstApiFieldError(fieldErrors, key);
+    if (msg) next[key] = msg;
+  }
+  const messageErr = firstApiFieldError(fieldErrors, "message");
+  if (messageErr) next.goals = messageErr;
+  return next;
+}
+
 export default function GetAQuotePage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<QuoteFormData>(initialQuoteState);
   const [errors, setErrors] = useState<QuoteFormErrors>({});
+  const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -83,6 +160,7 @@ export default function GetAQuotePage() {
   const setField = (name: keyof QuoteFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: undefined }));
+    setFormError(null);
   };
 
   const validateStep = (stepIndex: number): boolean => {
@@ -135,33 +213,45 @@ export default function GetAQuotePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     analytics.trackEvent("get_quote_step_3_submit_attempt");
+    setFormError(null);
 
     if (!validateStep(2)) {
       analytics.trackEvent("get_quote_submit_error");
       return;
     }
 
+    const payload = buildQuotePayload(formData);
+    const parsed = requirementSubmissionSchema.safeParse(payload);
+    if (!parsed.success) {
+      const raw = formatZodFieldErrors(parsed.error);
+      setErrors((prev) => ({ ...prev, ...zodFieldErrorsToQuoteErrors(raw) }));
+      setFormError("Please fix the highlighted fields.");
+      analytics.trackEvent("get_quote_submit_error");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          intent: "get-quote",
-          ...formData,
-          message:
-            formData.goals ||
-            "Get a quote request submitted via Get a Quote page.",
-        }),
-      });
+      const result = await postRequirementSubmission(
+        parsed.data as unknown as Record<string, unknown>
+      );
 
-      if (response.ok) {
+      if (result.ok) {
         analytics.trackEvent("get_quote_submit_success");
         setSubmitted(true);
         setFormData(initialQuoteState);
         setErrors({});
-      } else {
-        analytics.trackEvent("get_quote_submit_error");
+        setFormError(null);
+        return;
+      }
+
+      analytics.trackEvent("get_quote_submit_error");
+      setFormError(result.errorMessage);
+      if (result.fieldErrors) {
+        setErrors((prev) => ({
+          ...prev,
+          ...apiFieldErrorsToQuote(result.fieldErrors),
+        }));
       }
     } catch {
       analytics.trackEvent("get_quote_submit_error");
@@ -447,6 +537,11 @@ export default function GetAQuotePage() {
         }
       >
         <form onSubmit={handleSubmit} className="space-y-6">
+          {!submitted && formError ? (
+            <Alert variant="destructive" className="p-4">
+              <AlertDescription className="m-0">{formError}</AlertDescription>
+            </Alert>
+          ) : null}
           <FormStepper steps={steps} currentStepIndex={currentStep} />
           {renderStep()}
           {!submitted && (
@@ -472,7 +567,7 @@ export default function GetAQuotePage() {
                     size="lg"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Submitting..." : "Request quote"}
+                    {isSubmitting ? "Sending…" : "Request quote"}
                   </Button>
                 )}
               </div>
