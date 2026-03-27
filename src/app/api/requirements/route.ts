@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { createRequirementSubmission } from "@/services/requirementService";
 import { requirementSubmissionSchema } from "@/lib/validators/requirement";
@@ -6,6 +6,7 @@ import {
   asOptionalHeader,
   formatZodFieldErrors,
 } from "@/lib/validators/http";
+import { apiError, apiSuccess, logApiError, mapApiError } from "@/lib/apiResponses";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,21 +14,16 @@ export async function POST(request: NextRequest) {
     try {
       data = await request.json();
     } catch {
-      return NextResponse.json(
-        { error: "Validation failed", fieldErrors: { body: ["Request body must be valid JSON"] } },
-        { status: 400 }
-      );
+      return apiError(400, "Validation failed", {
+        fieldErrors: { body: ["Request body must be valid JSON"] },
+      });
     }
 
     const parsed = requirementSubmissionSchema.safeParse(data);
     if (!parsed.success) {
-      return NextResponse.json(
-        {
-          error: "Validation failed",
-          fieldErrors: formatZodFieldErrors(parsed.error),
-        },
-        { status: 400 }
-      );
+      return apiError(400, "Validation failed", {
+        fieldErrors: formatZodFieldErrors(parsed.error),
+      });
     }
 
     const body = parsed.data;
@@ -43,45 +39,45 @@ export async function POST(request: NextRequest) {
 
     const metadata = (body.metadata as Prisma.InputJsonValue | undefined) ?? null;
 
-    const created = await createRequirementSubmission({
-      intent: body.intent,
-      name: body.name,
-      email: body.email,
-      message: body.message,
-      company: body.company ?? null,
-      website: body.website ?? null,
-      role: body.role ?? null,
-      projectType: body.projectType ?? null,
-      industry: body.industry ?? null,
-      companySize: body.companySize ?? null,
-      goals: body.goals ?? null,
-      budgetRange: body.budgetRange ?? null,
-      startDate: body.startDate ?? null,
-      launchWindow: body.launchWindow ?? null,
-      urgency: body.urgency ?? null,
-      timeline: body.timeline ?? null,
-      preferredTime: body.preferredTime ?? null,
-      timezone: body.timezone ?? null,
-      channel: body.channel ?? null,
-      features: body.features ?? null,
-      integrations: body.integrations ?? null,
-      successCriteria: body.successCriteria ?? null,
-      source,
-      referrer,
-      userAgent,
-      ip,
-      metadata,
-    });
+    try {
+      const created = await createRequirementSubmission({
+        intent: body.intent,
+        name: body.name,
+        email: body.email,
+        message: body.message,
+        company: body.company ?? null,
+        website: body.website ?? null,
+        role: body.role ?? null,
+        projectType: body.projectType ?? null,
+        industry: body.industry ?? null,
+        companySize: body.companySize ?? null,
+        goals: body.goals ?? null,
+        budgetRange: body.budgetRange ?? null,
+        startDate: body.startDate ?? null,
+        launchWindow: body.launchWindow ?? null,
+        urgency: body.urgency ?? null,
+        timeline: body.timeline ?? null,
+        preferredTime: body.preferredTime ?? null,
+        timezone: body.timezone ?? null,
+        channel: body.channel ?? null,
+        features: body.features ?? null,
+        integrations: body.integrations ?? null,
+        successCriteria: body.successCriteria ?? null,
+        source,
+        referrer,
+        userAgent,
+        ip,
+        metadata,
+      });
 
-    return NextResponse.json(
-      { success: true, id: created.id },
-      { status: 201 }
-    );
+      return apiSuccess({ id: created.id }, 201);
+    } catch (error) {
+      logApiError("/api/requirements", error);
+      const mapped = mapApiError(error);
+      return apiError(mapped.status, mapped.error, mapped.details);
+    }
   } catch (error) {
-    console.error("Requirement form error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    logApiError("/api/requirements", error);
+    return apiError(500, "Internal server error");
   }
 }
