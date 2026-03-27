@@ -5,3 +5,60 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Contact {
+  id        String   @id @default(uuid()) @db.Uuid @map("id")
+  name      String   @map("name")
+  email     String   @map("email")
+  subject   String   @map("subject")
+  message   String   @map("message")
+  source    String?  @map("source")
+  referrer  String?  @map("referrer")
+  userAgent String?  @map("user_agent")
+  ip        String?  @map("ip")
+  metadata  Json?    @map("metadata")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([email])
+  @@index([createdAt])
+  @@map("contacts")
+}
+
+model Requirement {
+  id              String   @id @default(uuid()) @db.Uuid @map("id")
+  intent          String   @map("intent")
+  name            String   @map("name")
+  email           String   @map("email")
+  company         String?  @map("company")
+  website         String?  @map("website")
+  role            String?  @map("role")
+  projectType     String?  @map("project_type")
+  industry        String?  @map("industry")
+  companySize     String?  @map("company_size")
+  goals           String?  @map("goals")
+  budgetRange     String?  @map("budget_range")
+  startDate       String?  @map("start_date")
+  launchWindow    String?  @map("launch_window")
+  urgency         String?  @map("urgency")
+  timeline        String?  @map("timeline")
+  preferredTime   String?  @map("preferred_time")
+  timezone        String?  @map("timezone")
+  channel         String?  @map("channel")
+  features        String?  @map("features")
+  integrations    String?  @map("integrations")
+  successCriteria String?  @map("success_criteria")
+  message         String   @map("message")
+  source          String?  @map("source")
+  referrer        String?  @map("referrer")
+  userAgent       String?  @map("user_agent")
+  ip              String?  @map("ip")
+  metadata        Json?    @map("metadata")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([intent])
+  @@index([email])
+  @@index([createdAt])
+  @@map("requirements")
+}
