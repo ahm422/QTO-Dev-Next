@@ -34,3 +34,31 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Prisma Setup
+
+1. Copy the example env file and update your database connection:
+
+```bash
+cp .env.example .env
+```
+
+2. Set `DATABASE_URL` in `.env` to your PostgreSQL connection string.
+
+3. Generate the Prisma Client:
+
+```bash
+npm run prisma:generate
+```
+
+4. Validate Prisma setup:
+
+```bash
+npm run prisma:validate
+```
+
+5. Create/apply migrations after adding models to `prisma/schema.prisma`:
+
+```bash
+npm run prisma:migrate:dev -- --name init
+```
