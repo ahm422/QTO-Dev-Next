@@ -1,57 +1,53 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { createContactSubmission } from "@/services/contactService";
-
-function asNonEmptyString(value: unknown): string | null {
-  if (typeof value !== "string") return null;
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
-}
-
-function asOptionalString(value: unknown): string | null {
-  if (typeof value !== "string") return null;
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
-}
+import { contactSubmissionSchema } from "@/lib/validators/contact";
+import {
+  asOptionalHeader,
+  formatZodFieldErrors,
+} from "@/lib/validators/http";
 
 export async function POST(request: NextRequest) {
   try {
-    const data: unknown = await request.json();
-    const body = (typeof data === "object" && data !== null ? data : {}) as Record<string, unknown>;
-
-    // Interim minimal validation (Issue #8 will add strict schema validation)
-    const name = asNonEmptyString(body.name);
-    const email = asNonEmptyString(body.email);
-    const message = asNonEmptyString(body.message);
-    const subject = asOptionalString(body.subject) ?? "General Inquiry";
-
-    if (!name || !email || !message) {
+    let data: unknown;
+    try {
+      data = await request.json();
+    } catch {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Validation failed", fieldErrors: { body: ["Request body must be valid JSON"] } },
         { status: 400 }
       );
     }
 
-    const source = asOptionalString(body.source);
+    const parsed = contactSubmissionSchema.safeParse(data);
+    if (!parsed.success) {
+      return NextResponse.json(
+        {
+          error: "Validation failed",
+          fieldErrors: formatZodFieldErrors(parsed.error),
+        },
+        { status: 400 }
+      );
+    }
+
+    const body = parsed.data;
+    const source = body.source ?? null;
     const referrer =
-      asOptionalString(body.referrer) ?? asOptionalString(request.headers.get("referer"));
+      body.referrer ?? asOptionalHeader(request.headers.get("referer"));
     const userAgent =
-      asOptionalString(body.userAgent) ?? asOptionalString(request.headers.get("user-agent"));
+      body.userAgent ?? asOptionalHeader(request.headers.get("user-agent"));
     const ip =
-      asOptionalString(body.ip) ??
-      asOptionalString(request.headers.get("x-forwarded-for"))?.split(",")[0]?.trim() ??
+      body.ip ??
+      asOptionalHeader(request.headers.get("x-forwarded-for"))?.split(",")[0]?.trim() ??
       null;
 
-    const metadata =
-      body.metadata && typeof body.metadata === "object"
-        ? (body.metadata as Prisma.InputJsonValue)
-        : null;
+    const metadata = (body.metadata as Prisma.InputJsonValue | undefined) ?? null;
 
     const created = await createContactSubmission({
-      name,
-      email,
-      subject,
-      message,
+      name: body.name,
+      email: body.email,
+      subject: body.subject,
+      message: body.message,
       source,
       referrer,
       userAgent,

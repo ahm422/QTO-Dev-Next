@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import type { Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 export type CreateContactInput = {
   name: string;
@@ -24,7 +24,7 @@ export async function createContactSubmission(input: CreateContactInput) {
       referrer: input.referrer ?? null,
       userAgent: input.userAgent ?? null,
       ip: input.ip ?? null,
-      metadata: input.metadata ?? null,
+      metadata: input.metadata ?? Prisma.DbNull,
     },
     select: { id: true },
   });

@@ -1,75 +1,71 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { createRequirementSubmission } from "@/services/requirementService";
-
-function asNonEmptyString(value: unknown): string | null {
-  if (typeof value !== "string") return null;
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
-}
-
-function asOptionalString(value: unknown): string | null {
-  if (typeof value !== "string") return null;
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
-}
+import { requirementSubmissionSchema } from "@/lib/validators/requirement";
+import {
+  asOptionalHeader,
+  formatZodFieldErrors,
+} from "@/lib/validators/http";
 
 export async function POST(request: NextRequest) {
   try {
-    const data: unknown = await request.json();
-    const body = (typeof data === "object" && data !== null ? data : {}) as Record<string, unknown>;
-
-    // Interim minimal validation (Issue #8 will add strict schema validation)
-    const intent = asNonEmptyString(body.intent);
-    const name = asNonEmptyString(body.name);
-    const email = asNonEmptyString(body.email);
-    const message = asNonEmptyString(body.message);
-
-    if (!intent || !name || !email || !message) {
+    let data: unknown;
+    try {
+      data = await request.json();
+    } catch {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Validation failed", fieldErrors: { body: ["Request body must be valid JSON"] } },
         { status: 400 }
       );
     }
 
-    const source = asOptionalString(body.source);
+    const parsed = requirementSubmissionSchema.safeParse(data);
+    if (!parsed.success) {
+      return NextResponse.json(
+        {
+          error: "Validation failed",
+          fieldErrors: formatZodFieldErrors(parsed.error),
+        },
+        { status: 400 }
+      );
+    }
+
+    const body = parsed.data;
+    const source = body.source ?? null;
     const referrer =
-      asOptionalString(body.referrer) ?? asOptionalString(request.headers.get("referer"));
+      body.referrer ?? asOptionalHeader(request.headers.get("referer"));
     const userAgent =
-      asOptionalString(body.userAgent) ?? asOptionalString(request.headers.get("user-agent"));
+      body.userAgent ?? asOptionalHeader(request.headers.get("user-agent"));
     const ip =
-      asOptionalString(body.ip) ??
-      asOptionalString(request.headers.get("x-forwarded-for"))?.split(",")[0]?.trim() ??
+      body.ip ??
+      asOptionalHeader(request.headers.get("x-forwarded-for"))?.split(",")[0]?.trim() ??
       null;
 
-    const metadata =
-      body.metadata && typeof body.metadata === "object"
-        ? (body.metadata as Prisma.InputJsonValue)
-        : null;
+    const metadata = (body.metadata as Prisma.InputJsonValue | undefined) ?? null;
 
     const created = await createRequirementSubmission({
-      intent,
-      name,
-      email,
-      message,
-      company: asOptionalString(body.company),
-      website: asOptionalString(body.website),
-      role: asOptionalString(body.role),
-      projectType: asOptionalString(body.projectType),
-      industry: asOptionalString(body.industry),
-      companySize: asOptionalString(body.companySize),
-      goals: asOptionalString(body.goals),
-      budgetRange: asOptionalString(body.budgetRange),
-      startDate: asOptionalString(body.startDate),
-      launchWindow: asOptionalString(body.launchWindow),
-      urgency: asOptionalString(body.urgency),
-      timeline: asOptionalString(body.timeline),
-      preferredTime: asOptionalString(body.preferredTime),
-      timezone: asOptionalString(body.timezone),
-      channel: asOptionalString(body.channel),
-      features: asOptionalString(body.features),
-      integrations: asOptionalString(body.integrations),
-      successCriteria: asOptionalString(body.successCriteria),
+      intent: body.intent,
+      name: body.name,
+      email: body.email,
+      message: body.message,
+      company: body.company ?? null,
+      website: body.website ?? null,
+      role: body.role ?? null,
+      projectType: body.projectType ?? null,
+      industry: body.industry ?? null,
+      companySize: body.companySize ?? null,
+      goals: body.goals ?? null,
+      budgetRange: body.budgetRange ?? null,
+      startDate: body.startDate ?? null,
+      launchWindow: body.launchWindow ?? null,
+      urgency: body.urgency ?? null,
+      timeline: body.timeline ?? null,
+      preferredTime: body.preferredTime ?? null,
+      timezone: body.timezone ?? null,
+      channel: body.channel ?? null,
+      features: body.features ?? null,
+      integrations: body.integrations ?? null,
+      successCriteria: body.successCriteria ?? null,
       source,
       referrer,
       userAgent,
