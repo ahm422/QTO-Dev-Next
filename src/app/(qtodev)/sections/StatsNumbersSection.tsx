@@ -128,7 +128,7 @@ export function StatsNumbersSection() {
   return (
     <section
       className={cn(
-        "relative py-20 md:py-28 overflow-hidden",
+        "relative overflow-hidden py-24 md:py-32",
         "bg-surface-muted border-y border-border"
       )}
       aria-labelledby={HEADING_ID}
@@ -179,6 +179,7 @@ export function StatsNumbersSection() {
             <SectionHeader
               subtitle={statsNumbersConfig.subtitle}
               subtitleClassName="text-primary font-semibold tracking-[0.2em]"
+              subtitlePill
               title={statsNumbersConfig.title}
               headingId={HEADING_ID}
             />

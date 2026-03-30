@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -9,24 +10,13 @@ import { heroConfig } from "@/config/hero";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/components/theme/cn";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
 const LCD_CYCLE_MS = 4000;
-
-function useReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mq.matches);
-    const handler = () => setReduced(mq.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
-  return reduced;
-}
 
 function HeroHeading() {
   const { heading, headingHighlight } = heroConfig;
@@ -103,12 +93,13 @@ export function HeroLCDScreen({
         return;
       }
 
+      gsap.set(wrapper, { opacity: 1 });
+
       try {
         const tween = gsap.fromTo(
           wrapper,
-          { opacity: 0, y: 30 },
+          { y: 30 },
           {
-            opacity: 1,
             y: 0,
             ease: "power2.out",
             force3D: true,
@@ -123,7 +114,8 @@ export function HeroLCDScreen({
           }
         );
 
-        const spacer = (tween.scrollTrigger as unknown as { spacer?: HTMLElement })?.spacer;
+        const spacer = (tween.scrollTrigger as unknown as { spacer?: HTMLElement })
+          ?.spacer;
         if (spacer) {
           spacer.style.background = "var(--hero-bg, #1a1a1a)";
         }
@@ -145,11 +137,7 @@ export function HeroLCDScreen({
   }, [reducedMotion]);
 
   return (
-    <div
-      ref={wrapperRef}
-      className="relative w-full max-w-6xl mx-auto"
-      style={{ opacity: 0, willChange: "transform, opacity" }}
-    >
+    <div ref={wrapperRef} className="relative mx-auto w-full max-w-6xl">
       <div className="w-full">
         {/* LCD frame — no backdrop-blur, no ring, GPU-friendly */}
         <div className="overflow-hidden rounded-xl border border-white/10 bg-black/95 shadow-2xl shadow-black/50">
@@ -160,14 +148,18 @@ export function HeroLCDScreen({
             {/* Image background with gradient overlay for text legibility */}
             {lcdImageSrc && (
               <>
-                <img
+                <Image
                   src={lcdImageSrc}
                   alt=""
-                  className="absolute inset-0 h-full w-full object-cover opacity-50"
+                  fill
+                  priority
+                  fetchPriority="high"
+                  className="object-cover opacity-50"
+                  sizes="(max-width: 768px) 100vw, 1152px"
                   aria-hidden
                 />
                 <div
-                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/40"
+                  className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-black/60 via-black/20 to-black/40"
                   aria-hidden
                 />
               </>
@@ -179,7 +171,8 @@ export function HeroLCDScreen({
                 <p
                   className={cn(
                     "mt-4 max-w-2xl text-base text-white/85 md:text-lg",
-                    !reducedMotion && "animate-hero-content-fade animation-delay-150 animation-fill-backwards"
+                    !reducedMotion &&
+                      "animate-hero-content-fade animation-delay-150 animation-fill-backwards"
                   )}
                 >
                   {heroConfig.subtext}
@@ -188,11 +181,16 @@ export function HeroLCDScreen({
               <div
                 className={cn(
                   "mt-8 flex flex-wrap items-center justify-center gap-4",
-                  !reducedMotion && "animate-hero-content-fade animation-delay-300 animation-fill-backwards"
+                  !reducedMotion &&
+                    "animate-hero-content-fade animation-delay-300 animation-fill-backwards"
                 )}
               >
                 {primaryHref ? (
-                  <Button asChild size="lg" className="shadow-lg shadow-primary/20">
+                  <Button
+                    asChild
+                    size="lg"
+                    className="shadow-lg shadow-primary/20"
+                  >
                     <Link href={primaryHref}>
                       {heroConfig.ctaPrimary}
                       <AppIcon
@@ -208,13 +206,20 @@ export function HeroLCDScreen({
                   </Button>
                 )}
                 {secondaryHref ? (
-                  <Button asChild variant="outline" size="lg" className="border-white/80 bg-transparent text-white hover:bg-white/10 hover:text-white">
-                    <Link href={secondaryHref}>
-                      {heroConfig.ctaSecondary}
-                    </Link>
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="lg"
+                    className="border-white/80 bg-transparent text-white hover:bg-white/10 hover:text-white"
+                  >
+                    <Link href={secondaryHref}>{heroConfig.ctaSecondary}</Link>
                   </Button>
                 ) : (
-                  <Button variant="outline" size="lg" className="border-white/80 bg-transparent text-white hover:bg-white/10 hover:text-white">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="border-white/80 bg-transparent text-white hover:bg-white/10 hover:text-white"
+                  >
                     {heroConfig.ctaSecondary}
                   </Button>
                 )}
@@ -254,11 +259,13 @@ export function HeroLCDScreen({
               key={src}
               className="relative h-20 w-32 overflow-hidden rounded-lg border border-white/10 bg-white/5 shadow-lg shadow-black/40"
             >
-              <img
+              <Image
                 src={src}
                 alt=""
+                fill
                 loading="lazy"
-                className="h-full w-full object-cover opacity-80"
+                className="object-cover opacity-80"
+                sizes="128px"
               />
             </div>
           ))}

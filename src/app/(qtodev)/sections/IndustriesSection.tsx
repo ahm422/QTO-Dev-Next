@@ -186,7 +186,7 @@ export function IndustriesSection() {
   return (
     <section
       className={cn(
-        "relative py-20 md:py-28 overflow-hidden",
+        "relative overflow-hidden py-24 md:py-32",
         "bg-surface-muted border-y border-border"
       )}
       aria-labelledby={HEADING_ID}

@@ -82,8 +82,9 @@ function PortfolioCard({
 
   const href = item.slug ? `/projects/${item.slug}` : undefined;
   const cardClassName = cn(
-    "group relative block rounded-2xl overflow-hidden border border-border bg-surface text-left",
-    "shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/20",
+    "group relative block overflow-hidden rounded-3xl border border-border bg-surface text-left",
+    "shadow-md shadow-black/[0.04] transition-all duration-300",
+    "hover:-translate-y-1 hover:border-primary/25 hover:shadow-xl hover:shadow-primary/[0.08]",
     "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
   );
 
@@ -106,8 +107,8 @@ export function PortfolioSection() {
   return (
     <section
       className={cn(
-        "relative py-20 md:py-28 overflow-hidden",
-        "bg-surface-muted border-y border-border"
+        "relative overflow-hidden border-y border-border py-24 md:py-32",
+        "bg-gradient-to-b from-background via-surface-muted/40 to-background"
       )}
       aria-labelledby={SECTION_HEADING_ID}
     >
@@ -136,8 +137,9 @@ export function PortfolioSection() {
               data-reveal
               href={portfolioConfig.viewAllHref}
               className={cn(
-                "mt-6 inline-flex items-center gap-2 rounded-xl border-2 border-primary bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground",
-                "transition-all duration-200 hover:bg-primary-hover hover:shadow-lg hover:shadow-primary/20",
+                "mt-8 inline-flex items-center gap-2 rounded-full border-2 border-primary bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground",
+                "shadow-md shadow-primary/25 transition-all duration-300",
+                "hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-lg hover:shadow-primary/35",
                 "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               )}
               aria-label="View all featured work"

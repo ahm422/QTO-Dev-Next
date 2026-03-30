@@ -15,7 +15,7 @@ export function CareersHeroSection() {
 
   return (
     <section
-      className="relative py-24 md:py-32 lg:py-36 bg-primary text-primary-foreground overflow-hidden"
+      className="relative py-24 md:py-32 lg:py-36 bg-hero-bg text-white overflow-hidden"
       aria-labelledby={HEADING_ID}
     >
       {/* Background image */}
@@ -54,7 +54,7 @@ export function CareersHeroSection() {
                 "px-7 py-3.5 text-lg",
                 "bg-white text-black hover:bg-white/95",
                 "shadow-xl shadow-black/15 hover:shadow-2xl hover:shadow-black/20 hover:-translate-y-0.5",
-                "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-hero-bg"
               )}
             >
               {hero.primaryCtaText}
@@ -69,7 +69,7 @@ export function CareersHeroSection() {
               className={cn(
                 "inline-flex items-center justify-center gap-2 rounded-xl border-2 border-white/90 text-white px-6 py-3 text-base font-semibold",
                 "hover:bg-white/10 transition-all duration-300",
-                "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-hero-bg"
               )}
             >
               {hero.secondaryCtaText}
