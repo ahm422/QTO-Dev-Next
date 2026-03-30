@@ -360,7 +360,7 @@ export function ClientQuestionnaireForm() {
       if (result.fieldErrors) {
         setErrors((prev) => ({
           ...prev,
-          ...mergeZodFieldMap(result.fieldErrors),
+          ...mergeZodFieldMap(result.fieldErrors ?? {}),
         }));
       }
     } finally {
@@ -669,7 +669,10 @@ export function ClientQuestionnaireForm() {
                   q.logoRedesign === undefined ? "" : q.logoRedesign
                 }
                 onChange={(v) => {
-                  setQ((p) => ({ ...p, logoRedesign: v }));
+                  setQ((p) => ({
+                    ...p,
+                    logoRedesign: v === "" ? undefined : v,
+                  }));
                   clearFieldError("questionnaire.logoRedesign");
                 }}
                 error={
