@@ -18,7 +18,6 @@ export const contactSubmissionSchema = z
     userAgent: optionalTrimmedString,
     ip: optionalTrimmedString,
     metadata: metadataSchema,
-  })
-  .passthrough();
+  });
 
 export type ContactSubmissionInput = z.infer<typeof contactSubmissionSchema>;

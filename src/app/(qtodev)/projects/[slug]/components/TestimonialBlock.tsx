@@ -78,11 +78,11 @@ export function TestimonialBlock({ project }: TestimonialBlockProps) {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <p className="text-sm text-primary-foreground/70">Want results like this?</p>
               <Link
-                href="/contact?intent=book-call"
-                aria-label="Book a call"
+                href="/contact"
+                aria-label="Contact us"
                 className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-primary-foreground px-6 py-3 text-sm font-semibold text-primary shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
               >
-                Book a Call
+                Contact us
                 <AppIcon name="arrow-right" size="sm" className="!text-xs" />
               </Link>
             </div>

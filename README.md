@@ -59,7 +59,6 @@ cp .env.example .env
    Prisma CLI note (important):
    - For migrations/introspection, set `DIRECT_URL` to Supabase **direct** connection (port 5432).
    - If the direct host is unreachable from your network, use Supabase **Session pooler** on port `5432` as `DIRECT_URL`.
-   - With Prisma 7 config, run CLI commands by temporarily overriding `DATABASE_URL` with `DIRECT_URL`.
    - Example:
 
    ```env
@@ -81,7 +80,7 @@ npm run prisma:generate
 4. Validate Prisma setup:
 
 ```bash
-DATABASE_URL="$DIRECT_URL" npm run prisma:validate
+npm run prisma:validate
 ```
 
 5. Create/apply migrations after adding models to `prisma/schema.prisma`:
@@ -93,5 +92,5 @@ npm run prisma:migrate:dev -- --name init
 6. Optional connectivity smoke test:
 
 ```bash
-DATABASE_URL="$DIRECT_URL" npx prisma db pull
+npx prisma db pull
 ```

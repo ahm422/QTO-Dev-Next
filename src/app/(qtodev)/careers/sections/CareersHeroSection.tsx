@@ -6,6 +6,7 @@ import { Heading } from "@/components/ui/shared/Heading";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
 import { careersPageConfig } from "@/config/careersPage";
+import { careerPortalHomeUrl } from "@/config/careersPortal";
 
 const HEADING_ID = "careers-hero-heading";
 
@@ -74,6 +75,18 @@ export function CareersHeroSection() {
               {hero.secondaryCtaText}
             </Link>
           </div>
+          <p className="mt-9 max-w-lg text-sm leading-relaxed text-white/80 animation-delay-300 animate-hero-content-fade animation-fill-backwards">
+            Official applications and job listings are hosted on the{" "}
+            <a
+              href={careerPortalHomeUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-white underline-offset-4 hover:text-white hover:underline"
+            >
+              QTO House career portal
+            </a>
+            .
+          </p>
         </div>
       </Container>
     </section>

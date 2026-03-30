@@ -4,6 +4,7 @@ import { WhyWorkWithUsSection } from "./sections/WhyWorkWithUsSection";
 import { BenefitsSection } from "./sections/BenefitsSection";
 import { OpenPositionsSection } from "./sections/OpenPositionsSection";
 import { CultureSection } from "./sections/CultureSection";
+import { CareersApplicationSection } from "./sections/CareersApplicationSection";
 import { CareersCTASection } from "./sections/CareersCTASection";
 
 export const metadata = generateSEOMetadata({
@@ -21,6 +22,7 @@ export default function CareersPage() {
       <BenefitsSection />
       <OpenPositionsSection />
       <CultureSection />
+      <CareersApplicationSection />
       <CareersCTASection />
     </>
   );

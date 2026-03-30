@@ -247,13 +247,7 @@ export function ContactCTA() {
                   </Button>
 
                   <p className="text-center text-xs text-foreground-muted">
-                    Or{" "}
-                    <Link
-                      href="/contact#book-a-call"
-                      className="font-semibold text-primary hover:text-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-muted rounded"
-                    >
-                      book 15-min call instead →
-                    </Link>
+                    We reply with clear next steps within one business day.
                   </p>
                 </div>
               </form>

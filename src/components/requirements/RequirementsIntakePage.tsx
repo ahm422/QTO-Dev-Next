@@ -307,12 +307,12 @@ export function RequirementsIntakePage({
                   days.
                 </Text>
                 <Text size="sm" color="muted">
-                  Prefer to talk it through?{" "}
+                  If there’s anything you’d like to add, you can always follow up via{" "}
                   <Link
-                    href="/contact#book-a-call"
+                    href="/contact"
                     className="font-semibold text-primary underline-offset-4 hover:underline"
                   >
-                    Book a call
+                    Contact
                   </Link>
                   .
                 </Text>
@@ -769,12 +769,12 @@ export function RequirementsIntakePage({
                 ))}
               </div>
               <p className="pt-4 text-xs text-foreground-muted">
-                Prefer to explore live?{" "}
+                Need to share more context?{" "}
                 <Link
-                  href="/contact#book-a-call"
+                  href="/contact"
                   className="font-semibold text-primary underline-offset-4 hover:underline"
                 >
-                  Book a call
+                  Send us a message
                 </Link>
                 .
               </p>
