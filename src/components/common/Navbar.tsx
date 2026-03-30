@@ -16,8 +16,6 @@ const navItems = [
   { label: "About", href: "/about" },
   { label: "Blog", href: "/blogs" },
   { label: "Careers", href: "/careers" },
-  { label: "Requirements", href: "/requirements" },
-  { label: "Contact", href: "/contact" },
 ];
 
 function isActive(pathname: string, href: string): boolean {
@@ -31,7 +29,7 @@ export function Navbar() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <nav className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <nav className="sticky top-0 z-40 relative border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center min-h-16 py-3 sm:min-h-[72px] sm:py-4 md:min-h-20 md:py-5 lg:min-h-24 lg:py-6 gap-3 sm:gap-4">
           <Link href="/" className="flex shrink-0 items-center">
@@ -40,7 +38,7 @@ export function Navbar() {
             </div>
           </Link>
 
-          <div className="hidden md:flex flex-1 justify-center items-center min-w-0">
+          <div className="hidden xl:flex flex-1 justify-center items-center min-w-0">
             <div
               className="rounded-full bg-surface-muted p-1 shadow-sm flex items-center gap-0.5 lg:p-1.5"
               role="navigation"
@@ -66,7 +64,7 @@ export function Navbar() {
             </div>
           </div>
 
-          <div className="hidden md:flex shrink-0 items-center gap-2 lg:gap-3">
+          <div className="hidden xl:flex shrink-0 items-center gap-2 lg:gap-3">
             <Button
               type="button"
               variant="outline"
@@ -77,8 +75,8 @@ export function Navbar() {
             >
               <AppIcon name={theme === "dark" ? "sun" : "moon"} size="sm" className="h-5 w-5 lg:h-6 lg:w-6" />
             </Button>
-            <HeaderCTAButton href="/contact#book-a-call" className="lg:px-5 lg:py-2.5 lg:text-base">
-              Book a Call
+            <HeaderCTAButton href="/contact" className="lg:px-5 lg:py-2.5 lg:text-base">
+              Contact Us
             </HeaderCTAButton>
             <HeaderCTAButton href="/requirements" className="lg:px-5 lg:py-2.5 lg:text-base">
               Requirements
@@ -90,53 +88,67 @@ export function Navbar() {
             variant="outline"
             size="icon"
             aria-label="Toggle navigation menu"
-            className="inline-flex md:hidden sm:size-9"
+            aria-expanded={isMenuOpen}
+            aria-controls="main-navigation-panel"
+            className="inline-flex xl:hidden sm:size-9"
             onClick={() => setIsMenuOpen((prev) => !prev)}
           >
             <AppIcon name={isMenuOpen ? "xmark" : "bars"} size="sm" className="h-5 w-5 sm:h-6 sm:w-6" />
           </Button>
         </div>
+      </div>
 
-        {isMenuOpen ? (
-          <div className="border-t border-border py-4 sm:py-5 md:hidden">
-            <nav className="flex flex-col gap-1 rounded-xl bg-surface-muted p-2 shadow-sm" role="navigation" aria-label="Main navigation">
-              {navItems.map((item) => {
-                const active = isActive(pathname, item.href);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setIsMenuOpen(false)}
-                    aria-current={active ? "page" : undefined}
-                    className={`rounded-lg px-4 py-3 text-sm font-medium transition-colors text-center ${
-                      active
-                        ? "bg-foreground text-background"
-                        : "text-foreground-muted hover:bg-border hover:text-foreground"
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                );
-              })}
-            </nav>
-            <div className="mt-4 flex items-center gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
-                onClick={toggleTheme}
-              >
-                <AppIcon name={theme === "dark" ? "sun" : "moon"} size="sm" className="h-5 w-5" />
-              </Button>
-            </div>
-            <div className="mt-4 grid grid-cols-2 gap-2">
+      {isMenuOpen ? (
+        <>
+          <button
+            type="button"
+            aria-label="Close navigation menu"
+            className="xl:hidden fixed inset-0 z-30 cursor-default bg-background/20 backdrop-blur-sm"
+            onClick={() => setIsMenuOpen(false)}
+          />
+          <div
+            id="main-navigation-panel"
+            className="xl:hidden absolute left-0 right-0 top-full z-40 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
+          >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5 max-h-[calc(100vh-5rem)] overflow-auto">
+              <nav className="flex flex-col gap-1 rounded-xl bg-surface-muted p-2 shadow-sm" role="navigation" aria-label="Main navigation">
+                {navItems.map((item) => {
+                  const active = isActive(pathname, item.href);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setIsMenuOpen(false)}
+                      aria-current={active ? "page" : undefined}
+                      className={`rounded-lg px-4 py-3 text-sm font-medium transition-colors text-center ${
+                        active
+                          ? "bg-foreground text-background"
+                          : "text-foreground-muted hover:bg-foreground/10 hover:text-foreground"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </nav>
+              <div className="mt-4 flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+                  onClick={toggleTheme}
+                >
+                  <AppIcon name={theme === "dark" ? "sun" : "moon"} size="sm" className="h-5 w-5" />
+                </Button>
+              </div>
+              <div className="mt-4 grid grid-cols-2 gap-2">
                 <HeaderCTAButton
-                  href="/contact#book-a-call"
+                  href="/contact"
                   onClick={() => setIsMenuOpen(false)}
                   className="w-full justify-center"
                 >
-                  Book a Call
+                  Contact Us
                 </HeaderCTAButton>
                 <HeaderCTAButton
                   href="/requirements"
@@ -145,10 +157,11 @@ export function Navbar() {
                 >
                   Requirements
                 </HeaderCTAButton>
+              </div>
             </div>
           </div>
-        ) : null}
-      </div>
+        </>
+      ) : null}
     </nav>
   );
 }

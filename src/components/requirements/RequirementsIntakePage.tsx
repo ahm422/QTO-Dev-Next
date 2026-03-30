@@ -22,6 +22,7 @@ import { analytics } from "@/lib/analytics";
 import { requirementSubmissionSchema } from "@/lib/validators/requirement";
 import { firstApiFieldError, formatZodFieldErrors } from "@/lib/validators/http";
 import { postRequirementSubmission } from "@/lib/requirementApiClient";
+import { AppIcon } from "@/components/ui/shared/AppIcon";
 
 type BudgetRange = "<25k" | "25k-75k" | "75k-150k" | ">150k" | "";
 
@@ -282,24 +283,42 @@ export function RequirementsIntakePage({
   const renderStep = () => {
     if (submitted) {
       return (
-        <div className="space-y-3 text-center sm:text-left">
-          <Text size="lg" className="font-semibold text-success">
-            Thanks for sharing your requirements.
-          </Text>
-          <Text color="muted">
-            We’ve received your details. Expect structured follow-up from our
-            team within one to two business days.
-          </Text>
-          <Text size="sm" color="muted">
-            Prefer to talk it through?{" "}
-            <Link
-              href="/contact#book-a-call"
-              className="font-semibold text-primary underline-offset-4 hover:underline"
-            >
-              Book a call
-            </Link>
-            .
-          </Text>
+        <div className="overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-background/90 to-success/5 shadow-sm ring-1 ring-black/[0.04] dark:ring-white/[0.06]">
+          <div className="border-b border-border/80 bg-success/10 px-4 py-4 sm:px-6 sm:py-5">
+            <Text className="text-base font-semibold tracking-tight text-foreground sm:text-lg">
+              You&apos;re all set
+            </Text>
+            <Text size="sm" color="muted" className="mt-1 max-w-xl leading-relaxed">
+              Your requirements are in our queue. We&apos;ll get back with clear next
+              steps.
+            </Text>
+          </div>
+          <div className="p-5 sm:p-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+              <span className="mx-auto inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-success/15 text-success sm:mx-0">
+                <AppIcon name="circle-check" size="base" />
+              </span>
+              <div className="space-y-3 text-center sm:text-left">
+                <Text size="lg" className="font-semibold text-success">
+                  Thanks for sharing your requirements.
+                </Text>
+                <Text color="muted" className="leading-relaxed">
+                  Expect structured follow-up from our team within one to two business
+                  days.
+                </Text>
+                <Text size="sm" color="muted">
+                  Prefer to talk it through?{" "}
+                  <Link
+                    href="/contact#book-a-call"
+                    className="font-semibold text-primary underline-offset-4 hover:underline"
+                  >
+                    Book a call
+                  </Link>
+                  .
+                </Text>
+              </div>
+            </div>
+          </div>
         </div>
       );
     }
@@ -308,159 +327,277 @@ export function RequirementsIntakePage({
       case 0:
         return (
           <div className="space-y-6">
-            <div>
-              <Text size="sm" color="muted" className="mb-2">
-                Tell us what you’re building and why now.
-              </Text>
-              <div className="grid gap-6 md:grid-cols-2">
-                <FormSelect
-                  label="Project type"
-                  value={formData.projectType}
-                  onValueChange={(v) => setField("projectType", v)}
-                  error={errors.projectType}
-                  required
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select an option" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="new-build">
-                      New web or mobile product
-                    </SelectItem>
-                    <SelectItem value="modernisation">
-                      Modernising existing product
-                    </SelectItem>
-                    <SelectItem value="extension">
-                      Feature/module for current product
-                    </SelectItem>
-                    <SelectItem value="internal-tool">
-                      Internal tool or automation
-                    </SelectItem>
-                  </SelectContent>
-                </FormSelect>
-                <FormInput
-                  label="Industry"
-                  name="industry"
-                  value={formData.industry}
-                  onChange={(e) => setField("industry", e.target.value)}
-                  placeholder="Fintech, SaaS, Healthcare..."
-                />
+            <div className="overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-background/90 to-surface-muted/30 shadow-sm ring-1 ring-black/[0.04] dark:ring-white/[0.06]">
+              <div className="border-b border-border/80 bg-surface-muted/50 px-4 py-4 sm:px-6 sm:py-5">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="space-y-1">
+                    <Text className="text-base font-semibold tracking-tight sm:text-lg">
+                      Project overview
+                    </Text>
+                    <Text size="sm" color="muted" className="max-w-xl leading-relaxed">
+                      Tell us what you&apos;re building and why now. High-level detail
+                      is enough—we&apos;ll dig deeper later.
+                    </Text>
+                  </div>
+                  <span className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-full border border-border bg-background/80 px-2.5 py-1 text-[11px] font-medium text-foreground-muted">
+                    <AppIcon name="compass" size="sm" className="!text-xs text-primary" />
+                    ~2 min
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-8 p-4 sm:p-6">
+                <section className="rounded-xl border border-border/70 bg-background/70 p-4 shadow-sm sm:p-5 md:p-6">
+                  <div className="mb-5 flex gap-3">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
+                      <AppIcon name="rocket" size="sm" />
+                    </span>
+                    <div className="min-w-0 space-y-1">
+                      <h3 className="text-sm font-semibold text-foreground">
+                        Context &amp; fit
+                      </h3>
+                      <p className="text-xs leading-relaxed text-foreground-muted sm:text-sm">
+                        Helps us route you to the right engagement and suggest a
+                        realistic approach.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-5 md:grid-cols-2 md:gap-6">
+                    <FormSelect
+                      label="Project type"
+                      value={formData.projectType}
+                      onValueChange={(v) => setField("projectType", v)}
+                      error={errors.projectType}
+                      required
+                    >
+                      <SelectTrigger className="h-10 w-full md:h-11">
+                        <SelectValue placeholder="Choose the closest match" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="new-build">
+                          New web or mobile product
+                        </SelectItem>
+                        <SelectItem value="modernisation">
+                          Modernising existing product
+                        </SelectItem>
+                        <SelectItem value="extension">
+                          Feature/module for current product
+                        </SelectItem>
+                        <SelectItem value="internal-tool">
+                          Internal tool or automation
+                        </SelectItem>
+                      </SelectContent>
+                    </FormSelect>
+                    <FormInput
+                      label="Industry"
+                      name="industry"
+                      value={formData.industry}
+                      onChange={(e) => setField("industry", e.target.value)}
+                      placeholder="Fintech, SaaS, healthcare…"
+                      className="h-10 md:h-11"
+                    />
+                    <div className="md:col-span-2">
+                      <FormInput
+                        label="Company size (optional)"
+                        name="companySize"
+                        value={formData.companySize}
+                        onChange={(e) => setField("companySize", e.target.value)}
+                        placeholder="e.g. 1–10, 50–200, enterprise"
+                        className="h-10 md:h-11 md:max-w-md"
+                      />
+                    </div>
+                  </div>
+                </section>
+
+                <section className="rounded-xl border border-border/70 bg-background/70 p-4 shadow-sm sm:p-5 md:p-6">
+                  <div className="mb-5 flex gap-3">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
+                      <AppIcon name="bullseye" size="sm" />
+                    </span>
+                    <div className="min-w-0 space-y-1">
+                      <h3 className="text-sm font-semibold text-foreground">
+                        Goals &amp; outcomes
+                      </h3>
+                      <p className="text-xs leading-relaxed text-foreground-muted sm:text-sm">
+                        What problem are you solving, and what would make this
+                        initiative a win?
+                      </p>
+                    </div>
+                  </div>
+                  <FormTextarea
+                    label="What are you trying to achieve?"
+                    name="goals"
+                    value={formData.goals}
+                    onChange={(e) => setField("goals", e.target.value)}
+                    rows={6}
+                    placeholder="Example: Replace a legacy portal so reps spend less time on admin; launch an MVP for investors by Q3; reduce support tickets by 30%…"
+                    required
+                    error={errors.goals}
+                    className="min-h-[132px] resize-y"
+                  />
+                </section>
               </div>
             </div>
-
-            <div className="grid gap-6 md:grid-cols-2">
-              <FormInput
-                label="Company size"
-                name="companySize"
-                value={formData.companySize}
-                onChange={(e) => setField("companySize", e.target.value)}
-                placeholder="e.g. 1–10, 50–200, 200+"
-              />
-            </div>
-
-            <FormTextarea
-              label="What are you trying to achieve?"
-              name="goals"
-              value={formData.goals}
-              onChange={(e) => setField("goals", e.target.value)}
-              rows={5}
-              placeholder="Share the context, problem, and what success would look like."
-              required
-              error={errors.goals}
-            />
           </div>
         );
       case 1:
         return (
           <div className="space-y-6">
-            <Text size="sm" color="muted" className="mb-2">
-              A rough budget and timeline help us shape a realistic proposal.
-            </Text>
-            <div className="grid gap-6 md:grid-cols-2">
-              <div>
-                <Label className="block text-foreground mb-2">
-                  Budget range
-                </Label>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { value: "<25k", label: "Under $25k" },
-                    { value: "25k-75k", label: "$25k – $75k" },
-                    { value: "75k-150k", label: "$75k – $150k" },
-                    { value: ">150k", label: "Above $150k" },
-                  ].map((option) => (
-                    <Button
-                      key={option.value}
-                      type="button"
-                      variant={
-                        formData.budgetRange === option.value
-                          ? "default"
-                          : "outline"
-                      }
-                      className="justify-start text-left"
-                      onClick={() =>
-                        setField("budgetRange", option.value as BudgetRange)
-                      }
-                      aria-pressed={formData.budgetRange === option.value}
-                    >
-                      {option.label}
-                    </Button>
-                  ))}
+            <div className="overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-background/90 to-surface-muted/30 shadow-sm ring-1 ring-black/[0.04] dark:ring-white/[0.06]">
+              <div className="border-b border-border/80 bg-surface-muted/50 px-4 py-4 sm:px-6 sm:py-5">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="space-y-1">
+                    <Text className="text-base font-semibold tracking-tight sm:text-lg">
+                      Budget &amp; timeline
+                    </Text>
+                    <Text size="sm" color="muted" className="max-w-xl leading-relaxed">
+                      Ranges and rough dates are fine—they help us shape a proposal
+                      that matches reality, not guesswork.
+                    </Text>
+                  </div>
+                  <span className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-full border border-border bg-background/80 px-2.5 py-1 text-[11px] font-medium text-foreground-muted">
+                    <AppIcon name="chart-line" size="sm" className="!text-xs text-primary" />
+                    Estimates OK
+                  </span>
                 </div>
-                {errors.budgetRange && (
-                  <p className="mt-1 text-sm text-destructive">
-                    {errors.budgetRange}
-                  </p>
-                )}
               </div>
 
-              <div className="space-y-4">
-                <FormInput
-                  label="Desired start date"
-                  name="startDate"
-                  type="text"
-                  value={formData.startDate}
-                  onChange={(e) => setField("startDate", e.target.value)}
-                  placeholder="e.g. Next month, Q3, specific date"
-                />
-                <FormInput
-                  label="Ideal launch window"
-                  name="launchWindow"
-                  type="text"
-                  value={formData.launchWindow}
-                  onChange={(e) => setField("launchWindow", e.target.value)}
-                  placeholder="e.g. Before Black Friday, within 6 months"
-                  error={errors.launchWindow}
-                />
-              </div>
-            </div>
+              <div className="space-y-8 p-4 sm:p-6">
+                <section className="rounded-xl border border-border/70 bg-background/70 p-4 shadow-sm sm:p-5 md:p-6">
+                  <div className="mb-5 flex gap-3">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
+                      <AppIcon name="chart-line" size="sm" />
+                    </span>
+                    <div className="min-w-0 space-y-1">
+                      <h3 className="text-sm font-semibold text-foreground">
+                        Investment &amp; schedule
+                      </h3>
+                      <p className="text-xs leading-relaxed text-foreground-muted sm:text-sm">
+                        Pick the bracket that&apos;s closest. We&apos;ll refine scope and
+                        pricing after we understand more.
+                      </p>
+                    </div>
+                  </div>
 
-            <div>
-              <Label className="block text-foreground mb-2">
-                How urgent is this project?
-              </Label>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  { value: "exploring", label: "Exploring options" },
-                  { value: "soon", label: "Soon (this quarter)" },
-                  { value: "urgent", label: "Urgent (this month)" },
-                ].map((option) => (
-                  <Button
-                    key={option.value}
-                    type="button"
-                    variant={
-                      formData.urgency === option.value ? "default" : "outline"
-                    }
-                    className="rounded-full"
-                    onClick={() => setField("urgency", option.value)}
-                    aria-pressed={formData.urgency === option.value}
-                  >
-                    {option.label}
-                  </Button>
-                ))}
+                  <div className="grid gap-8 lg:grid-cols-2 lg:gap-10">
+                    <div>
+                      <Label className="mb-2 block text-foreground">
+                        Budget range
+                      </Label>
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        {[
+                          { value: "<25k", label: "Under $25k" },
+                          { value: "25k-75k", label: "$25k – $75k" },
+                          { value: "75k-150k", label: "$75k – $150k" },
+                          { value: ">150k", label: "Above $150k" },
+                        ].map((option) => (
+                          <Button
+                            key={option.value}
+                            type="button"
+                            variant={
+                              formData.budgetRange === option.value
+                                ? "default"
+                                : "outline"
+                            }
+                            className="h-auto min-h-11 justify-between py-2.5 text-left sm:min-h-12"
+                            onClick={() =>
+                              setField("budgetRange", option.value as BudgetRange)
+                            }
+                            aria-pressed={formData.budgetRange === option.value}
+                          >
+                            <span className="text-sm font-medium leading-snug">
+                              {option.label}
+                            </span>
+                            {formData.budgetRange === option.value ? (
+                              <AppIcon name="circle-check" size="sm" />
+                            ) : (
+                              <span className="h-2 w-2 shrink-0 rounded-full bg-foreground/15" />
+                            )}
+                          </Button>
+                        ))}
+                      </div>
+                      {errors.budgetRange && (
+                        <p className="mt-2 text-sm text-destructive">
+                          {errors.budgetRange}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-4 border-t border-border/60 pt-6 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+                      <FormInput
+                        label="Desired start date"
+                        name="startDate"
+                        type="text"
+                        value={formData.startDate}
+                        onChange={(e) => setField("startDate", e.target.value)}
+                        placeholder="e.g. Next month, Q3, or a specific date"
+                        className="h-10 md:h-11"
+                      />
+                      <FormInput
+                        label="Ideal launch window"
+                        name="launchWindow"
+                        type="text"
+                        value={formData.launchWindow}
+                        onChange={(e) => setField("launchWindow", e.target.value)}
+                        placeholder="e.g. Before a campaign, within 6 months"
+                        error={errors.launchWindow}
+                        className="h-10 md:h-11"
+                      />
+                    </div>
+                  </div>
+                </section>
+
+                <section className="rounded-xl border border-border/70 bg-background/70 p-4 shadow-sm sm:p-5 md:p-6">
+                  <div className="mb-5 flex gap-3">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
+                      <AppIcon name="bolt" size="sm" />
+                    </span>
+                    <div className="min-w-0 space-y-1">
+                      <h3 className="text-sm font-semibold text-foreground">
+                        How urgent is this?
+                      </h3>
+                      <p className="text-xs leading-relaxed text-foreground-muted sm:text-sm">
+                        Helps us prioritize resourcing and suggest a sensible rollout
+                        plan.
+                      </p>
+                    </div>
+                  </div>
+                  <Label className="sr-only">Project urgency</Label>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                    {[
+                      { value: "exploring", label: "Exploring options" },
+                      { value: "soon", label: "Soon (this quarter)" },
+                      { value: "urgent", label: "Urgent (this month)" },
+                    ].map((option) => (
+                      <Button
+                        key={option.value}
+                        type="button"
+                        variant={
+                          formData.urgency === option.value ? "default" : "outline"
+                        }
+                        className="h-auto min-h-11 justify-between py-2.5 text-left sm:min-h-12"
+                        onClick={() => setField("urgency", option.value)}
+                        aria-pressed={formData.urgency === option.value}
+                      >
+                        <span className="text-sm font-medium leading-snug">
+                          {option.label}
+                        </span>
+                        {formData.urgency === option.value ? (
+                          <AppIcon name="circle-check" size="sm" />
+                        ) : (
+                          <span className="h-2 w-2 shrink-0 rounded-full bg-foreground/15" />
+                        )}
+                      </Button>
+                    ))}
+                  </div>
+                  {errors.urgency && (
+                    <p className="mt-2 text-sm text-destructive">
+                      {errors.urgency}
+                    </p>
+                  )}
+                </section>
               </div>
-              {errors.urgency && (
-                <p className="mt-1 text-sm text-destructive">{errors.urgency}</p>
-              )}
             </div>
           </div>
         );
@@ -468,70 +605,135 @@ export function RequirementsIntakePage({
       default:
         return (
           <div className="space-y-6">
-            <FormTextarea
-              label="Key features or requirements"
-              name="features"
-              value={formData.features}
-              onChange={(e) => setField("features", e.target.value)}
-              rows={4}
-              placeholder="List the most important features or flows you have in mind."
-              required
-              error={errors.features}
-            />
+            <div className="overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-background/90 to-surface-muted/30 shadow-sm ring-1 ring-black/[0.04] dark:ring-white/[0.06]">
+              <div className="border-b border-border/80 bg-surface-muted/50 px-4 py-4 sm:px-6 sm:py-5">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="space-y-1">
+                    <Text className="text-base font-semibold tracking-tight sm:text-lg">
+                      Details & contact
+                    </Text>
+                    <Text size="sm" color="muted" className="max-w-xl leading-relaxed">
+                      Final step: capture the scope we should prioritize and how to
+                      reach you. Everything here stays confidential.
+                    </Text>
+                  </div>
+                  <span className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-full border border-border bg-background/80 px-2.5 py-1 text-[11px] font-medium text-foreground-muted">
+                    <AppIcon name="lock" size="sm" className="!text-xs text-primary" />
+                    Encrypted in transit
+                  </span>
+                </div>
+              </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
-              <FormInput
-                label="Critical integrations (optional)"
-                name="integrations"
-                value={formData.integrations}
-                onChange={(e) => setField("integrations", e.target.value)}
-                placeholder="e.g. Stripe, HubSpot, internal APIs"
-              />
-              <FormInput
-                label="How will you measure success?"
-                name="successCriteria"
-                value={formData.successCriteria}
-                onChange={(e) => setField("successCriteria", e.target.value)}
-                placeholder="e.g. activation rate, revenue, efficiency"
-              />
-            </div>
+              <div className="space-y-8 p-4 sm:p-6">
+                {/* Product scope */}
+                <section className="rounded-xl border border-border/70 bg-background/70 p-4 shadow-sm sm:p-5 md:p-6">
+                  <div className="mb-5 flex gap-3">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
+                      <AppIcon name="layers" size="sm" />
+                    </span>
+                    <div className="min-w-0 space-y-1">
+                      <h3 className="text-sm font-semibold text-foreground">
+                        Product scope
+                      </h3>
+                      <p className="text-xs leading-relaxed text-foreground-muted sm:text-sm">
+                        Bullet points are fine. Focus on must-haves and any technical
+                        constraints.
+                      </p>
+                    </div>
+                  </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
-              <FormInput
-                label="Full name"
-                name="name"
-                value={formData.name}
-                onChange={(e) => setField("name", e.target.value)}
-                placeholder="Jane Doe"
-                autoComplete="name"
-                required
-                error={errors.name}
-              />
-              <FormInput
-                label="Work email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => setField("email", e.target.value)}
-                placeholder="you@company.com"
-                autoComplete="email"
-                required
-                error={errors.email}
-              />
-              <FormInput
-                label="Company"
-                name="company"
-                value={formData.company}
-                onChange={(e) => setField("company", e.target.value)}
-                placeholder="Acme Inc."
-              />
-              <FormInput
-                label="Company website (optional)"
-                name="website"
-                value={formData.website}
-                onChange={(e) => setField("website", e.target.value)}
-                placeholder="https://"
-              />
+                  <FormTextarea
+                    label="Key features & requirements"
+                    name="features"
+                    value={formData.features}
+                    onChange={(e) => setField("features", e.target.value)}
+                    rows={6}
+                    placeholder="Example: User auth (SSO), admin dashboard, Stripe billing, export to PDF, mobile-responsive…"
+                    required
+                    error={errors.features}
+                    className="min-h-[140px] resize-y"
+                  />
+
+                  <div className="mt-6 grid gap-5 border-t border-border/60 pt-6 md:grid-cols-2 md:gap-6">
+                    <FormInput
+                      label="Integrations & systems (optional)"
+                      name="integrations"
+                      value={formData.integrations}
+                      onChange={(e) => setField("integrations", e.target.value)}
+                      placeholder="Stripe, HubSpot, Salesforce, internal APIs…"
+                    />
+                    <FormInput
+                      label="Success metrics (optional)"
+                      name="successCriteria"
+                      value={formData.successCriteria}
+                      onChange={(e) => setField("successCriteria", e.target.value)}
+                      placeholder="e.g. time saved per week, conversion uplift, SLAs"
+                    />
+                  </div>
+                </section>
+
+                {/* Contact */}
+                <section className="rounded-xl border border-border/70 bg-background/70 p-4 shadow-sm sm:p-5 md:p-6">
+                  <div className="mb-5 flex gap-3">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
+                      <AppIcon name="envelope" size="sm" />
+                    </span>
+                    <div className="min-w-0 space-y-1">
+                      <h3 className="text-sm font-semibold text-foreground">
+                        Your contact details
+                      </h3>
+                      <p className="text-xs leading-relaxed text-foreground-muted sm:text-sm">
+                        We only use this to follow up on your requirements—no newsletter
+                        unless you ask.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-5 md:grid-cols-2 md:gap-x-6 md:gap-y-5">
+                    <FormInput
+                      label="Full name"
+                      name="name"
+                      value={formData.name}
+                      onChange={(e) => setField("name", e.target.value)}
+                      placeholder="Jane Doe"
+                      autoComplete="name"
+                      required
+                      error={errors.name}
+                      className="h-10 md:h-11"
+                    />
+                    <FormInput
+                      label="Work email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setField("email", e.target.value)}
+                      placeholder="you@company.com"
+                      autoComplete="email"
+                      required
+                      error={errors.email}
+                      className="h-10 md:h-11"
+                    />
+                    <FormInput
+                      label="Company"
+                      name="company"
+                      value={formData.company}
+                      onChange={(e) => setField("company", e.target.value)}
+                      placeholder="Company or team name"
+                      autoComplete="organization"
+                      className="h-10 md:h-11"
+                    />
+                    <FormInput
+                      label="Website (optional)"
+                      name="website"
+                      value={formData.website}
+                      onChange={(e) => setField("website", e.target.value)}
+                      placeholder="https://example.com"
+                      autoComplete="url"
+                      className="h-10 md:h-11"
+                    />
+                  </div>
+                </section>
+              </div>
             </div>
           </div>
         );
@@ -548,16 +750,25 @@ export function RequirementsIntakePage({
         sideContent={
           <>
             <TrustStrip orientation="column" />
-            <div className="mt-6 space-y-3 rounded-2xl border border-border bg-surface-muted/80 p-4 text-sm text-foreground-muted">
-              <p className="font-semibold text-foreground">
+            <div className="mt-6 rounded-2xl border border-border bg-surface-muted/80 p-4 sm:p-5">
+              <p className="text-sm font-semibold text-foreground">
                 What happens next
               </p>
-              <ul className="space-y-2 list-disc list-inside">
-                <li>We reply in 1–2 business days.</li>
-                <li>We’ll highlight trade-offs and realistic next steps.</li>
-                <li>No obligation—this is for clarity first.</li>
-              </ul>
-              <p className="pt-2 text-xs text-foreground-muted">
+              <div className="mt-4 space-y-3 text-sm text-foreground-muted">
+                {[
+                  "We reply in 1–2 business days.",
+                  "We’ll highlight trade-offs and realistic next steps.",
+                  "No obligation—this is for clarity first.",
+                ].map((line) => (
+                  <div key={line} className="flex gap-2.5">
+                    <span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-md bg-primary/10 text-primary">
+                      <AppIcon name="circle-check" size="sm" className="!text-[10px]" />
+                    </span>
+                    <p className="leading-relaxed">{line}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="pt-4 text-xs text-foreground-muted">
                 Prefer to explore live?{" "}
                 <Link
                   href="/contact#book-a-call"
@@ -593,31 +804,41 @@ export function RequirementsIntakePage({
           <FormStepper steps={[...steps]} currentStepIndex={currentStep} />
           {renderStep()}
           {!submitted && (
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex gap-3">
-                {currentStep > 0 && (
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="lg"
-                    onClick={goToPrevious}
-                  >
-                    Back
-                  </Button>
-                )}
-                {currentStep < steps.length - 1 ? (
-                  <Button type="button" size="lg" onClick={goToNext}>
-                    Next
-                  </Button>
-                ) : (
-                  <Button type="submit" size="lg" disabled={isSubmitting}>
-                    {isSubmitting ? "Sending…" : "Submit requirements"}
-                  </Button>
-                )}
+            <div
+              className={
+                currentStep === steps.length - 1
+                  ? "mt-8 rounded-2xl border border-border/80 bg-surface-muted/40 p-4 shadow-sm sm:p-5"
+                  : "mt-8"
+              }
+            >
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-wrap gap-3">
+                  {currentStep > 0 && (
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="lg"
+                      onClick={goToPrevious}
+                    >
+                      Back
+                    </Button>
+                  )}
+                  {currentStep < steps.length - 1 ? (
+                    <Button type="button" size="lg" onClick={goToNext}>
+                      Next
+                    </Button>
+                  ) : (
+                    <Button type="submit" size="lg" disabled={isSubmitting} className="min-w-[200px]">
+                      {isSubmitting ? "Sending…" : "Submit requirements"}
+                    </Button>
+                  )}
+                </div>
+                <Text size="sm" color="muted" className="max-w-md leading-relaxed">
+                  {currentStep === steps.length - 1
+                    ? "By submitting, you agree we may email you about this request. No spam."
+                    : "We’ll only use your details to follow up on this request."}
+                </Text>
               </div>
-              <Text size="sm" color="muted">
-                We’ll only use your details to follow up on this request.
-              </Text>
             </div>
           )}
         </form>
