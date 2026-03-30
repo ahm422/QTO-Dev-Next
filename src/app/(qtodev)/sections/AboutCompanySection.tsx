@@ -24,9 +24,9 @@ export function AboutCompanySection() {
   return (
     <section
       className={cn(
-        "relative py-20 md:py-28 overflow-hidden",
-        "bg-gradient-to-br from-primary via-primary to-[#c96f1a]",
-        "border-t border-b border-primary-foreground/10"
+        "relative overflow-hidden border-b border-t border-primary-foreground/10 py-24 md:py-32",
+        "bg-gradient-to-br from-primary via-[#ea8620] to-[#c96f1a]",
+        "shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
       )}
       aria-labelledby="about-company-heading"
     >

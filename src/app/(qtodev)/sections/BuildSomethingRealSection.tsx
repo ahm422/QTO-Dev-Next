@@ -17,7 +17,7 @@ export function BuildSomethingRealSection() {
     <section
       id="build-something-real"
       className={cn(
-        "relative py-20 md:py-28 overflow-hidden",
+        "relative overflow-hidden py-24 md:py-32",
         "bg-gradient-to-b from-surface via-surface-muted/40 to-surface",
         "border-y border-border/80"
       )}
@@ -37,12 +37,14 @@ export function BuildSomethingRealSection() {
           <div
             data-reveal
             className={cn(
-              "relative overflow-hidden rounded-3xl px-6 py-14 text-center sm:px-10 md:px-16 md:py-20",
-              "bg-gradient-to-b from-surface-muted via-primary/10 to-surface-muted",
-              "border border-border shadow-xl shadow-black/5",
+              "relative overflow-hidden rounded-[2rem] px-6 py-14 text-center sm:px-10 md:px-16 md:py-20",
+              "bg-gradient-to-b from-surface-muted via-primary/[0.12] to-surface-muted",
+              "border border-border/80 shadow-xl shadow-black/[0.06]",
               "text-foreground [&_p]:text-foreground-muted",
-              "dark:bg-gradient-to-b dark:from-black dark:via-primary/15 dark:to-black",
-              "dark:border-white/10 dark:shadow-2xl dark:shadow-black/30",
+              "ring-1 ring-primary/[0.06]",
+              "before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/70 before:to-transparent dark:before:via-white/25",
+              "dark:bg-gradient-to-b dark:from-black dark:via-primary/[0.14] dark:to-black",
+              "dark:border-white/10 dark:shadow-2xl dark:shadow-black/40 dark:ring-primary/15",
               "dark:text-white dark:[&_p]:text-white/85"
             )}
           >
@@ -58,6 +60,7 @@ export function BuildSomethingRealSection() {
                 titleHighlight={cfg.titleHighlight}
                 description={cfg.description}
                 centered={true}
+                showAccentBar={false}
                 headingId={HEADING_ID}
               />
             </div>

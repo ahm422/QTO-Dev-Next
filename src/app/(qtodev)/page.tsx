@@ -1,3 +1,4 @@
+import { heroConfig } from "@/config/hero";
 import { HeroSection } from "./sections/HeroSection";
 import { AboutCompanySection } from "./sections/AboutCompanySection";
 import { OurServicesSection } from "./sections/OurServicesSection";
@@ -14,9 +15,17 @@ import { StatsNumbersSection } from "./sections/StatsNumbersSection";
 import { TestimonialsSection } from "./sections/TestimonialsSection";
 import { IndustriesSection } from "./sections/IndustriesSection";
 
+const firstHeroImage = heroConfig.heroImages?.[0];
+
 export default function HomePage() {
   return (
-    <>
+    <main
+      id="main-content"
+      className="min-h-0 bg-background selection:bg-primary/20 selection:text-foreground dark:selection:bg-primary/30"
+    >
+      {firstHeroImage ? (
+        <link rel="preload" href={firstHeroImage} as="image" />
+      ) : null}
       <HeroSection />
       <AboutCompanySection />
       <OurServicesSection />
@@ -32,6 +41,6 @@ export default function HomePage() {
       <InsightsSection />
       <PartnerUpSection />
       <BuildSomethingRealSection />
-    </>
+    </main>
   );
 }

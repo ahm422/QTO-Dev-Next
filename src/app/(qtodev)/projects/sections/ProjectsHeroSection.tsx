@@ -9,7 +9,7 @@ export function ProjectsHeroSection() {
 
   return (
     <section
-      className="relative py-24 md:py-32 lg:py-36 bg-primary text-primary-foreground overflow-hidden"
+      className="relative py-24 md:py-32 lg:py-36 bg-hero-bg text-white overflow-hidden"
       aria-labelledby={HEADING_ID}
     >
       {/* Background image (issue #83): projects-specific class for image + optional animation */}

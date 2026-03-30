@@ -4,22 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { HeroLCDScreen } from "@/components/hero/HeroLCDScreen";
 import { heroConfig } from "@/config/hero";
 import { useHeroScrollSentinel } from "@/contexts/HeroScrollContext";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/components/theme/cn";
-
-function useReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mq.matches);
-    const handler = () => setReduced(mq.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
-
-  return reduced;
-}
 
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);

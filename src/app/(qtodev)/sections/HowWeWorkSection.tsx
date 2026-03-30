@@ -59,7 +59,7 @@ export function HowWeWorkSection() {
   return (
     <section
       className={cn(
-        "relative overflow-hidden bg-black py-20 md:py-28",
+        "relative overflow-hidden bg-black py-24 md:py-32",
         "border-y border-white/5"
       )}
       aria-labelledby={SECTION_HEADING_ID}
@@ -100,8 +100,9 @@ export function HowWeWorkSection() {
                   key={step.title}
                   data-reveal
                   className={cn(
-                    "group relative flex flex-col rounded-2xl border border-white/10 bg-white/[0.06] p-6 md:p-8",
-                    "transition-all duration-300 hover:border-primary/30 hover:bg-white/[0.08] hover:shadow-xl hover:shadow-primary/5"
+                    "group relative flex flex-col rounded-2xl border border-white/10 bg-white/[0.06] p-6 backdrop-blur-sm md:p-8",
+                    "shadow-lg shadow-black/25 transition-all duration-300",
+                    "hover:border-primary/35 hover:bg-white/[0.09] hover:shadow-xl hover:shadow-primary/10 hover:ring-1 hover:ring-primary/20"
                   )}
                 >
                   {/* Step number: large, subtle, top-right */}

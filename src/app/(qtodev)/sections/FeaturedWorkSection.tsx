@@ -181,7 +181,7 @@ export function FeaturedWorkSection() {
               </div>
 
               {/* Right: image */}
-              <div className="order-1 lg:order-2 relative w-full max-w-4xl max-h-[42vh] sm:max-h-[48vh] lg:max-h-[56vh] aspect-[3/4] lg:aspect-[4/3] rounded-2xl overflow-hidden bg-black/80 justify-self-center lg:justify-self-end self-center shadow-2xl ring-2 ring-white/10">
+              <div className="order-1 lg:order-2 relative w-full max-w-4xl max-h-[42vh] sm:max-h-[48vh] lg:max-h-[56vh] aspect-[3/4] lg:aspect-[4/3] justify-self-center self-center overflow-hidden rounded-3xl bg-black/80 shadow-2xl ring-2 ring-white/10 lg:shadow-[0_28px_90px_-16px_rgba(244,139,34,0.22),0_0_0_1px_rgba(255,255,255,0.06)] lg:ring-primary/20">
                 <Image
                   src={displayItem.image}
                   alt=""

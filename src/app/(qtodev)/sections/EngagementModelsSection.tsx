@@ -37,17 +37,12 @@ export function EngagementModelsSection() {
               description={engagementModelsConfig.description}
               headingId={HEADING_ID}
             />
-            {/* Decorative line under header */}
-            <div
-              className="mx-auto mt-10 h-px max-w-24 bg-gradient-to-r from-transparent via-primary/40 to-transparent"
-              aria-hidden
-            />
           </div>
         </Reveal>
       </Container>
 
       {/* Full-width cards grid */}
-      <div className="relative w-full px-4 sm:px-6 lg:px-8 xl:px-10">
+      <div className="relative w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         <div className="mx-auto w-full max-w-[1800px]">
           <Reveal staggerSelector="[data-reveal]">
             <div

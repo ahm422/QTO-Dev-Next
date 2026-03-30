@@ -1,29 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  type ReactNode,
+} from "react";
 import { cn } from "@/components/theme/cn";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
-
-function useReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mq.matches);
-    const handler = () => setReduced(mq.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
-
-  return reduced;
-}
-
+/**
+ * Scroll-in reveal via IntersectionObserver (issue #170).
+ * Replaces per-instance GSAP ScrollTrigger for lower main-thread cost.
+ */
 export function Reveal({
   className,
   children,
@@ -36,64 +25,90 @@ export function Reveal({
 }) {
   const reducedMotion = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
+  const visibleRef = useRef(false);
 
-  useGSAP(
-    () => {
-      const el = ref.current;
-      if (!el) return;
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
 
-      if (reducedMotion) {
-        gsap.set(el, { opacity: 1, y: 0, clearProps: "transform" });
-        return;
+    if (reducedMotion) {
+      el.style.opacity = "";
+      el.style.transform = "";
+      el.style.transition = "";
+      if (staggerSelector) {
+        el.querySelectorAll(staggerSelector).forEach((c) => {
+          const h = c as HTMLElement;
+          h.style.opacity = "";
+          h.style.transform = "";
+          h.style.transition = "";
+        });
       }
+      return;
+    }
 
-      const childrenEls = staggerSelector
-        ? Array.from(el.querySelectorAll(staggerSelector))
-        : [];
+    if (visibleRef.current) return;
 
-      // Avoid invisible content if selector doesn't match anything.
-      const shouldStagger = childrenEls.length > 0;
-      if (shouldStagger) {
-        gsap.set(childrenEls, { opacity: 0, y: 18 });
-      } else {
-        gsap.set(el, { opacity: 0, y: 24 });
-      }
+    const childrenEls = staggerSelector
+      ? Array.from(el.querySelectorAll(staggerSelector))
+      : [];
+    const shouldStagger = childrenEls.length > 0;
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: el,
-          start: "top 85%",
-          once: true,
-        },
+    if (shouldStagger) {
+      childrenEls.forEach((c) => {
+        const h = c as HTMLElement;
+        h.style.opacity = "0";
+        h.style.transform = "translateY(18px)";
       });
+    } else {
+      el.style.opacity = "0";
+      el.style.transform = "translateY(24px)";
+    }
+  }, [reducedMotion, staggerSelector]);
 
-      if (shouldStagger) {
-        tl.to(childrenEls, {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          ease: "power2.out",
-          stagger: 0.08,
-        });
-      } else {
-        tl.to(el, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power2.out",
-        });
-      }
-    },
-    { dependencies: [reducedMotion, staggerSelector] }
-  );
+  useEffect(() => {
+    if (reducedMotion) {
+      visibleRef.current = true;
+      return;
+    }
+
+    const el = ref.current;
+    if (!el) return;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        visibleRef.current = true;
+        io.disconnect();
+
+        const childrenEls = staggerSelector
+          ? Array.from(el.querySelectorAll(staggerSelector))
+          : [];
+        const shouldStagger = childrenEls.length > 0;
+
+        if (shouldStagger) {
+          childrenEls.forEach((c, i) => {
+            const h = c as HTMLElement;
+            const d = `${i * 0.08}s`;
+            h.style.transition = `opacity 0.7s ease ${d}, transform 0.7s ease ${d}`;
+            h.style.opacity = "1";
+            h.style.transform = "translateY(0)";
+          });
+        } else {
+          el.style.transition = "opacity 0.8s ease, transform 0.8s ease";
+          el.style.opacity = "1";
+          el.style.transform = "translateY(0)";
+        }
+      },
+      { root: null, rootMargin: "0px 0px -12% 0px", threshold: 0.01 }
+    );
+
+    io.observe(el);
+    return () => io.disconnect();
+  }, [reducedMotion, staggerSelector]);
 
   return (
-    <div
-      ref={ref}
-      className={cn("will-change-transform", className)}
-    >
+    <div ref={ref} className={cn(className)}>
       {children}
     </div>
   );
 }
-

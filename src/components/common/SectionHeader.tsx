@@ -15,6 +15,8 @@ interface SectionHeaderProps {
   centered?: boolean;
   /** Optional id for the heading (e.g. for aria-labelledby on the section) */
   headingId?: string;
+  /** When false, hides the gradient bar under the title (e.g. inside a nested panel). */
+  showAccentBar?: boolean;
 }
 
 export function SectionHeader({
@@ -26,6 +28,7 @@ export function SectionHeader({
   subtitlePill,
   centered = true,
   headingId,
+  showAccentBar = true,
 }: SectionHeaderProps) {
   const titleContent = titleHighlight
     ? (() => {
@@ -36,7 +39,9 @@ export function SectionHeader({
               <span key={i}>
                 {part}
                 {i < parts.length - 1 && (
-                  <span className="text-primary">{titleHighlight}</span>
+                  <span className="bg-gradient-to-br from-primary via-primary to-cta-gold bg-clip-text text-transparent">
+                    {titleHighlight}
+                  </span>
                 )}
               </span>
             ))}
@@ -46,31 +51,53 @@ export function SectionHeader({
     : title;
 
   return (
-    <div className={centered ? "text-center" : ""}>
+    <div className={cn(centered && "text-center", centered && "flex flex-col items-center")}>
       {subtitle &&
         (subtitleClassName || subtitlePill ? (
           <span
             className={cn(
-              "text-sm uppercase tracking-wide mb-2 block",
-              subtitlePill && "inline-block rounded-full px-3 py-1.5 bg-primary/10",
+              "mb-3 block text-sm font-semibold uppercase tracking-[0.14em]",
+              subtitlePill &&
+                "inline-block rounded-full border border-primary/10 bg-gradient-to-r from-primary/[0.11] via-primary/[0.07] to-primary/[0.11] px-4 py-1.5 shadow-sm shadow-primary/5 ring-1 ring-primary/10 backdrop-blur-sm",
               subtitleClassName
             )}
           >
             {subtitle}
           </span>
         ) : (
-          <Text size="sm" color="muted" className="uppercase tracking-wide mb-2">
+          <Text
+            size="sm"
+            color="muted"
+            className="mb-3 uppercase tracking-[0.14em]"
+          >
             {subtitle}
           </Text>
         ))}
-      <Heading level={2} className="mb-4" id={headingId}>
+      <Heading
+        level={2}
+        className={cn(
+          "text-3xl tracking-tight text-foreground sm:text-4xl md:text-[2.5rem] lg:text-5xl",
+          "mb-3 sm:mb-4",
+          centered && "mx-auto max-w-4xl text-balance"
+        )}
+        id={headingId}
+      >
         {titleContent}
       </Heading>
+      {centered && showAccentBar && (
+        <div
+          className="mb-6 h-1 w-14 rounded-full bg-gradient-to-r from-primary/20 via-primary to-primary/20 shadow-[0_0_24px_rgba(244,139,34,0.28)] sm:mb-7 sm:h-1.5 sm:w-16"
+          aria-hidden
+        />
+      )}
       {description && (
         <Text
           size="lg"
           color="muted"
-          className={cn("max-w-2xl", centered && "mx-auto")}
+          className={cn(
+            "max-w-2xl text-base leading-relaxed md:text-lg",
+            centered && "mx-auto"
+          )}
         >
           {description}
         </Text>

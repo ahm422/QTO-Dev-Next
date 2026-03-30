@@ -22,7 +22,7 @@ export function OurServicesSection() {
   return (
     <section
       className={cn(
-        "relative py-20 md:py-28 overflow-hidden",
+        "relative overflow-hidden py-24 md:py-32",
         "bg-surface-muted border-y border-border"
       )}
       aria-labelledby={HEADING_ID}
@@ -65,9 +65,10 @@ export function OurServicesSection() {
                   key={service.id}
                   href={getLearnMoreHref(service)}
                   className={cn(
-                    "group relative overflow-hidden rounded-xl border-2 p-5 sm:p-6 flex flex-col items-center justify-center text-center",
-                    "min-h-[130px] sm:min-h-[150px] transition-all duration-200",
-                    "bg-surface border-border/60 hover:border-primary/50 hover:shadow-lg hover:-translate-y-0.5",
+                    "group relative flex min-h-[130px] flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-border/60 bg-surface p-5 text-center sm:min-h-[150px] sm:p-6",
+                    "shadow-sm shadow-black/[0.03] transition-all duration-300",
+                    "hover:-translate-y-1 hover:border-primary/45 hover:shadow-lg hover:shadow-primary/[0.08]",
+                    "ring-0 ring-transparent hover:ring-1 hover:ring-primary/15",
                     "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-muted"
                   )}
                 >
@@ -91,8 +92,9 @@ export function OurServicesSection() {
                   <div className="relative z-10 flex flex-col items-center">
                     <span
                       className={cn(
-                        "w-12 h-12 rounded-xl flex items-center justify-center mb-3 transition-colors",
-                        "bg-surface-muted text-foreground-muted group-hover:text-primary group-hover:bg-primary/15"
+                        "mb-3 flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300",
+                        "bg-surface-muted text-foreground-muted shadow-inner",
+                        "group-hover:bg-primary/15 group-hover:text-primary group-hover:shadow-primary/10"
                       )}
                     >
                       <AppIcon

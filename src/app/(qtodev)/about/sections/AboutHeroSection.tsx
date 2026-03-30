@@ -12,7 +12,7 @@ export function AboutHeroSection() {
 
   return (
     <section
-      className="relative flex items-center py-24 md:py-32 lg:py-36 bg-primary text-primary-foreground overflow-hidden min-h-[70vh]"
+      className="relative flex items-center py-24 md:py-32 lg:py-36 bg-hero-bg text-white overflow-hidden min-h-[70vh]"
       aria-labelledby={HEADING_ID}
     >
       {/* Background image */}
@@ -55,7 +55,7 @@ export function AboutHeroSection() {
               "px-7 py-3.5 text-lg",
               "bg-white text-black hover:bg-white/95",
               "shadow-xl shadow-black/15 hover:shadow-2xl hover:shadow-black/20 hover:-translate-y-0.5",
-              "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary",
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-hero-bg",
               "animation-delay-300 animate-hero-content-fade animation-fill-backwards"
             )}
           >

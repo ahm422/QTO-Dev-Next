@@ -17,7 +17,7 @@ export async function InsightsSection() {
     <section
       id="insights"
       className={cn(
-        "relative py-20 md:py-28 overflow-hidden",
+        "relative overflow-hidden py-24 md:py-32",
         "bg-gradient-to-b from-surface via-surface-muted/30 to-surface",
         "border-y border-border/80"
       )}

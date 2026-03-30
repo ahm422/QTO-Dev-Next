@@ -65,7 +65,7 @@ export function TestimonialsSection() {
   return (
     <section
       className={cn(
-        "relative py-20 md:py-28 overflow-hidden",
+        "relative overflow-hidden py-24 md:py-32",
         "bg-surface-muted border-y border-border"
       )}
       aria-labelledby={HEADING_ID}
@@ -86,6 +86,7 @@ export function TestimonialsSection() {
             <SectionHeader
               subtitle={testimonialsConfig.subtitle}
               subtitleClassName="text-primary font-semibold tracking-[0.2em]"
+              subtitlePill
               title={testimonialsConfig.title}
               titleHighlight={testimonialsConfig.titleHighlight}
               headingId={HEADING_ID}
