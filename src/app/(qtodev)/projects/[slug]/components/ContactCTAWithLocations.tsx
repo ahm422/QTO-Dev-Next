@@ -64,10 +64,10 @@ export function ContactCTAWithLocations() {
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link
-                  href="/contact#book-a-call"
+                  href="/contact"
                   className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-xl hover:shadow-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
-                  Book a Call
+                  Contact us
                   <AppIcon name="arrow-right" size="sm" className="!text-xs" />
                 </Link>
                 <Link

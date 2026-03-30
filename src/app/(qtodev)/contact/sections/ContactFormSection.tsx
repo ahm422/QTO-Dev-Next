@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Container } from "@/components/common/Container";
+import { ContactLayout } from "@/components/contact/ContactLayout";
+import { TrustStrip } from "@/components/marketing/TrustStrip";
 import { FormInput } from "@/components/ui/input";
 import { FormTextarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Text } from "@/components/ui/shared/Text";
+import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { contactSubmissionSchema } from "@/lib/validators/contact";
 import { formatZodFieldErrors } from "@/lib/validators/http";
 import {
@@ -20,7 +23,7 @@ export function ContactFormSection() {
     subject: "",
     message: "",
   });
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState<null | { id?: string }>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<
@@ -68,9 +71,8 @@ export function ContactFormSection() {
       const result = await postContactSubmission(parsed.data);
 
       if (result.ok) {
-        setSubmitted(true);
+        setSubmitted({});
         setFormData({ name: "", email: "", subject: "", message: "" });
-        setTimeout(() => setSubmitted(false), 5000);
         return;
       }
 
@@ -89,82 +91,147 @@ export function ContactFormSection() {
   };
 
   return (
-    <section className="py-16">
-      <Container size="sm">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-3xl font-bold mb-8 text-center">Send us a Message</h2>
-
-          {submitted ? (
-            <Alert variant="success" className="p-6 text-center">
-              <AlertDescription className="text-success font-semibold m-0">
-                Thank you for reaching out! We&apos;ll get back to you soon.
-              </AlertDescription>
-            </Alert>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {formError ? (
-                <Alert variant="destructive" className="p-4">
-                  <AlertDescription className="m-0">{formError}</AlertDescription>
-                </Alert>
-              ) : null}
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <FormInput
-                  label="Name"
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Your name"
-                  required
-                  error={fieldErrors.name}
-                />
-                <FormInput
-                  label="Email"
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="your@email.com"
-                  required
-                  error={fieldErrors.email}
-                />
-              </div>
-
-              <FormInput
-                label="Subject"
-                type="text"
-                name="subject"
-                value={formData.subject}
-                onChange={handleChange}
-                placeholder="What is this about?"
-                required
-                error={fieldErrors.subject}
-              />
-
-              <FormTextarea
-                label="Message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                placeholder="Tell us more about your project..."
-                rows={6}
-                required
-                error={fieldErrors.message}
-              />
-
-              <Button
-                type="submit"
-                size="lg"
-                className="w-full sm:w-auto sm:px-6"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Sending…" : "Send Message"}
-              </Button>
-            </form>
-          )}
+    <ContactLayout
+      eyebrow="Contact"
+      title="Send us a message"
+      subtitle="Share a bit about what you’re building and where you need help. We’ll reply with practical next steps."
+      size="xl"
+      sideContent={
+        <div className="space-y-6">
+          <TrustStrip orientation="column" />
+          <div className="rounded-2xl border border-border bg-surface-muted/70 p-4 sm:p-5">
+            <p className="text-sm font-semibold text-foreground">
+              What happens next
+            </p>
+            <div className="mt-4 space-y-3 text-sm text-foreground-muted">
+              {[
+                "We reply within one business day.",
+                "You’ll get a clear recommendation and next steps.",
+                "If we’re not the right fit, we’ll point you in the right direction.",
+              ].map((line) => (
+                <div key={line} className="flex gap-2.5">
+                  <span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-md bg-primary/10 text-primary">
+                    <AppIcon name="circle-check" size="sm" className="!text-[10px]" />
+                  </span>
+                  <p className="leading-relaxed">{line}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      </Container>
-    </section>
+      }
+    >
+      {submitted ? (
+        <div className="overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-background/90 to-success/5 shadow-sm ring-1 ring-black/[0.04] dark:ring-white/[0.06]">
+          <div className="border-b border-border/80 bg-success/10 px-4 py-4 sm:px-6 sm:py-5">
+            <Text className="text-base font-semibold tracking-tight text-foreground sm:text-lg">
+              Message received
+            </Text>
+            <Text
+              size="sm"
+              color="muted"
+              className="mt-1 max-w-xl leading-relaxed"
+            >
+              Thanks for reaching out. We’ll get back to you shortly.
+            </Text>
+          </div>
+          <div className="p-5 sm:p-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+              <span className="mx-auto inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-success/15 text-success sm:mx-0">
+                <AppIcon name="circle-check" size="base" />
+              </span>
+              <div className="space-y-3 text-center sm:text-left">
+                <Text size="lg" className="font-semibold text-success">
+                  Thank you.
+                </Text>
+                <Text color="muted" className="leading-relaxed">
+                  If you have more details to add, you can send another message.
+                </Text>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="lg"
+                  onClick={() => setSubmitted(null)}
+                >
+                  Send another message
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-6" aria-label="Contact form">
+          {formError ? (
+            <Alert variant="destructive" className="p-4">
+              <AlertDescription className="m-0">{formError}</AlertDescription>
+            </Alert>
+          ) : null}
+
+          <div className="grid gap-5 md:grid-cols-2 md:gap-6">
+            <FormInput
+              label="Name"
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Your name"
+              autoComplete="name"
+              required
+              error={fieldErrors.name}
+              className="h-10 md:h-11"
+            />
+            <FormInput
+              label="Email"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="you@company.com"
+              autoComplete="email"
+              required
+              error={fieldErrors.email}
+              className="h-10 md:h-11"
+            />
+          </div>
+
+          <FormInput
+            label="Subject"
+            type="text"
+            name="subject"
+            value={formData.subject}
+            onChange={handleChange}
+            placeholder="What is this about?"
+            error={fieldErrors.subject}
+            className="h-10 md:h-11"
+          />
+
+          <FormTextarea
+            label="Message"
+            name="message"
+            value={formData.message}
+            onChange={handleChange}
+            placeholder="Tell us a bit about your project, goals, and constraints…"
+            rows={6}
+            required
+            error={fieldErrors.message}
+            className="min-h-[140px] resize-y"
+          />
+
+          <div className="flex flex-col items-stretch gap-3 pt-1 sm:flex-row sm:items-center sm:justify-between">
+            <Button
+              type="submit"
+              size="lg"
+              className="min-w-[200px]"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Sending…" : "Send message"}
+            </Button>
+            <Text size="sm" color="muted" className="leading-relaxed">
+              We’ll only use your details to reply to this message.
+            </Text>
+          </div>
+        </form>
+      )}
+    </ContactLayout>
   );
 }

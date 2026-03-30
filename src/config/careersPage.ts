@@ -97,7 +97,7 @@ export const careersPageConfig = {
     description:
       "We’re always happy to hear from thoughtful builders and designers. Share your portfolio or CV and tell us what you’d love to work on.",
     primaryButtonText: "Send Us Your Resume",
-    primaryButtonHref: "mailto:careers@qtodev.com?subject=General%20Application%20-%20QTO%20Dev",
+    primaryButtonHref: "#apply",
     secondaryButtonText: "Learn About Our Work",
     secondaryButtonHref: "/projects",
   },
