@@ -26,7 +26,7 @@ export const footerSections: FooterSection[] = [
       { label: "Services", href: "/services" },
       { label: "Projects", href: "/projects" },
       { label: "Blog", href: "/blogs" },
-      { label: "Client questionnaire", href: "/client-questionnaire" },
+      { label: "Requirements", href: "/requirements" },
     ],
   },
   {

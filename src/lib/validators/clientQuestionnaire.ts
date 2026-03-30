@@ -4,7 +4,7 @@ import { optionalTrimmedString } from "@/lib/validators/shared";
 export const QTODEV_CLIENT_QUESTIONNAIRE_INTENT = "qtodev-client-questionnaire";
 
 const yesNo = z.enum(["yes", "no"], {
-  errorMap: () => ({ message: "Please choose Yes or No" }),
+  message: "Please choose Yes or No",
 });
 
 export const serviceOptionSchema = z.enum([
@@ -52,9 +52,7 @@ export const clientQuestionnaireSchema = z
       .min(1, "Select at least one page for your site"),
     pagesOther: optionalTrimmedString,
     contentReady: z.enum(["yes", "no", "need-help"], {
-      errorMap: () => ({
-        message: "Select whether content is ready or if you need help",
-      }),
+      message: "Select whether content is ready or if you need help",
     }),
     referenceWebsites: optionalTrimmedString,
     hasLogo: yesNo,

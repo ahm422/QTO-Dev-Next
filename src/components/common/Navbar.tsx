@@ -16,6 +16,8 @@ const navItems = [
   { label: "About", href: "/about" },
   { label: "Blog", href: "/blogs" },
   { label: "Careers", href: "/careers" },
+  { label: "Requirements", href: "/requirements" },
+  { label: "Contact", href: "/contact" },
 ];
 
 function isActive(pathname: string, href: string): boolean {
@@ -50,6 +52,7 @@ export function Navbar() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    aria-current={active ? "page" : undefined}
                     className={`text-sm font-medium transition-colors rounded-full px-3 py-1.5 lg:px-4 lg:py-2 ${
                       active
                         ? "bg-foreground text-background"
@@ -74,11 +77,11 @@ export function Navbar() {
             >
               <AppIcon name={theme === "dark" ? "sun" : "moon"} size="sm" className="h-5 w-5 lg:h-6 lg:w-6" />
             </Button>
-            <HeaderCTAButton href="/book-a-call" className="lg:px-5 lg:py-2.5 lg:text-base">
+            <HeaderCTAButton href="/contact#book-a-call" className="lg:px-5 lg:py-2.5 lg:text-base">
               Book a Call
             </HeaderCTAButton>
-            <HeaderCTAButton href="/get-a-quote" className="lg:px-5 lg:py-2.5 lg:text-base">
-              Get Quote
+            <HeaderCTAButton href="/requirements" className="lg:px-5 lg:py-2.5 lg:text-base">
+              Requirements
             </HeaderCTAButton>
           </div>
 
@@ -104,6 +107,7 @@ export function Navbar() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setIsMenuOpen(false)}
+                    aria-current={active ? "page" : undefined}
                     className={`rounded-lg px-4 py-3 text-sm font-medium transition-colors text-center ${
                       active
                         ? "bg-foreground text-background"
@@ -128,18 +132,18 @@ export function Navbar() {
             </div>
             <div className="mt-4 grid grid-cols-2 gap-2">
                 <HeaderCTAButton
-                  href="/book-a-call"
+                  href="/contact#book-a-call"
                   onClick={() => setIsMenuOpen(false)}
                   className="w-full justify-center"
                 >
                   Book a Call
                 </HeaderCTAButton>
                 <HeaderCTAButton
-                  href="/get-a-quote"
+                  href="/requirements"
                   onClick={() => setIsMenuOpen(false)}
                   className="w-full justify-center"
                 >
-                  Get Quote
+                  Requirements
                 </HeaderCTAButton>
             </div>
           </div>
