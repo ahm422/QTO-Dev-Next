@@ -16,7 +16,9 @@ export function CareersCTASection() {
       secondaryButtonText={cta.secondaryButtonText}
       secondaryButtonHref={cta.secondaryButtonHref}
       onPrimaryClick={() => {
-        analytics.trackEvent("careers_general_application_click");
+        analytics.trackEvent("careers_portal_click", {
+          destination: "career_portal_home",
+        });
       }}
     />
   );

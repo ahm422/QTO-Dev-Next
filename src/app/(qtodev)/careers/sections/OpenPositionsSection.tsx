@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
@@ -321,16 +320,6 @@ export function OpenPositionsSection() {
                 You can also register on the QTO House portal so you’re on file when new roles open.
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                <Link
-                  href="#apply"
-                  className={cn(
-                    "inline-flex min-h-[44px] items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold",
-                    "bg-primary text-primary-foreground hover:bg-primary-hover",
-                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                  )}
-                >
-                  Submit a general application
-                </Link>
                 <a
                   href={careerPortalHomeUrl()}
                   target="_blank"

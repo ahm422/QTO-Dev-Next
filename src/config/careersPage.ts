@@ -1,3 +1,5 @@
+import { careerPortalHomeUrl } from "@/config/careersPortal";
+
 export const careersPageConfig = {
   hero: {
     heading: "Build Your Career With QTO DEV.",
@@ -5,8 +7,8 @@ export const careersPageConfig = {
       "We are always looking for passionate developers, designers, and problem-solvers to join our growing team. If you’re driven by innovation and excellence, we’d love to hear from you.",
     primaryCtaText: "View Open Roles",
     primaryCtaHref: "#open-roles",
-    secondaryCtaText: "Learn About QTO Dev",
-    secondaryCtaHref: "/about",
+    secondaryCtaText: "Open Career Portal",
+    secondaryCtaHref: careerPortalHomeUrl(),
     breadcrumbLabel: "Careers",
   },
   whyWork: {
@@ -93,11 +95,11 @@ export const careersPageConfig = {
     ],
   },
   cta: {
-    title: "Didn’t See the Exact Role You Were Hoping For?",
+    title: "Ready to Apply?",
     description:
-      "We’re always happy to hear from thoughtful builders and designers. Share your portfolio or CV and tell us what you’d love to work on.",
-    primaryButtonText: "Send Us Your Resume",
-    primaryButtonHref: "#apply",
+      "All applications are handled through the QTO House career portal. Create an account (or sign in) to apply for open roles and keep your profile up to date.",
+    primaryButtonText: "Go to Career Portal",
+    primaryButtonHref: careerPortalHomeUrl(),
     secondaryButtonText: "Learn About Our Work",
     secondaryButtonHref: "/projects",
   },

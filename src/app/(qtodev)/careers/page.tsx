@@ -1,10 +1,6 @@
 import { generateSEOMetadata } from "@/lib/seo";
 import { CareersHeroSection } from "./sections/CareersHeroSection";
-import { WhyWorkWithUsSection } from "./sections/WhyWorkWithUsSection";
-import { BenefitsSection } from "./sections/BenefitsSection";
 import { OpenPositionsSection } from "./sections/OpenPositionsSection";
-import { CultureSection } from "./sections/CultureSection";
-import { CareersApplicationSection } from "./sections/CareersApplicationSection";
 import { CareersCTASection } from "./sections/CareersCTASection";
 
 export const metadata = generateSEOMetadata({
@@ -18,11 +14,7 @@ export default function CareersPage() {
   return (
     <>
       <CareersHeroSection />
-      <WhyWorkWithUsSection />
-      <BenefitsSection />
       <OpenPositionsSection />
-      <CultureSection />
-      <CareersApplicationSection />
       <CareersCTASection />
     </>
   );

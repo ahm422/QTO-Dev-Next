@@ -62,25 +62,3 @@ model Requirement {
   @@index([createdAt])
   @@map("requirements")
 }
-
-model CareerApplication {
-  id           String   @id @default(uuid()) @map("id") @db.Uuid
-  name         String   @map("name")
-  email        String   @map("email")
-  roleInterest String?  @map("role_interest")
-  message      String   @map("message")
-  portfolioUrl String?  @map("portfolio_url")
-  linkedInUrl  String?  @map("linkedin_url")
-  githubUrl    String?  @map("github_url")
-  source       String?  @map("source")
-  referrer     String?  @map("referrer")
-  userAgent    String?  @map("user_agent")
-  ip           String?  @map("ip")
-  metadata     Json?    @map("metadata")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-
-  @@index([email])
-  @@index([createdAt])
-  @@map("career_applications")
-}
