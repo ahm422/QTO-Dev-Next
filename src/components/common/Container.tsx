@@ -1,5 +1,4 @@
-"use client";
-
+import type React from "react";
 import { cn } from "@/components/theme/cn";
 
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {

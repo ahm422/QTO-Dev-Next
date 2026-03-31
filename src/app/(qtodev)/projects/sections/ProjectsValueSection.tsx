@@ -1,8 +1,5 @@
-"use client";
-
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
-import { Reveal } from "@/components/animations/Reveal";
 import { cn } from "@/components/theme/cn";
 import { projectsPageConfig } from "@/config/projectsPage";
 
@@ -30,39 +27,36 @@ export function ProjectsValueSection() {
       />
 
       <Container className="relative">
-        <Reveal staggerSelector="[data-reveal]">
-          <div data-reveal className="mb-12 md:mb-16">
-            <SectionHeader
-              subtitle={valueSection.subtitle}
-              subtitleClassName="text-primary font-semibold tracking-widest"
-              subtitlePill
-              title={valueSection.title}
-              titleHighlight={valueSection.titleHighlight}
-              description={valueSection.description}
-              headingId={HEADING_ID}
-            />
-          </div>
-          <div className="grid md:grid-cols-3 gap-8 lg:gap-10">
-            {valueSection.items.map((item, i) => (
-              <div
-                key={i}
-                data-reveal
-                className={cn(
-                  "rounded-2xl border border-border bg-surface p-6 md:p-7",
-                  "shadow-sm hover:shadow-md transition-shadow duration-300",
-                  "flex flex-col"
-                )}
-              >
-                <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-foreground-muted text-sm md:text-base leading-relaxed flex-1">
-                  {item.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </Reveal>
+        <div className="mb-12 md:mb-16">
+          <SectionHeader
+            subtitle={valueSection.subtitle}
+            subtitleClassName="text-primary font-semibold tracking-widest"
+            subtitlePill
+            title={valueSection.title}
+            titleHighlight={valueSection.titleHighlight}
+            description={valueSection.description}
+            headingId={HEADING_ID}
+          />
+        </div>
+        <div className="grid md:grid-cols-3 gap-8 lg:gap-10">
+          {valueSection.items.map((item, i) => (
+            <div
+              key={i}
+              className={cn(
+                "rounded-2xl border border-border bg-surface p-6 md:p-7",
+                "shadow-sm hover:shadow-md transition-shadow duration-300",
+                "flex flex-col"
+              )}
+            >
+              <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
+                {item.title}
+              </h3>
+              <p className="text-foreground-muted text-sm md:text-base leading-relaxed flex-1">
+                {item.description}
+              </p>
+            </div>
+          ))}
+        </div>
       </Container>
     </section>
   );

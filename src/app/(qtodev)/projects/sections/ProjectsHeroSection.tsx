@@ -1,22 +1,32 @@
 import { Container } from "@/components/common/Container";
 import { Heading } from "@/components/ui/shared/Heading";
 import { projectsPageConfig } from "@/config/projectsPage";
+import Image from "next/image";
+import { PEXELS_TECH_IMAGES } from "@/config/pexelsImages";
 
 const HEADING_ID = "projects-hero-heading";
 
 export function ProjectsHeroSection() {
   const { hero } = projectsPageConfig;
+  const heroImage = PEXELS_TECH_IMAGES[1];
 
   return (
     <section
       className="relative py-24 md:py-32 lg:py-36 bg-hero-bg text-white overflow-hidden"
       aria-labelledby={HEADING_ID}
     >
-      {/* Background image (issue #83): projects-specific class for image + optional animation */}
-      <div
-        className="pointer-events-none absolute inset-0 z-0 projects-hero-image-bg"
-        aria-hidden
-      />
+      {/* Background image (optimized via next/image) */}
+      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
+        <Image
+          src={heroImage}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover projects-hero-media"
+        />
+        <div className="absolute inset-0 projects-hero-image-bg" aria-hidden />
+      </div>
 
       {/* Rich gradient overlay for depth */}
       <div

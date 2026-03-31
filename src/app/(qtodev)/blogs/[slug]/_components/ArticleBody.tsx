@@ -1,4 +1,5 @@
 import { BlogPost } from '@/types/blog';
+import Link from "next/link";
 import { MDXRenderer } from './MDXRenderer';
 import { KeyTakeaways } from './KeyTakeaways';
 
@@ -37,13 +38,13 @@ export function ArticleBody({ post }: ArticleBodyProps) {
           </h3>
           <div className="flex flex-wrap gap-2">
             {post.tags.map((tag) => (
-              <a
+              <Link
                 key={tag}
-                href={`/blogs?tag=${encodeURIComponent(tag)}`}
+                href={{ pathname: "/blogs", query: { tag } }}
                 className="px-3 py-1 bg-surface-muted hover:bg-border text-foreground-muted rounded-full text-sm font-medium transition-colors"
               >
                 #{tag}
-              </a>
+              </Link>
             ))}
           </div>
         </div>
