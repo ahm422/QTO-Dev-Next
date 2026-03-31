@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function ArticleEndCTA() {
   return (
     <section className="bg-primary py-16 md:py-20 my-16 md:my-24">
@@ -11,18 +13,18 @@ export function ArticleEndCTA() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center sm:items-stretch">
-          <a
+          <Link
             href="/contact"
             className="px-8 py-3 bg-primary-foreground text-primary font-semibold rounded-lg hover:opacity-90 transition-colors shadow-lg hover:shadow-xl"
           >
             Contact us
-          </a>
-          <a
+          </Link>
+          <Link
             href="/services"
             className="px-8 py-3 border-2 border-primary-foreground font-semibold rounded-lg hover:bg-primary-foreground hover:text-primary transition-colors"
           >
             Explore Services
-          </a>
+          </Link>
         </div>
       </div>
     </section>

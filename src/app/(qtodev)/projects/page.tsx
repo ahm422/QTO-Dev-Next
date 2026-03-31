@@ -5,12 +5,19 @@ import { ProjectsValueSection } from "./sections/ProjectsValueSection";
 import { CTA } from "@/components/common/CTA";
 import { projectsPageConfig } from "@/config/projectsPage";
 
-export default function ProjectsPage() {
+interface ProjectsPageProps {
+  searchParams?: Promise<{
+    category?: string;
+  }>;
+}
+
+export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
   const { cta } = projectsPageConfig;
+  const sp = searchParams ? await searchParams : undefined;
   return (
     <>
       <ProjectsHeroSection />
-      <ProjectsFilterAndGrid />
+      <ProjectsFilterAndGrid activeCategory={sp?.category} />
       <ProjectsPaginationSection />
       <ProjectsValueSection />
       <CTA

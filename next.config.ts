@@ -1,9 +1,14 @@
 import type { NextConfig } from "next";
 
+const isAnalyze = process.env.ANALYZE === "true";
+
+const withBundleAnalyzer = isAnalyze
+  ? // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require("@next/bundle-analyzer")({ enabled: true })
+  : (config: NextConfig) => config;
+
 const nextConfig: NextConfig = {
-  output: "export",
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -13,4 +18,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);

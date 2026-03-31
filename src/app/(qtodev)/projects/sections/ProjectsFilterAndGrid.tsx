@@ -1,6 +1,3 @@
-"use client";
-
-import { useState, useMemo } from "react";
 import { projects } from "@/data/projects";
 import { projectsPageConfig } from "@/config/projectsPage";
 import { ProjectsFilterSection } from "./ProjectsFilterSection";
@@ -14,23 +11,20 @@ function getCategories(projectsList: Project[]): string[] {
   return [allLabel, ...uniques];
 }
 
-export function ProjectsFilterAndGrid() {
-  const [activeCategory, setActiveCategory] = useState<string>(allLabel);
-  const categories = useMemo(() => getCategories(projects), []);
-  const filteredProjects = useMemo(
-    () =>
-      activeCategory === allLabel
-        ? projects
-        : projects.filter((p) => p.category === activeCategory),
-    [activeCategory]
-  );
+export function ProjectsFilterAndGrid({ activeCategory }: { activeCategory?: string }) {
+  const categories = getCategories(projects);
+  const normalizedActive =
+    activeCategory && categories.includes(activeCategory) ? activeCategory : allLabel;
+  const filteredProjects =
+    normalizedActive === allLabel
+      ? projects
+      : projects.filter((p) => p.category === normalizedActive);
 
   return (
     <>
       <ProjectsFilterSection
         categories={categories}
-        activeCategory={activeCategory}
-        onCategoryChange={setActiveCategory}
+        activeCategory={normalizedActive}
       />
       <ProjectsGridSection projects={filteredProjects} />
     </>

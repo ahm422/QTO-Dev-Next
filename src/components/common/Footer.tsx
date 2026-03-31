@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { SiteLogo } from "@/components/common/SiteLogo";
 import { footerSections, socialLinks, siteConfig } from "@/data/site";

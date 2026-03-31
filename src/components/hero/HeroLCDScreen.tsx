@@ -1,20 +1,13 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 import { heroConfig } from "@/config/hero";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/components/theme/cn";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 const LCD_CYCLE_MS = 4000;
 
@@ -54,6 +47,7 @@ export function HeroLCDScreen({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const imageStripRef = useRef<HTMLDivElement>(null);
+  const cleanupRef = useRef<null | (() => void)>(null);
   const [slideIndex, setSlideIndex] = useState(0);
   const [imageIndex, setImageIndex] = useState(0);
   const reducedMotion = useReducedMotion();
@@ -67,6 +61,18 @@ export function HeroLCDScreen({
   const primaryHref = heroConfig.ctaPrimaryHref;
   const secondaryHref = heroConfig.ctaSecondaryHref;
 
+  const scrollDepsKey = useMemo(
+    () => ({
+      reducedMotion,
+      hasLcdImage,
+      triggerReady,
+      // Ref objects are stable; this is for callers that swap them.
+      scrollTriggerRef,
+      triggerRef,
+    }),
+    [reducedMotion, hasLcdImage, triggerReady, scrollTriggerRef, triggerRef]
+  );
+
   useEffect(() => {
     if (reducedMotion || !hasLcdImage || heroImages.length <= 1) return;
     const interval = setInterval(() => {
@@ -75,27 +81,38 @@ export function HeroLCDScreen({
     return () => clearInterval(interval);
   }, [reducedMotion, hasLcdImage, heroImages.length]);
 
-  useGSAP(
-    () => {
-      const wrapper = wrapperRef.current;
-      const section = scrollTriggerRef?.current;
-      const triggerEl = triggerRef?.current ?? section;
-      const ready =
-        wrapper?.isConnected && triggerEl?.isConnected && section?.isConnected;
+  useEffect(() => {
+    cleanupRef.current?.();
+    cleanupRef.current = null;
 
-      if (!wrapper || !triggerEl || !section || !ready) {
-        gsap.set(wrapper, { opacity: 1, y: 0 });
-        return;
-      }
+    const wrapper = wrapperRef.current;
+    const section = scrollTriggerRef?.current ?? null;
+    const triggerEl = triggerRef?.current ?? section;
+    const ready =
+      wrapper?.isConnected && triggerEl?.isConnected && section?.isConnected;
 
-      if (reducedMotion) {
-        gsap.set(wrapper, { opacity: 1, y: 0 });
-        return;
-      }
+    if (!wrapper) return;
+    wrapper.style.opacity = "1";
+    wrapper.style.transform = "";
 
-      gsap.set(wrapper, { opacity: 1 });
+    if (reducedMotion || !section || !triggerEl || !ready) {
+      return;
+    }
 
+    let cancelled = false;
+
+    (async () => {
       try {
+        const [{ default: gsap }, { ScrollTrigger }] = await Promise.all([
+          import("gsap"),
+          import("gsap/ScrollTrigger"),
+        ]);
+
+        if (cancelled) return;
+
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.set(wrapper, { opacity: 1 });
+
         const tween = gsap.fromTo(
           wrapper,
           { y: 30 },
@@ -119,14 +136,29 @@ export function HeroLCDScreen({
         if (spacer) {
           spacer.style.background = "var(--hero-bg, #1a1a1a)";
         }
+
+        cleanupRef.current = () => {
+          try {
+            tween.scrollTrigger?.kill(true);
+            tween.kill();
+          } catch {
+            // ignore
+          }
+        };
       } catch {
-        gsap.set(wrapper, { opacity: 1, y: 0 });
+        // If GSAP fails to load for any reason, keep content visible.
+        wrapper.style.opacity = "1";
+        wrapper.style.transform = "";
       }
-    },
-    {
-      dependencies: [reducedMotion, scrollTriggerRef, triggerRef, triggerReady],
-    }
-  );
+    })();
+
+    return () => {
+      cancelled = true;
+      cleanupRef.current?.();
+      cleanupRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scrollDepsKey]);
 
   useEffect(() => {
     if (reducedMotion) return;
