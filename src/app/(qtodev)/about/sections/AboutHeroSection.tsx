@@ -4,22 +4,34 @@ import { Heading } from "@/components/ui/shared/Heading";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
 import { aboutPageConfig } from "@/config/aboutPage";
+import Image from "next/image";
+import { PEXELS_TECH_IMAGES } from "@/config/pexelsImages";
 
 const HEADING_ID = "about-hero-heading";
 
 export function AboutHeroSection() {
   const { hero } = aboutPageConfig;
+  // Use a much smaller source image to reduce bytes before Next optimization kicks in.
+  const heroImage = PEXELS_TECH_IMAGES[3];
 
   return (
     <section
       className="relative flex items-center py-24 md:py-32 lg:py-36 bg-hero-bg text-white overflow-hidden min-h-[70vh]"
       aria-labelledby={HEADING_ID}
     >
-      {/* Background image */}
-      <div
-        className="pointer-events-none absolute inset-0 z-0 page-hero-image-bg about-hero-bg"
-        aria-hidden
-      />
+      {/* Background image (optimized via next/image) */}
+      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
+        <Image
+          src={heroImage}
+          alt=""
+          fill
+          priority
+          quality={60}
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 page-hero-image-bg about-hero-bg" aria-hidden />
+      </div>
 
       {/* Rich gradient overlay for depth */}
       <div

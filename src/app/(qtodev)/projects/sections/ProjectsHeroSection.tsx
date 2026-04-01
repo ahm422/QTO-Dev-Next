@@ -8,7 +8,8 @@ const HEADING_ID = "projects-hero-heading";
 
 export function ProjectsHeroSection() {
   const { hero } = projectsPageConfig;
-  const heroImage = PEXELS_TECH_IMAGES[1];
+  // Use a much smaller source image to reduce bytes before Next optimization kicks in.
+  const heroImage = PEXELS_TECH_IMAGES[3];
 
   return (
     <section
@@ -22,6 +23,7 @@ export function ProjectsHeroSection() {
           alt=""
           fill
           priority
+          quality={60}
           sizes="100vw"
           className="object-cover projects-hero-media"
         />
