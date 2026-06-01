@@ -94,3 +94,53 @@ npm run prisma:migrate:dev -- --name init
 ```bash
 npx prisma db pull
 ```
+
+## Deploy on Cloudflare Workers
+
+This app uses [@opennextjs/cloudflare](https://opennext.js.org/cloudflare) and deploys as a **Cloudflare Worker** (not static Pages export).
+
+### Cloudflare dashboard (Git integration)
+
+| Setting | Value |
+|--------|--------|
+| Build command | `npx opennextjs-cloudflare build` or `npm run cf:build` |
+| Deploy command | `npx wrangler deploy` (or `npm run deploy` in CI after build) |
+| Output directory | `.open-next` |
+
+`opennextjs-cloudflare build` runs `next build` internally. Prisma Client is generated via `postinstall` (`prisma generate`); run `npm install` before the first Cloudflare build if the client is missing.
+
+### Environment variables
+
+Copy variables from `.env` / `.env.example` into **Workers → Settings → Variables and Secrets** for Production (and Preview if used):
+
+- `DATABASE_URL` — Supabase **transaction pooler** (port `6543`)
+- `REVALIDATE_SECRET` — Bearer token for `POST /api/revalidate`
+- `NEXT_PUBLIC_SITE_URL`
+- `PGSSL_REJECT_UNAUTHORIZED` (optional)
+- `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` (optional; only if rate limiting is wired into API routes)
+
+Treat `DATABASE_URL` and `REVALIDATE_SECRET` as **secrets**, not committed values.
+
+### Local development
+
+**Next.js dev server** (default):
+
+```bash
+cp .env.example .env   # fill values
+npm run dev
+```
+
+**Workers runtime preview** (matches production runtime):
+
+```bash
+cp .dev.vars.example .dev.vars   # fill values
+npm run preview
+```
+
+### Prisma on Workers
+
+`/api/contact` and `/api/requirements` use Prisma + `pg` on Workers with `nodejs_compat`. If writes fail in production, enable [Prisma Accelerate](https://www.prisma.io/data-platform/accelerate) or migrate those routes to the Supabase JS client. Do **not** set `export const runtime = "edge"` — it is [not supported by OpenNext on Cloudflare](https://opennext.js.org/cloudflare/get-started).
+
+### Optional: ISR / revalidation cache
+
+For `revalidatePath` and incremental caching to behave like Node hosting, enable R2 incremental cache in `open-next.config.ts` (see [OpenNext Cloudflare caching](https://opennext.js.org/cloudflare/caching)).

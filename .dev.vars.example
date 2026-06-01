@@ -1,0 +1,20 @@
+# Wrangler local dev (copy to .dev.vars and fill in values).
+# https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
+
+NEXTJS_ENV=development
+
+# Supabase Transaction Pooler (port 6543) — used by Prisma at runtime
+DATABASE_URL=postgresql://postgres.<project-ref>:<db-password>@aws-<region>.pooler.supabase.com:6543/postgres?sslmode=require
+
+# Prisma CLI only (migrations); optional in .dev.vars
+DIRECT_URL=postgresql://postgres:<db-password>@db.<project-ref>.supabase.co:5432/postgres?sslmode=require
+
+PGSSL_REJECT_UNAUTHORIZED=false
+
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+
+REVALIDATE_SECRET=replace_me
+
+# Optional — required if API routes use Upstash rate limiting
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=

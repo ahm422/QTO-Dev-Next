@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { cn } from "@/components/theme/cn";
+import { SITE_URL } from "@/lib/constants";
 import { generalSans, inter } from "./fonts";
 
 const themeScript = `
@@ -14,6 +15,7 @@ const themeScript = `
 `;
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "QTO Dev - Web Development & Design Services",
   description:
     "Premium web development, mobile app development, and UI/UX design services for modern businesses.",

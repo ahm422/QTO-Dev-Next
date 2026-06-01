@@ -1,3 +1,12 @@
+/**
+ * PRISMA ON CLOUDFLARE WORKERS:
+ * This route persists data via Prisma + `pg` (see @/lib/prisma).
+ * OpenNext runs on Workers with `nodejs_compat` (not Next.js Edge runtime).
+ * If DB calls fail in production, use one of:
+ * - Prisma Accelerate: https://www.prisma.io/data-platform/accelerate
+ * - Or replace writes with Supabase JS client against the same Postgres tables.
+ * Do not add `export const runtime = "edge"` here — unsupported by @opennextjs/cloudflare.
+ */
 import { NextRequest } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { createContactSubmission } from "@/services/contactService";
