@@ -12,6 +12,7 @@ export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
+    seed: "tsx prisma/seed.ts",
   },
   datasource: {
     // Prisma CLI (migrations/status) must use a non-transaction-pooler connection.
