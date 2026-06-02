@@ -62,3 +62,335 @@ model Requirement {
   @@index([createdAt])
   @@map("requirements")
 }
+
+// ─── SERVICES ───────────────────────────────────────────────────────────────
+model Service {
+  id               String   @id @default(uuid()) @db.Uuid
+  slug             String   @unique
+  title            String
+  shortDescription String   @map("short_description")
+  description      String
+  icon             String
+  features         String[]
+  technologyTags   String[] @map("technology_tags")
+  imageUrl         String?  @map("image_url")
+  imageAlt         String?  @map("image_alt")
+  order            Int      @default(0)
+  isPublished      Boolean  @default(true) @map("is_published")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@index([slug])
+  @@index([order])
+  @@map("services")
+}
+
+// ─── PROCESS STEPS (Homepage "How We Work" & Services "How We Deliver") ─────
+model ProcessStep {
+  id          String   @id @default(uuid()) @db.Uuid
+  context     String
+  stepNumber  Int      @map("step_number")
+  title       String
+  description String
+  icon        String
+  order       Int      @default(0)
+  isPublished Boolean  @default(true) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([context])
+  @@index([order])
+  @@map("process_steps")
+}
+
+// ─── FEATURED WORK (Homepage carousel / highlights) ─────────────────────────
+model FeaturedWork {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String
+  description String
+  imageUrl    String?  @map("image_url")
+  imageAlt    String?  @map("image_alt")
+  tags        String[]
+  link        String?
+  order       Int      @default(0)
+  isPublished Boolean  @default(true) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([order])
+  @@map("featured_works")
+}
+
+// ─── WHY CHOOSE US ───────────────────────────────────────────────────────────
+model WhyChooseUs {
+  id          String   @id @default(uuid()) @db.Uuid
+  context     String   @default("homepage")
+  title       String
+  description String
+  icon        String?
+  order       Int      @default(0)
+  isPublished Boolean  @default(true) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([context])
+  @@map("why_choose_us")
+}
+
+// ─── STATS & NUMBERS ────────────────────────────────────────────────────────
+model Stat {
+  id          String   @id @default(uuid()) @db.Uuid
+  label       String
+  value       String
+  description String?
+  icon        String?
+  color       String?
+  order       Int      @default(0)
+  isPublished Boolean  @default(true) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([order])
+  @@map("stats")
+}
+
+// ─── TESTIMONIALS ────────────────────────────────────────────────────────────
+model Testimonial {
+  id            String   @id @default(uuid()) @db.Uuid
+  clientName    String   @map("client_name")
+  clientRole    String   @map("client_role")
+  clientCompany String   @map("client_company")
+  quote         String
+  mediaType     String   @default("none") @map("media_type")
+  mediaUrl      String?  @map("media_url")
+  mediaAlt      String?  @map("media_alt")
+  avatarUrl     String?  @map("avatar_url")
+  avatarColor   String?  @map("avatar_color")
+  rating        Int?     @default(5)
+  order         Int      @default(0)
+  isPublished   Boolean  @default(true) @map("is_published")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@index([order])
+  @@map("testimonials")
+}
+
+// ─── INDUSTRIES ──────────────────────────────────────────────────────────────
+model Industry {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String
+  slug         String   @unique
+  description  String?
+  icon         String?
+  bulletPoints String[] @map("bullet_points")
+  order        Int      @default(0)
+  isPublished  Boolean  @default(true) @map("is_published")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([order])
+  @@map("industries")
+}
+
+// ─── ENGAGEMENT MODELS ───────────────────────────────────────────────────────
+model EngagementModel {
+  id            String   @id @default(uuid()) @db.Uuid
+  number        Int
+  title         String
+  description   String
+  features      String[]
+  isMostPopular Boolean  @default(false) @map("is_most_popular")
+  ctaLabel      String   @default("Get Started") @map("cta_label")
+  ctaLink       String   @default("/contact") @map("cta_link")
+  order         Int      @default(0)
+  isPublished   Boolean  @default(true) @map("is_published")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@index([order])
+  @@map("engagement_models")
+}
+
+// ─── FAQs ─────────────────────────────────────────────────────────────────────
+model Faq {
+  id          String   @id @default(uuid()) @db.Uuid
+  question    String
+  answer      String
+  context     String   @default("homepage")
+  order       Int      @default(0)
+  isPublished Boolean  @default(true) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([context])
+  @@index([order])
+  @@map("faqs")
+}
+
+// ─── BLOG POSTS ───────────────────────────────────────────────────────────────
+model BlogPost {
+  id          String    @id @default(uuid()) @db.Uuid
+  slug        String    @unique
+  title       String
+  excerpt     String
+  content     String
+  category    String
+  tags        String[]
+  author      String    @default("QTO DEV Team")
+  imageUrl    String?   @map("image_url")
+  imageAlt    String?   @map("image_alt")
+  readTime    Int?      @map("read_time")
+  isFeatured  Boolean   @default(false) @map("is_featured")
+  isHeadline  Boolean   @default(false) @map("is_headline")
+  isPublished Boolean   @default(false) @map("is_published")
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@index([slug])
+  @@index([category])
+  @@index([isPublished, publishedAt])
+  @@map("blog_posts")
+}
+
+// ─── TECHNOLOGIES (Tech Stack) ───────────────────────────────────────────────
+model Technology {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String   @unique
+  iconKey     String   @map("icon_key")
+  order       Int      @default(0)
+  isPublished Boolean  @default(true) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([order])
+  @@map("technologies")
+}
+
+// ─── PROJECTS / PORTFOLIO ────────────────────────────────────────────────────
+model Project {
+  id            String    @id @default(uuid()) @db.Uuid
+  slug          String    @unique
+  title         String
+  client        String?
+  category      String
+  tags          String[]
+  excerpt       String
+  description   String
+  challenge     String?
+  solution      String?
+  results       String[]
+  coverImageUrl String?   @map("cover_image_url")
+  images        String[]
+  techStack     String[]  @map("tech_stack")
+  liveUrl       String?   @map("live_url")
+  isFeatured    Boolean   @default(false) @map("is_featured")
+  order         Int       @default(0)
+  isPublished   Boolean   @default(true) @map("is_published")
+  completedAt   DateTime? @map("completed_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@index([slug])
+  @@index([category])
+  @@index([order])
+  @@map("projects")
+}
+
+// ─── WORK VALUES ("Why Our Work Matters") ───────────────────────────────────
+model WorkValue {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String
+  description String
+  icon        String?
+  order       Int      @default(0)
+  isPublished Boolean  @default(true) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([order])
+  @@map("work_values")
+}
+
+// ─── ABOUT PAGE CONTENT ──────────────────────────────────────────────────────
+model AboutContent {
+  id        String   @id @default(uuid()) @db.Uuid
+  section   String   @unique
+  title     String?
+  subtitle  String?
+  body      String?
+  metadata  Json?
+  imageUrl  String?  @map("image_url")
+  order     Int      @default(0)
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("about_content")
+}
+
+// ─── TEAM / LEADERSHIP ───────────────────────────────────────────────────────
+model TeamMember {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  role        String
+  bio         String?
+  avatarUrl   String?  @map("avatar_url")
+  linkedIn    String?  @map("linked_in")
+  order       Int      @default(0)
+  isPublished Boolean  @default(true) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([order])
+  @@map("team_members")
+}
+
+// ─── JOBS / CAREERS ──────────────────────────────────────────────────────────
+model Job {
+  id           String    @id @default(uuid()) @db.Uuid
+  title        String
+  department   String
+  location     String
+  type         String
+  description  String
+  requirements String[]
+  niceToHave   String[]  @map("nice_to_have")
+  salaryRange  String?   @map("salary_range")
+  applyUrl     String?   @map("apply_url")
+  order        Int       @default(0)
+  isPublished  Boolean   @default(true) @map("is_published")
+  postedAt     DateTime  @default(now()) @map("posted_at")
+  expiresAt    DateTime? @map("expires_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  @@index([department])
+  @@index([isPublished])
+  @@map("jobs")
+}
+
+// ─── CONTACT INFO (Other ways to reach us) ──────────────────────────────────
+model ContactInfo {
+  id          String   @id @default(uuid()) @db.Uuid
+  type        String
+  label       String
+  value       String
+  subLabel    String?  @map("sub_label")
+  icon        String?
+  order       Int      @default(0)
+  isPublished Boolean  @default(true) @map("is_published")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("contact_info")
+}
+
+// ─── SITE CONFIG (global key-value settings) ─────────────────────────────────
+model SiteConfig {
+  key       String   @id
+  value     String
+  label     String?
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_config")
+}

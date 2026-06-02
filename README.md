@@ -89,6 +89,8 @@ npm run prisma:validate
 npm run prisma:migrate:dev -- --name init
 ```
 
+   Phase 2 CMS models (18 tables): see [docs/phase2-schema.md](docs/phase2-schema.md) for migration name, seed command, and dev-only `npx prisma db seed`.
+
 6. Optional connectivity smoke test:
 
 ```bash
