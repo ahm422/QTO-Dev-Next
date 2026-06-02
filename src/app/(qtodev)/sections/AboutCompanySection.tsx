@@ -18,8 +18,7 @@ const IMAGE_ALT_OFFICE = PEXELS_ALT_TECH[0];
 const IMAGE_ALT_MEETING = PEXELS_ALT_TECH[1];
 
 export function AboutCompanySection() {
-  const { subtitle, title, description, tags, exploreMoreLabel, exploreMoreHref } =
-    aboutCompanyConfig;
+  const { subtitle, title, description, tags, exploreMoreHref } = aboutCompanyConfig;
 
   return (
     <section
@@ -117,14 +116,21 @@ export function AboutCompanySection() {
               <Link
                 href={exploreMoreHref}
                 className={cn(
-                  "inline-flex items-center justify-center px-6 py-2.5 rounded-full",
+                  "group/about-cta inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full",
                   "bg-white text-primary font-semibold text-sm shadow-md",
-                  "hover:bg-primary-foreground hover:text-primary-foreground/90 hover:shadow-lg",
+                  "hover:bg-black hover:text-white hover:shadow-lg",
+                  "active:scale-[0.98]",
                   "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary",
-                  "transition-colors transition-shadow duration-200"
+                  "transition-[color,background-color,box-shadow,transform] duration-200"
                 )}
               >
                 About QTO DEV
+                <AppIcon
+                  name="arrow-right"
+                  size="sm"
+                  className="opacity-0 -translate-x-1 transition-all duration-200 group-hover/about-cta:opacity-100 group-hover/about-cta:translate-x-0"
+                  aria-hidden
+                />
               </Link>
             </div>
             <div className="flex flex-wrap gap-3 mb-8">

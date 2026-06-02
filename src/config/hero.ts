@@ -1,54 +1,24 @@
 /**
- * Hero section copy and media config (issue #58).
- * Edit here to change background headline, LCD text lines, and media sources.
+ * Homepage hero copy and CTAs (issue #175).
+ * Edit here to change badge, headline, body, buttons, and trusted-by placeholders.
  */
 
-import { PEXELS_TECH_IMAGES } from "./pexelsImages";
-
 export const heroConfig = {
-  /**
-   * Large decorative background headlines (wide hero typography).
-   * The first entry is also used as a sensible default in places that expect a single string.
-   */
-  backgroundHeadlines: [
-    "SITES THAT MOVE",
-    "MODERN WEB, REAL IMPACT",
-    "ENGINEERED FOR GROWTH",
-  ] as const,
+  badge: "NEXT-GEN ENGINEERING",
 
-  /** Backwards-compatible single background headline (first of the list). */
-  backgroundHeadline: "SITES THAT MOVE",
+  /** White portion of the H1 */
+  heading: "Architecting",
+  /** Orange highlight portion */
+  headingHighlight: "Digital Futures",
 
-  /** Primary foreground copy; optional word to highlight in primary color */
-  heading: "Engineering Smart Digital Solutions for Growing Businesses",
-  headingHighlight: "Smart Digital Solutions",
   subtext:
-    "We design and develop high-performance web applications, ERP systems, and business automation platforms that help companies scale efficiently and operate smarter.",
-  ctaPrimary: "Request a Free Consultation",
+    "We build robust, scalable software systems that power modern businesses—from cloud-native platforms to intelligent automation that drives measurable growth.",
+
+  ctaPrimary: "Start Your Project",
   ctaPrimaryHref: "/contact",
-  ctaSecondary: "View Services",
+  ctaSecondary: "Explore Capabilities",
   ctaSecondaryHref: "/services",
 
-  /**
-   * LCD screen: rotating text lines (cycle through these).
-   * Use short, punchy lines that describe services and outcomes.
-   */
-  lcdTextLines: [
-    "SITES THAT ACTUALLY MOVE",
-    "REACT & NEXT.JS ENGINEERING",
-    "MOTION MEETS PERFORMANCE",
-    "FROM IDEA TO LAUNCH",
-  ],
-
-  /**
-   * Hero-specific images (Pexels). Used for LCD background and strips/collages around the LCD.
-   * Sourced from shared Pexels tech imagery (issue #60).
-   */
-  heroImages: [
-    PEXELS_TECH_IMAGES[0],
-    PEXELS_TECH_IMAGES[1],
-    PEXELS_TECH_IMAGES[2],
-    PEXELS_TECH_IMAGES[3],
-    PEXELS_TECH_IMAGES[4],
-  ] as const,
+  trustedByLabel: "TRUSTED BY INNOVATIVE TEAMS",
+  trustedByLogos: ["TECHCORP", "NEXUS", "SYNAPSE", "AERIS"] as const,
 } as const;
