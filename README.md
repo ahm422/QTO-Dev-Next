@@ -91,6 +91,16 @@ npm run prisma:migrate:dev -- --name init
 
    Phase 2 CMS models (18 tables): see [docs/phase2-schema.md](docs/phase2-schema.md) for migration name, seed command, and dev-only `npx prisma db seed`.
 
+   **Phase 3 (dev/staging):** apply migration `20260602163327_add_cms_content_models`, then populate CMS tables from static data:
+
+   ```bash
+   npm run prisma:migrate:dev -- --name add_cms_content_models
+   npx prisma db seed
+   npx tsx scripts/verify-seed-counts.ts
+   ```
+
+   Re-running `npx prisma db seed` is idempotent (upserts by slug/section keys). Marketing pages still read `src/data/*` until the public read layer is wired. Do not auto-seed production.
+
 6. Optional connectivity smoke test:
 
 ```bash
