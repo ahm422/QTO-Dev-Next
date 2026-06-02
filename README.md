@@ -111,15 +111,41 @@ This app uses [@opennextjs/cloudflare](https://opennext.js.org/cloudflare) and d
 
 ### Environment variables
 
-Copy variables from `.env` / `.env.example` into **Workers → Settings → Variables and Secrets** for Production (and Preview if used):
+Where to set values:
 
-- `DATABASE_URL` — Supabase **transaction pooler** (port `6543`)
-- `REVALIDATE_SECRET` — Bearer token for `POST /api/revalidate`
-- `NEXT_PUBLIC_SITE_URL`
-- `PGSSL_REJECT_UNAUTHORIZED` (optional)
-- `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` (optional; only if rate limiting is wired into API routes)
+| Environment | File / location |
+|-------------|-----------------|
+| Next.js dev (`npm run dev`) | [`.env`](.env) — copy from [`.env.example`](.env.example) |
+| Wrangler preview (`npm run preview`) | [`.dev.vars`](.dev.vars) — copy from [`.dev.vars.example`](.dev.vars.example) |
+| Production / Preview on Cloudflare | **Workers → Settings → Variables and Secrets** for `qtodev-site` |
 
-Treat `DATABASE_URL` and `REVALIDATE_SECRET` as **secrets**, not committed values.
+Copy from `.env.example` / `.dev.vars.example` into the Cloudflare dashboard (Production and Preview if used). Never commit real secrets.
+
+**Server-only (never use `NEXT_PUBLIC_` prefix):** `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_SECRET`, and other secrets below.
+
+| Variable | Cloudflare type | Notes |
+|----------|-----------------|--------|
+| `DATABASE_URL` | Secret | Supabase transaction pooler (port `6543`), `sslmode=require` |
+| `DIRECT_URL` | Secret | Optional at runtime; needed for `prisma migrate` from CI |
+| `NEXT_PUBLIC_SUPABASE_URL` | Plain | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Plain | Supabase anon key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Secret | Server-only |
+| `ADMIN_SECRET` | Secret | Admin API / middleware (Phase 2+) |
+| `GARAGE_ENDPOINT` | Secret | S3-compatible endpoint |
+| `GARAGE_ACCESS_KEY_ID` | Secret | |
+| `GARAGE_SECRET_ACCESS_KEY` | Secret | |
+| `GARAGE_BUCKET_NAME` | Secret | e.g. `qtodev-media` |
+| `GARAGE_PUBLIC_URL` | Plain | Public CDN base URL |
+| `RESEND_API_KEY` | Secret | |
+| `RESEND_FROM_EMAIL` | Plain or Secret | |
+| `RESEND_TO_EMAIL` | Plain or Secret | |
+| `NEXT_PUBLIC_SITE_URL` | Plain | |
+| `REVALIDATE_SECRET` | Secret | Bearer token for `POST /api/revalidate` |
+| `PGSSL_REJECT_UNAUTHORIZED` | Plain | Optional; local TLS workaround |
+| `UPSTASH_REDIS_REST_URL` | Secret | Optional; rate limiting |
+| `UPSTASH_REDIS_REST_TOKEN` | Secret | Optional; rate limiting |
+
+CLI alternative for secrets: `wrangler secret put SUPABASE_SERVICE_ROLE_KEY` (repeat per secret).
 
 ### Local development
 

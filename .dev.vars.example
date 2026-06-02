@@ -11,6 +11,26 @@ DIRECT_URL=postgresql://postgres:<db-password>@db.<project-ref>.supabase.co:5432
 
 PGSSL_REJECT_UNAUTHORIZED=false
 
+# Supabase client
+NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+
+# Admin guard (Phase 2+)
+ADMIN_SECRET=replace-with-strong-random-secret
+
+# Garage (S3-compatible)
+GARAGE_ENDPOINT=https://garage.example.com
+GARAGE_ACCESS_KEY_ID=replace_me
+GARAGE_SECRET_ACCESS_KEY=replace_me
+GARAGE_BUCKET_NAME=qtodev-media
+GARAGE_PUBLIC_URL=https://cdn.example.com
+
+# Resend
+RESEND_API_KEY=re_replace_me
+RESEND_FROM_EMAIL=hello@example.com
+RESEND_TO_EMAIL=admin@example.com
+
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
 REVALIDATE_SECRET=replace_me
