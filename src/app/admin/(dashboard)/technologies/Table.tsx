@@ -2,7 +2,7 @@
 
 import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
 import PublishToggle from "@/components/admin/PublishToggle"
-import { deleteTechnology, toggleTechnologyPublished } from "./actions"
+import { deleteTechnology, reorderTechnologies, toggleTechnologyPublished } from "./actions"
 import type { Technology } from "@prisma/client"
 
 const columns: AdminTableColumn<Technology>[] = [
@@ -19,6 +19,7 @@ export default function TechnologiesTable({ rows }: { rows: Technology[] }) {
       rows={rows}
       editBasePath="/admin/technologies"
       onDelete={deleteTechnology}
+      onReorder={reorderTechnologies}
       getItemName={(r) => r.name}
       emptyMessage="No technologies yet."
     />

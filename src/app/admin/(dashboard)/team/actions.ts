@@ -4,6 +4,7 @@ import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { teamMemberSchema, type TeamMemberInput } from "@/lib/validators/admin/teamMember"
+import { persistOrderUpdates } from "@/lib/admin/reorder"
 import { revalidatePaths } from "@/lib/revalidate"
 
 const PATHS = ["/", "/about"] as const
@@ -36,5 +37,13 @@ export async function deleteTeamMember(id: string) {
 export async function toggleTeamMemberPublished(id: string, value: boolean) {
   await requireAdmin()
   await prisma.teamMember.update({ where: { id }, data: { isPublished: value } })
+  revalidatePaths([...PATHS])
+}
+
+export async function reorderTeamMembers(items: { id: string; order: number }[]) {
+  await requireAdmin()
+  await persistOrderUpdates(items, (id, order) =>
+    prisma.teamMember.update({ where: { id }, data: { order } })
+  )
   revalidatePaths([...PATHS])
 }

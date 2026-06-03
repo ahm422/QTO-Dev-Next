@@ -2,7 +2,7 @@
 
 import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
 import PublishToggle from "@/components/admin/PublishToggle"
-import { deleteFeaturedWork, toggleFeaturedWorkPublished } from "./actions"
+import { deleteFeaturedWork, reorderFeaturedWork, toggleFeaturedWorkPublished } from "./actions"
 import type { FeaturedWork } from "@prisma/client"
 
 const columns: AdminTableColumn<FeaturedWork>[] = [
@@ -18,6 +18,7 @@ export default function FeaturedWorkTable({ rows }: { rows: FeaturedWork[] }) {
       rows={rows}
       editBasePath="/admin/featured-work"
       onDelete={deleteFeaturedWork}
+      onReorder={reorderFeaturedWork}
       getItemName={(r) => r.title}
       emptyMessage="No featured work yet."
     />

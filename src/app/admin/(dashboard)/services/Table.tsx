@@ -3,7 +3,7 @@
 import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
 import PublishToggle from "@/components/admin/PublishToggle"
 import { Badge } from "@/components/ui/badge"
-import { deleteService, toggleServicePublished } from "./actions"
+import { deleteService, reorderServices, toggleServicePublished } from "./actions"
 import type { Service } from "@prisma/client"
 
 const columns: AdminTableColumn<Service>[] = [
@@ -28,6 +28,7 @@ export default function ServicesTable({ rows }: { rows: Service[] }) {
       rows={rows}
       editBasePath="/admin/services"
       onDelete={deleteService}
+      onReorder={reorderServices}
       getItemName={(r) => r.title}
       emptyMessage="No services yet. Add your first service."
     />

@@ -3,7 +3,7 @@
 import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
 import PublishToggle from "@/components/admin/PublishToggle"
 import { Badge } from "@/components/ui/badge"
-import { deleteWhyChooseUs, toggleWhyChooseUsPublished } from "./actions"
+import { deleteWhyChooseUs, reorderWhyChooseUs, toggleWhyChooseUsPublished } from "./actions"
 import type { WhyChooseUs } from "@prisma/client"
 
 const columns: AdminTableColumn<WhyChooseUs>[] = [
@@ -20,6 +20,7 @@ export default function WhyChooseUsTable({ rows }: { rows: WhyChooseUs[] }) {
       rows={rows}
       editBasePath="/admin/why-choose-us"
       onDelete={deleteWhyChooseUs}
+      onReorder={reorderWhyChooseUs}
       getItemName={(r) => r.title}
       emptyMessage="No items yet."
     />

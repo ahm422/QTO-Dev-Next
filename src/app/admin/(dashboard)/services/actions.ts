@@ -6,6 +6,7 @@ import { redirect } from "next/navigation"
 import { serviceSchema, type ServiceInput } from "@/lib/validators/admin/service"
 import { revalidatePaths } from "@/lib/revalidate"
 import { servicePaths } from "@/lib/revalidate-paths"
+import { persistOrderUpdates } from "@/lib/admin/reorder"
 
 async function requireAdmin() {
   const session = await auth()
@@ -37,8 +38,8 @@ export async function deleteService(id: string) {
 
 export async function reorderServices(items: { id: string; order: number }[]) {
   await requireAdmin()
-  await Promise.all(
-    items.map((item) => prisma.service.update({ where: { id: item.id }, data: { order: item.order } }))
+  await persistOrderUpdates(items, (id, order) =>
+    prisma.service.update({ where: { id }, data: { order } })
   )
   revalidatePaths([...servicePaths()])
 }

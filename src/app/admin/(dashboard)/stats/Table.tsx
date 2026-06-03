@@ -2,7 +2,7 @@
 
 import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
 import PublishToggle from "@/components/admin/PublishToggle"
-import { deleteStat, toggleStatPublished } from "./actions"
+import { deleteStat, reorderStats, toggleStatPublished } from "./actions"
 import type { Stat } from "@prisma/client"
 
 const columns: AdminTableColumn<Stat>[] = [
@@ -19,6 +19,7 @@ export default function StatsTable({ rows }: { rows: Stat[] }) {
       rows={rows}
       editBasePath="/admin/stats"
       onDelete={deleteStat}
+      onReorder={reorderStats}
       getItemName={(r) => r.label}
       emptyMessage="No stats yet."
     />

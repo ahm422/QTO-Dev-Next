@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { testimonialSchema, type TestimonialInput } from "@/lib/validators/admin/testimonial"
+import { persistOrderUpdates } from "@/lib/admin/reorder"
 
 async function requireAdmin() {
   const session = await auth()
@@ -34,5 +35,13 @@ export async function deleteTestimonial(id: string) {
 export async function toggleTestimonialPublished(id: string, value: boolean) {
   await requireAdmin()
   await prisma.testimonial.update({ where: { id }, data: { isPublished: value } })
+  revalidatePath("/")
+}
+
+export async function reorderTestimonials(items: { id: string; order: number }[]) {
+  await requireAdmin()
+  await persistOrderUpdates(items, (id, order) =>
+    prisma.testimonial.update({ where: { id }, data: { order } })
+  )
   revalidatePath("/")
 }

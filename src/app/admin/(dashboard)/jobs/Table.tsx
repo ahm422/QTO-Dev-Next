@@ -3,7 +3,7 @@
 import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
 import PublishToggle from "@/components/admin/PublishToggle"
 import { Badge } from "@/components/ui/badge"
-import { deleteJob, toggleJobPublished } from "./actions"
+import { deleteJob, reorderJobs, toggleJobPublished } from "./actions"
 import type { Job } from "@prisma/client"
 
 const columns: AdminTableColumn<Job>[] = [
@@ -21,6 +21,7 @@ export default function JobsTable({ rows }: { rows: Job[] }) {
       rows={rows}
       editBasePath="/admin/jobs"
       onDelete={deleteJob}
+      onReorder={reorderJobs}
       getItemName={(r) => r.title}
       emptyMessage="No job listings yet."
     />

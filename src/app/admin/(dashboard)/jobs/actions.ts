@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { jobSchema, type JobInput } from "@/lib/validators/admin/job"
+import { persistOrderUpdates } from "@/lib/admin/reorder"
 
 async function requireAdmin() {
   const session = await auth()
@@ -36,5 +37,13 @@ export async function deleteJob(id: string) {
 export async function toggleJobPublished(id: string, value: boolean) {
   await requireAdmin()
   await prisma.job.update({ where: { id }, data: { isPublished: value } })
+  revalidatePath("/careers")
+}
+
+export async function reorderJobs(items: { id: string; order: number }[]) {
+  await requireAdmin()
+  await persistOrderUpdates(items, (id, order) =>
+    prisma.job.update({ where: { id }, data: { order } })
+  )
   revalidatePath("/careers")
 }

@@ -2,7 +2,7 @@
 
 import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
 import PublishToggle from "@/components/admin/PublishToggle"
-import { deleteProject, toggleProjectPublished } from "./actions"
+import { deleteProject, reorderProjects, toggleProjectPublished } from "./actions"
 import type { Project } from "@prisma/client"
 
 const columns: AdminTableColumn<Project>[] = [
@@ -20,6 +20,7 @@ export default function ProjectsTable({ rows }: { rows: Project[] }) {
       rows={rows}
       editBasePath="/admin/projects"
       onDelete={deleteProject}
+      onReorder={reorderProjects}
       getItemName={(r) => r.title}
       emptyMessage="No projects yet."
     />

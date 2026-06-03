@@ -1,6 +1,8 @@
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import { mapProject, mapProjectToPortfolioCase } from "./mappers";
+import { mapPrismaToContentProject } from "./mapContentProject";
+import type { Project as ContentProject } from "@/content/projects/types";
 
 export const findPublishedProjects = cache(async (category?: string) => {
   const items = await prisma.project.findMany({
@@ -36,4 +38,17 @@ export const findPublishedProjectSlugs = cache(async () => {
     orderBy: { order: "asc" },
   });
   return items.map((i) => i.slug);
+});
+
+export const findContentProjectBySlug = cache(async (slug: string): Promise<ContentProject | null> => {
+  const row = await prisma.project.findFirst({
+    where: { slug, isPublished: true },
+  });
+  if (!row) return null;
+
+  const all = await prisma.project.findMany({
+    where: { isPublished: true },
+    orderBy: { order: "asc" },
+  });
+  return mapPrismaToContentProject(row, all);
 });

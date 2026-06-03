@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
-import { getServiceBySlug } from "@/content/services";
-import { findPublishedServiceSlugs } from "@/lib/cms/services";
+import {
+  findContentServiceBySlug,
+  findPublishedServiceSlugs,
+} from "@/lib/cms/services";
 import { HeroBanner } from "./components/HeroBanner";
 import { OverviewSection } from "./components/OverviewSection";
 import { ProcessTimeline } from "./components/ProcessTimeline";
@@ -19,7 +21,7 @@ const BLUR_DATA_URL =
 
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
-  const service = await getServiceBySlug(slug);
+  const service = await findContentServiceBySlug(slug);
 
   if (!service) {
     return {
@@ -47,7 +49,7 @@ export async function generateStaticParams() {
 
 export default async function ServiceOfferingPage({ params }: PageProps) {
   const { slug } = await params;
-  const service = await getServiceBySlug(slug);
+  const service = await findContentServiceBySlug(slug);
 
   if (!service) {
     notFound();
@@ -55,33 +57,14 @@ export default async function ServiceOfferingPage({ params }: PageProps) {
 
   return (
     <main className="scroll-smooth bg-background text-foreground" aria-label="Service details">
-      {/* 1. Sticky Navbar rendered globally in (qtodev)/layout.tsx */}
-
-      {/* 2. Hero Banner */}
       <HeroBanner service={service} blurDataURL={BLUR_DATA_URL} />
-
-      {/* 3. Overview Section */}
       <OverviewSection service={service} blurDataURL={BLUR_DATA_URL} />
-
-      {/* 4. Process Timeline */}
       <ProcessTimeline service={service} />
-
-      {/* 5. Tech Stack Strip */}
       <TechStackStrip service={service} blurDataURL={BLUR_DATA_URL} />
-
-      {/* 6. Related / Recent Projects */}
       <RelatedProjects service={service} blurDataURL={BLUR_DATA_URL} />
-
-      {/* 7. Service Offerings */}
       <ServicePackages service={service} />
-
-      {/* 8. Proof / Trust Section */}
       <TrustSection service={service} blurDataURL={BLUR_DATA_URL} />
-
-      {/* 9. Final CTA + Contact Form */}
       <ContactCTA />
-
-      {/* 10. Deep Footer rendered globally in (qtodev)/layout.tsx */}
     </main>
   );
 }

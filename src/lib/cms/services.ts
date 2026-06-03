@@ -1,6 +1,8 @@
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import { mapService } from "./mappers";
+import { mapPrismaToContentService } from "./mapContentService";
+import type { WebDevelopmentServiceData } from "@/content/services/web-development";
 
 export const findPublishedServices = cache(async () => {
   const items = await prisma.service.findMany({
@@ -25,3 +27,12 @@ export const findPublishedServiceSlugs = cache(async () => {
   });
   return items.map((i) => i.slug);
 });
+
+export const findContentServiceBySlug = cache(
+  async (slug: string): Promise<WebDevelopmentServiceData | null> => {
+    const row = await prisma.service.findFirst({
+      where: { slug, isPublished: true },
+    });
+    return row ? mapPrismaToContentService(row) : null;
+  }
+);
