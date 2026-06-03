@@ -1,6 +1,7 @@
 import { auth } from "@/auth"
 import { notFound, redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
+import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import ServiceForm from "./ServiceForm"
 
 export default async function ServiceFormPage({
@@ -12,23 +13,40 @@ export default async function ServiceFormPage({
   if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
 
   const { id } = await params
+  const isNew = id === "new"
 
-  if (id === "new") {
+  if (!isNew) {
+    const service = await prisma.service.findUnique({ where: { id } })
+    if (!service) notFound()
+
     return (
-      <div className="max-w-2xl space-y-4">
-        <h2 className="text-lg font-semibold">New service</h2>
-        <ServiceForm />
+      <div className="space-y-6">
+        <AdminPageHeader
+          title="Edit Service"
+          subtitle={service.title}
+          breadcrumbs={[
+            { label: "Admin", href: "/admin" },
+            { label: "Services", href: "/admin/services" },
+            { label: "Edit" },
+          ]}
+          badges={[{ label: service.isPublished ? "Published" : "Draft", variant: service.isPublished ? "success" : "warning" }]}
+        />
+        <ServiceForm defaultValues={service} />
       </div>
     )
   }
 
-  const service = await prisma.service.findUnique({ where: { id } })
-  if (!service) notFound()
-
   return (
-    <div className="max-w-2xl space-y-4">
-      <h2 className="text-lg font-semibold">Edit service</h2>
-      <ServiceForm defaultValues={service} />
+    <div className="space-y-6">
+      <AdminPageHeader
+        title="New Service"
+        breadcrumbs={[
+          { label: "Admin", href: "/admin" },
+          { label: "Services", href: "/admin/services" },
+          { label: "New" },
+        ]}
+      />
+      <ServiceForm />
     </div>
   )
 }

@@ -3,8 +3,9 @@ import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
-import { Plus, Pencil } from "lucide-react"
+import { Pencil } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 
 export default async function AboutPage() {
   const session = await auth()
@@ -13,11 +14,12 @@ export default async function AboutPage() {
   const rows = await prisma.aboutContent.findMany({ orderBy: { order: "asc" } })
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div><h2 className="text-lg font-semibold">About</h2><p className="text-sm text-muted-foreground">{rows.length} sections</p></div>
-        <Button asChild size="sm"><Link href="/admin/about/new"><Plus className="h-4 w-4 mr-1" />Add section</Link></Button>
-      </div>
+    <div className="space-y-6">
+      <AdminPageHeader
+        title="About"
+        subtitle="Key-value sections for the About page"
+        breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "About" }]}
+      />
 
       {rows.length === 0 ? (
         <div className="rounded-lg border border-border bg-card p-8 text-center text-sm text-muted-foreground">No about sections yet.</div>

@@ -1,9 +1,7 @@
-import Link from "next/link"
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import TechnologiesTable from "./Table"
 
 export default async function TechnologiesPage() {
@@ -11,11 +9,13 @@ export default async function TechnologiesPage() {
   if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
   const rows = await prisma.technology.findMany({ orderBy: { order: "asc" } })
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div><h2 className="text-lg font-semibold">Technologies</h2><p className="text-sm text-muted-foreground">{rows.length} total</p></div>
-        <Button asChild size="sm"><Link href="/admin/technologies/new"><Plus className="h-4 w-4 mr-1" />Add technology</Link></Button>
-      </div>
+    <div className="space-y-6">
+      <AdminPageHeader
+        title="Technologies"
+        subtitle="Tech stack and tools showcased on the site"
+        breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Technologies" }]}
+        primaryAction={{ label: "+ Add Technology", href: "/admin/technologies/new" }}
+      />
       <TechnologiesTable rows={rows} />
     </div>
   )

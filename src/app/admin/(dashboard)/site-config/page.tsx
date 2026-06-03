@@ -1,9 +1,7 @@
-import Link from "next/link"
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import SiteConfigTable from "./Table"
 
 export default async function SiteConfigPage() {
@@ -13,11 +11,13 @@ export default async function SiteConfigPage() {
   const rows = await prisma.siteConfig.findMany({ orderBy: { key: "asc" } })
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div><h2 className="text-lg font-semibold">Site Config</h2><p className="text-sm text-muted-foreground">{rows.length} entries</p></div>
-        <Button asChild size="sm"><Link href="/admin/site-config/new"><Plus className="h-4 w-4 mr-1" />Add entry</Link></Button>
-      </div>
+    <div className="space-y-6">
+      <AdminPageHeader
+        title="Site Config"
+        subtitle="Global site configuration key-value settings"
+        breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Site Config" }]}
+        primaryAction={{ label: "+ Add Entry", href: "/admin/site-config/new" }}
+      />
       <SiteConfigTable rows={rows} />
     </div>
   )

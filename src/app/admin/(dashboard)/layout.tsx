@@ -14,7 +14,7 @@ export default async function AdminDashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="admin-dark min-h-screen bg-background text-foreground">
       <AdminSidebar />
       <div className="lg:pl-64 flex flex-col min-h-screen">
         <AdminHeader />

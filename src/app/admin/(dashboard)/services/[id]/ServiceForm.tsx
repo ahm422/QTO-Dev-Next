@@ -1,11 +1,19 @@
 "use client"
 
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { serviceSchema, type ServiceInput } from "@/lib/validators/admin/service"
-import AdminForm from "@/components/admin/AdminForm"
-import MediaUpload from "@/components/admin/MediaUpload"
+import FormSection from "@/components/admin/forms/FormSection"
+import FormActions from "@/components/admin/forms/FormActions"
+import FormGrid from "@/components/admin/forms/FormGrid"
+import IconPicker from "@/components/admin/forms/IconPicker"
+import MediaGallery from "@/components/admin/forms/MediaGallery"
+import SeoPreview from "@/components/admin/forms/SeoPreview"
+import TagInput from "@/components/admin/forms/TagInput"
+import AdminWidgetPanel from "@/components/admin/layout/AdminWidgetPanel"
+import PublishWidget from "@/components/admin/widgets/PublishWidget"
+import WidgetCard from "@/components/admin/widgets/WidgetCard"
 import {
   Form,
   FormControl,
@@ -16,9 +24,10 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { createService, updateService } from "../actions"
+import {
+  FileText, Palette, Image as ImageIcon, Tag, Search,
+} from "lucide-react"
+import { createService, updateService, toggleServicePublished } from "../actions"
 import type { Service } from "@prisma/client"
 
 function slugify(str: string) {
@@ -29,6 +38,11 @@ function slugify(str: string) {
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-")
 }
+
+const TECH_SUGGESTIONS = [
+  "React", "Next.js", "TypeScript", "Node.js", "Python", "PostgreSQL",
+  "Prisma", "Tailwind CSS", "GraphQL", "REST API", "Docker", "AWS",
+]
 
 interface ServiceFormProps {
   defaultValues?: Service
@@ -63,6 +77,10 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
   })
 
   const { isSubmitting } = form.formState
+  const watchedTitle = useWatch({ control: form.control, name: "title" })
+  const watchedDesc = useWatch({ control: form.control, name: "shortDescription" })
+  const watchedSlug = useWatch({ control: form.control, name: "slug" })
+  const watchedPublished = useWatch({ control: form.control, name: "isPublished" })
 
   async function onSubmit(data: ServiceInput) {
     try {
@@ -79,184 +97,225 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/services">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Title</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e)
-                        if (!isEdit) {
-                          form.setValue("slug", slugify(e.target.value), { shouldValidate: false })
-                        }
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <div className="grid lg:grid-cols-[1fr_300px] gap-6 items-start">
+          {/* Main form area */}
+          <div className="space-y-5">
+            {/* Basic Information */}
+            <FormSection title="Basic Information" icon={FileText} subtitle="Title, slug, and descriptions">
+              <FormGrid>
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e)
+                            if (!isEdit) {
+                              form.setValue("slug", slugify(e.target.value), { shouldValidate: false })
+                            }
+                          }}
+                          placeholder="e.g. Web Development"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="slug"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Slug</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="web-development" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </FormGrid>
 
-            <FormField
-              control={form.control}
-              name="slug"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Slug</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="my-service" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="shortDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Short Description</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} rows={2} placeholder="Brief one-liner shown in cards and listings" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Description</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} rows={5} placeholder="Detailed description for the service page" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FormSection>
+
+            {/* Icon & Brand */}
+            <FormSection title="Icon & Brand Identity" icon={Palette} subtitle="Choose an icon to represent this service">
+              <FormGrid>
+                <FormField
+                  control={form.control}
+                  name="icon"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Icon</FormLabel>
+                      <FormControl>
+                        <IconPicker value={field.value ?? ""} onChange={field.onChange} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="order"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Display Order</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="number" placeholder="0" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </FormGrid>
+            </FormSection>
+
+            {/* Featured Media */}
+            <FormSection title="Featured Media" icon={ImageIcon} subtitle="Cover image for service card and detail page">
+              <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <MediaGallery value={field.value ?? ""} onChange={field.onChange} label="Cover Image" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="imageAlt"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Image Alt Text</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Descriptive alt text for accessibility" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FormSection>
+
+            {/* Tags & Features */}
+            <FormSection title="Tags & Features" icon={Tag} subtitle="Technology tags and feature list">
+              <FormField
+                control={form.control}
+                name="technologyTags"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Technology Tags</FormLabel>
+                    <FormControl>
+                      <TagInput
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="Add technology…"
+                        suggestions={TECH_SUGGESTIONS}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="features"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Features (one per line)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        value={field.value.join("\n")}
+                        onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))}
+                        rows={5}
+                        placeholder={"Feature 1\nFeature 2\nFeature 3"}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FormSection>
+
+            {/* SEO Preview */}
+            <FormSection title="SEO & Meta" icon={Search} subtitle="How this page appears in search results">
+              <SeoPreview
+                title={watchedTitle}
+                description={watchedDesc}
+                slug={`services/${watchedSlug}`}
+              />
+            </FormSection>
+
+            <FormActions isSubmitting={isSubmitting} cancelHref="/admin/services" />
           </div>
 
-          <FormField
-            control={form.control}
-            name="shortDescription"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Short description</FormLabel>
-                <FormControl>
-                  <Textarea {...field} rows={2} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+          {/* Right widget panel */}
+          <AdminWidgetPanel className="lg:sticky lg:top-20">
+            {isEdit && defaultValues && (
+              <PublishWidget
+                id={defaultValues.id}
+                isPublished={watchedPublished}
+                onToggle={toggleServicePublished}
+                isSaving={isSubmitting}
+              />
             )}
-          />
-
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Full description</FormLabel>
-                <FormControl>
-                  <Textarea {...field} rows={4} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+            {!isEdit && (
+              <WidgetCard title="Visibility">
+                <p className="text-xs text-muted-foreground">
+                  This service will be saved as a <strong className="text-foreground">Draft</strong> by default. You can publish it from the list page after saving.
+                </p>
+              </WidgetCard>
             )}
-          />
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="icon"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Icon key</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="e.g. code" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="order"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Order</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <FormField
-            control={form.control}
-            name="features"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Features (one per line)</FormLabel>
-                <FormControl>
-                  <Textarea
-                    value={field.value.join("\n")}
-                    onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))}
-                    rows={4}
-                    placeholder="Feature 1&#10;Feature 2"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="technologyTags"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Technology tags (one per line)</FormLabel>
-                <FormControl>
-                  <Textarea
-                    value={field.value.join("\n")}
-                    onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))}
-                    rows={3}
-                    placeholder="React&#10;TypeScript"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="imageUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <MediaUpload value={field.value ?? ""} onChange={field.onChange} label="Cover image" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="imageAlt"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Image alt text</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="isPublished"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex items-center gap-3">
-                  <FormControl>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} id="isPublished" />
-                  </FormControl>
-                  <Label htmlFor="isPublished">Published</Label>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </AdminForm>
+            <WidgetCard title="Tips">
+              <ul className="space-y-2">
+                {[
+                  "Use a clear, benefit-focused title",
+                  "Keep the short description under 160 characters",
+                  "Add relevant tech tags to help with filtering",
+                  "Publish only when all content is finalized",
+                ].map((tip, i) => (
+                  <li key={i} className="text-xs text-muted-foreground flex items-start gap-2">
+                    <span className="text-primary shrink-0 mt-0.5">•</span>
+                    {tip}
+                  </li>
+                ))}
+              </ul>
+            </WidgetCard>
+          </AdminWidgetPanel>
+        </div>
       </form>
     </Form>
   )

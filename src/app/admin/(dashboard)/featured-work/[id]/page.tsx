@@ -1,14 +1,30 @@
 import { auth } from "@/auth"
 import { notFound, redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
+import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import FeaturedWorkForm from "./FeaturedWorkForm"
 
 export default async function FeaturedWorkFormPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
   if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
   const { id } = await params
-  if (id === "new") return <div className="max-w-2xl space-y-4"><h2 className="text-lg font-semibold">New featured work</h2><FeaturedWorkForm /></div>
+
+  if (id === "new") {
+    return (
+      <div className="space-y-6">
+        <AdminPageHeader title="New Featured Work" breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Featured Work", href: "/admin/featured-work" }, { label: "New" }]} />
+        <FeaturedWorkForm />
+      </div>
+    )
+  }
+
   const record = await prisma.featuredWork.findUnique({ where: { id } })
   if (!record) notFound()
-  return <div className="max-w-2xl space-y-4"><h2 className="text-lg font-semibold">Edit featured work</h2><FeaturedWorkForm defaultValues={record} /></div>
+
+  return (
+    <div className="space-y-6">
+      <AdminPageHeader title="Edit Featured Work" subtitle={record.title} badges={[{ label: record.isPublished ? "Published" : "Draft", variant: record.isPublished ? "success" : "warning" }]} breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Featured Work", href: "/admin/featured-work" }, { label: "Edit" }]} />
+      <FeaturedWorkForm defaultValues={record} />
+    </div>
+  )
 }
