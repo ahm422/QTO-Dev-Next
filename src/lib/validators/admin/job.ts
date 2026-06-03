@@ -12,8 +12,8 @@ export const jobSchema = z.object({
   applyUrl: z.string().optional().default(""),
   order: z.coerce.number().int().default(0),
   isPublished: z.boolean().default(false),
-  postedAt: z.string().optional().nullable(),
-  expiresAt: z.string().optional().nullable(),
+  postedAt: z.coerce.date().optional(),
+  expiresAt: z.coerce.date().optional().nullable(),
 })
 
 export type JobInput = z.infer<typeof jobSchema>
