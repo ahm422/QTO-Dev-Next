@@ -1,6 +1,8 @@
 import { Navbar } from "@/components/common/Navbar";
 import { Footer } from "@/components/common/Footer";
 
+export const revalidate = 3600;
+
 export default function QTODevLayout({
   children,
 }: {

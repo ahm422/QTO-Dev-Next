@@ -18,6 +18,24 @@ function getLearnMoreHref(service: Service): string {
 }
 
 export function OurServicesSectionClient({ services }: { services: Service[] }) {
+  if (services.length === 0) {
+    return (
+      <section
+        className={cn(
+          "relative overflow-hidden py-24 md:py-32",
+          "bg-surface-muted border-y border-border"
+        )}
+        aria-labelledby={HEADING_ID}
+      >
+        <Container>
+          <p className="text-center text-foreground-muted">
+            Services will appear here once published in the CMS.
+          </p>
+        </Container>
+      </section>
+    );
+  }
+
   return (
     <section
       className={cn(

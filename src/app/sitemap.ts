@@ -1,14 +1,19 @@
 import { MetadataRoute } from 'next';
-import { services } from '@/data/services';
-import { projects } from '@/data/projects';
-import { blogPosts } from '@/data/blog';
+import { findPublishedServiceSlugs } from '@/lib/cms/services';
+import { findPublishedProjectSlugs } from '@/lib/cms/projects';
+import { findPublishedBlogSlugs } from '@/lib/cms/blog';
 
-export const dynamic = 'force-static';
+export const revalidate = 3600;
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://qtodev.com';
 
-  // Main pages
+  const [serviceSlugs, projectSlugs, blogSlugs] = await Promise.all([
+    findPublishedServiceSlugs(),
+    findPublishedProjectSlugs(),
+    findPublishedBlogSlugs(),
+  ]);
+
   const mainPages = [
     {
       url: baseUrl,
@@ -60,31 +65,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  // Service pages
-  const servicePages = services.map((service) => ({
-    url: `${baseUrl}/services/${service.slug}`,
+  const servicePages = serviceSlugs.map((slug) => ({
+    url: `${baseUrl}/services/${slug}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }));
 
-  // Project pages
-  const projectPages = projects.map((project) => ({
-    url: `${baseUrl}/projects/${project.slug}`,
+  const projectPages = projectSlugs.map((slug) => ({
+    url: `${baseUrl}/projects/${slug}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }));
 
-  // Blog pages
-  const blogPages = blogPosts.map((post) => ({
-    url: `${baseUrl}/blogs/${post.slug}`,
-    lastModified: new Date(post.updatedAt),
+  const blogPages = blogSlugs.map((slug) => ({
+    url: `${baseUrl}/blogs/${slug}`,
+    lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.6,
   }));
 
-  // Legal pages
   const legalPages = [
     {
       url: `${baseUrl}/privacy`,

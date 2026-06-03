@@ -2,9 +2,11 @@
 
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
-import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { technologySchema, type TechnologyInput } from "@/lib/validators/admin/technology"
+import { revalidatePaths } from "@/lib/revalidate"
+
+const PATHS = ["/", "/services"] as const
 
 async function requireAdmin() {
   const session = await auth()
@@ -14,25 +16,25 @@ async function requireAdmin() {
 export async function createTechnology(data: TechnologyInput) {
   await requireAdmin()
   await prisma.technology.create({ data: technologySchema.parse(data) })
-  revalidatePath("/")
+  revalidatePaths([...PATHS])
   redirect("/admin/technologies")
 }
 
 export async function updateTechnology(id: string, data: TechnologyInput) {
   await requireAdmin()
   await prisma.technology.update({ where: { id }, data: technologySchema.parse(data) })
-  revalidatePath("/")
+  revalidatePaths([...PATHS])
   redirect("/admin/technologies")
 }
 
 export async function deleteTechnology(id: string) {
   await requireAdmin()
   await prisma.technology.delete({ where: { id } })
-  revalidatePath("/")
+  revalidatePaths([...PATHS])
 }
 
 export async function toggleTechnologyPublished(id: string, value: boolean) {
   await requireAdmin()
   await prisma.technology.update({ where: { id }, data: { isPublished: value } })
-  revalidatePath("/")
+  revalidatePaths([...PATHS])
 }

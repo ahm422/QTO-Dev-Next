@@ -1,15 +1,12 @@
 import Link from "next/link";
 import { SiteLogo } from "@/components/common/SiteLogo";
-import { footerSections, socialLinks, siteConfig } from "@/data/site";
+import { footerSections, socialLinks } from "@/config/site";
+import { findSiteBranding } from "@/lib/cms/siteConfig";
 import { cn } from "@/components/theme/cn";
 
-const CONTACT = {
-  email: "hello@qtodev.com",
-  phone: "+1 (555) 010-1000",
-  locations: "USA • UK • Saudi Arabia • Pakistan",
-} as const;
-
-export function Footer() {
+export async function Footer() {
+  const branding = await findSiteBranding();
+  const contact = branding.contact;
   return (
     <footer
       className={cn(
@@ -26,7 +23,7 @@ export function Footer() {
               <SiteLogo width={140} height={36} className="h-9 w-auto object-contain" />
             </div>
             <p className="text-foreground-muted text-sm leading-relaxed max-w-sm">
-              {siteConfig.description}
+              {branding.description}
             </p>
             {/* Social links */}
             <div className="mt-6 flex flex-wrap gap-3">
@@ -51,16 +48,16 @@ export function Footer() {
             {/* Contact snippet */}
             <div className="mt-8 space-y-2 text-sm text-foreground-muted">
               <p>
-                <a href={`mailto:${CONTACT.email}`} className="hover:text-primary transition-colors">
-                  {CONTACT.email}
+                <a href={`mailto:${contact.email}`} className="hover:text-primary transition-colors">
+                  {contact.email}
                 </a>
               </p>
               <p>
-                <a href={`tel:${CONTACT.phone.replace(/\s/g, "")}`} className="hover:text-primary transition-colors">
-                  {CONTACT.phone}
+                <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="hover:text-primary transition-colors">
+                  {contact.phone}
                 </a>
               </p>
-              <p>{CONTACT.locations}</p>
+              <p>{contact.office}</p>
             </div>
           </div>
 
@@ -93,7 +90,7 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-border/80">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-foreground-muted text-sm order-2 sm:order-1">
-              &copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
+              &copy; {new Date().getFullYear()} {branding.name}. All rights reserved.
             </p>
             <nav className="flex flex-wrap gap-6 text-sm order-1 sm:order-2" aria-label="Legal">
               <Link href="/privacy" className="text-foreground-muted hover:text-primary transition-colors">

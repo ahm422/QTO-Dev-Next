@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { blogPostSchema, type BlogPostInput } from "@/lib/validators/admin/blogPost"
 import AdminForm from "@/components/admin/AdminForm"
@@ -17,11 +17,45 @@ import type { BlogPost } from "@prisma/client"
 
 function slugify(s: string) { return s.toLowerCase().trim().replace(/[^a-z0-9\s-]/g,"").replace(/\s+/g,"-").replace(/-+/g,"-") }
 
+function toFormValues(record: BlogPost): BlogPostInput {
+  return {
+    title: record.title,
+    slug: record.slug,
+    excerpt: record.excerpt,
+    content: record.content,
+    category: record.category,
+    tags: record.tags,
+    author: record.author,
+    imageUrl: record.imageUrl ?? "",
+    imageAlt: record.imageAlt ?? "",
+    readTime: record.readTime ?? undefined,
+    isFeatured: record.isFeatured,
+    isHeadline: record.isHeadline,
+    isPublished: record.isPublished,
+  }
+}
+
+const emptyDefaults: BlogPostInput = {
+  title: "",
+  slug: "",
+  excerpt: "",
+  content: "",
+  category: "",
+  tags: [],
+  author: "QTO DEV Team",
+  imageUrl: "",
+  imageAlt: "",
+  readTime: undefined,
+  isFeatured: false,
+  isHeadline: false,
+  isPublished: false,
+}
+
 export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPost }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<BlogPostInput>({
-    resolver: zodResolver(blogPostSchema),
-    defaultValues: defaultValues ?? { title: "", slug: "", excerpt: "", content: "", category: "", tags: [], author: "QTO DEV Team", imageUrl: "", imageAlt: "", readTime: undefined, isFeatured: false, isHeadline: false, isPublished: false },
+    resolver: formResolver(blogPostSchema),
+    defaultValues: defaultValues ? toFormValues(defaultValues) : emptyDefaults,
   })
   const { isSubmitting } = form.formState
 

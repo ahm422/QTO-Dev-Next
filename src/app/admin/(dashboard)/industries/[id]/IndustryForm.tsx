@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { industrySchema, type IndustryInput } from "@/lib/validators/admin/industry"
 import AdminForm from "@/components/admin/AdminForm"
@@ -18,7 +18,7 @@ function slugify(s: string) { return s.toLowerCase().trim().replace(/[^a-z0-9\s-
 export default function IndustryForm({ defaultValues }: { defaultValues?: Industry }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<IndustryInput>({
-    resolver: zodResolver(industrySchema),
+    resolver: formResolver(industrySchema),
     defaultValues: defaultValues ?? { name: "", slug: "", description: "", icon: "", bulletPoints: [], order: 0, isPublished: false },
   })
   const { isSubmitting } = form.formState

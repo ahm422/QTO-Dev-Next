@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { processStepSchema, type ProcessStepInput } from "@/lib/validators/admin/processStep"
 import AdminForm from "@/components/admin/AdminForm"
@@ -16,7 +16,7 @@ import type { ProcessStep } from "@prisma/client"
 export default function ProcessStepForm({ defaultValues }: { defaultValues?: ProcessStep }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<ProcessStepInput>({
-    resolver: zodResolver(processStepSchema),
+    resolver: formResolver(processStepSchema),
     defaultValues: defaultValues ?? { context: "how-we-work", stepNumber: 1, title: "", description: "", icon: "", order: 0, isPublished: false },
   })
   const { isSubmitting } = form.formState

@@ -1,12 +1,19 @@
 import { BlogPost } from '@/types/blog';
-import { blogPosts } from '@/data/blog';
+import { findAllPublishedBlogPosts, findBlogPostBySlug } from '@/lib/cms/blog';
+
+async function getSortedPosts(): Promise<BlogPost[]> {
+  const posts = await findAllPublishedBlogPosts();
+  return [...posts].sort(
+    (a, b) =>
+      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+  );
+}
 
 /**
  * Get a blog post by slug
  */
 export async function getBlogBySlug(slug: string): Promise<BlogPost | null> {
-  const post = blogPosts.find((p) => p.slug === slug);
-  return post || null;
+  return findBlogPostBySlug(slug);
 }
 
 /**
@@ -17,12 +24,9 @@ export async function getRelatedBlogPosts(
   excludeSlug: string,
   limit: number = 3
 ): Promise<BlogPost[]> {
+  const blogPosts = await getSortedPosts();
   return blogPosts
     .filter((p) => p.category === category && p.slug !== excludeSlug)
-    .sort(
-      (a, b) =>
-        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-    )
     .slice(0, limit);
 }
 
@@ -30,17 +34,14 @@ export async function getRelatedBlogPosts(
  * Get all blog posts sorted by date
  */
 export async function getAllBlogPosts(): Promise<BlogPost[]> {
-  return [...blogPosts].sort(
-    (a, b) =>
-      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-  );
+  return getSortedPosts();
 }
 
 /**
  * Get latest blog posts (first N by date, for Insights "Latest Posts")
  */
 export async function getLatestBlogPosts(limit: number): Promise<BlogPost[]> {
-  const sorted = await getAllBlogPosts();
+  const sorted = await getSortedPosts();
   return sorted.slice(0, limit);
 }
 
@@ -51,7 +52,7 @@ export async function getHeadlineBlogPosts(
   limit: number,
   skipCount: number = 2
 ): Promise<BlogPost[]> {
-  const sorted = await getAllBlogPosts();
+  const sorted = await getSortedPosts();
   return sorted.slice(skipCount, skipCount + limit);
 }
 
@@ -60,6 +61,7 @@ export async function getHeadlineBlogPosts(
  */
 export async function searchBlogPosts(query: string): Promise<BlogPost[]> {
   const lowerQuery = query.toLowerCase();
+  const blogPosts = await getSortedPosts();
   return blogPosts.filter(
     (p) =>
       p.title.toLowerCase().includes(lowerQuery) ||
@@ -72,9 +74,8 @@ export async function searchBlogPosts(query: string): Promise<BlogPost[]> {
  * Get featured blog posts
  */
 export async function getFeaturedBlogPosts(limit: number = 3): Promise<BlogPost[]> {
-  return blogPosts
-    .filter((p) => p.featured)
-    .slice(0, limit);
+  const blogPosts = await getSortedPosts();
+  return blogPosts.filter((p) => p.featured).slice(0, limit);
 }
 
 /**
@@ -84,7 +85,7 @@ export async function getBlogPostsByCategory(
   category: string,
   limit?: number
 ): Promise<BlogPost[]> {
-  let results = blogPosts.filter((p) => p.category === category);
+  let results = (await getSortedPosts()).filter((p) => p.category === category);
   if (limit) {
     results = results.slice(0, limit);
   }
@@ -95,6 +96,7 @@ export async function getBlogPostsByCategory(
  * Get all unique categories
  */
 export async function getAllCategories(): Promise<string[]> {
+  const blogPosts = await getSortedPosts();
   const categories = new Set(blogPosts.map((p) => p.category));
   return Array.from(categories).sort();
 }
@@ -103,6 +105,7 @@ export async function getAllCategories(): Promise<string[]> {
  * Get all unique tags
  */
 export async function getAllTags(): Promise<string[]> {
+  const blogPosts = await getSortedPosts();
   const tags = new Set<string>();
   blogPosts.forEach((p) => p.tags.forEach((tag) => tags.add(tag)));
   return Array.from(tags).sort();

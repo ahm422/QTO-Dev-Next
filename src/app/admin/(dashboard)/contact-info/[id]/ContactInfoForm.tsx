@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { contactInfoSchema, type ContactInfoInput } from "@/lib/validators/admin/contactInfo"
 import AdminForm from "@/components/admin/AdminForm"
@@ -15,7 +15,7 @@ import type { ContactInfo } from "@prisma/client"
 export default function ContactInfoForm({ defaultValues }: { defaultValues?: ContactInfo }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<ContactInfoInput>({
-    resolver: zodResolver(contactInfoSchema),
+    resolver: formResolver(contactInfoSchema),
     defaultValues: defaultValues ?? { type: "", label: "", value: "", subLabel: "", icon: "", order: 0, isPublished: false },
   })
   const { isSubmitting } = form.formState

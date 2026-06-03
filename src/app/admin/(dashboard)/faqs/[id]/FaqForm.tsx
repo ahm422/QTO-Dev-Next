@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { faqSchema, type FaqInput } from "@/lib/validators/admin/faq"
 import AdminForm from "@/components/admin/AdminForm"
@@ -16,7 +16,7 @@ import type { Faq } from "@prisma/client"
 export default function FaqForm({ defaultValues }: { defaultValues?: Faq }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<FaqInput>({
-    resolver: zodResolver(faqSchema),
+    resolver: formResolver(faqSchema),
     defaultValues: defaultValues ?? { question: "", answer: "", context: "homepage", order: 0, isPublished: false },
   })
   const { isSubmitting } = form.formState

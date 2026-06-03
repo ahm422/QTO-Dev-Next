@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { whyChooseUsSchema, type WhyChooseUsInput } from "@/lib/validators/admin/whyChooseUs"
 import AdminForm from "@/components/admin/AdminForm"
@@ -16,7 +16,7 @@ import type { WhyChooseUs } from "@prisma/client"
 export default function WhyChooseUsForm({ defaultValues }: { defaultValues?: WhyChooseUs }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<WhyChooseUsInput>({
-    resolver: zodResolver(whyChooseUsSchema),
+    resolver: formResolver(whyChooseUsSchema),
     defaultValues: defaultValues ?? { context: "homepage", title: "", description: "", icon: "", order: 0, isPublished: false },
   })
   const { isSubmitting } = form.formState

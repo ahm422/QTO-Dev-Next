@@ -2,9 +2,11 @@
 
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
-import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { teamMemberSchema, type TeamMemberInput } from "@/lib/validators/admin/teamMember"
+import { revalidatePaths } from "@/lib/revalidate"
+
+const PATHS = ["/", "/about"] as const
 
 async function requireAdmin() {
   const session = await auth()
@@ -14,25 +16,25 @@ async function requireAdmin() {
 export async function createTeamMember(data: TeamMemberInput) {
   await requireAdmin()
   await prisma.teamMember.create({ data: teamMemberSchema.parse(data) })
-  revalidatePath("/")
+  revalidatePaths([...PATHS])
   redirect("/admin/team")
 }
 
 export async function updateTeamMember(id: string, data: TeamMemberInput) {
   await requireAdmin()
   await prisma.teamMember.update({ where: { id }, data: teamMemberSchema.parse(data) })
-  revalidatePath("/")
+  revalidatePaths([...PATHS])
   redirect("/admin/team")
 }
 
 export async function deleteTeamMember(id: string) {
   await requireAdmin()
   await prisma.teamMember.delete({ where: { id } })
-  revalidatePath("/")
+  revalidatePaths([...PATHS])
 }
 
 export async function toggleTeamMemberPublished(id: string, value: boolean) {
   await requireAdmin()
   await prisma.teamMember.update({ where: { id }, data: { isPublished: value } })
-  revalidatePath("/")
+  revalidatePaths([...PATHS])
 }

@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { projectSchema, type ProjectInput } from "@/lib/validators/admin/project"
 import AdminForm from "@/components/admin/AdminForm"
@@ -19,7 +19,7 @@ function slugify(s: string) { return s.toLowerCase().trim().replace(/[^a-z0-9\s-
 export default function ProjectForm({ defaultValues }: { defaultValues?: Project }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<ProjectInput>({
-    resolver: zodResolver(projectSchema),
+    resolver: formResolver(projectSchema),
     defaultValues: defaultValues
       ? { ...defaultValues, completedAt: defaultValues.completedAt?.toISOString().split("T")[0] ?? "" }
       : { title: "", slug: "", client: "", category: "", tags: [], excerpt: "", description: "", challenge: "", solution: "", results: [], coverImageUrl: "", images: [], techStack: [], liveUrl: "", isFeatured: false, order: 0, isPublished: false, completedAt: "" },

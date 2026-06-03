@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { statSchema, type StatInput } from "@/lib/validators/admin/stat"
 import AdminForm from "@/components/admin/AdminForm"
@@ -15,7 +15,7 @@ import type { Stat } from "@prisma/client"
 export default function StatForm({ defaultValues }: { defaultValues?: Stat }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<StatInput>({
-    resolver: zodResolver(statSchema),
+    resolver: formResolver(statSchema),
     defaultValues: defaultValues ?? { label: "", value: "", description: "", icon: "", color: "", order: 0, isPublished: false },
   })
   const { isSubmitting } = form.formState

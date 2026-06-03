@@ -2,7 +2,7 @@ import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { StatsAreaChart, StatsBarChart } from "@/app/(qtodev)/sections/StatsNumbersCharts";
 import { statsNumbersConfig } from "@/config/statsNumbers";
-import { statsNumbersItems } from "@/data/statsNumbers";
+import { findPublishedStats } from "@/lib/cms/stats";
 import { cn } from "@/components/theme/cn";
 import type { StatsNumbersItem, StatsNumbersVariant } from "@/types/statsNumbers";
 import { Reveal } from "@/components/animations/Reveal";
@@ -122,7 +122,9 @@ function StatCard({ item }: { item: StatsNumbersItem }) {
   );
 }
 
-export function StatsNumbersSection() {
+export async function StatsNumbersSection() {
+  const statsNumbersItems = await findPublishedStats();
+  if (statsNumbersItems.length === 0) return null;
   const [projects, clientSat, countries, years] = statsNumbersItems;
 
   return (

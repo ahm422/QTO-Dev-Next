@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
   try {
     const item = await prisma.processStep.create({ data: parsed.data });
     revalidatePath("/");
+    revalidatePath("/services");
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/process-steps", e);

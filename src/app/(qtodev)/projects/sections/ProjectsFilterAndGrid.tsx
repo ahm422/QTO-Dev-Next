@@ -1,4 +1,4 @@
-import { projects } from "@/data/projects";
+import { findPublishedProjects } from "@/lib/cms/projects";
 import { projectsPageConfig } from "@/config/projectsPage";
 import { ProjectsFilterSection } from "./ProjectsFilterSection";
 import { ProjectsGridSection } from "./ProjectsGridSection";
@@ -11,7 +11,12 @@ function getCategories(projectsList: Project[]): string[] {
   return [allLabel, ...uniques];
 }
 
-export function ProjectsFilterAndGrid({ activeCategory }: { activeCategory?: string }) {
+export async function ProjectsFilterAndGrid({
+  activeCategory,
+}: {
+  activeCategory?: string;
+}) {
+  const projects = await findPublishedProjects();
   const categories = getCategories(projects);
   const normalizedActive =
     activeCategory && categories.includes(activeCategory) ? activeCategory : allLabel;

@@ -2,34 +2,11 @@ import { Container } from "@/components/common/Container";
 import { Card } from "@/components/ui/card";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
+import { findPublishedContactInfo } from "@/lib/cms/contactInfo";
 
-export function ContactDetailsSection() {
-  const contactMethods = [
-    {
-      icon: "envelope" as const,
-      title: "Email",
-      description: "hello@qtodev.com",
-      detail: "We'll respond within 24 hours",
-      href: "mailto:hello@qtodev.com",
-      external: false,
-    },
-    {
-      icon: "phone" as const,
-      title: "Phone",
-      description: "+1 (555) 123-4567",
-      detail: "Monday to Friday, 9am–5pm EST",
-      href: "tel:+15551234567",
-      external: false,
-    },
-    {
-      icon: "location-dot" as const,
-      title: "Office",
-      description: "123 Tech Street, San Francisco, CA 94105",
-      detail: "Visit us for a personal meeting",
-      href: "https://maps.google.com/?q=123+Tech+Street+San+Francisco+CA+94105",
-      external: true,
-    },
-  ];
+export async function ContactDetailsSection() {
+  const contactMethods = await findPublishedContactInfo();
+  if (contactMethods.length === 0) return null;
 
   return (
     <section className="border-t border-border bg-muted/25 py-20 dark:bg-muted/10">
@@ -48,61 +25,41 @@ export function ContactDetailsSection() {
           {contactMethods.map((method) => {
             const body = (
               <>
-                <div
-                  className={cn(
-                    "mb-5 flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl",
-                    "bg-primary/12 text-primary shadow-inner shadow-primary/5",
-                    "ring-1 ring-primary/20 transition-[transform,background-color,box-shadow] duration-300",
-                    "group-hover:bg-primary/18 group-hover:ring-primary/35"
-                  )}
-                  aria-hidden
-                >
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <AppIcon name={method.icon} size="lg" />
                 </div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                <h3 className="font-heading text-lg font-semibold text-foreground">
                   {method.title}
-                </p>
-                <p className="mt-3 text-lg font-semibold leading-snug text-foreground">
+                </h3>
+                <p className="mt-2 text-base font-medium text-foreground">
                   {method.description}
                 </p>
-                <p className="mt-2 text-sm leading-relaxed text-foreground-muted">
-                  {method.detail}
-                </p>
+                <p className="mt-1 text-sm text-foreground-muted">{method.detail}</p>
               </>
             );
 
+            const cardClass = cn(
+              "flex h-full flex-col rounded-2xl border border-border bg-surface p-6 md:p-8",
+              "shadow-sm transition-all duration-300 hover:border-primary/30 hover:shadow-md"
+            );
+
+            if (method.href) {
+              return (
+                <a
+                  key={method.title}
+                  href={method.href}
+                  target={method.external ? "_blank" : undefined}
+                  rel={method.external ? "noopener noreferrer" : undefined}
+                  className={cn(cardClass, "group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary")}
+                >
+                  <Card className="h-full border-0 bg-transparent p-0 shadow-none">{body}</Card>
+                </a>
+              );
+            }
+
             return (
-              <Card
-                key={method.title}
-                className={cn(
-                  "group relative h-full gap-0 overflow-hidden border-border/80 p-8 py-8",
-                  "bg-card/80 shadow-sm backdrop-blur-sm",
-                  "transition-all duration-300 ease-out",
-                  "hover:-translate-y-1 hover:border-primary/40",
-                  "hover:shadow-lg hover:shadow-primary/[0.07]",
-                  "focus-within:border-primary/45 focus-within:ring-2 focus-within:ring-primary/20"
-                )}
-              >
-                {method.href ? (
-                  <a
-                    href={method.href}
-                    {...(method.external
-                      ? { target: "_blank", rel: "noopener noreferrer" }
-                      : {})}
-                    className={cn(
-                      "flex flex-col items-center text-center no-underline outline-none",
-                      "after:absolute after:inset-0 after:rounded-xl after:content-['']"
-                    )}
-                  >
-                    <span className="relative z-[1] flex flex-col items-center">
-                      {body}
-                    </span>
-                  </a>
-                ) : (
-                  <div className="flex flex-col items-center text-center">
-                    {body}
-                  </div>
-                )}
+              <Card key={method.title} className={cardClass}>
+                {body}
               </Card>
             );
           })}

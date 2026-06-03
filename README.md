@@ -99,7 +99,7 @@ npm run prisma:migrate:dev -- --name init
    npx tsx scripts/verify-seed-counts.ts
    ```
 
-   Re-running `npx prisma db seed` is idempotent (upserts by slug/section keys). Marketing pages still read `src/data/*` until the public read layer is wired. Do not auto-seed production.
+   Re-running `npx prisma db seed` is idempotent (upserts by slug/section keys). **Phase 7:** public marketing routes read CMS content via Prisma in Server Components (`src/lib/cms/*`), with ISR (`revalidate = 3600` on `(qtodev)` layout) and `revalidatePath` on admin writes. `src/data/*` remains for seed scripts only. Do not auto-seed production.
 
 6. Optional connectivity smoke test:
 

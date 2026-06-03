@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getServiceBySlug } from "@/content/services";
-import { services } from "@/data/services";
+import { findPublishedServiceSlugs } from "@/lib/cms/services";
 import { HeroBanner } from "./components/HeroBanner";
 import { OverviewSection } from "./components/OverviewSection";
 import { ProcessTimeline } from "./components/ProcessTimeline";
@@ -40,8 +40,9 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-export function generateStaticParams() {
-  return services.map((s) => ({ slug: s.slug }));
+export async function generateStaticParams() {
+  const slugs = await findPublishedServiceSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export default async function ServiceOfferingPage({ params }: PageProps) {
