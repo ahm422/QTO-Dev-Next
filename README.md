@@ -159,6 +159,8 @@ Copy from `.env.example` / `.dev.vars.example` into the Cloudflare dashboard (Pr
 
 CLI alternative for secrets: `wrangler secret put SUPABASE_SERVICE_ROLE_KEY` (repeat per secret).
 
+**Admin CMS sign-in:** see [docs/admin-auth.md](docs/admin-auth.md) for Supabase Auth setup, creating the first admin user (`user_metadata.role: "admin"`), and local smoke tests.
+
 ### Local development
 
 **Next.js dev server** (default):
