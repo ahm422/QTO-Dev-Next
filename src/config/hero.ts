@@ -1,10 +1,10 @@
 /**
- * Homepage hero copy and CTAs (issue #175).
- * Edit here to change badge, headline, body, buttons, and trusted-by placeholders.
+ * Homepage hero copy and CTAs (issue #175, #201).
+ * Edit here to change badge, headline, body, buttons, trusted-by, and terminal lines.
  */
 
 export const heroConfig = {
-  badge: "NEXT-GEN ENGINEERING",
+  badge: "Next-Gen Software Engineering",
 
   /** White portion of the H1 */
   heading: "Architecting",
@@ -19,6 +19,12 @@ export const heroConfig = {
   ctaSecondary: "Explore Capabilities",
   ctaSecondaryHref: "/services",
 
-  trustedByLabel: "TRUSTED BY INNOVATIVE TEAMS",
-  trustedByLogos: ["TECHCORP", "NEXUS", "SYNAPSE", "AERIS"] as const,
+  trustedByLabel: "TRUSTED BY",
+
+  terminalLines: [
+    "> Initializing core systems...",
+    "> Loading modules: React, Node.js, AWS...",
+    "> Compiling assets [OK]",
+    "> Server running on port 3000",
+  ],
 } as const;

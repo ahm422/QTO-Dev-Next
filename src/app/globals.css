@@ -199,20 +199,25 @@ h6 {
 /* Homepage hero: grid overlay on black (issue #175) */
 .hero-grid-bg {
   background-image:
-    linear-gradient(to right, rgb(255 255 255 / 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(to right, rgb(255 255 255 / 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.025) 1px, transparent 1px),
     linear-gradient(to right, #1a1a1a 1px, transparent 1px),
     linear-gradient(to bottom, #1a1a1a 1px, transparent 1px);
   background-size: 28px 28px, 28px 28px, 28px 28px, 28px 28px;
   mask-image: radial-gradient(ellipse 85% 75% at 50% 45%, black 20%, transparent 100%);
 }
 
+/* Homepage hero: warm brown-to-black radial background (issue #201) */
+.hero-warm-bg {
+  background: radial-gradient(ellipse 120% 100% at 60% 50%, #1a0f00 0%, #0d0700 40%, #000000 100%);
+}
+
 /* Homepage hero: orange radial glow behind mockup / headline */
 .hero-glow-mobile {
   background: radial-gradient(
     ellipse 85% 65% at 50% 28%,
-    color-mix(in srgb, var(--theme-primary) 28%, transparent),
-    color-mix(in srgb, var(--theme-primary) 8%, transparent) 45%,
+    color-mix(in srgb, var(--theme-primary) 35%, transparent),
+    color-mix(in srgb, var(--theme-primary) 12%, transparent) 45%,
     transparent 72%
   );
 }
@@ -220,8 +225,8 @@ h6 {
 .hero-glow-desktop {
   background: radial-gradient(
     ellipse 80% 75% at 72% 48%,
-    color-mix(in srgb, var(--theme-primary) 32%, transparent),
-    color-mix(in srgb, var(--theme-primary) 10%, transparent) 50%,
+    color-mix(in srgb, var(--theme-primary) 38%, transparent),
+    color-mix(in srgb, var(--theme-primary) 14%, transparent) 50%,
     transparent 75%
   );
 }
@@ -344,6 +349,39 @@ h6 {
 
   .hero-chart-bar {
     animation: hero-chart-bar 2.4s ease-in-out infinite;
+  }
+}
+
+/* Homepage hero: terminal mockup animations (issue #201) */
+@keyframes hero-terminal-line {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-terminal-cursor {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-terminal-line {
+    opacity: 0;
+    animation: hero-terminal-line 0.35s ease-out forwards;
+  }
+
+  .hero-terminal-cursor {
+    animation: hero-terminal-cursor 1s step-end infinite;
   }
 }
 

@@ -20,7 +20,13 @@ export function HeroHeading({ className }: Readonly<HeroHeadingProps>) {
   return (
     <h1 className={headingClasses}>
       <span>{heading} </span>
-      <span className="bg-gradient-to-r from-primary to-[#ffb347] bg-clip-text text-transparent">
+      <span
+        className="text-primary"
+        style={{
+          textShadow:
+            "0 0 28px rgba(244, 139, 34, 0.5), 0 0 8px rgba(244, 139, 34, 0.3)",
+        }}
+      >
         {headingHighlight}
       </span>
     </h1>

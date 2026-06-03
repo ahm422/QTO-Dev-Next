@@ -2,8 +2,9 @@
 
 import { useCallback, useRef } from "react";
 import Link from "next/link";
+import { SiDocker, SiJavascript, SiReact, SiTypescript } from "@icons-pack/react-simple-icons";
 import { Container } from "@/components/common/Container";
-import { HeroDashboardMockup } from "@/components/hero/HeroDashboardMockup";
+import { HeroTerminalMockup } from "@/components/hero/HeroTerminalMockup";
 import { HeroHeading } from "@/components/hero/HeroHeading";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,7 @@ export function HeroSection() {
     ctaSecondary,
     ctaSecondaryHref,
     trustedByLabel,
-    trustedByLogos,
+    terminalLines,
   } = heroConfig;
 
   const handlePointerMove = useCallback(
@@ -43,9 +44,9 @@ export function HeroSection() {
       ref={sectionRef}
       aria-label="Introduction"
       onPointerMove={handlePointerMove}
-      className="relative min-h-[100dvh] overflow-hidden bg-black text-white [--hero-pointer-x:70%] [--hero-pointer-y:50%]"
+      className="hero-warm-bg relative min-h-[100dvh] overflow-hidden text-white [--hero-pointer-x:70%] [--hero-pointer-y:50%]"
     >
-      {/* Vignette + grid */}
+      {/* Subtle grid overlay */}
       <div className="hero-grid-bg pointer-events-none absolute inset-0 z-0" aria-hidden />
       <div
         className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,transparent_40%,rgba(0,0,0,0.65)_100%)]"
@@ -65,8 +66,8 @@ export function HeroSection() {
             {/* Badge */}
             <div
               className={cn(
-                "mb-8 inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 backdrop-blur-sm",
-                "transition-colors duration-300 hover:border-primary/30 hover:bg-white/[0.08]",
+                "mb-8 inline-flex items-center gap-2.5 rounded-full border border-primary/40 bg-white/[0.06] px-4 py-2 backdrop-blur-sm",
+                "transition-colors duration-300 hover:border-primary/60 hover:bg-white/[0.08]",
                 !reducedMotion && "animate-hero-content-fade animation-fill-backwards"
               )}
             >
@@ -77,7 +78,7 @@ export function HeroSection() {
                 )}
                 aria-hidden
               />
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/75 sm:text-sm">
+              <span className="text-xs font-semibold text-primary/90 sm:text-sm">
                 {badge}
               </span>
             </div>
@@ -117,8 +118,9 @@ export function HeroSection() {
                   asChild
                   size="lg"
                   className={cn(
-                    "h-12 w-full rounded-lg text-base font-semibold text-white shadow-lg shadow-primary/25",
-                    "transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/35 active:scale-[0.98]",
+                    "h-12 w-full rounded-full px-8 text-base font-semibold text-white",
+                    "shadow-[0_0_20px_rgba(244,139,34,0.35)] transition-all duration-300",
+                    "hover:shadow-[0_0_32px_rgba(244,139,34,0.55)] active:scale-[0.98]",
                     "lg:w-auto lg:min-w-[11rem]"
                   )}
                 >
@@ -127,7 +129,7 @@ export function HeroSection() {
               ) : (
                 <Button
                   size="lg"
-                  className="h-12 w-full rounded-lg text-base font-semibold text-white lg:w-auto"
+                  className="h-12 w-full rounded-full px-8 text-base font-semibold text-white lg:w-auto"
                 >
                   {ctaPrimary}
                 </Button>
@@ -138,7 +140,7 @@ export function HeroSection() {
                   variant="outline"
                   size="lg"
                   className={cn(
-                    "group/cta h-12 w-full rounded-lg border-white/25 bg-white/[0.03] text-base text-white backdrop-blur-sm",
+                    "group/cta h-12 w-full rounded-full border-white/25 bg-white/[0.03] px-8 text-base text-white backdrop-blur-sm",
                     "transition-all duration-300 hover:border-white/40 hover:bg-white/10 hover:text-white",
                     "lg:w-auto lg:min-w-[12rem]"
                   )}
@@ -156,7 +158,7 @@ export function HeroSection() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="h-12 w-full border-white/25 text-white lg:w-auto"
+                  className="h-12 w-full rounded-full border-white/25 px-8 text-white lg:w-auto"
                 >
                   {ctaSecondary}
                   <AppIcon name="arrow-right" size="sm" className="shrink-0" />
@@ -175,23 +177,29 @@ export function HeroSection() {
               <p className="mb-5 text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-white/45 sm:text-xs">
                 {trustedByLabel}
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 sm:gap-x-10 lg:justify-start">
-                {trustedByLogos.map((logo, index) => (
-                  <span
-                    key={logo}
+              <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 lg:justify-start">
+                {(
+                  [
+                    { Icon: SiReact, label: "React" },
+                    { Icon: SiTypescript, label: "TypeScript" },
+                    { Icon: SiJavascript, label: "JavaScript" },
+                    { Icon: SiDocker, label: "Docker", hideSmall: true },
+                  ] as const
+                ).map(({ Icon, label, hideSmall }) => (
+                  <Icon
+                    key={label}
+                    title={label}
                     className={cn(
-                      "text-sm font-bold uppercase tracking-wider text-white/35 transition-colors duration-300 hover:text-white/60 sm:text-base",
-                      index === 3 && "max-[380px]:hidden"
+                      "size-7 text-white opacity-40 transition-opacity duration-300 hover:opacity-70",
+                      hideSmall && "max-[380px]:hidden"
                     )}
-                  >
-                    {logo}
-                  </span>
+                  />
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Right column: dashboard mockup */}
+          {/* Right column: terminal mockup */}
           <div
             className={cn(
               "order-last w-full lg:order-none",
@@ -199,7 +207,10 @@ export function HeroSection() {
                 "animate-hero-content-fade animation-delay-300 animation-fill-backwards"
             )}
           >
-            <HeroDashboardMockup className="lg:translate-x-2 xl:translate-x-4" />
+            <HeroTerminalMockup
+              lines={terminalLines}
+              className="lg:translate-x-2 xl:translate-x-4"
+            />
           </div>
         </div>
       </Container>
