@@ -34,7 +34,7 @@ export default function FaqForm({ defaultValues }: { defaultValues?: Faq }) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/faqs">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="context" render={({ field }) => (
               <FormItem><FormLabel>Context</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />

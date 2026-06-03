@@ -36,7 +36,7 @@ export default function IndustryForm({ defaultValues }: { defaultValues?: Indust
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/industries">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="name" render={({ field }) => (
               <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} onChange={(e) => { field.onChange(e); if (!isEdit) form.setValue("slug", slugify(e.target.value)) }} /></FormControl><FormMessage /></FormItem>
             )} />
@@ -47,7 +47,7 @@ export default function IndustryForm({ defaultValues }: { defaultValues?: Indust
           <FormField control={form.control} name="description" render={({ field }) => (
             <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>
           )} />
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="icon" render={({ field }) => (
               <FormItem><FormLabel>Icon</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />

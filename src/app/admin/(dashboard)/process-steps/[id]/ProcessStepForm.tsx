@@ -34,7 +34,7 @@ export default function ProcessStepForm({ defaultValues }: { defaultValues?: Pro
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/process-steps">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="context" render={({ field }) => (
               <FormItem><FormLabel>Context</FormLabel><FormControl><Input {...field} placeholder="how-we-work" /></FormControl><FormMessage /></FormItem>
             )} />
@@ -48,7 +48,7 @@ export default function ProcessStepForm({ defaultValues }: { defaultValues?: Pro
           <FormField control={form.control} name="description" render={({ field }) => (
             <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>
           )} />
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="icon" render={({ field }) => (
               <FormItem><FormLabel>Icon key</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />

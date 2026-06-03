@@ -33,7 +33,7 @@ export default function ContactInfoForm({ defaultValues }: { defaultValues?: Con
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/contact-info">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="type" render={({ field }) => (
               <FormItem><FormLabel>Type</FormLabel><FormControl><Input {...field} placeholder="email, phone, address…" /></FormControl><FormMessage /></FormItem>
             )} />
@@ -41,7 +41,7 @@ export default function ContactInfoForm({ defaultValues }: { defaultValues?: Con
               <FormItem><FormLabel>Icon key</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="label" render={({ field }) => (
               <FormItem><FormLabel>Label</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />

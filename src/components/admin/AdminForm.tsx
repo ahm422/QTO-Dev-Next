@@ -25,7 +25,7 @@ export default function AdminForm({ children, isSubmitting, cancelHref }: AdminF
   return (
     <Card>
       <CardContent className="pt-6 space-y-6">{children}</CardContent>
-      <CardFooter className="flex justify-end gap-3 border-t border-border pt-6">
+      <CardFooter className="flex flex-col-reverse gap-3 border-t border-border pt-6 sm:flex-row sm:justify-end">
         <Button type="button" variant="outline" onClick={handleCancel} disabled={isSubmitting}>
           Cancel
         </Button>

@@ -14,7 +14,7 @@ export default async function SiteConfigPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div><h2 className="text-lg font-semibold">Site Config</h2><p className="text-sm text-muted-foreground">{rows.length} entries</p></div>
         <Button asChild size="sm"><Link href="/admin/site-config/new"><Plus className="h-4 w-4 mr-1" />Add entry</Link></Button>
       </div>

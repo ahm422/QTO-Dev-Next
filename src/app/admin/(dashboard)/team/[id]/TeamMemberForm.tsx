@@ -35,7 +35,7 @@ export default function TeamMemberForm({ defaultValues }: { defaultValues?: Team
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/team">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="name" render={({ field }) => (
               <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
@@ -49,7 +49,7 @@ export default function TeamMemberForm({ defaultValues }: { defaultValues?: Team
           <FormField control={form.control} name="avatarUrl" render={({ field }) => (
             <FormItem><FormControl><MediaUpload value={field.value ?? ""} onChange={field.onChange} label="Avatar" /></FormControl><FormMessage /></FormItem>
           )} />
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="linkedIn" render={({ field }) => (
               <FormItem><FormLabel>LinkedIn URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
