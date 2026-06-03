@@ -72,7 +72,7 @@ export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPo
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/blog">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="title" render={({ field }) => (
               <FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} onChange={(e) => { field.onChange(e); if (!isEdit) form.setValue("slug", slugify(e.target.value)) }} /></FormControl><FormMessage /></FormItem>
             )} />
@@ -91,7 +91,7 @@ export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPo
               <FormMessage />
             </FormItem>
           )} />
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <FormField control={form.control} name="category" render={({ field }) => (
               <FormItem><FormLabel>Category</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />

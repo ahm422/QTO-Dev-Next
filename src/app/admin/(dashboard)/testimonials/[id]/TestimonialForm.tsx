@@ -37,7 +37,7 @@ export default function TestimonialForm({ defaultValues }: { defaultValues?: Tes
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/testimonials">
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <FormField control={form.control} name="clientName" render={({ field }) => (
               <FormItem><FormLabel>Client name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
@@ -71,7 +71,7 @@ export default function TestimonialForm({ defaultValues }: { defaultValues?: Tes
           <FormField control={form.control} name="avatarUrl" render={({ field }) => (
             <FormItem><FormControl><MediaUpload value={field.value ?? ""} onChange={field.onChange} label="Avatar" /></FormControl><FormMessage /></FormItem>
           )} />
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <FormField control={form.control} name="rating" render={({ field }) => (
               <FormItem><FormLabel>Rating (1–5)</FormLabel><FormControl><Input {...field} type="number" min={1} max={5} /></FormControl><FormMessage /></FormItem>
             )} />

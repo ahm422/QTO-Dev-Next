@@ -34,7 +34,7 @@ export default function EngagementModelForm({ defaultValues }: { defaultValues?:
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/engagement-models">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="number" render={({ field }) => (
               <FormItem><FormLabel>Number</FormLabel><FormControl><Input {...field} type="number" /></FormControl><FormMessage /></FormItem>
             )} />
@@ -51,7 +51,7 @@ export default function EngagementModelForm({ defaultValues }: { defaultValues?:
           <FormField control={form.control} name="features" render={({ field }) => (
             <FormItem><FormLabel>Features (one per line)</FormLabel><FormControl><Textarea value={field.value.join("\n")} onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))} rows={4} /></FormControl><FormMessage /></FormItem>
           )} />
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="ctaLabel" render={({ field }) => (
               <FormItem><FormLabel>CTA label</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />

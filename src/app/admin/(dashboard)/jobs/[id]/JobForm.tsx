@@ -37,7 +37,7 @@ export default function JobForm({ defaultValues }: { defaultValues?: Job }) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/jobs">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="title" render={({ field }) => (
               <FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
@@ -45,7 +45,7 @@ export default function JobForm({ defaultValues }: { defaultValues?: Job }) {
               <FormItem><FormLabel>Department</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
           </div>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <FormField control={form.control} name="location" render={({ field }) => (
               <FormItem><FormLabel>Location</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
@@ -65,7 +65,7 @@ export default function JobForm({ defaultValues }: { defaultValues?: Job }) {
           <FormField control={form.control} name="niceToHave" render={({ field }) => (
             <FormItem><FormLabel>Nice to have (one per line)</FormLabel><FormControl><Textarea value={field.value.join("\n")} onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))} rows={3} /></FormControl><FormMessage /></FormItem>
           )} />
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <FormField control={form.control} name="applyUrl" render={({ field }) => (
               <FormItem><FormLabel>Apply URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />

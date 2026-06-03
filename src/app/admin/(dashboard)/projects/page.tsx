@@ -12,7 +12,7 @@ export default async function ProjectsPage() {
   const rows = await prisma.project.findMany({ orderBy: { order: "asc" } })
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div><h2 className="text-lg font-semibold">Projects</h2><p className="text-sm text-muted-foreground">{rows.length} total</p></div>
         <Button asChild size="sm"><Link href="/admin/projects/new"><Plus className="h-4 w-4 mr-1" />Add project</Link></Button>
       </div>

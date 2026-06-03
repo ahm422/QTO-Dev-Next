@@ -31,7 +31,7 @@ export default function SiteConfigForm({ defaultValues, keyParam }: { defaultVal
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/site-config">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="key" render={({ field }) => (
               <FormItem><FormLabel>Key</FormLabel><FormControl><Input {...field} disabled={!!defaultValues} /></FormControl><FormMessage /></FormItem>
             )} />

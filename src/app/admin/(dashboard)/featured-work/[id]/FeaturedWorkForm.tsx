@@ -50,7 +50,7 @@ export default function FeaturedWorkForm({ defaultValues }: { defaultValues?: Fe
           <FormField control={form.control} name="tags" render={({ field }) => (
             <FormItem><FormLabel>Tags (one per line)</FormLabel><FormControl><Textarea value={field.value.join("\n")} onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))} rows={3} /></FormControl><FormMessage /></FormItem>
           )} />
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="link" render={({ field }) => (
               <FormItem><FormLabel>Link</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />

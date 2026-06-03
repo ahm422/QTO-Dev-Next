@@ -92,7 +92,6 @@ export function LeadershipSectionClient({
                                   : "(min-width: 1024px) 260px, (min-width: 640px) 220px, 200px"
                               }
                               quality={95}
-                              unoptimized
                             />
                           ) : (
                             <div className="h-full w-full rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-semibold">

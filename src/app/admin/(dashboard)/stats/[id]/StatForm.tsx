@@ -33,7 +33,7 @@ export default function StatForm({ defaultValues }: { defaultValues?: Stat }) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/stats">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="label" render={({ field }) => (
               <FormItem><FormLabel>Label</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
@@ -44,7 +44,7 @@ export default function StatForm({ defaultValues }: { defaultValues?: Stat }) {
           <FormField control={form.control} name="description" render={({ field }) => (
             <FormItem><FormLabel>Description</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
           )} />
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <FormField control={form.control} name="icon" render={({ field }) => (
               <FormItem><FormLabel>Icon</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />

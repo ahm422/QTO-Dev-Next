@@ -39,7 +39,7 @@ export default function ProjectForm({ defaultValues }: { defaultValues?: Project
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/projects">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="title" render={({ field }) => (
               <FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} onChange={(e) => { field.onChange(e); if (!isEdit) form.setValue("slug", slugify(e.target.value)) }} /></FormControl><FormMessage /></FormItem>
             )} />
@@ -47,7 +47,7 @@ export default function ProjectForm({ defaultValues }: { defaultValues?: Project
               <FormItem><FormLabel>Slug</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
           </div>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <FormField control={form.control} name="client" render={({ field }) => (
               <FormItem><FormLabel>Client</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
@@ -82,7 +82,7 @@ export default function ProjectForm({ defaultValues }: { defaultValues?: Project
           <FormField control={form.control} name="coverImageUrl" render={({ field }) => (
             <FormItem><FormControl><MediaUpload value={field.value ?? ""} onChange={field.onChange} label="Cover image" /></FormControl><FormMessage /></FormItem>
           )} />
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="liveUrl" render={({ field }) => (
               <FormItem><FormLabel>Live URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />

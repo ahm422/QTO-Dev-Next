@@ -30,19 +30,35 @@ function garageImagePattern(): {
 
 const garagePattern = garageImagePattern();
 
+function garageCdnHostnamePattern(): {
+  protocol: "http" | "https";
+  hostname: string;
+} | null {
+  const hostname = process.env.GARAGE_CDN_HOSTNAME?.trim();
+  if (!hostname) return null;
+  return { protocol: "https", hostname };
+}
+
+const garageCdnPattern = garageCdnHostnamePattern();
+
+const remotePatterns = [
+  {
+    protocol: "https" as const,
+    hostname: "images.unsplash.com",
+  },
+  ...(garagePattern ? [garagePattern] : []),
+  ...(garageCdnPattern && garageCdnPattern.hostname !== garagePattern?.hostname
+    ? [garageCdnPattern]
+    : []),
+];
+
 const nextConfig: NextConfig = {
   typescript: {
     // Prisma nullable fields vs Zod form defaults in admin *Form.tsx (pre-Phase 7).
     ignoreBuildErrors: true,
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      },
-      ...(garagePattern ? [garagePattern] : []),
-    ],
+    remotePatterns,
   },
   // pg loads pg-cloudflare at runtime on Workers; ensure traced output includes workerd files.
   outputFileTracingIncludes: {

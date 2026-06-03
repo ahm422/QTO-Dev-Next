@@ -35,7 +35,7 @@ export default function TechnologyForm({ defaultValues }: { defaultValues?: Tech
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/technologies">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="name" render={({ field }) => (
               <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} onChange={(e) => { field.onChange(e); if (!isEdit) form.setValue("slug", slugify(e.target.value)) }} /></FormControl><FormMessage /></FormItem>
             )} />
@@ -43,7 +43,7 @@ export default function TechnologyForm({ defaultValues }: { defaultValues?: Tech
               <FormItem><FormLabel>Slug</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="iconKey" render={({ field }) => (
               <FormItem><FormLabel>Icon key</FormLabel><FormControl><Input {...field} placeholder="e.g. SiReact" /></FormControl><FormMessage /></FormItem>
             )} />

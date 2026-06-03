@@ -80,7 +80,7 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/services">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
               name="title"
@@ -146,7 +146,7 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
             )}
           />
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
               name="icon"
