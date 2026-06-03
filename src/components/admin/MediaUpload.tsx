@@ -1,17 +1,61 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef, useState, useCallback } from "react"
 import Image from "next/image"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { Upload, X } from "lucide-react"
+import { Upload, X, Play } from "lucide-react"
+import { cn } from "@/components/theme/cn"
 
 interface MediaUploadProps {
   value: string
   onChange: (url: string) => void
   accept?: string
   label?: string
+}
+
+function isVideoMime(mime: string | null): boolean {
+  return mime?.startsWith("video/") ?? false
+}
+
+function fileMatchesAccept(file: File, accept: string): boolean {
+  if (accept === "*/*" || !accept) return true
+  const parts = accept.split(",").map((p) => p.trim())
+  return parts.some((part) => {
+    if (part.endsWith("/*")) {
+      const prefix = part.slice(0, -1)
+      return file.type.startsWith(prefix)
+    }
+    return file.type === part || file.name.toLowerCase().endsWith(part.replace(/^\./, "."))
+  })
+}
+
+function putWithProgress(
+  url: string,
+  file: File,
+  onProgress: (percent: number) => void,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+    xhr.upload.addEventListener("progress", (e) => {
+      if (e.lengthComputable) {
+        onProgress(Math.round((e.loaded / e.total) * 100))
+      }
+    })
+    xhr.addEventListener("load", () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve()
+      } else {
+        reject(new Error("Storage upload failed"))
+      }
+    })
+    xhr.addEventListener("error", () => reject(new Error("Storage upload failed")))
+    xhr.addEventListener("abort", () => reject(new Error("Upload cancelled")))
+    xhr.open("PUT", url)
+    xhr.setRequestHeader("Content-Type", file.type)
+    xhr.send(file)
+  })
 }
 
 export default function MediaUpload({
@@ -21,47 +65,105 @@ export default function MediaUpload({
   label = "Upload media",
 }: MediaUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
   const [uploading, setUploading] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [dragOver, setDragOver] = useState(false)
+  const [uploadedMime, setUploadedMime] = useState<string | null>(null)
+  const [videoPlaying, setVideoPlaying] = useState(false)
 
-  async function handleFile(file: File) {
-    setUploading(true)
-    try {
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ filename: file.name, contentType: file.type }),
-      })
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}))
-        throw new Error(err.error ?? "Upload failed")
+  const processFile = useCallback(
+    async (file: File) => {
+      if (!fileMatchesAccept(file, accept)) {
+        toast.error("File type not allowed for this field")
+        return
       }
 
-      const { details } = await res.json()
-      const { presignedUrl, publicUrl } = details
+      setUploading(true)
+      setProgress(0)
+      setVideoPlaying(false)
 
-      const putRes = await fetch(presignedUrl, {
-        method: "PUT",
-        body: file,
-        headers: { "Content-Type": file.type },
-      })
+      try {
+        const res = await fetch("/api/admin/upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            filename: file.name,
+            contentType: file.type,
+            fileSize: file.size,
+          }),
+        })
 
-      if (!putRes.ok) throw new Error("Storage upload failed")
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}))
+          throw new Error(
+            typeof err.error === "string" ? err.error : "Upload failed",
+          )
+        }
 
-      onChange(publicUrl)
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Upload failed")
-    } finally {
-      setUploading(false)
-    }
-  }
+        const { details } = await res.json()
+        const { presignedUrl, url } = details as {
+          presignedUrl: string
+          url: string
+        }
+
+        await putWithProgress(presignedUrl, file, setProgress)
+        setUploadedMime(file.type)
+        onChange(url)
+      } catch (err) {
+        setProgress(0)
+        toast.error(err instanceof Error ? err.message : "Upload failed")
+      } finally {
+        setUploading(false)
+      }
+    },
+    [accept, onChange],
+  )
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
-    if (file) handleFile(file)
+    if (file) void processFile(file)
+    e.target.value = ""
   }
 
-  const isImage = value && !value.match(/\.(mp4|webm|ogg|mov)$/i)
+  function handleDragOver(e: React.DragEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragOver(true)
+  }
+
+  function handleDragLeave(e: React.DragEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragOver(false)
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragOver(false)
+    if (uploading) return
+    const file = e.dataTransfer.files?.[0]
+    if (file) void processFile(file)
+  }
+
+  const isVideo =
+    (value && isVideoMime(uploadedMime)) ||
+    (value && /\.(mp4|webm)$/i.test(value.split("?")[0] ?? ""))
+
+  function handleClear() {
+    onChange("")
+    setUploadedMime(null)
+    setVideoPlaying(false)
+    setProgress(0)
+  }
+
+  function handleVideoPlay() {
+    const el = videoRef.current
+    if (!el) return
+    setVideoPlaying(true)
+    void el.play()
+  }
 
   return (
     <div className="space-y-2">
@@ -69,7 +171,34 @@ export default function MediaUpload({
 
       {value ? (
         <div className="relative inline-block">
-          {isImage ? (
+          {isVideo ? (
+            <div className="relative w-60 h-40 rounded-md border border-border overflow-hidden bg-black">
+              <video
+                ref={videoRef}
+                src={value}
+                className="h-full w-full object-cover"
+                muted
+                playsInline
+                controls={videoPlaying}
+                onEnded={() => setVideoPlaying(false)}
+              />
+              {!videoPlaying && (
+                <button
+                  type="button"
+                  className={cn(
+                    "absolute inset-0 flex items-center justify-center",
+                    "bg-black/30 hover:bg-black/40 transition-colors",
+                  )}
+                  onClick={handleVideoPlay}
+                  aria-label="Play video preview"
+                >
+                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
+                    <Play className="h-6 w-6 ml-0.5" fill="currentColor" />
+                  </span>
+                </button>
+              )}
+            </div>
+          ) : (
             <Image
               src={value}
               alt="Uploaded media"
@@ -77,28 +206,52 @@ export default function MediaUpload({
               height={160}
               className="rounded-md object-cover border border-border"
             />
-          ) : (
-            <video src={value} className="rounded-md border border-border w-60 h-40 object-cover" controls />
           )}
           <Button
             type="button"
             variant="destructive"
             size="icon"
             className="absolute -top-2 -right-2 h-6 w-6"
-            onClick={() => onChange("")}
+            onClick={handleClear}
           >
             <X className="h-3 w-3" />
           </Button>
         </div>
       ) : (
         <div
-          className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted/40 p-8 cursor-pointer hover:bg-muted/60 transition-colors"
-          onClick={() => inputRef.current?.click()}
+          className={cn(
+            "flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 cursor-pointer transition-colors",
+            dragOver
+              ? "border-primary bg-primary/5"
+              : "border-border bg-muted/40 hover:bg-muted/60",
+          )}
+          onClick={() => !uploading && inputRef.current?.click()}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault()
+              inputRef.current?.click()
+            }
+          }}
         >
           <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-          <p className="text-sm text-muted-foreground">
-            {uploading ? "Uploading…" : "Click to upload"}
+          <p className="text-sm text-muted-foreground text-center">
+            {uploading
+              ? `Uploading… ${progress}%`
+              : "Drop files or click to upload"}
           </p>
+          {uploading && (
+            <div className="mt-3 h-1.5 w-full max-w-xs rounded-full bg-muted overflow-hidden">
+              <div
+                className="h-full bg-primary transition-all duration-150"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          )}
         </div>
       )}
 
@@ -119,7 +272,7 @@ export default function MediaUpload({
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
         >
-          {uploading ? "Uploading…" : "Replace"}
+          {uploading ? `Uploading… ${progress}%` : "Replace"}
         </Button>
       )}
     </div>

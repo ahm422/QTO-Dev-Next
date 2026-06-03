@@ -114,6 +114,10 @@ export function mapStat(row: Stat): StatsNumbersItem {
 }
 
 export function mapTestimonial(row: Testimonial): TestimonialItem {
+  const mediaType = ["none", "image", "video"].includes(row.mediaType)
+    ? (row.mediaType as TestimonialItem["mediaType"])
+    : "none";
+
   return {
     id: row.id,
     quote: row.quote,
@@ -121,9 +125,9 @@ export function mapTestimonial(row: Testimonial): TestimonialItem {
     authorTitle: row.clientRole,
     company: row.clientCompany,
     avatar: row.avatarUrl ?? undefined,
-    videoUrl: row.mediaType === "video" ? row.mediaUrl ?? undefined : undefined,
-    thumbnailUrl:
-      row.mediaType === "image" ? row.mediaUrl ?? undefined : undefined,
+    mediaType,
+    mediaUrl: row.mediaUrl ?? undefined,
+    mediaAlt: row.mediaAlt ?? undefined,
   };
 }
 

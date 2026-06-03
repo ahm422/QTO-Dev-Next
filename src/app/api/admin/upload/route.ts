@@ -1,15 +1,12 @@
 import { auth } from "@/auth"
-import { apiSuccess, apiError } from "@/lib/apiResponses"
-import { getPresignedUploadUrl } from "@/lib/garage"
-
-const ALLOWED_MIME_PREFIXES = ["image/", "video/"]
-const MAX_FILENAME_LENGTH = 255
-
-function sanitizeFilename(name: string): string {
-  return name
-    .replace(/[^a-zA-Z0-9._-]/g, "-")
-    .slice(0, MAX_FILENAME_LENGTH)
-}
+import { apiSuccess, apiError, logApiError } from "@/lib/apiResponses"
+import {
+  buildMediaKey,
+  extensionMatchesMime,
+  getPresignedUploadUrl,
+  isAllowedMimeType,
+  maxBytesForMime,
+} from "@/lib/garage"
 
 export async function POST(request: Request) {
   const session = await auth()
@@ -17,14 +14,14 @@ export async function POST(request: Request) {
     return apiError(401, "Unauthorized")
   }
 
-  let body: { filename?: string; contentType?: string }
+  let body: { filename?: string; contentType?: string; fileSize?: number }
   try {
     body = await request.json()
   } catch {
     return apiError(400, "Invalid request body")
   }
 
-  const { filename, contentType } = body
+  const { filename, contentType, fileSize } = body
 
   if (!filename || typeof filename !== "string") {
     return apiError(400, "filename is required")
@@ -34,18 +31,34 @@ export async function POST(request: Request) {
     return apiError(400, "contentType is required")
   }
 
-  const isAllowed = ALLOWED_MIME_PREFIXES.some((prefix) => contentType.startsWith(prefix))
-  if (!isAllowed) {
-    return apiError(400, "Only image and video uploads are allowed")
+  if (typeof fileSize !== "number" || !Number.isFinite(fileSize) || fileSize < 0) {
+    return apiError(400, "fileSize is required")
   }
 
-  const key = `admin/${crypto.randomUUID()}-${sanitizeFilename(filename)}`
+  if (!isAllowedMimeType(contentType)) {
+    return apiError(
+      400,
+      "File type not allowed. Use JPEG, PNG, WebP, GIF, MP4, or WebM.",
+    )
+  }
+
+  if (!extensionMatchesMime(filename, contentType)) {
+    return apiError(400, "Filename extension does not match file type")
+  }
+
+  const maxBytes = maxBytesForMime(contentType)
+  if (fileSize > maxBytes) {
+    const limitMb = Math.round(maxBytes / (1024 * 1024))
+    return apiError(413, `File exceeds maximum size of ${limitMb} MB`)
+  }
+
+  const key = buildMediaKey(filename)
 
   try {
-    const result = await getPresignedUploadUrl(key, contentType)
-    return apiSuccess(result)
+    const { presignedUrl, publicUrl } = await getPresignedUploadUrl(key, contentType)
+    return apiSuccess({ url: publicUrl, presignedUrl })
   } catch (err) {
-    console.error("[upload] presign error", err)
+    logApiError("[upload]", err)
     return apiError(500, "Failed to generate upload URL")
   }
 }

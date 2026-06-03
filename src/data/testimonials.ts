@@ -13,8 +13,8 @@ export const testimonialsItems: TestimonialItem[] = [
     authorName: "Sarah Chan",
     authorTitle: "CTO",
     company: "NetFlow Inc.",
-    thumbnailUrl: PEXELS_TECH_IMAGES[4],
-    videoUrl: undefined,
+    mediaType: "image",
+    mediaUrl: PEXELS_TECH_IMAGES[4],
   },
   {
     id: "marcus-reid-techflow",
@@ -23,6 +23,7 @@ export const testimonialsItems: TestimonialItem[] = [
     authorName: "Marcus Reid",
     authorTitle: "Product Director",
     company: "TechFlow",
-    thumbnailUrl: PEXELS_TECH_IMAGES[5],
+    mediaType: "image",
+    mediaUrl: PEXELS_TECH_IMAGES[5],
   },
 ];

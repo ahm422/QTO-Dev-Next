@@ -19,6 +19,65 @@ function goNext(index: number, total: number) {
   return index >= total - 1 ? 0 : index + 1;
 }
 
+function isImagePosterUrl(url: string | undefined): boolean {
+  if (!url) return false;
+  try {
+    const { protocol } = new URL(url);
+    return protocol === "http:" || protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+function TestimonialMedia({ item }: { item: TestimonialItem }) {
+  const { mediaType, mediaUrl, mediaAlt } = item;
+
+  if (mediaType === "image" && mediaUrl) {
+    return (
+      <Image
+        src={mediaUrl}
+        alt={mediaAlt ?? ""}
+        fill
+        className="object-cover"
+        sizes="(max-width: 1024px) 100vw, 50vw"
+      />
+    );
+  }
+
+  if (mediaType === "video" && mediaUrl) {
+    const poster = isImagePosterUrl(mediaAlt) ? mediaAlt : undefined;
+    return (
+      <video
+        src={mediaUrl}
+        controls
+        playsInline
+        poster={poster}
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+    );
+  }
+
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-foreground-muted">
+      <svg
+        className="h-10 w-10 opacity-40"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+        />
+      </svg>
+      <span className="text-sm">No media</span>
+    </div>
+  );
+}
+
 function QuoteIcon() {
   return (
     <svg
@@ -236,7 +295,7 @@ export function TestimonialsSectionClient({ items }: { items: TestimonialItem[] 
               </div>
             </div>
 
-            {/* Right: media card with play button */}
+            {/* Right: testimonial media */}
             <div
               className={cn(
                 "relative rounded-2xl overflow-hidden aspect-[4/3] min-h-[260px]",
@@ -244,52 +303,16 @@ export function TestimonialsSectionClient({ items }: { items: TestimonialItem[] 
                 "shadow-md hover:shadow-lg transition-shadow duration-300"
               )}
             >
-              {activeItem?.thumbnailUrl ? (
-                <Image
-                  src={activeItem.thumbnailUrl}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center text-foreground-muted text-sm">
-                  Media placeholder
-                </div>
-              )}
-              {/* Overlay for readability */}
-              <div
-                className="absolute inset-0 bg-black/20"
-                aria-hidden
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <button
-                  type="button"
-                  className={cn(
-                    "flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full",
-                    "bg-primary hover:bg-primary-hover text-primary-foreground",
-                    "shadow-lg hover:scale-105 transition-all duration-200",
-                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                  )}
-                  aria-label="Play testimonial video"
-                >
-                  <svg
-                    className="w-8 h-8 md:w-10 md:h-10 ml-0.5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden
-                  >
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </button>
-              </div>
-              {activeItem && (
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/75 via-black/40 to-transparent px-5 py-4">
-                  <p className="text-sm font-medium text-white/95">
-                    {activeItem.authorName} — {activeItem.company}
-                  </p>
-                </div>
-              )}
+              {activeItem && <TestimonialMedia item={activeItem} />}
+              {activeItem &&
+                (activeItem.mediaType === "image" || activeItem.mediaType === "video") &&
+                activeItem.mediaUrl && (
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/75 via-black/40 to-transparent px-5 py-4 pointer-events-none">
+                    <p className="text-sm font-medium text-white/95">
+                      {activeItem.authorName} — {activeItem.company}
+                    </p>
+                  </div>
+                )}
             </div>
           </div>
         </Reveal>

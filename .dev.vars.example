@@ -20,11 +20,12 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ADMIN_SECRET=replace-with-strong-random-secret
 
 # Garage (S3-compatible)
-GARAGE_ENDPOINT=https://garage.example.com
+GARAGE_ENDPOINT=http://localhost:3900
+GARAGE_REGION=garage
 GARAGE_ACCESS_KEY_ID=replace_me
 GARAGE_SECRET_ACCESS_KEY=replace_me
-GARAGE_BUCKET_NAME=qtodev-media
-GARAGE_PUBLIC_URL=https://cdn.example.com
+GARAGE_BUCKET_NAME=qto-dev
+GARAGE_PUBLIC_URL=http://localhost:3902/qto-dev
 
 # Resend
 RESEND_API_KEY=re_replace_me
