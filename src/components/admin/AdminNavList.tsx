@@ -1,9 +1,9 @@
 "use client"
 
-import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { adminNavItems } from "@/config/admin-nav"
+import { adminNavItems, GROUP_LABELS, type AdminNavGroup } from "@/config/admin-nav"
+import SidebarNavGroup from "@/components/admin/navigation/SidebarNavGroup"
+import SidebarNavItem from "@/components/admin/navigation/SidebarNavItem"
 import { Button } from "@/components/ui/button"
 import { LogOut } from "lucide-react"
 
@@ -12,7 +12,9 @@ interface AdminNavListProps {
   className?: string
 }
 
-export default function AdminNavList({ onNavigate, className }: AdminNavListProps) {
+const GROUP_ORDER: AdminNavGroup[] = ["main", "content", "settings"]
+
+export default function AdminNavList({ onNavigate }: AdminNavListProps) {
   const pathname = usePathname()
 
   function isActive(href: string) {
@@ -20,26 +22,29 @@ export default function AdminNavList({ onNavigate, className }: AdminNavListProp
     return pathname.startsWith(href)
   }
 
+  const grouped = GROUP_ORDER.map((group) => ({
+    group,
+    items: adminNavItems.filter((item) => item.group === group),
+  }))
+
   return (
-    <nav className={cn("flex-1 overflow-y-auto py-4 px-3", className)}>
-      <ul className="space-y-0.5">
-        {adminNavItems.map((item) => (
-          <li key={item.href}>
-            <Link
-              href={item.href}
-              onClick={onNavigate}
-              className={cn(
-                "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                isActive(item.href)
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground hover:bg-accent/60 hover:text-foreground"
-              )}
-            >
-              {item.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
+    <nav className="flex-1 overflow-y-auto py-4 px-3 scrollbar-none">
+      {grouped.map(({ group, items }) =>
+        items.length === 0 ? null : (
+          <SidebarNavGroup key={group} label={GROUP_LABELS[group]}>
+            {items.map((item) => (
+              <SidebarNavItem
+                key={item.href}
+                label={item.label}
+                href={item.href}
+                icon={item.icon}
+                isActive={isActive(item.href)}
+                onNavigate={onNavigate}
+              />
+            ))}
+          </SidebarNavGroup>
+        )
+      )}
     </nav>
   )
 }

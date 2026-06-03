@@ -1,14 +1,30 @@
 import { auth } from "@/auth"
 import { notFound, redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
+import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import EngagementModelForm from "./EngagementModelForm"
 
 export default async function EngagementModelFormPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
   if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
   const { id } = await params
-  if (id === "new") return <div className="max-w-2xl space-y-4"><h2 className="text-lg font-semibold">New engagement model</h2><EngagementModelForm /></div>
+
+  if (id === "new") {
+    return (
+      <div className="space-y-6">
+        <AdminPageHeader title="New Engagement Model" breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Engagement Models", href: "/admin/engagement-models" }, { label: "New" }]} />
+        <EngagementModelForm />
+      </div>
+    )
+  }
+
   const record = await prisma.engagementModel.findUnique({ where: { id } })
   if (!record) notFound()
-  return <div className="max-w-2xl space-y-4"><h2 className="text-lg font-semibold">Edit engagement model</h2><EngagementModelForm defaultValues={record} /></div>
+
+  return (
+    <div className="space-y-6">
+      <AdminPageHeader title="Edit Engagement Model" subtitle={record.title} badges={[{ label: record.isPublished ? "Published" : "Draft", variant: record.isPublished ? "success" : "warning" }]} breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Engagement Models", href: "/admin/engagement-models" }, { label: "Edit" }]} />
+      <EngagementModelForm defaultValues={record} />
+    </div>
+  )
 }

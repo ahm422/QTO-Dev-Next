@@ -1,9 +1,7 @@
-import Link from "next/link"
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import TeamTable from "./Table"
 
 export default async function TeamPage() {
@@ -11,11 +9,13 @@ export default async function TeamPage() {
   if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
   const rows = await prisma.teamMember.findMany({ orderBy: { order: "asc" } })
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div><h2 className="text-lg font-semibold">Team</h2><p className="text-sm text-muted-foreground">{rows.length} members</p></div>
-        <Button asChild size="sm"><Link href="/admin/team/new"><Plus className="h-4 w-4 mr-1" />Add member</Link></Button>
-      </div>
+    <div className="space-y-6">
+      <AdminPageHeader
+        title="Team"
+        subtitle="Team members and leadership"
+        breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Team" }]}
+        primaryAction={{ label: "+ Add Member", href: "/admin/team/new" }}
+      />
       <TeamTable rows={rows} />
     </div>
   )
