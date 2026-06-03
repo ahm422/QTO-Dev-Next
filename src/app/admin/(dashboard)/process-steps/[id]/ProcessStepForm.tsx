@@ -49,7 +49,7 @@ export default function ProcessStepForm({ defaultValues }: { defaultValues?: Pro
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="grid xl:grid-cols-[1fr_300px] gap-6 items-start">
+        <div className="grid lg:grid-cols-[1fr_300px] gap-6 items-start">
           {/* Main form area */}
           <div className="space-y-5">
             <FormSection title="Step Details" icon={GitBranch} subtitle="Context, step number, title and description">
@@ -112,7 +112,7 @@ export default function ProcessStepForm({ defaultValues }: { defaultValues?: Pro
           </div>
 
           {/* Right widget panel */}
-          <AdminWidgetPanel className="xl:sticky xl:top-20">
+          <AdminWidgetPanel className="lg:sticky lg:top-20">
             {isEdit && defaultValues && (
               <PublishWidget
                 id={defaultValues.id}

@@ -71,10 +71,10 @@ export default function AdminPageHeader({
       )}
 
       {/* Title row */}
-      <div className="flex items-start gap-3 justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">{title}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">{title}</h1>
             {badges?.map((badge, i) => (
               <span
                 key={i}
@@ -91,7 +91,7 @@ export default function AdminPageHeader({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 sm:shrink-0">
           {actions}
           {primaryAction && (
             primaryAction.href ? (

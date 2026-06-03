@@ -97,7 +97,7 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="grid xl:grid-cols-[1fr_320px] gap-6 items-start">
+        <div className="grid lg:grid-cols-[1fr_300px] gap-6 items-start">
           {/* Main form area */}
           <div className="space-y-5">
             {/* Basic Information */}
@@ -283,7 +283,7 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
           </div>
 
           {/* Right widget panel */}
-          <AdminWidgetPanel className="xl:sticky xl:top-20">
+          <AdminWidgetPanel className="lg:sticky lg:top-20">
             {isEdit && defaultValues && (
               <PublishWidget
                 id={defaultValues.id}

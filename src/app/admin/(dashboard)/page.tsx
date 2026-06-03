@@ -123,7 +123,7 @@ export default async function AdminDashboardPage() {
       </StatCardGrid>
 
       {/* Second row: chart + quick actions */}
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <AdminPageSection title="Content Activity" icon={BarChart2} className="lg:col-span-2">
           <ContentActivityChart data={chartData} />
         </AdminPageSection>
@@ -147,7 +147,7 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* Third row: activity feed + donut chart */}
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <AdminPageSection title="Recent Activity" icon={FileText} className="lg:col-span-2">
           <ActivityFeed items={activityItems} />
         </AdminPageSection>

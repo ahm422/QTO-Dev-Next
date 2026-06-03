@@ -23,6 +23,7 @@ declare module "@auth/core/jwt" {
 
 export const authConfig: NextAuthConfig = {
   providers: [],
+  trustHost: true,
   session: {
     strategy: "jwt",
     maxAge: 8 * 60 * 60,

@@ -47,7 +47,7 @@ export default async function ProcessStepsPage({
         <StatCard label="Drafts" value={drafts} icon={GitBranch} iconColor="warning" badge="Hidden" badgeVariant="warning" />
       </StatCardGrid>
 
-      <div className="grid xl:grid-cols-[1fr_280px] gap-6 items-start">
+      <div className="grid lg:grid-cols-[1fr_280px] gap-6 items-start">
         <div className="space-y-4">
           <FilterBar
             searchPlaceholder="Search steps…"
