@@ -394,3 +394,14 @@ model SiteConfig {
 
   @@map("site_config")
 }
+
+// ─── ADMIN USERS ─────────────────────────────────────────────────────────────
+model AdminUser {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("admin_users")
+}
