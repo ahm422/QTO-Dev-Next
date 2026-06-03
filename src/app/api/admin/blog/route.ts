@@ -44,7 +44,8 @@ export async function POST(request: NextRequest) {
     };
     const item = await prisma.blogPost.create({ data });
     revalidatePath("/");
-    revalidatePath("/blog");
+    revalidatePath("/blogs");
+    revalidatePath("/sitemap.xml");
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/blog", e);

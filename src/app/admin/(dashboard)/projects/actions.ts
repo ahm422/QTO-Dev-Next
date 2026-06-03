@@ -2,9 +2,10 @@
 
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
-import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { projectSchema, type ProjectInput } from "@/lib/validators/admin/project"
+import { revalidatePaths } from "@/lib/revalidate"
+import { projectPaths } from "@/lib/revalidate-paths"
 
 async function requireAdmin() {
   const session = await auth()
@@ -15,8 +16,7 @@ export async function createProject(data: ProjectInput) {
   await requireAdmin()
   const { completedAt, ...rest } = projectSchema.parse(data)
   await prisma.project.create({ data: { ...rest, completedAt: completedAt ? new Date(completedAt) : null } })
-  revalidatePath("/")
-  revalidatePath("/projects")
+  revalidatePaths([...projectPaths(rest.slug)])
   redirect("/admin/projects")
 }
 
@@ -24,9 +24,7 @@ export async function updateProject(id: string, data: ProjectInput) {
   await requireAdmin()
   const { completedAt, ...rest } = projectSchema.parse(data)
   await prisma.project.update({ where: { id }, data: { ...rest, completedAt: completedAt ? new Date(completedAt) : null } })
-  revalidatePath("/")
-  revalidatePath("/projects")
-  revalidatePath(`/projects/${rest.slug}`)
+  revalidatePaths([...projectPaths(rest.slug)])
   redirect("/admin/projects")
 }
 
@@ -34,14 +32,12 @@ export async function deleteProject(id: string) {
   await requireAdmin()
   const project = await prisma.project.findUnique({ where: { id }, select: { slug: true } })
   await prisma.project.delete({ where: { id } })
-  revalidatePath("/")
-  revalidatePath("/projects")
-  if (project) revalidatePath(`/projects/${project.slug}`)
+  revalidatePaths([...projectPaths(project?.slug)])
 }
 
 export async function toggleProjectPublished(id: string, value: boolean) {
   await requireAdmin()
+  const project = await prisma.project.findUnique({ where: { id }, select: { slug: true } })
   await prisma.project.update({ where: { id }, data: { isPublished: value } })
-  revalidatePath("/")
-  revalidatePath("/projects")
+  revalidatePaths([...projectPaths(project?.slug)])
 }

@@ -1,4 +1,4 @@
-import { services } from "@/data/services";
+import { findServiceBySlug as findCmsService } from "@/lib/cms/services";
 import { webDevelopmentServiceData, WebDevelopmentServiceData } from "./web-development";
 
 const fallbackHero =
@@ -8,8 +8,8 @@ const fallbackOverview =
 const fallbackProject =
   "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&h=800&fit=crop";
 
-function createGenericServiceData(slug: string): WebDevelopmentServiceData | null {
-  const found = services.find((service) => service.slug === slug);
+async function createGenericServiceData(slug: string): Promise<WebDevelopmentServiceData | null> {
+  const found = await findCmsService(slug);
   if (!found) return null;
 
   return {
@@ -18,11 +18,18 @@ function createGenericServiceData(slug: string): WebDevelopmentServiceData | nul
     breadcrumbLabel: found.title,
     headline: `${found.title} Services That Drive Growth`,
     subheadline: found.description,
-    heroImage: { url: fallbackHero, alt: `${found.title} service hero` },
+    heroImage: {
+      url: found.image ?? fallbackHero,
+      alt: found.imageAlt ?? `${found.title} service hero`,
+    },
     overviewText:
+      found.shortDescription ||
       "We bring strategic product thinking and high-quality engineering to deliver outcomes your business can measure. Our process is transparent, collaborative, and focused on speed without sacrificing reliability.",
     overviewBenefits: found.features,
-    overviewImage: { url: fallbackOverview, alt: `${found.title} overview image` },
+    overviewImage: {
+      url: found.image ?? fallbackOverview,
+      alt: found.imageAlt ?? `${found.title} overview image`,
+    },
     relatedProjects: [
       {
         slug: "saas-dashboard",

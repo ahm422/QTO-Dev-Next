@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { featuredWorkSchema, type FeaturedWorkInput } from "@/lib/validators/admin/featuredWork"
 import AdminForm from "@/components/admin/AdminForm"
@@ -17,7 +17,7 @@ import type { FeaturedWork } from "@prisma/client"
 export default function FeaturedWorkForm({ defaultValues }: { defaultValues?: FeaturedWork }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<FeaturedWorkInput>({
-    resolver: zodResolver(featuredWorkSchema),
+    resolver: formResolver(featuredWorkSchema),
     defaultValues: defaultValues ?? { title: "", description: "", imageUrl: "", imageAlt: "", tags: [], link: "", order: 0, isPublished: false },
   })
   const { isSubmitting } = form.formState

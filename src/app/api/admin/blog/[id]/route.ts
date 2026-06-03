@@ -41,8 +41,9 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       data: { ...parsed.data, publishedAt },
     });
     revalidatePath("/");
-    revalidatePath("/blog");
-    if (item.slug) revalidatePath(`/blog/${item.slug}`);
+    revalidatePath("/blogs");
+    revalidatePath("/sitemap.xml");
+    if (item.slug) revalidatePath(`/blogs/${item.slug}`);
     return apiSuccess({ item });
   } catch (e) {
     return handleRouteError("PATCH /api/admin/blog/[id]", e);
@@ -57,8 +58,9 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     const existing = await prisma.blogPost.findUnique({ where: { id }, select: { slug: true } });
     await prisma.blogPost.delete({ where: { id } });
     revalidatePath("/");
-    revalidatePath("/blog");
-    if (existing?.slug) revalidatePath(`/blog/${existing.slug}`);
+    revalidatePath("/blogs");
+    revalidatePath("/sitemap.xml");
+    if (existing?.slug) revalidatePath(`/blogs/${existing.slug}`);
     return apiSuccess({ id });
   } catch (e) {
     return handleRouteError("DELETE /api/admin/blog/[id]", e);

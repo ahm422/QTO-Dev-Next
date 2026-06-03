@@ -2,10 +2,12 @@ import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { cn } from "@/components/theme/cn";
 import { projectsPageConfig } from "@/config/projectsPage";
+import { findPublishedWorkValues } from "@/lib/cms/workValues";
 
 const HEADING_ID = "projects-value-heading";
 
-export function ProjectsValueSection() {
+export async function ProjectsValueSection() {
+  const items = await findPublishedWorkValues();
   const { valueSection } = projectsPageConfig;
 
   return (
@@ -16,7 +18,6 @@ export function ProjectsValueSection() {
       )}
       aria-labelledby={HEADING_ID}
     >
-      {/* Soft gradient orbs for depth */}
       <div
         className="pointer-events-none absolute top-0 right-0 w-[420px] h-[300px] rounded-full bg-primary/[0.05] blur-3xl -translate-y-1/2"
         aria-hidden
@@ -39,9 +40,9 @@ export function ProjectsValueSection() {
           />
         </div>
         <div className="grid md:grid-cols-3 gap-8 lg:gap-10">
-          {valueSection.items.map((item, i) => (
+          {items.map((item) => (
             <div
-              key={i}
+              key={item.id}
               className={cn(
                 "rounded-2xl border border-border bg-surface p-6 md:p-7",
                 "shadow-sm hover:shadow-md transition-shadow duration-300",

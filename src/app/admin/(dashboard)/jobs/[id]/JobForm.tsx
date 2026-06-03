@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { jobSchema, type JobInput } from "@/lib/validators/admin/job"
 import AdminForm from "@/components/admin/AdminForm"
@@ -17,7 +17,7 @@ import type { Job } from "@prisma/client"
 export default function JobForm({ defaultValues }: { defaultValues?: Job }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<JobInput>({
-    resolver: zodResolver(jobSchema),
+    resolver: formResolver(jobSchema),
     defaultValues: defaultValues
       ? { ...defaultValues, postedAt: defaultValues.postedAt?.toISOString().split("T")[0] ?? "", expiresAt: defaultValues.expiresAt?.toISOString().split("T")[0] ?? "" }
       : { title: "", department: "", location: "", type: "", description: "", requirements: [], niceToHave: [], salaryRange: "", applyUrl: "", order: 0, isPublished: false, postedAt: "", expiresAt: "" },

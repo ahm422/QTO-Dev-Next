@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { siteConfigSchema, type SiteConfigInput } from "@/lib/validators/admin/siteConfig"
 import AdminForm from "@/components/admin/AdminForm"
@@ -13,7 +13,7 @@ import type { SiteConfig } from "@prisma/client"
 
 export default function SiteConfigForm({ defaultValues, keyParam }: { defaultValues?: SiteConfig; keyParam: string }) {
   const form = useForm<SiteConfigInput>({
-    resolver: zodResolver(siteConfigSchema),
+    resolver: formResolver(siteConfigSchema),
     defaultValues: defaultValues ?? { key: keyParam === "new" ? "" : decodeURIComponent(keyParam), value: "", label: "" },
   })
   const { isSubmitting } = form.formState

@@ -34,6 +34,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const item = await prisma.service.update({ where: { id }, data: parsed.data });
     revalidatePath("/");
     revalidatePath("/services");
+    revalidatePath("/sitemap.xml");
     if (item.slug) revalidatePath(`/services/${item.slug}`);
     return apiSuccess({ item });
   } catch (e) {
@@ -50,6 +51,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     await prisma.service.delete({ where: { id } });
     revalidatePath("/");
     revalidatePath("/services");
+    revalidatePath("/sitemap.xml");
     if (existing?.slug) revalidatePath(`/services/${existing.slug}`);
     return apiSuccess({ id });
   } catch (e) {

@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { serviceSchema, type ServiceInput } from "@/lib/validators/admin/service"
 import AdminForm from "@/components/admin/AdminForm"
@@ -38,7 +38,7 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
   const isEdit = !!defaultValues?.id
 
   const form = useForm<ServiceInput>({
-    resolver: zodResolver(serviceSchema),
+    resolver: formResolver(serviceSchema),
     defaultValues: defaultValues
       ? {
           ...defaultValues,

@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { engagementModelSchema, type EngagementModelInput } from "@/lib/validators/admin/engagementModel"
 import AdminForm from "@/components/admin/AdminForm"
@@ -16,7 +16,7 @@ import type { EngagementModel } from "@prisma/client"
 export default function EngagementModelForm({ defaultValues }: { defaultValues?: EngagementModel }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<EngagementModelInput>({
-    resolver: zodResolver(engagementModelSchema),
+    resolver: formResolver(engagementModelSchema),
     defaultValues: defaultValues ?? { number: 1, title: "", description: "", features: [], isMostPopular: false, ctaLabel: "Get Started", ctaLink: "/contact", order: 0, isPublished: false },
   })
   const { isSubmitting } = form.formState

@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { testimonialSchema, type TestimonialInput } from "@/lib/validators/admin/testimonial"
 import AdminForm from "@/components/admin/AdminForm"
@@ -18,7 +18,7 @@ import type { Testimonial } from "@prisma/client"
 export default function TestimonialForm({ defaultValues }: { defaultValues?: Testimonial }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<TestimonialInput>({
-    resolver: zodResolver(testimonialSchema),
+    resolver: formResolver(testimonialSchema),
     defaultValues: defaultValues ?? { clientName: "", clientRole: "", clientCompany: "", quote: "", mediaType: "none", mediaUrl: "", mediaAlt: "", avatarUrl: "", avatarColor: "", rating: 5, order: 0, isPublished: false },
   })
   const { isSubmitting, watch } = form.formState

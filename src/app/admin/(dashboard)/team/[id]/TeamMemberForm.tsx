@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { teamMemberSchema, type TeamMemberInput } from "@/lib/validators/admin/teamMember"
 import AdminForm from "@/components/admin/AdminForm"
@@ -17,7 +17,7 @@ import type { TeamMember } from "@prisma/client"
 export default function TeamMemberForm({ defaultValues }: { defaultValues?: TeamMember }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<TeamMemberInput>({
-    resolver: zodResolver(teamMemberSchema),
+    resolver: formResolver(teamMemberSchema),
     defaultValues: defaultValues ?? { name: "", role: "", bio: "", avatarUrl: "", linkedIn: "", order: 0, isPublished: false },
   })
   const { isSubmitting } = form.formState

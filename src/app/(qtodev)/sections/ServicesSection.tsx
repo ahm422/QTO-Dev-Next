@@ -1,36 +1,23 @@
-import { Card } from "@/components/ui/card";
-import { services } from "@/data/services";
+import Link from "next/link";
+import { findPublishedServices } from "@/lib/cms/services";
 import { Container } from "@/components/common/Container";
-import { SectionHeader } from "@/components/common/SectionHeader";
-import { AppIcon } from "@/components/ui/shared/AppIcon";
-import type { AppIconName } from "@/components/ui/shared/AppIcon";
 
-export function ServicesSection() {
+export async function ServicesSection() {
+  const services = await findPublishedServices();
+  if (services.length === 0) return null;
+
   return (
-    <section className="py-16 bg-surface">
+    <section className="py-16">
       <Container>
-        <SectionHeader
-          subtitle="Our Expertise"
-          title="What We Offer"
-          description="Comprehensive technology solutions tailored to your business needs"
-        />
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+        <ul className="grid gap-4 md:grid-cols-2">
           {services.map((service) => (
-            <Card key={service.id} className="p-6 hover:shadow-lg">
-              <AppIcon name={service.icon as AppIconName} size="lg" className="mb-4" />
-              <h3 className="text-xl font-bold mb-2">{service.title}</h3>
-              <p className="text-foreground-muted text-sm">{service.shortDescription}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {service.features.slice(0, 2).map((feature, i) => (
-                  <span key={i} className="text-xs bg-primary/15 text-primary px-2 py-1 rounded">
-                    {feature}
-                  </span>
-                ))}
-              </div>
-            </Card>
+            <li key={service.id}>
+              <Link href={`/services/${service.slug}`} className="text-primary hover:underline">
+                {service.title}
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       </Container>
     </section>
   );

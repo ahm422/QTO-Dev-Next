@@ -14,7 +14,7 @@ import { StatsNumbersSection } from "./sections/StatsNumbersSection";
 import { TestimonialsSection } from "./sections/TestimonialsSection";
 import { IndustriesSection } from "./sections/IndustriesSection";
 
-export default function HomePage() {
+export default async function HomePage() {
   return (
     <main
       id="main-content"

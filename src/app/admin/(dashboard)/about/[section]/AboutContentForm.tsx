@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { aboutContentSchema, type AboutContentInput } from "@/lib/validators/admin/aboutContent"
 import AdminForm from "@/components/admin/AdminForm"
@@ -12,10 +12,23 @@ import { Input } from "@/components/ui/input"
 import { upsertAboutContent } from "../actions"
 import type { AboutContent } from "@prisma/client"
 
+function toFormValues(record: AboutContent): AboutContentInput {
+  return {
+    section: record.section,
+    title: record.title ?? "",
+    subtitle: record.subtitle ?? "",
+    body: record.body ?? "",
+    imageUrl: record.imageUrl ?? "",
+    order: record.order,
+  }
+}
+
 export default function AboutContentForm({ defaultValues, sectionParam }: { defaultValues?: AboutContent; sectionParam: string }) {
   const form = useForm<AboutContentInput>({
-    resolver: zodResolver(aboutContentSchema),
-    defaultValues: defaultValues ?? { section: sectionParam === "new" ? "" : sectionParam, title: "", subtitle: "", body: "", imageUrl: "", order: 0 },
+    resolver: formResolver(aboutContentSchema),
+    defaultValues: defaultValues
+      ? toFormValues(defaultValues)
+      : { section: sectionParam === "new" ? "" : sectionParam, title: "", subtitle: "", body: "", imageUrl: "", order: 0 },
   })
   const { isSubmitting } = form.formState
 

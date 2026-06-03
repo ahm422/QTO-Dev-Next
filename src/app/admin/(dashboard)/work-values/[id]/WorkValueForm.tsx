@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { workValueSchema, type WorkValueInput } from "@/lib/validators/admin/workValue"
 import AdminForm from "@/components/admin/AdminForm"
@@ -16,7 +16,7 @@ import type { WorkValue } from "@prisma/client"
 export default function WorkValueForm({ defaultValues }: { defaultValues?: WorkValue }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<WorkValueInput>({
-    resolver: zodResolver(workValueSchema),
+    resolver: formResolver(workValueSchema),
     defaultValues: defaultValues ?? { title: "", description: "", icon: "", order: 0, isPublished: false },
   })
   const { isSubmitting } = form.formState

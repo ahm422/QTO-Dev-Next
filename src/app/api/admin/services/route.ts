@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
     const item = await prisma.service.create({ data: parsed.data });
     revalidatePath("/");
     revalidatePath("/services");
+    revalidatePath("/sitemap.xml");
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/services", e);

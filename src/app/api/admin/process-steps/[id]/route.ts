@@ -33,6 +33,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   try {
     const item = await prisma.processStep.update({ where: { id }, data: parsed.data });
     revalidatePath("/");
+    revalidatePath("/services");
     return apiSuccess({ item });
   } catch (e) {
     return handleRouteError("PATCH /api/admin/process-steps/[id]", e);
@@ -46,6 +47,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   try {
     await prisma.processStep.delete({ where: { id } });
     revalidatePath("/");
+    revalidatePath("/services");
     return apiSuccess({ id });
   } catch (e) {
     return handleRouteError("DELETE /api/admin/process-steps/[id]", e);
