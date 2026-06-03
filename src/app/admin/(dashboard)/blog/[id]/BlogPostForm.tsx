@@ -21,7 +21,7 @@ export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPo
   const isEdit = !!defaultValues?.id
   const form = useForm<BlogPostInput>({
     resolver: zodResolver(blogPostSchema),
-    defaultValues: defaultValues ?? { title: "", slug: "", excerpt: "", content: "", category: "", tags: [], author: "QTO DEV Team", imageUrl: "", imageAlt: "", readTime: "", isFeatured: false, isHeadline: false, isPublished: false },
+    defaultValues: defaultValues ?? { title: "", slug: "", excerpt: "", content: "", category: "", tags: [], author: "QTO DEV Team", imageUrl: "", imageAlt: "", readTime: undefined, isFeatured: false, isHeadline: false, isPublished: false },
   })
   const { isSubmitting } = form.formState
 

@@ -1,0 +1,52 @@
+import { NextRequest } from "next/server";
+import { revalidatePath } from "next/cache";
+import { prisma } from "@/lib/prisma";
+import { apiSuccess, apiError } from "@/lib/apiResponses";
+import { formatZodFieldErrors } from "@/lib/validators/http";
+import { requireAdminSession } from "@/lib/api/requireAdminSession";
+import { parseJsonBody } from "@/lib/api/parseJsonBody";
+import { handleRouteError } from "@/lib/api/handleRouteError";
+import { blogPostSchema } from "@/lib/validators/admin/blogPost";
+
+export async function GET(request: NextRequest) {
+  const { error } = await requireAdminSession();
+  if (error) return error;
+  try {
+    const { searchParams } = new URL(request.url);
+    const category = searchParams.get("category") ?? undefined;
+    const isPublishedParam = searchParams.get("isPublished");
+    const isPublished = isPublishedParam === "true" ? true : isPublishedParam === "false" ? false : undefined;
+    const items = await prisma.blogPost.findMany({
+      where: {
+        ...(category !== undefined && { category }),
+        ...(isPublished !== undefined && { isPublished }),
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    return apiSuccess({ items });
+  } catch (e) {
+    return handleRouteError("GET /api/admin/blog", e);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  const { error } = await requireAdminSession();
+  if (error) return error;
+  const { body, error: bodyError } = await parseJsonBody(request);
+  if (bodyError) return bodyError;
+  const parsed = blogPostSchema.safeParse(body);
+  if (!parsed.success)
+    return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
+  try {
+    const data = {
+      ...parsed.data,
+      publishedAt: parsed.data.isPublished ? new Date() : null,
+    };
+    const item = await prisma.blogPost.create({ data });
+    revalidatePath("/");
+    revalidatePath("/blog");
+    return apiSuccess({ id: item.id }, 201);
+  } catch (e) {
+    return handleRouteError("POST /api/admin/blog", e);
+  }
+}

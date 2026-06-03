@@ -10,7 +10,7 @@ export const blogPostSchema = z.object({
   author: z.string().default("QTO DEV Team"),
   imageUrl: z.string().optional().default(""),
   imageAlt: z.string().optional().default(""),
-  readTime: z.string().optional().default(""),
+  readTime: z.coerce.number().int().optional(),
   isFeatured: z.boolean().default(false),
   isHeadline: z.boolean().default(false),
   isPublished: z.boolean().default(false),
