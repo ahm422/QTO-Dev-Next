@@ -1,0 +1,74 @@
+"use client"
+
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { toast } from "sonner"
+import { engagementModelSchema, type EngagementModelInput } from "@/lib/validators/admin/engagementModel"
+import AdminForm from "@/components/admin/AdminForm"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+import { createEngagementModel, updateEngagementModel } from "../actions"
+import type { EngagementModel } from "@prisma/client"
+
+export default function EngagementModelForm({ defaultValues }: { defaultValues?: EngagementModel }) {
+  const isEdit = !!defaultValues?.id
+  const form = useForm<EngagementModelInput>({
+    resolver: zodResolver(engagementModelSchema),
+    defaultValues: defaultValues ?? { number: 1, title: "", description: "", features: [], isMostPopular: false, ctaLabel: "Get Started", ctaLink: "/contact", order: 0, isPublished: false },
+  })
+  const { isSubmitting } = form.formState
+
+  async function onSubmit(data: EngagementModelInput) {
+    try {
+      if (isEdit) await updateEngagementModel(defaultValues.id, data)
+      else await createEngagementModel(data)
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Something went wrong")
+    }
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/engagement-models">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <FormField control={form.control} name="number" render={({ field }) => (
+              <FormItem><FormLabel>Number</FormLabel><FormControl><Input {...field} type="number" /></FormControl><FormMessage /></FormItem>
+            )} />
+            <FormField control={form.control} name="order" render={({ field }) => (
+              <FormItem><FormLabel>Order</FormLabel><FormControl><Input {...field} type="number" /></FormControl><FormMessage /></FormItem>
+            )} />
+          </div>
+          <FormField control={form.control} name="title" render={({ field }) => (
+            <FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+          )} />
+          <FormField control={form.control} name="description" render={({ field }) => (
+            <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>
+          )} />
+          <FormField control={form.control} name="features" render={({ field }) => (
+            <FormItem><FormLabel>Features (one per line)</FormLabel><FormControl><Textarea value={field.value.join("\n")} onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))} rows={4} /></FormControl><FormMessage /></FormItem>
+          )} />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <FormField control={form.control} name="ctaLabel" render={({ field }) => (
+              <FormItem><FormLabel>CTA label</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+            )} />
+            <FormField control={form.control} name="ctaLink" render={({ field }) => (
+              <FormItem><FormLabel>CTA link</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+            )} />
+          </div>
+          <div className="flex gap-6">
+            <FormField control={form.control} name="isMostPopular" render={({ field }) => (
+              <FormItem><div className="flex items-center gap-3"><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} id="popular" /></FormControl><Label htmlFor="popular">Most popular</Label></div><FormMessage /></FormItem>
+            )} />
+            <FormField control={form.control} name="isPublished" render={({ field }) => (
+              <FormItem><div className="flex items-center gap-3"><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} id="pub" /></FormControl><Label htmlFor="pub">Published</Label></div><FormMessage /></FormItem>
+            )} />
+          </div>
+        </AdminForm>
+      </form>
+    </Form>
+  )
+}
