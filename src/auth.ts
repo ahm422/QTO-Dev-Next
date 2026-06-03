@@ -2,32 +2,10 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import { compare } from "bcryptjs";
-import type { NextAuthConfig } from "next-auth";
+import { authConfig } from "@/auth.config";
 
-// ── TypeScript augmentation ──────────────────────────────────────────────────
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id: string;
-      email: string;
-      role: "admin";
-    };
-  }
-
-  interface User {
-    role: "admin";
-  }
-}
-
-declare module "@auth/core/jwt" {
-  interface JWT {
-    id: string;
-    role: "admin";
-  }
-}
-
-// ── Config ───────────────────────────────────────────────────────────────────
-const config: NextAuthConfig = {
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...authConfig,
   providers: [
     Credentials({
       credentials: {
@@ -61,34 +39,4 @@ const config: NextAuthConfig = {
       },
     }),
   ],
-
-  session: {
-    strategy: "jwt",
-    maxAge: 8 * 60 * 60, // 8 hours
-  },
-
-  pages: {
-    signIn: "/admin/login",
-    error: "/admin/login",
-  },
-
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id as string;
-        token.role = user.role;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      session.user = {
-        id: token.id,
-        email: token.email ?? "",
-        role: token.role,
-      };
-      return session;
-    },
-  },
-};
-
-export const { handlers, auth, signIn, signOut } = NextAuth(config);
+});
