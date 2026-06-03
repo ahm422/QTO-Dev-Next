@@ -2,6 +2,8 @@
  * Testimonials section (issue #26): testimonial item data.
  */
 
+export type TestimonialMediaType = "none" | "image" | "video";
+
 export interface TestimonialItem {
   id: string;
   /** Testimonial quote text */
@@ -14,8 +16,10 @@ export interface TestimonialItem {
   company: string;
   /** Optional avatar image URL (e.g. from public/images/) */
   avatar?: string;
-  /** Optional video URL for play button / modal */
-  videoUrl?: string;
-  /** Optional thumbnail for right-column media block */
-  thumbnailUrl?: string;
+  /** CMS media type */
+  mediaType?: TestimonialMediaType;
+  /** Public Garage/CDN URL for image or video */
+  mediaUrl?: string;
+  /** Alt text for images; optional poster URL for video if http(s) image */
+  mediaAlt?: string;
 }

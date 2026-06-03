@@ -3,6 +3,67 @@
 // Next.js edge / Cloudflare Workers runtime.
 
 const enc = new TextEncoder()
+const MAX_FILENAME_LENGTH = 255
+
+export const ALLOWED_IMAGE_MIMES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+] as const
+
+export const ALLOWED_VIDEO_MIMES = ["video/mp4", "video/webm"] as const
+
+export const ALLOWED_MIME_TYPES = [
+  ...ALLOWED_IMAGE_MIMES,
+  ...ALLOWED_VIDEO_MIMES,
+] as const
+
+export type AllowedMimeType = (typeof ALLOWED_MIME_TYPES)[number]
+
+export const MAX_IMAGE_BYTES = 10 * 1024 * 1024
+export const MAX_VIDEO_BYTES = 50 * 1024 * 1024
+
+const EXT_BY_MIME: Record<AllowedMimeType, string[]> = {
+  "image/jpeg": [".jpg", ".jpeg"],
+  "image/png": [".png"],
+  "image/webp": [".webp"],
+  "image/gif": [".gif"],
+  "video/mp4": [".mp4"],
+  "video/webm": [".webm"],
+}
+
+export function sanitizeFilename(name: string): string {
+  const base = name.split(/[/\\]/).pop() ?? name
+  return base
+    .replace(/[^a-zA-Z0-9._-]/g, "-")
+    .slice(0, MAX_FILENAME_LENGTH)
+}
+
+export function buildMediaKey(filename: string): string {
+  return `media/${crypto.randomUUID()}/${sanitizeFilename(filename)}`
+}
+
+export function getPublicUrl(key: string): string {
+  const publicBase = process.env.GARAGE_PUBLIC_URL!.replace(/\/$/, "")
+  return `${publicBase}/${key}`
+}
+
+export function isAllowedMimeType(contentType: string): contentType is AllowedMimeType {
+  return (ALLOWED_MIME_TYPES as readonly string[]).includes(contentType)
+}
+
+export function maxBytesForMime(contentType: AllowedMimeType): number {
+  return (ALLOWED_IMAGE_MIMES as readonly string[]).includes(contentType)
+    ? MAX_IMAGE_BYTES
+    : MAX_VIDEO_BYTES
+}
+
+export function extensionMatchesMime(filename: string, contentType: AllowedMimeType): boolean {
+  const match = filename.toLowerCase().match(/\.[^.]+$/)
+  const ext = match?.[0] ?? ""
+  return EXT_BY_MIME[contentType].includes(ext)
+}
 
 async function hmacSHA256(key: ArrayBuffer, data: string): Promise<ArrayBuffer> {
   const cryptoKey = await crypto.subtle.importKey(
@@ -48,10 +109,10 @@ export async function getPresignedUploadUrl(
   const endpoint = process.env.GARAGE_ENDPOINT!
   const accessKeyId = process.env.GARAGE_ACCESS_KEY_ID!
   const secretAccessKey = process.env.GARAGE_SECRET_ACCESS_KEY!
-  const bucket = process.env.GARAGE_BUCKET_NAME!
-  const publicBase = process.env.GARAGE_PUBLIC_URL!
+  const bucket =
+    process.env.GARAGE_BUCKET_NAME ?? process.env.GARAGE_BUCKET ?? ""
 
-  const region = "garage"
+  const region = process.env.GARAGE_REGION ?? "garage"
   const service = "s3"
   const expiresIn = 300
 
@@ -106,7 +167,7 @@ export async function getPresignedUploadUrl(
   queryParams.append("X-Amz-Signature", signature)
 
   const presignedUrl = `${endpoint}/${bucket}/${key}?${queryParams.toString()}`
-  const publicUrl = `${publicBase}/${key}`
+  const publicUrl = getPublicUrl(key)
 
   return { presignedUrl, publicUrl }
 }
