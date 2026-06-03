@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { processStepSchema, type ProcessStepInput } from "@/lib/validators/admin/processStep"
 import { revalidatePaths } from "@/lib/revalidate"
+import { persistOrderUpdates } from "@/lib/admin/reorder"
 
 const PATHS = ["/", "/services"] as const
 
@@ -35,7 +36,9 @@ export async function deleteProcessStep(id: string) {
 
 export async function reorderProcessSteps(items: { id: string; order: number }[]) {
   await requireAdmin()
-  await Promise.all(items.map((i) => prisma.processStep.update({ where: { id: i.id }, data: { order: i.order } })))
+  await persistOrderUpdates(items, (id, order) =>
+    prisma.processStep.update({ where: { id }, data: { order } })
+  )
   revalidatePaths([...PATHS])
 }
 

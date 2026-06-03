@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { contactInfoSchema, type ContactInfoInput } from "@/lib/validators/admin/contactInfo"
+import { persistOrderUpdates } from "@/lib/admin/reorder"
 
 async function requireAdmin() {
   const session = await auth()
@@ -34,5 +35,13 @@ export async function deleteContactInfo(id: string) {
 export async function toggleContactInfoPublished(id: string, value: boolean) {
   await requireAdmin()
   await prisma.contactInfo.update({ where: { id }, data: { isPublished: value } })
+  revalidatePath("/contact")
+}
+
+export async function reorderContactInfo(items: { id: string; order: number }[]) {
+  await requireAdmin()
+  await persistOrderUpdates(items, (id, order) =>
+    prisma.contactInfo.update({ where: { id }, data: { order } })
+  )
   revalidatePath("/contact")
 }

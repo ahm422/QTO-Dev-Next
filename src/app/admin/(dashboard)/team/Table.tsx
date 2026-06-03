@@ -2,7 +2,7 @@
 
 import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
 import PublishToggle from "@/components/admin/PublishToggle"
-import { deleteTeamMember, toggleTeamMemberPublished } from "./actions"
+import { deleteTeamMember, reorderTeamMembers, toggleTeamMemberPublished } from "./actions"
 import type { TeamMember } from "@prisma/client"
 
 const columns: AdminTableColumn<TeamMember>[] = [
@@ -19,6 +19,7 @@ export default function TeamTable({ rows }: { rows: TeamMember[] }) {
       rows={rows}
       editBasePath="/admin/team"
       onDelete={deleteTeamMember}
+      onReorder={reorderTeamMembers}
       getItemName={(r) => r.name}
       emptyMessage="No team members yet."
     />

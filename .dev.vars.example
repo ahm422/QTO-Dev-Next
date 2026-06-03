@@ -11,13 +11,12 @@ DIRECT_URL=postgresql://postgres:<db-password>@db.<project-ref>.supabase.co:5432
 
 PGSSL_REJECT_UNAUTHORIZED=false
 
-# Supabase client
-NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+# NextAuth v5 — JWT secret (generate with: openssl rand -base64 33)
+AUTH_SECRET=replace-with-strong-random-secret
 
-# Admin guard (Phase 2+)
-ADMIN_SECRET=replace-with-strong-random-secret
+# Optional — only for `npm run admin:create-user` (local dev superuser bootstrap)
+# ADMIN_EMAIL=admin@qtodev.local
+# ADMIN_PASSWORD=choose-a-strong-password
 
 # Garage (S3-compatible)
 GARAGE_ENDPOINT=http://localhost:3900

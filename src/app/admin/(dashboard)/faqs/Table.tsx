@@ -3,7 +3,7 @@
 import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
 import PublishToggle from "@/components/admin/PublishToggle"
 import { Badge } from "@/components/ui/badge"
-import { deleteFaq, toggleFaqPublished } from "./actions"
+import { deleteFaq, reorderFaqs, toggleFaqPublished } from "./actions"
 import type { Faq } from "@prisma/client"
 
 const columns: AdminTableColumn<Faq>[] = [
@@ -20,6 +20,7 @@ export default function FaqsTable({ rows }: { rows: Faq[] }) {
       rows={rows}
       editBasePath="/admin/faqs"
       onDelete={deleteFaq}
+      onReorder={reorderFaqs}
       getItemName={(r) => r.question}
       emptyMessage="No FAQs yet."
     />

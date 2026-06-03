@@ -2,7 +2,7 @@
 
 import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
 import PublishToggle from "@/components/admin/PublishToggle"
-import { deleteWorkValue, toggleWorkValuePublished } from "./actions"
+import { deleteWorkValue, reorderWorkValues, toggleWorkValuePublished } from "./actions"
 import type { WorkValue } from "@prisma/client"
 
 const columns: AdminTableColumn<WorkValue>[] = [
@@ -19,6 +19,7 @@ export default function WorkValuesTable({ rows }: { rows: WorkValue[] }) {
       rows={rows}
       editBasePath="/admin/work-values"
       onDelete={deleteWorkValue}
+      onReorder={reorderWorkValues}
       getItemName={(r) => r.title}
       emptyMessage="No work values yet."
     />

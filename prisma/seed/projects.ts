@@ -1,14 +1,9 @@
 import { projects as legacyProjects } from "@/data/projects";
-import { getAllProjects } from "@/content/projects/index";
+import { getSeedDetailProjects } from "@/content/projects/index";
 import { prisma } from "./helpers";
 
 export async function seedProjects() {
-  const detailProjects = await getAllProjects();
-  const bySlug = new Map<string, (typeof detailProjects)[0]>();
-
-  for (const p of detailProjects) {
-    bySlug.set(p.slug, p);
-  }
+  const bySlug = new Map(getSeedDetailProjects().map((p) => [p.slug, p]));
 
   for (let i = 0; i < legacyProjects.length; i++) {
     const legacy = legacyProjects[i];

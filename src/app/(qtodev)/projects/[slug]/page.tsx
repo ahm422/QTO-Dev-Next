@@ -1,5 +1,8 @@
 import { notFound } from "next/navigation";
-import { getProjectBySlug, getAllProjects } from "@/content/projects";
+import {
+  findContentProjectBySlug,
+  findPublishedProjectSlugs,
+} from "@/lib/cms/projects";
 import { CaseStudyHero } from "./components/CaseStudyHero";
 import { ProjectAbout } from "./components/ProjectAbout";
 import { ProblemSolution } from "./components/ProblemSolution";
@@ -19,7 +22,7 @@ const BLUR_DATA_URL =
 
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
-  const project = await getProjectBySlug(slug);
+  const project = await findContentProjectBySlug(slug);
 
   if (!project) {
     return {
@@ -41,13 +44,13 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export async function generateStaticParams() {
-  const projects = await getAllProjects();
-  return projects.map((p) => ({ slug: p.slug }));
+  const slugs = await findPublishedProjectSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export default async function ProjectDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const project = await getProjectBySlug(slug);
+  const project = await findContentProjectBySlug(slug);
 
   if (!project) {
     notFound();

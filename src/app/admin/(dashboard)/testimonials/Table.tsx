@@ -3,7 +3,7 @@
 import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
 import PublishToggle from "@/components/admin/PublishToggle"
 import { Badge } from "@/components/ui/badge"
-import { deleteTestimonial, toggleTestimonialPublished } from "./actions"
+import { deleteTestimonial, reorderTestimonials, toggleTestimonialPublished } from "./actions"
 import type { Testimonial } from "@prisma/client"
 
 const columns: AdminTableColumn<Testimonial>[] = [
@@ -21,6 +21,7 @@ export default function TestimonialsTable({ rows }: { rows: Testimonial[] }) {
       rows={rows}
       editBasePath="/admin/testimonials"
       onDelete={deleteTestimonial}
+      onReorder={reorderTestimonials}
       getItemName={(r) => r.clientName}
       emptyMessage="No testimonials yet."
     />

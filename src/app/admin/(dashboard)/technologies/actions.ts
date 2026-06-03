@@ -4,6 +4,7 @@ import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { technologySchema, type TechnologyInput } from "@/lib/validators/admin/technology"
+import { persistOrderUpdates } from "@/lib/admin/reorder"
 import { revalidatePaths } from "@/lib/revalidate"
 
 const PATHS = ["/", "/services"] as const
@@ -36,5 +37,13 @@ export async function deleteTechnology(id: string) {
 export async function toggleTechnologyPublished(id: string, value: boolean) {
   await requireAdmin()
   await prisma.technology.update({ where: { id }, data: { isPublished: value } })
+  revalidatePaths([...PATHS])
+}
+
+export async function reorderTechnologies(items: { id: string; order: number }[]) {
+  await requireAdmin()
+  await persistOrderUpdates(items, (id, order) =>
+    prisma.technology.update({ where: { id }, data: { order } })
+  )
   revalidatePaths([...PATHS])
 }

@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { featuredWorkSchema, type FeaturedWorkInput } from "@/lib/validators/admin/featuredWork"
+import { persistOrderUpdates } from "@/lib/admin/reorder"
 
 async function requireAdmin() {
   const session = await auth()
@@ -33,7 +34,9 @@ export async function deleteFeaturedWork(id: string) {
 
 export async function reorderFeaturedWork(items: { id: string; order: number }[]) {
   await requireAdmin()
-  await Promise.all(items.map((i) => prisma.featuredWork.update({ where: { id: i.id }, data: { order: i.order } })))
+  await persistOrderUpdates(items, (id, order) =>
+    prisma.featuredWork.update({ where: { id }, data: { order } })
+  )
   revalidatePath("/")
 }
 

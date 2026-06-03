@@ -24,15 +24,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (!email || !password) return null;
 
-        // Use $queryRaw since AdminUser model isn't in the generated client yet
-        const rows = await prisma.$queryRaw<
-          Array<{ id: string; email: string; password_hash: string }>
-        >`SELECT id, email, password_hash FROM admin_users WHERE email = ${email} LIMIT 1`;
-
-        const user = rows[0];
+        const user = await prisma.adminUser.findUnique({
+          where: { email },
+        });
         if (!user) return null;
 
-        const valid = await compare(password, user.password_hash);
+        const valid = await compare(password, user.passwordHash);
         if (!valid) return null;
 
         return { id: user.id, email: user.email, role: "admin" as const };

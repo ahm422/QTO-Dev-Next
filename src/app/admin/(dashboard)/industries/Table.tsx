@@ -2,7 +2,7 @@
 
 import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
 import PublishToggle from "@/components/admin/PublishToggle"
-import { deleteIndustry, toggleIndustryPublished } from "./actions"
+import { deleteIndustry, reorderIndustries, toggleIndustryPublished } from "./actions"
 import type { Industry } from "@prisma/client"
 
 const columns: AdminTableColumn<Industry>[] = [
@@ -19,6 +19,7 @@ export default function IndustriesTable({ rows }: { rows: Industry[] }) {
       rows={rows}
       editBasePath="/admin/industries"
       onDelete={deleteIndustry}
+      onReorder={reorderIndustries}
       getItemName={(r) => r.name}
       emptyMessage="No industries yet."
     />

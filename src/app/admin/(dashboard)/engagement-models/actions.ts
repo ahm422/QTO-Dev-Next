@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { engagementModelSchema, type EngagementModelInput } from "@/lib/validators/admin/engagementModel"
+import { persistOrderUpdates } from "@/lib/admin/reorder"
 
 async function requireAdmin() {
   const session = await auth()
@@ -34,5 +35,13 @@ export async function deleteEngagementModel(id: string) {
 export async function toggleEngagementModelPublished(id: string, value: boolean) {
   await requireAdmin()
   await prisma.engagementModel.update({ where: { id }, data: { isPublished: value } })
+  revalidatePath("/")
+}
+
+export async function reorderEngagementModels(items: { id: string; order: number }[]) {
+  await requireAdmin()
+  await persistOrderUpdates(items, (id, order) =>
+    prisma.engagementModel.update({ where: { id }, data: { order } })
+  )
   revalidatePath("/")
 }

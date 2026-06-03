@@ -6,6 +6,7 @@ import { redirect } from "next/navigation"
 import { projectSchema, type ProjectInput } from "@/lib/validators/admin/project"
 import { revalidatePaths } from "@/lib/revalidate"
 import { projectPaths } from "@/lib/revalidate-paths"
+import { persistOrderUpdates } from "@/lib/admin/reorder"
 
 async function requireAdmin() {
   const session = await auth()
@@ -40,4 +41,12 @@ export async function toggleProjectPublished(id: string, value: boolean) {
   const project = await prisma.project.findUnique({ where: { id }, select: { slug: true } })
   await prisma.project.update({ where: { id }, data: { isPublished: value } })
   revalidatePaths([...projectPaths(project?.slug)])
+}
+
+export async function reorderProjects(items: { id: string; order: number }[]) {
+  await requireAdmin()
+  await persistOrderUpdates(items, (id, order) =>
+    prisma.project.update({ where: { id }, data: { order } })
+  )
+  revalidatePaths([...projectPaths()])
 }

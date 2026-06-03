@@ -3,7 +3,7 @@
 import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
 import PublishToggle from "@/components/admin/PublishToggle"
 import { Badge } from "@/components/ui/badge"
-import { deleteProcessStep, toggleProcessStepPublished } from "./actions"
+import { deleteProcessStep, reorderProcessSteps, toggleProcessStepPublished } from "./actions"
 import type { ProcessStep } from "@prisma/client"
 
 const columns: AdminTableColumn<ProcessStep>[] = [
@@ -21,6 +21,7 @@ export default function ProcessStepsTable({ rows }: { rows: ProcessStep[] }) {
       rows={rows}
       editBasePath="/admin/process-steps"
       onDelete={deleteProcessStep}
+      onReorder={reorderProcessSteps}
       getItemName={(r) => r.title}
       emptyMessage="No process steps yet."
     />

@@ -2,7 +2,7 @@
 
 import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
 import PublishToggle from "@/components/admin/PublishToggle"
-import { deleteContactInfo, toggleContactInfoPublished } from "./actions"
+import { deleteContactInfo, reorderContactInfo, toggleContactInfoPublished } from "./actions"
 import type { ContactInfo } from "@prisma/client"
 
 const columns: AdminTableColumn<ContactInfo>[] = [
@@ -20,6 +20,7 @@ export default function ContactInfoTable({ rows }: { rows: ContactInfo[] }) {
       rows={rows}
       editBasePath="/admin/contact-info"
       onDelete={deleteContactInfo}
+      onReorder={reorderContactInfo}
       getItemName={(r) => r.label}
       emptyMessage="No contact info yet."
     />
