@@ -8,7 +8,9 @@
  * Do not add `export const runtime = "edge"` here — unsupported by @opennextjs/cloudflare.
  */
 import { NextRequest } from "next/server";
+import { jsx } from "react/jsx-runtime";
 import type { Prisma } from "@prisma/client";
+import RequirementNotification from "@/emails/RequirementNotification";
 import { createRequirementSubmission } from "@/services/requirementService";
 import { requirementSubmissionSchema } from "@/lib/validators/requirement";
 import {
@@ -16,6 +18,11 @@ import {
   formatZodFieldErrors,
 } from "@/lib/validators/http";
 import { apiError, apiSuccess, logApiError, mapApiError } from "@/lib/apiResponses";
+import {
+  getResendAddresses,
+  isResendConfigured,
+  sendResendReactEmail,
+} from "@/lib/resend";
 
 export async function POST(request: NextRequest) {
   try {
@@ -97,6 +104,57 @@ export async function POST(request: NextRequest) {
         ip,
         metadata,
       });
+
+      // DB write is source of truth; email failures are logged only.
+      if (isResendConfigured()) {
+        const addresses = getResendAddresses();
+        if (!addresses) {
+          console.warn(
+            "[/api/requirements] RESEND_API_KEY set but RESEND_FROM_EMAIL or RESEND_TO_EMAIL missing; skipping emails"
+          );
+        } else {
+          const { from, adminTo } = addresses;
+          try {
+            await sendResendReactEmail({
+              from,
+              to: adminTo,
+              subject: `New requirements: ${body.name} (${body.intent})`,
+              react: jsx(RequirementNotification, {
+                intent: body.intent,
+                name: body.name,
+                email: body.email,
+                message: body.message,
+                submissionId: created.id,
+                phone: body.phone ?? null,
+                company: body.company ?? null,
+                companyLocation: body.companyLocation ?? null,
+                website: body.website ?? null,
+                role: body.role ?? null,
+                projectType: body.projectType ?? null,
+                industry: body.industry ?? null,
+                companySize: body.companySize ?? null,
+                goals: body.goals ?? null,
+                budgetRange: body.budgetRange ?? null,
+                startDate: body.startDate ?? null,
+                launchWindow: body.launchWindow ?? null,
+                urgency: body.urgency ?? null,
+                timeline: body.timeline ?? null,
+                preferredTime: body.preferredTime ?? null,
+                timezone: body.timezone ?? null,
+                channel: body.channel ?? null,
+                features: body.features ?? null,
+                integrations: body.integrations ?? null,
+                successCriteria: body.successCriteria ?? null,
+                source,
+                referrer,
+                questionnaire: body.questionnaire,
+              }),
+            });
+          } catch (error) {
+            logApiError("/api/requirements/email-admin", error);
+          }
+        }
+      }
 
       return apiSuccess({ id: created.id }, 201);
     } catch (error) {
