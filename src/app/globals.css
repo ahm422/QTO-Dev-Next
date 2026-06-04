@@ -111,7 +111,7 @@
   --sidebar-ring: var(--theme-primary);
 }
 
-/* Admin dark shell — scoped to .admin-dark wrapper on the admin layout root.
+/* Admin shell — scoped to .admin-dark / .admin-light wrapper on the admin layout root.
    Overrides shadcn semantic tokens so all shadcn primitives inherit the admin palette
    without touching the public site theme. */
 .admin-dark {
@@ -148,6 +148,42 @@
   --admin-accent-teal: #06B6D4;
   --admin-success: #22C55E;
   --admin-warning: #EAB308;
+  --admin-radius: 12px;
+}
+
+.admin-light {
+  color-scheme: light;
+  --background: #ffffff;
+  --foreground: #09090b;
+  --card: #f4f4f5;
+  --card-foreground: #09090b;
+  --popover: #ffffff;
+  --popover-foreground: #09090b;
+  --primary: #F97316;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #09090b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #fef3c7;
+  --accent-foreground: #09090b;
+  --destructive: #dc2626;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #F97316;
+  --sidebar: #f9f9fb;
+  --sidebar-foreground: #09090b;
+  --sidebar-primary: #F97316;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f4f4f5;
+  --sidebar-accent-foreground: #09090b;
+  --sidebar-border: #e4e4e7;
+  --sidebar-ring: #F97316;
+  --admin-accent-blue: #2563eb;
+  --admin-accent-purple: #7c3aed;
+  --admin-accent-teal: #0891b2;
+  --admin-success: #16a34a;
+  --admin-warning: #ca8a04;
   --admin-radius: 12px;
 }
 

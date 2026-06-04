@@ -190,7 +190,7 @@ function SortableMobileCard<T extends OrderableRow>({
     <div
       ref={setNodeRef}
       style={style}
-      className="rounded-lg border border-border bg-card p-4 space-y-3"
+      className="rounded-lg border border-border border-l-2 border-l-primary/20 bg-card p-4 space-y-2"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-2 min-w-0 flex-1">
@@ -285,7 +285,7 @@ export default function AdminTable<T extends OrderableRow>({
 
   if (items.length === 0) {
     return (
-      <div className="rounded-lg border border-border bg-card p-8 text-center text-sm text-muted-foreground">
+      <div className="rounded-lg border border-border bg-card p-10 text-center text-sm text-muted-foreground">
         {emptyMessage}
       </div>
     )
@@ -308,9 +308,9 @@ export default function AdminTable<T extends OrderableRow>({
         ))}
       </div>
 
-      <div className="hidden md:block rounded-lg border border-border bg-card overflow-hidden">
+      <div className="hidden md:block rounded-lg border border-border bg-card overflow-hidden shadow-sm">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted/40">
             <TableRow>
               {showDrag && <TableHead className="w-10" />}
               {columns.map((col) => (
@@ -319,7 +319,7 @@ export default function AdminTable<T extends OrderableRow>({
               <TableHead className="w-24 text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className="[&_tr:nth-child(even)]:bg-muted/15">
             {items.map((row) => (
               <SortableTableRow
                 key={row.id}

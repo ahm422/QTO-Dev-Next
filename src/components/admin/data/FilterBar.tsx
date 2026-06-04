@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select"
 import { Search, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useAdminTheme } from "@/components/admin/AdminThemeProvider"
 
 export interface FilterOption {
   label: string
@@ -35,6 +36,8 @@ export default function FilterBar({ searchPlaceholder = "Search…", filters = [
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const { theme } = useAdminTheme()
+  const themeClass = theme === "dark" ? "admin-dark" : "admin-light"
 
   const setParam = useCallback(
     (key: string, value: string) => {
@@ -88,7 +91,7 @@ export default function FilterBar({ searchPlaceholder = "Search…", filters = [
           <SelectTrigger className="h-8 w-auto min-w-32 text-sm bg-card border-border">
             <SelectValue placeholder={filter.placeholder} />
           </SelectTrigger>
-          <SelectContent className="admin-dark">
+          <SelectContent className={themeClass}>
             <SelectItem value="all">{filter.placeholder}</SelectItem>
             {filter.options.map((opt) => (
               <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>

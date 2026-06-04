@@ -16,43 +16,29 @@ import {
   SiStripe,
 } from "@icons-pack/react-simple-icons";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
+import { catalogByKey, catalogByName } from "@/lib/technologies/techCatalog";
 
-export const techIconMap: Record<
-  string,
-  React.ComponentType<{ size?: number; color?: string; title?: string }>
-> = {
-  "Next.js": SiNextdotjs,
-  React: SiReact,
-  TypeScript: SiTypescript,
-  "Node.js": SiNodedotjs,
-  "Tailwind CSS": SiTailwindcss,
-  Vercel: SiVercel,
-  PostgreSQL: SiPostgresql,
-  MongoDB: SiMongodb,
-  Docker: SiDocker,
-  Prisma: SiPrisma,
-  Redis: SiRedis,
-  GraphQL: SiGraphql,
-  Stripe: SiStripe,
+type SiIcon = React.ComponentType<{ size?: number; color?: string; title?: string }>;
+
+const SI_ICON_MAP: Record<string, SiIcon> = {
+  nextdotjs:   SiNextdotjs,
+  react:       SiReact,
+  typescript:  SiTypescript,
+  nodedotjs:   SiNodedotjs,
+  tailwindcss: SiTailwindcss,
+  vercel:      SiVercel,
+  postgresql:  SiPostgresql,
+  mongodb:     SiMongodb,
+  docker:      SiDocker,
+  prisma:      SiPrisma,
+  redis:       SiRedis,
+  graphql:     SiGraphql,
+  stripe:      SiStripe,
 };
 
-/** Brand colors for hover state — set --tech-color on a .group parent to use. */
-export const techBrandColors: Record<string, string> = {
-  "Next.js": "#000000",
-  React: "#61DAFB",
-  TypeScript: "#3178C6",
-  "Node.js": "#339933",
-  "Tailwind CSS": "#06B6D4",
-  Vercel: "#000000",
-  PostgreSQL: "#4169E1",
-  MongoDB: "#47A248",
-  Docker: "#2496ED",
-  AWS: "#FF9900",
-  Prisma: "#2D3748",
-  Redis: "#DC382D",
-  GraphQL: "#E10098",
-  Stripe: "#635BFF",
-};
+export const techBrandColors: Record<string, string> = Object.fromEntries(
+  Object.values(catalogByName).map((e) => [e.name, e.brandColor])
+);
 
 const iconWrapperBase =
   "flex h-14 w-14 items-center justify-center rounded-2xl p-2.5 ring-1 transition-all duration-300 ease-out [&_svg]:h-full [&_svg]:w-full [&_svg]:max-h-8 [&_svg]:max-w-8 " +
@@ -61,15 +47,19 @@ const iconWrapperBase =
   "group-hover:shadow-[0_0_28px_-6px_var(--tech-color)] " +
   "text-foreground group-hover:text-[var(--tech-color,currentColor)]";
 
-export function TechIcon({ tech }: { tech: string }) {
-  if (tech === "AWS") {
+export function TechIcon({ tech, iconKey }: { tech: string; iconKey?: string }) {
+  const entry = iconKey ? catalogByKey[iconKey] : catalogByName[tech];
+
+  if (entry?.iconKey === "amazonaws" || tech === "AWS") {
     return (
       <div className={iconWrapperBase} aria-hidden>
         <AppIcon name="cloud" size="lg" />
       </div>
     );
   }
-  const Icon = techIconMap[tech];
+
+  const Icon = entry ? SI_ICON_MAP[entry.iconKey] : undefined;
+
   if (!Icon) {
     return (
       <div
@@ -80,9 +70,12 @@ export function TechIcon({ tech }: { tech: string }) {
       </div>
     );
   }
+
   return (
     <div className={iconWrapperBase} aria-hidden>
       <Icon size={28} color="currentColor" title={tech} />
     </div>
   );
 }
+
+export { SI_ICON_MAP };

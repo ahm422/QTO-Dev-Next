@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import TechnologyIconPicker from "@/components/admin/forms/TechnologyIconPicker"
 import { createTechnology, updateTechnology } from "../actions"
 import type { Technology } from "@prisma/client"
 
@@ -45,7 +46,7 @@ export default function TechnologyForm({ defaultValues }: { defaultValues?: Tech
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField control={form.control} name="iconKey" render={({ field }) => (
-              <FormItem><FormLabel>Icon key</FormLabel><FormControl><Input {...field} placeholder="e.g. SiReact" /></FormControl><FormMessage /></FormItem>
+              <FormItem><FormLabel>Icon</FormLabel><FormControl><TechnologyIconPicker value={field.value ?? ""} onChange={field.onChange} /></FormControl><FormMessage /></FormItem>
             )} />
             <FormField control={form.control} name="order" render={({ field }) => (
               <FormItem><FormLabel>Order</FormLabel><FormControl><Input {...field} type="number" /></FormControl><FormMessage /></FormItem>

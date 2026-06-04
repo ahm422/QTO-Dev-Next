@@ -4,8 +4,9 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { adminNavItems } from "@/config/admin-nav"
 import { Button } from "@/components/ui/button"
-import { ExternalLink, LogOut, ChevronRight } from "lucide-react"
+import { ExternalLink, LogOut, ChevronRight, Sun, Moon } from "lucide-react"
 import AdminMobileNav from "@/components/admin/AdminMobileNav"
+import { useAdminTheme } from "@/components/admin/AdminThemeProvider"
 
 function useAdminBreadcrumbs() {
   const pathname = usePathname()
@@ -35,6 +36,7 @@ function useAdminBreadcrumbs() {
 export default function AdminHeader() {
   const breadcrumbs = useAdminBreadcrumbs()
   const isRoot = breadcrumbs.length === 1
+  const { theme, toggleAdminTheme } = useAdminTheme()
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-background/95 backdrop-blur-sm px-4 lg:px-6">
@@ -70,6 +72,16 @@ export default function AdminHeader() {
 
       {/* Actions */}
       <div className="flex items-center gap-1 shrink-0">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleAdminTheme}
+          aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+          className="h-8 w-8 text-muted-foreground hover:text-foreground"
+        >
+          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        </Button>
+
         <Button variant="ghost" size="sm" asChild className="hidden sm:flex gap-1.5 text-muted-foreground hover:text-foreground h-8 px-2.5">
           <Link href="/" target="_blank" rel="noopener noreferrer">
             <ExternalLink className="h-3.5 w-3.5" />
