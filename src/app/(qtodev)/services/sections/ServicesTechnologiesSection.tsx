@@ -3,6 +3,6 @@ import { ServicesTechnologiesSectionClient } from "./ServicesTechnologiesSection
 
 export async function ServicesTechnologiesSection() {
   const rows = await findPublishedTechnologies();
-  const technologies = rows.map((t) => t.name);
+  const technologies = rows.map((t) => ({ name: t.name, iconKey: t.iconKey }));
   return <ServicesTechnologiesSectionClient technologies={technologies} />;
 }

@@ -1,10 +1,11 @@
 "use client"
 
 import Link from "next/link"
-import { Pencil } from "lucide-react"
+import { Pencil, Settings } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import ConfirmDelete from "@/components/admin/ConfirmDelete"
+import EmptyState from "@/components/admin/data/EmptyState"
 import { deleteSiteConfig } from "./actions"
 import type { SiteConfig } from "@prisma/client"
 
@@ -25,22 +26,27 @@ function SiteConfigActions({ row }: { row: SiteConfig }) {
 export default function SiteConfigTable({ rows }: { rows: SiteConfig[] }) {
   if (rows.length === 0) {
     return (
-      <div className="rounded-lg border border-border bg-card p-8 text-center text-sm text-muted-foreground">
-        No config entries yet.
+      <div className="rounded-xl border border-border bg-card">
+        <EmptyState
+          message="No config entries yet."
+          icon={Settings}
+          action={{ label: "+ Add Config", href: "/admin/site-config/new" }}
+        />
       </div>
     )
   }
 
   return (
     <>
-      <div className="space-y-3 md:hidden">
+      {/* Mobile */}
+      <div className="space-y-2 md:hidden">
         {rows.map((row) => (
           <div
             key={row.key}
-            className="rounded-lg border border-border bg-card p-4 space-y-3"
+            className="rounded-lg border border-border border-l-2 border-l-primary/20 bg-card p-4 space-y-2"
           >
             <div className="flex items-start justify-between gap-3">
-              <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-medium break-all">
+              <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono break-all">
                 {row.key}
               </code>
               <SiteConfigActions row={row} />
@@ -59,9 +65,10 @@ export default function SiteConfigTable({ rows }: { rows: SiteConfig[] }) {
         ))}
       </div>
 
-      <div className="hidden md:block rounded-lg border border-border bg-card overflow-hidden">
+      {/* Desktop */}
+      <div className="hidden md:block rounded-xl border border-border bg-card overflow-hidden shadow-sm">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted/40">
             <TableRow>
               <TableHead>Key</TableHead>
               <TableHead>Label</TableHead>
@@ -69,14 +76,16 @@ export default function SiteConfigTable({ rows }: { rows: SiteConfig[] }) {
               <TableHead className="w-24 text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className="[&_tr:nth-child(even)]:bg-muted/15">
             {rows.map((row) => (
               <TableRow key={row.key}>
                 <TableCell>
-                  <code className="text-xs bg-muted px-1 py-0.5 rounded">{row.key}</code>
+                  <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">{row.key}</code>
                 </TableCell>
-                <TableCell className="text-muted-foreground text-sm">{row.label}</TableCell>
-                <TableCell className="max-w-xs truncate text-sm">{row.value}</TableCell>
+                <TableCell>
+                  <span className="text-sm font-medium text-foreground">{row.label}</span>
+                </TableCell>
+                <TableCell className="max-w-xs truncate text-sm text-muted-foreground">{row.value}</TableCell>
                 <TableCell className="text-right">
                   <SiteConfigActions row={row} />
                 </TableCell>

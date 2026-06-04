@@ -1,40 +1,21 @@
 "use client";
 
-import {
-  SiNextdotjs,
-  SiReact,
-  SiTypescript,
-  SiNodedotjs,
-  SiTailwindcss,
-  SiVercel,
-  SiPostgresql,
-  SiMongodb,
-  SiDocker,
-  SiPrisma,
-  SiRedis,
-  SiGraphql,
-  SiStripe,
-} from "@icons-pack/react-simple-icons";
+import * as SimpleIcons from "@icons-pack/react-simple-icons";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { catalogByKey, catalogByName } from "@/lib/technologies/techCatalog";
 
 type SiIcon = React.ComponentType<{ size?: number; color?: string; title?: string }>;
 
-const SI_ICON_MAP: Record<string, SiIcon> = {
-  nextdotjs:   SiNextdotjs,
-  react:       SiReact,
-  typescript:  SiTypescript,
-  nodedotjs:   SiNodedotjs,
-  tailwindcss: SiTailwindcss,
-  vercel:      SiVercel,
-  postgresql:  SiPostgresql,
-  mongodb:     SiMongodb,
-  docker:      SiDocker,
-  prisma:      SiPrisma,
-  redis:       SiRedis,
-  graphql:     SiGraphql,
-  stripe:      SiStripe,
-};
+export function resolveSimpleIcon(iconKey: string): SiIcon | undefined {
+  const exportName = "Si" + iconKey.charAt(0).toUpperCase() + iconKey.slice(1);
+  return (SimpleIcons as Record<string, unknown>)[exportName] as SiIcon | undefined;
+}
+
+export function resolveSimpleIconColor(iconKey: string): string | undefined {
+  const exportName = "Si" + iconKey.charAt(0).toUpperCase() + iconKey.slice(1) + "Hex";
+  const hex = (SimpleIcons as Record<string, unknown>)[exportName];
+  return typeof hex === "string" ? hex : undefined;
+}
 
 export const techBrandColors: Record<string, string> = Object.fromEntries(
   Object.values(catalogByName).map((e) => [e.name, e.brandColor])
@@ -49,8 +30,9 @@ const iconWrapperBase =
 
 export function TechIcon({ tech, iconKey }: { tech: string; iconKey?: string }) {
   const entry = iconKey ? catalogByKey[iconKey] : catalogByName[tech];
+  const resolvedKey = entry?.iconKey ?? iconKey;
 
-  if (entry?.iconKey === "amazonaws" || tech === "AWS") {
+  if (resolvedKey === "amazonaws" || tech === "AWS") {
     return (
       <div className={iconWrapperBase} aria-hidden>
         <AppIcon name="cloud" size="lg" />
@@ -58,7 +40,7 @@ export function TechIcon({ tech, iconKey }: { tech: string; iconKey?: string }) 
     );
   }
 
-  const Icon = entry ? SI_ICON_MAP[entry.iconKey] : undefined;
+  const Icon = resolvedKey ? resolveSimpleIcon(resolvedKey) : undefined;
 
   if (!Icon) {
     return (
@@ -77,5 +59,3 @@ export function TechIcon({ tech, iconKey }: { tech: string; iconKey?: string }) 
     </div>
   );
 }
-
-export { SI_ICON_MAP };

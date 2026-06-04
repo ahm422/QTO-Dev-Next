@@ -1,13 +1,18 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { ChevronDown, X } from "lucide-react"
+import * as SimpleIcons from "@icons-pack/react-simple-icons"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Command, CommandEmpty, CommandInput, CommandList } from "@/components/ui/command"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { TECH_CATALOG, catalogByKey } from "@/lib/technologies/techCatalog"
-import { SI_ICON_MAP } from "@/components/technologies/TechIcon"
+import { resolveSimpleIcon } from "@/components/technologies/TechIcon"
+
+// All available icon keys derived from the package exports at build time
+const ALL_ICON_KEYS: string[] = Object.keys(SimpleIcons)
+  .filter((k) => k.startsWith("Si") && !k.endsWith("Hex"))
+  .map((k) => k.slice(2).toLowerCase()) // "SiCplusplus" → "cplusplus"
 
 interface TechnologyIconPickerProps {
   value: string
@@ -18,16 +23,13 @@ export default function TechnologyIconPicker({ value, onChange }: TechnologyIcon
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState("")
 
-  const selected = value ? catalogByKey[value] : undefined
-  const SelectedIcon = selected ? SI_ICON_MAP[selected.iconKey] : undefined
+  const SelectedIcon = value ? resolveSimpleIcon(value) : undefined
 
-  const filtered = TECH_CATALOG.filter(
-    (e) =>
-      e.iconKey !== "amazonaws" &&
-      (search === "" ||
-        e.name.toLowerCase().includes(search.toLowerCase()) ||
-        e.iconKey.toLowerCase().includes(search.toLowerCase()))
-  )
+  const filtered = useMemo(() => {
+    if (!search) return ALL_ICON_KEYS.slice(0, 120)
+    const q = search.toLowerCase().replace(/[^a-z0-9]/g, "")
+    return ALL_ICON_KEYS.filter((key) => key.includes(q)).slice(0, 120)
+  }, [search])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -43,12 +45,12 @@ export default function TechnologyIconPicker({ value, onChange }: TechnologyIcon
         >
           <span className="flex items-center gap-2 min-w-0">
             {SelectedIcon ? (
-              <SelectedIcon size={16} color="currentColor" title={selected?.name} />
+              <SelectedIcon size={16} color="currentColor" title={value} />
             ) : (
               <span className="h-4 w-4 rounded bg-muted" />
             )}
             <span className="truncate text-muted-foreground">
-              {selected ? selected.iconKey : "Select icon…"}
+              {value || "Select icon…"}
             </span>
           </span>
           <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -58,7 +60,7 @@ export default function TechnologyIconPicker({ value, onChange }: TechnologyIcon
       <PopoverContent className="w-80 p-0" align="start">
         <Command shouldFilter={false}>
           <CommandInput
-            placeholder="Search icons…"
+            placeholder="Search 3000+ icons…"
             value={search}
             onValueChange={setSearch}
           />
@@ -67,17 +69,17 @@ export default function TechnologyIconPicker({ value, onChange }: TechnologyIcon
               <CommandEmpty>No icons found.</CommandEmpty>
             )}
             <div className="grid grid-cols-6 gap-1 p-2">
-              {filtered.map((entry) => {
-                const Icon = SI_ICON_MAP[entry.iconKey]
+              {filtered.map((iconKey) => {
+                const Icon = resolveSimpleIcon(iconKey)
                 if (!Icon) return null
-                const isSelected = value === entry.iconKey
+                const isSelected = value === iconKey
                 return (
                   <button
-                    key={entry.iconKey}
+                    key={iconKey}
                     type="button"
-                    title={`${entry.name} (${entry.iconKey})`}
+                    title={iconKey}
                     onClick={() => {
-                      onChange(entry.iconKey)
+                      onChange(iconKey)
                       setOpen(false)
                       setSearch("")
                     }}
@@ -87,9 +89,9 @@ export default function TechnologyIconPicker({ value, onChange }: TechnologyIcon
                       isSelected && "bg-primary/15 ring-1 ring-primary/50 text-primary"
                     )}
                   >
-                    <Icon size={20} color="currentColor" title={entry.name} />
+                    <Icon size={20} color="currentColor" title={iconKey} />
                     <span className="text-[9px] leading-tight text-muted-foreground truncate w-full">
-                      {entry.iconKey}
+                      {iconKey}
                     </span>
                   </button>
                 )

@@ -1,38 +1,40 @@
 "use client"
 
-import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
-import PublishToggle from "@/components/admin/PublishToggle"
+import DataTable from "@/components/admin/data/DataTable"
+import StatusBadge from "@/components/admin/data/StatusBadge"
+import { type AdminTableColumn } from "@/components/admin/AdminTable"
 import { deleteTechnology, reorderTechnologies, toggleTechnologyPublished } from "./actions"
-import { SI_ICON_MAP } from "@/components/technologies/TechIcon"
-import { catalogByKey } from "@/lib/technologies/techCatalog"
+import { resolveSimpleIcon } from "@/components/technologies/TechIcon"
 import type { Technology } from "@prisma/client"
+import { Cpu } from "lucide-react"
 
 function TechIconSmall({ iconKey }: { iconKey: string }) {
-  const entry = catalogByKey[iconKey]
-  const Icon = entry ? SI_ICON_MAP[entry.iconKey] : undefined
+  const Icon = resolveSimpleIcon(iconKey)
   if (!Icon) return <span className="h-4 w-4 rounded bg-muted inline-block" />
-  return <Icon size={16} color="currentColor" title={entry.name} />
+  return <Icon size={16} color="currentColor" title={iconKey} />
 }
 
 const columns: AdminTableColumn<Technology>[] = [
-  { key: "order", label: "#", render: (r) => <span className="text-muted-foreground text-xs">{r.order}</span> },
-  { key: "name", label: "Name" },
+  { key: "order", label: "#", render: (r) => <span className="text-muted-foreground text-xs tabular-nums">{r.order}</span> },
   {
-    key: "iconKey",
-    label: "Icon",
+    key: "name",
+    label: "Technology",
     render: (r) => (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2.5">
         <TechIconSmall iconKey={r.iconKey} />
-        <span className="text-xs text-muted-foreground font-mono">{r.iconKey || "—"}</span>
+        <div>
+          <p className="text-sm font-medium text-foreground">{r.name}</p>
+          {r.iconKey && <p className="text-xs text-muted-foreground font-mono mt-0.5">{r.iconKey}</p>}
+        </div>
       </div>
     ),
   },
-  { key: "isPublished", label: "Status", render: (r) => <PublishToggle id={r.id} isPublished={r.isPublished} action={toggleTechnologyPublished} /> },
+  { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
 export default function TechnologiesTable({ rows }: { rows: Technology[] }) {
   return (
-    <AdminTable
+    <DataTable
       columns={columns}
       rows={rows}
       editBasePath="/admin/technologies"
@@ -40,6 +42,8 @@ export default function TechnologiesTable({ rows }: { rows: Technology[] }) {
       onReorder={reorderTechnologies}
       getItemName={(r) => r.name}
       emptyMessage="No technologies yet."
+      emptyIcon={Cpu}
+      emptyAction={{ label: "+ Add Technology", href: "/admin/technologies/new" }}
     />
   )
 }
