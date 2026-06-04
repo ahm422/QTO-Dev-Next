@@ -76,6 +76,7 @@ function DragHandle({ listeners, attributes }: { listeners: unknown; attributes:
       className="cursor-grab touch-none text-muted-foreground hover:text-foreground p-1 shrink-0"
       aria-label="Drag to reorder"
       type="button"
+      suppressHydrationWarning
     >
       <GripVertical className="h-4 w-4" />
     </button>
