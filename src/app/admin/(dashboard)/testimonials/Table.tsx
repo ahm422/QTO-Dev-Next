@@ -1,22 +1,32 @@
 "use client"
 
-import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
-import PublishToggle from "@/components/admin/PublishToggle"
-import { Badge } from "@/components/ui/badge"
+import DataTable from "@/components/admin/data/DataTable"
+import StatusBadge from "@/components/admin/data/StatusBadge"
+import CategoryBadge from "@/components/admin/data/CategoryBadge"
+import { type AdminTableColumn } from "@/components/admin/AdminTable"
 import { deleteTestimonial, reorderTestimonials, toggleTestimonialPublished } from "./actions"
 import type { Testimonial } from "@prisma/client"
+import { MessageSquare } from "lucide-react"
 
 const columns: AdminTableColumn<Testimonial>[] = [
-  { key: "order", label: "#", render: (r) => <span className="text-muted-foreground text-xs">{r.order}</span> },
-  { key: "clientName", label: "Client" },
-  { key: "clientCompany", label: "Company" },
-  { key: "mediaType", label: "Media", render: (r) => <Badge variant="outline">{r.mediaType}</Badge> },
-  { key: "isPublished", label: "Status", render: (r) => <PublishToggle id={r.id} isPublished={r.isPublished} action={toggleTestimonialPublished} /> },
+  { key: "order", label: "#", render: (r) => <span className="text-muted-foreground text-xs tabular-nums">{r.order}</span> },
+  {
+    key: "clientName",
+    label: "Client",
+    render: (r) => (
+      <div>
+        <p className="text-sm font-medium text-foreground">{r.clientName}</p>
+        {r.clientCompany && <p className="text-xs text-muted-foreground mt-0.5">{r.clientCompany}</p>}
+      </div>
+    ),
+  },
+  { key: "mediaType", label: "Media", render: (r) => <CategoryBadge category={r.mediaType} /> },
+  { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
 export default function TestimonialsTable({ rows }: { rows: Testimonial[] }) {
   return (
-    <AdminTable
+    <DataTable
       columns={columns}
       rows={rows}
       editBasePath="/admin/testimonials"
@@ -24,6 +34,8 @@ export default function TestimonialsTable({ rows }: { rows: Testimonial[] }) {
       onReorder={reorderTestimonials}
       getItemName={(r) => r.clientName}
       emptyMessage="No testimonials yet."
+      emptyIcon={MessageSquare}
+      emptyAction={{ label: "+ Add Testimonial", href: "/admin/testimonials/new" }}
     />
   )
 }

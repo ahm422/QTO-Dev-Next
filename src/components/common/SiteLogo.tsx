@@ -12,6 +12,7 @@ interface SiteLogoProps {
   height?: number;
   className?: string;
   priority?: boolean;
+  forcedTheme?: "light" | "dark";
 }
 
 export function SiteLogo({
@@ -20,9 +21,10 @@ export function SiteLogo({
   height = 32,
   className = "h-8 w-auto object-contain",
   priority = false,
+  forcedTheme,
 }: SiteLogoProps) {
   const { theme } = useTheme();
-  const src = theme === "dark" ? LOGO_DARK : LOGO_LIGHT;
+  const src = (forcedTheme ?? theme) === "dark" ? LOGO_DARK : LOGO_LIGHT;
 
   return (
     <Image

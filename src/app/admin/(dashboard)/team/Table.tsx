@@ -1,20 +1,32 @@
 "use client"
 
-import AdminTable, { type AdminTableColumn } from "@/components/admin/AdminTable"
-import PublishToggle from "@/components/admin/PublishToggle"
+import DataTable from "@/components/admin/data/DataTable"
+import StatusBadge from "@/components/admin/data/StatusBadge"
+import CategoryBadge from "@/components/admin/data/CategoryBadge"
+import { type AdminTableColumn } from "@/components/admin/AdminTable"
 import { deleteTeamMember, reorderTeamMembers, toggleTeamMemberPublished } from "./actions"
 import type { TeamMember } from "@prisma/client"
+import { Users } from "lucide-react"
 
 const columns: AdminTableColumn<TeamMember>[] = [
-  { key: "order", label: "#", render: (r) => <span className="text-muted-foreground text-xs">{r.order}</span> },
-  { key: "name", label: "Name" },
-  { key: "role", label: "Role" },
-  { key: "isPublished", label: "Status", render: (r) => <PublishToggle id={r.id} isPublished={r.isPublished} action={toggleTeamMemberPublished} /> },
+  { key: "order", label: "#", render: (r) => <span className="text-muted-foreground text-xs tabular-nums">{r.order}</span> },
+  {
+    key: "name",
+    label: "Member",
+    render: (r) => (
+      <div>
+        <p className="text-sm font-medium text-foreground">{r.name}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">{r.role}</p>
+      </div>
+    ),
+  },
+  { key: "role", label: "Role", render: (r) => <CategoryBadge category={r.role} /> },
+  { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
 export default function TeamTable({ rows }: { rows: TeamMember[] }) {
   return (
-    <AdminTable
+    <DataTable
       columns={columns}
       rows={rows}
       editBasePath="/admin/team"
@@ -22,6 +34,8 @@ export default function TeamTable({ rows }: { rows: TeamMember[] }) {
       onReorder={reorderTeamMembers}
       getItemName={(r) => r.name}
       emptyMessage="No team members yet."
+      emptyIcon={Users}
+      emptyAction={{ label: "+ Add Member", href: "/admin/team/new" }}
     />
   )
 }

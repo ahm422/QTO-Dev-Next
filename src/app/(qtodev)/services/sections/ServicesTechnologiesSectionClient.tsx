@@ -3,16 +3,18 @@
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
-import { TechIcon, techBrandColors } from "@/components/technologies/TechIcon";
+import { TechIcon, resolveSimpleIconColor } from "@/components/technologies/TechIcon";
 import { servicesPageConfig } from "@/config/servicesPage";
 import { cn } from "@/components/theme/cn";
 
 const HEADING_ID = "services-technologies-heading";
 
+type TechEntry = { name: string; iconKey: string }
+
 export function ServicesTechnologiesSectionClient({
   technologies,
 }: {
-  technologies: string[];
+  technologies: TechEntry[];
 }) {
   if (technologies.length === 0) return null;
   const { technologiesWeMaster } = servicesPageConfig;
@@ -61,7 +63,7 @@ export function ServicesTechnologiesSectionClient({
           >
             {technologies.map((tech) => (
               <div
-                key={tech}
+                key={tech.iconKey || tech.name}
                 data-reveal
                 className={cn(
                   "group flex flex-col items-center rounded-2xl border border-border/80 bg-surface/80 p-5 sm:p-6 text-center",
@@ -73,17 +75,17 @@ export function ServicesTechnologiesSectionClient({
                 )}
                 style={
                   {
-                    "--tech-color": techBrandColors[tech] ?? "currentColor",
+                    "--tech-color": resolveSimpleIconColor(tech.iconKey) ?? "currentColor",
                     "--tech-glow":
                       "color-mix(in srgb, var(--tech-color) 18%, transparent)",
                   } as React.CSSProperties
                 }
               >
                 <div className="mb-4 flex items-center justify-center">
-                  <TechIcon tech={tech} />
+                  <TechIcon tech={tech.name} iconKey={tech.iconKey} />
                 </div>
                 <p className="text-sm font-medium text-foreground-muted transition-all duration-300 group-hover:text-foreground group-hover:tracking-wide">
-                  {tech}
+                  {tech.name}
                 </p>
               </div>
             ))}
