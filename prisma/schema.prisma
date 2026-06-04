@@ -365,9 +365,36 @@ model Job {
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
 
+  applications JobApplication[]
+
   @@index([department])
   @@index([isPublished])
   @@map("jobs")
+}
+
+model JobApplication {
+  id          String   @id @default(uuid()) @db.Uuid
+  jobId       String   @map("job_id") @db.Uuid
+  jobTitle    String   @map("job_title")
+  name        String
+  email       String
+  phone       String?
+  coverLetter String?  @map("cover_letter")
+  resumeUrl   String?  @map("resume_url")
+  linkedinUrl String?  @map("linkedin_url")
+  source      String?
+  referrer    String?
+  userAgent   String?  @map("user_agent")
+  ip          String?
+  metadata    Json?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+  @@index([email])
+  @@map("job_applications")
 }
 
 // ─── CONTACT INFO (Other ways to reach us) ──────────────────────────────────

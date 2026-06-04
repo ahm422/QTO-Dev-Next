@@ -14,32 +14,22 @@ export async function POST(request: Request) {
     return apiError(401, "Unauthorized")
   }
 
-  let body: { filename?: string; contentType?: string; fileSize?: number }
+  let formData: FormData
   try {
-    body = await request.json()
+    formData = await request.formData()
   } catch {
     return apiError(400, "Invalid request body")
   }
 
-  const { filename, contentType, fileSize } = body
-
-  if (!filename || typeof filename !== "string") {
-    return apiError(400, "filename is required")
+  const file = formData.get("file")
+  if (!(file instanceof File)) {
+    return apiError(400, "file is required")
   }
 
-  if (!contentType || typeof contentType !== "string") {
-    return apiError(400, "contentType is required")
-  }
-
-  if (typeof fileSize !== "number" || !Number.isFinite(fileSize) || fileSize < 0) {
-    return apiError(400, "fileSize is required")
-  }
+  const { name: filename, type: contentType, size: fileSize } = file
 
   if (!isAllowedMimeType(contentType)) {
-    return apiError(
-      400,
-      "File type not allowed. Use JPEG, PNG, WebP, GIF, MP4, or WebM.",
-    )
+    return apiError(400, "File type not allowed. Use JPEG, PNG, WebP, GIF, MP4, or WebM.")
   }
 
   if (!extensionMatchesMime(filename, contentType)) {
@@ -55,10 +45,23 @@ export async function POST(request: Request) {
   const key = buildMediaKey(filename)
 
   try {
+    // Generate presigned URL then PUT from server — avoids browser CORS entirely
     const { presignedUrl, publicUrl } = await getPresignedUploadUrl(key, contentType)
-    return apiSuccess({ url: publicUrl, presignedUrl })
+    const fileBytes = await file.arrayBuffer()
+
+    const putRes = await fetch(presignedUrl, {
+      method: "PUT",
+      headers: { "Content-Type": contentType },
+      body: fileBytes,
+    })
+
+    if (!putRes.ok) {
+      throw new Error(`Storage PUT failed with status ${putRes.status}`)
+    }
+
+    return apiSuccess({ url: publicUrl })
   } catch (err) {
     logApiError("[upload]", err)
-    return apiError(500, "Failed to generate upload URL")
+    return apiError(500, "Upload failed")
   }
 }

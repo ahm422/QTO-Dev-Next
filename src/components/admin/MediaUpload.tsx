@@ -31,12 +31,14 @@ function fileMatchesAccept(file: File, accept: string): boolean {
   })
 }
 
-function putWithProgress(
-  url: string,
+function postWithProgress(
   file: File,
   onProgress: (percent: number) => void,
-): Promise<void> {
+): Promise<string> {
   return new Promise((resolve, reject) => {
+    const body = new FormData()
+    body.append("file", file)
+
     const xhr = new XMLHttpRequest()
     xhr.upload.addEventListener("progress", (e) => {
       if (e.lengthComputable) {
@@ -45,16 +47,27 @@ function putWithProgress(
     })
     xhr.addEventListener("load", () => {
       if (xhr.status >= 200 && xhr.status < 300) {
-        resolve()
+        try {
+          const json = JSON.parse(xhr.responseText) as { details?: { url?: string } }
+          const url = json.details?.url
+          if (url) resolve(url)
+          else reject(new Error("No URL in upload response"))
+        } catch {
+          reject(new Error("Invalid upload response"))
+        }
       } else {
-        reject(new Error("Storage upload failed"))
+        try {
+          const json = JSON.parse(xhr.responseText) as { error?: string }
+          reject(new Error(typeof json.error === "string" ? json.error : "Upload failed"))
+        } catch {
+          reject(new Error("Upload failed"))
+        }
       }
     })
-    xhr.addEventListener("error", () => reject(new Error("Storage upload failed")))
+    xhr.addEventListener("error", () => reject(new Error("Upload failed")))
     xhr.addEventListener("abort", () => reject(new Error("Upload cancelled")))
-    xhr.open("PUT", url)
-    xhr.setRequestHeader("Content-Type", file.type)
-    xhr.send(file)
+    xhr.open("POST", "/api/admin/upload")
+    xhr.send(body)
   })
 }
 
@@ -84,30 +97,7 @@ export default function MediaUpload({
       setVideoPlaying(false)
 
       try {
-        const res = await fetch("/api/admin/upload", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            filename: file.name,
-            contentType: file.type,
-            fileSize: file.size,
-          }),
-        })
-
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}))
-          throw new Error(
-            typeof err.error === "string" ? err.error : "Upload failed",
-          )
-        }
-
-        const { details } = await res.json()
-        const { presignedUrl, url } = details as {
-          presignedUrl: string
-          url: string
-        }
-
-        await putWithProgress(presignedUrl, file, setProgress)
+        const url = await postWithProgress(file, setProgress)
         setUploadedMime(file.type)
         onChange(url)
       } catch (err) {

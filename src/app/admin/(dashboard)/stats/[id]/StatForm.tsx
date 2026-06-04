@@ -16,7 +16,17 @@ export default function StatForm({ defaultValues }: { defaultValues?: Stat }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<StatInput>({
     resolver: formResolver(statSchema),
-    defaultValues: defaultValues ?? { label: "", value: "", description: "", icon: "", color: "", order: 0, isPublished: false },
+    defaultValues: defaultValues
+      ? {
+          label: defaultValues.label,
+          value: defaultValues.value,
+          description: defaultValues.description ?? "",
+          icon: defaultValues.icon ?? "",
+          color: defaultValues.color ?? "",
+          order: defaultValues.order,
+          isPublished: defaultValues.isPublished,
+        }
+      : { label: "", value: "", description: "", icon: "", color: "", order: 0, isPublished: false },
   })
   const { isSubmitting } = form.formState
 
