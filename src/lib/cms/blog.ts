@@ -1,30 +1,47 @@
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { mapBlogPost } from "./mappers";
 import type { BlogPost } from "@/types/blog";
 
-async function fetchPublishedPosts(): Promise<BlogPost[]> {
-  const items = await prisma.blogPost.findMany({
-    where: { isPublished: true },
-    orderBy: { publishedAt: "desc" },
-  });
-  return items.map(mapBlogPost);
-}
+export const findAllPublishedBlogPosts = cache(
+  unstable_cache(
+    async (): Promise<BlogPost[]> => {
+      const items = await prisma.blogPost.findMany({
+        where: { isPublished: true },
+        orderBy: { publishedAt: "desc" },
+      });
+      return items.map(mapBlogPost);
+    },
+    ["published-blog-posts"],
+    { revalidate: 3600, tags: ["blog"] }
+  )
+);
 
-export const findAllPublishedBlogPosts = cache(fetchPublishedPosts);
+export const findBlogPostBySlug = cache(
+  unstable_cache(
+    async (slug: string) => {
+      const item = await prisma.blogPost.findFirst({
+        where: { slug, isPublished: true },
+      });
+      return item ? mapBlogPost(item) : null;
+    },
+    ["blog-post-by-slug"],
+    { revalidate: 3600, tags: ["blog"] }
+  )
+);
 
-export const findBlogPostBySlug = cache(async (slug: string) => {
-  const item = await prisma.blogPost.findFirst({
-    where: { slug, isPublished: true },
-  });
-  return item ? mapBlogPost(item) : null;
-});
-
-export const findPublishedBlogSlugs = cache(async () => {
-  const items = await prisma.blogPost.findMany({
-    where: { isPublished: true },
-    select: { slug: true },
-    orderBy: { publishedAt: "desc" },
-  });
-  return items.map((i) => i.slug);
-});
+export const findPublishedBlogSlugs = cache(
+  unstable_cache(
+    async () => {
+      const items = await prisma.blogPost.findMany({
+        where: { isPublished: true },
+        select: { slug: true },
+        orderBy: { publishedAt: "desc" },
+      });
+      return items.map((i) => i.slug);
+    },
+    ["published-blog-slugs"],
+    { revalidate: 3600, tags: ["blog"] }
+  )
+);

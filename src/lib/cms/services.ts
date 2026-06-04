@@ -1,38 +1,61 @@
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { mapService } from "./mappers";
 import { mapPrismaToContentService } from "./mapContentService";
 import type { WebDevelopmentServiceData } from "@/content/services/web-development";
 
-export const findPublishedServices = cache(async () => {
-  const items = await prisma.service.findMany({
-    where: { isPublished: true },
-    orderBy: { order: "asc" },
-  });
-  return items.map(mapService);
-});
+export const findPublishedServices = cache(
+  unstable_cache(
+    async () => {
+      const items = await prisma.service.findMany({
+        where: { isPublished: true },
+        orderBy: { order: "asc" },
+      });
+      return items.map(mapService);
+    },
+    ["published-services"],
+    { revalidate: 3600, tags: ["services"] }
+  )
+);
 
-export const findServiceBySlug = cache(async (slug: string) => {
-  const item = await prisma.service.findFirst({
-    where: { slug, isPublished: true },
-  });
-  return item ? mapService(item) : null;
-});
+export const findServiceBySlug = cache(
+  unstable_cache(
+    async (slug: string) => {
+      const item = await prisma.service.findFirst({
+        where: { slug, isPublished: true },
+      });
+      return item ? mapService(item) : null;
+    },
+    ["service-by-slug"],
+    { revalidate: 3600, tags: ["services"] }
+  )
+);
 
-export const findPublishedServiceSlugs = cache(async () => {
-  const items = await prisma.service.findMany({
-    where: { isPublished: true },
-    select: { slug: true },
-    orderBy: { order: "asc" },
-  });
-  return items.map((i) => i.slug);
-});
+export const findPublishedServiceSlugs = cache(
+  unstable_cache(
+    async () => {
+      const items = await prisma.service.findMany({
+        where: { isPublished: true },
+        select: { slug: true },
+        orderBy: { order: "asc" },
+      });
+      return items.map((i) => i.slug);
+    },
+    ["published-service-slugs"],
+    { revalidate: 3600, tags: ["services"] }
+  )
+);
 
 export const findContentServiceBySlug = cache(
-  async (slug: string): Promise<WebDevelopmentServiceData | null> => {
-    const row = await prisma.service.findFirst({
-      where: { slug, isPublished: true },
-    });
-    return row ? mapPrismaToContentService(row) : null;
-  }
+  unstable_cache(
+    async (slug: string): Promise<WebDevelopmentServiceData | null> => {
+      const row = await prisma.service.findFirst({
+        where: { slug, isPublished: true },
+      });
+      return row ? mapPrismaToContentService(row) : null;
+    },
+    ["content-service-by-slug"],
+    { revalidate: 3600, tags: ["services"] }
+  )
 );

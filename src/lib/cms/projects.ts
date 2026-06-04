@@ -1,54 +1,85 @@
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { mapProject, mapProjectToPortfolioCase } from "./mappers";
 import { mapPrismaToContentProject } from "./mapContentProject";
 import type { Project as ContentProject } from "@/content/projects/types";
 
-export const findPublishedProjects = cache(async (category?: string) => {
-  const items = await prisma.project.findMany({
-    where: {
-      isPublished: true,
-      ...(category !== undefined && category !== "" && { category }),
+export const findPublishedProjects = cache(
+  unstable_cache(
+    async (category?: string) => {
+      const items = await prisma.project.findMany({
+        where: {
+          isPublished: true,
+          ...(category !== undefined && category !== "" && { category }),
+        },
+        orderBy: { order: "asc" },
+      });
+      return items.map(mapProject);
     },
-    orderBy: { order: "asc" },
-  });
-  return items.map(mapProject);
-});
+    ["published-projects"],
+    { revalidate: 3600, tags: ["projects"] }
+  )
+);
 
-export const findPortfolioProjects = cache(async (take = 6) => {
-  const items = await prisma.project.findMany({
-    where: { isPublished: true },
-    orderBy: { order: "asc" },
-    take,
-  });
-  return items.map((row, i) => mapProjectToPortfolioCase(row, i));
-});
+export const findPortfolioProjects = cache(
+  unstable_cache(
+    async (take = 6) => {
+      const items = await prisma.project.findMany({
+        where: { isPublished: true },
+        orderBy: { order: "asc" },
+        take,
+      });
+      return items.map((row, i) => mapProjectToPortfolioCase(row, i));
+    },
+    ["portfolio-projects"],
+    { revalidate: 3600, tags: ["projects"] }
+  )
+);
 
-export const findProjectBySlug = cache(async (slug: string) => {
-  const item = await prisma.project.findFirst({
-    where: { slug, isPublished: true },
-  });
-  return item ? mapProject(item) : null;
-});
+export const findProjectBySlug = cache(
+  unstable_cache(
+    async (slug: string) => {
+      const item = await prisma.project.findFirst({
+        where: { slug, isPublished: true },
+      });
+      return item ? mapProject(item) : null;
+    },
+    ["project-by-slug"],
+    { revalidate: 3600, tags: ["projects"] }
+  )
+);
 
-export const findPublishedProjectSlugs = cache(async () => {
-  const items = await prisma.project.findMany({
-    where: { isPublished: true },
-    select: { slug: true },
-    orderBy: { order: "asc" },
-  });
-  return items.map((i) => i.slug);
-});
+export const findPublishedProjectSlugs = cache(
+  unstable_cache(
+    async () => {
+      const items = await prisma.project.findMany({
+        where: { isPublished: true },
+        select: { slug: true },
+        orderBy: { order: "asc" },
+      });
+      return items.map((i) => i.slug);
+    },
+    ["published-project-slugs"],
+    { revalidate: 3600, tags: ["projects"] }
+  )
+);
 
-export const findContentProjectBySlug = cache(async (slug: string): Promise<ContentProject | null> => {
-  const row = await prisma.project.findFirst({
-    where: { slug, isPublished: true },
-  });
-  if (!row) return null;
+export const findContentProjectBySlug = cache(
+  unstable_cache(
+    async (slug: string): Promise<ContentProject | null> => {
+      const row = await prisma.project.findFirst({
+        where: { slug, isPublished: true },
+      });
+      if (!row) return null;
 
-  const all = await prisma.project.findMany({
-    where: { isPublished: true },
-    orderBy: { order: "asc" },
-  });
-  return mapPrismaToContentProject(row, all);
-});
+      const all = await prisma.project.findMany({
+        where: { isPublished: true },
+        orderBy: { order: "asc" },
+      });
+      return mapPrismaToContentProject(row, all);
+    },
+    ["content-project-by-slug"],
+    { revalidate: 3600, tags: ["projects"] }
+  )
+);
