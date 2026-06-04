@@ -13,6 +13,7 @@ import {
   careerPortalHomeUrl,
   careerPortalLoginUrl,
 } from "@/config/careersPortal";
+import { JobApplyDialog } from "@/components/careers/JobApplyDialog";
 
 const HEADING_ID = "open-roles-heading";
 
@@ -174,50 +175,17 @@ function JobCard({ job }: { job: Job }) {
         </div>
 
         <div className="mt-auto border-t border-border/70 bg-surface-muted/40 px-5 py-4 sm:px-6">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-xs text-foreground-muted sm:max-w-[52%] sm:text-sm">
-              View the full job description and submit your application on the official{" "}
-              <span className="font-semibold text-foreground">QTO House</span> career portal (
-              <span className="whitespace-nowrap font-mono text-[11px] text-foreground-muted">
-                {CAREER_PORTAL_ORIGIN.replace("https://", "")}
-              </span>
-              ).
-            </p>
-            <div className="flex flex-col gap-2 sm:items-end">
-              <a
-                href={job.applyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => {
-                  analytics.trackEvent("careers_apply_click", {
-                    jobId: job.id,
-                    title: job.title,
-                    department: job.department,
-                    location: job.location,
-                    employmentType: job.employmentType,
-                    workMode: job.workMode,
-                    destination: "career_portal_register",
-                  });
-                }}
-                className={cn(
-                  "inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold sm:w-auto",
-                  "bg-primary text-primary-foreground shadow-md shadow-primary/20 transition-all duration-300",
-                  "hover:bg-primary-hover hover:shadow-lg hover:shadow-primary/25",
-                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                )}
-              >
-                View details &amp; apply
-                <AppIcon name="arrow-right" size="sm" className="!text-xs transition-transform group-hover:translate-x-0.5" />
-              </a>
-              <a
-                href={careerPortalLoginUrl(job.id)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-center text-xs font-semibold text-primary underline-offset-4 hover:underline sm:text-right"
-              >
-                Already have an account? Sign in
-              </a>
-            </div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+            <JobApplyDialog
+              job={{
+                id: job.id,
+                title: job.title,
+                department: job.department,
+                location: job.location,
+                employmentType: job.employmentType,
+                applyUrl: job.applyUrl,
+              }}
+            />
           </div>
         </div>
       </article>
