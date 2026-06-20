@@ -1,4 +1,4 @@
-import { auth } from "@/auth"
+import { getServerSession } from "@/lib/auth/session"
 import { redirect } from "next/navigation"
 import AdminSidebar from "@/components/admin/AdminSidebar"
 import AdminHeader from "@/components/admin/AdminHeader"
@@ -9,7 +9,7 @@ export default async function AdminDashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  const session = await auth()
+  const session = await getServerSession()
   if (session?.user?.role !== "admin") {
     redirect("/admin/login")
   }

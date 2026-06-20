@@ -1,6 +1,6 @@
 "use server"
 
-import { auth } from "@/auth"
+import { getServerSession } from "@/lib/auth/session"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { teamMemberSchema, type TeamMemberInput } from "@/lib/validators/admin/teamMember"
@@ -10,7 +10,7 @@ import { revalidatePaths } from "@/lib/revalidate"
 const PATHS = ["/", "/about"] as const
 
 async function requireAdmin() {
-  const session = await auth()
+  const session = await getServerSession()
   if (session?.user?.role !== "admin") throw new Error("Unauthorized")
 }
 

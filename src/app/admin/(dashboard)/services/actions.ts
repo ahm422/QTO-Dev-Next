@@ -1,6 +1,6 @@
 "use server"
 
-import { auth } from "@/auth"
+import { getServerSession } from "@/lib/auth/session"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { serviceSchema, type ServiceInput } from "@/lib/validators/admin/service"
@@ -9,7 +9,7 @@ import { servicePaths } from "@/lib/revalidate-paths"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
 
 async function requireAdmin() {
-  const session = await auth()
+  const session = await getServerSession()
   if (session?.user?.role !== "admin") throw new Error("Unauthorized")
 }
 

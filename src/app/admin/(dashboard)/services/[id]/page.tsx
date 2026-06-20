@@ -1,4 +1,4 @@
-import { auth } from "@/auth"
+import { getServerSession } from "@/lib/auth/session"
 import { notFound, redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -9,7 +9,7 @@ export default async function ServiceFormPage({
 }: {
   params: Promise<{ id: string }>
 }) {
-  const session = await auth()
+  const session = await getServerSession()
   if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
 
   const { id } = await params

@@ -1,4 +1,4 @@
-import { auth } from "@/auth"
+import { getServerSession } from "@/lib/auth/session"
 import { apiSuccess, apiError, logApiError } from "@/lib/apiResponses"
 import {
   buildMediaKey,
@@ -9,7 +9,7 @@ import {
 } from "@/lib/garage"
 
 export async function POST(request: Request) {
-  const session = await auth()
+  const session = await getServerSession()
   if (session?.user?.role !== "admin") {
     return apiError(401, "Unauthorized")
   }
