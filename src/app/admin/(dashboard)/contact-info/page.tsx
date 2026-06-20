@@ -1,11 +1,11 @@
-import { auth } from "@/auth"
+import { getServerSession } from "@/lib/auth/session"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import ContactInfoTable from "./Table"
 
 export default async function ContactInfoPage() {
-  const session = await auth()
+  const session = await getServerSession()
   if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
   const rows = await prisma.contactInfo.findMany({ orderBy: { order: "asc" } })
   return (

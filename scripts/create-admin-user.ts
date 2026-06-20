@@ -1,18 +1,16 @@
 /**
  * Create (or update) an admin user in the admin_users table.
  *
- * Requires in .env:
- *   DATABASE_URL
+ * Usage:
+ *   npm run admin:create-user                              # interactive prompts
+ *   npm run admin:create-user -- --email=you@example.com  # prompts for password only
+ *   npm run admin:create-user -- --email=you@example.com --password=MyPass123!
  *
- * Optional:
- *   ADMIN_EMAIL    (default: admin@qtodev.local)
- *   ADMIN_PASSWORD (default: generated and printed once)
- *
- * Run: npm run admin:create-user
+ * Requires DATABASE_URL in .env or .env.local.
  */
 import { Pool } from "pg";
 import { hash } from "bcryptjs";
-import { randomBytes } from "node:crypto";
+import { createInterface } from "node:readline";
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 
@@ -38,8 +36,51 @@ function loadEnvFile(path: string) {
   }
 }
 
-function generatePassword(): string {
-  return randomBytes(16).toString("base64url");
+function parseArg(name: string): string | undefined {
+  const flag = `--${name}=`;
+  const arg = process.argv.find((a) => a.startsWith(flag));
+  return arg ? arg.slice(flag.length).trim() : undefined;
+}
+
+function prompt(question: string, hidden = false): Promise<string> {
+  return new Promise((resolve) => {
+    const rl = createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+
+    if (hidden) {
+      // Write question manually; suppress echoed input
+      process.stdout.write(question);
+      process.stdin.setRawMode?.(true);
+      let input = "";
+      process.stdin.resume();
+      process.stdin.setEncoding("utf8");
+
+      const onData = (ch: string) => {
+        if (ch === "\n" || ch === "\r" || ch === "") {
+          process.stdin.setRawMode?.(false);
+          process.stdin.pause();
+          process.stdin.removeListener("data", onData);
+          process.stdout.write("\n");
+          rl.close();
+          resolve(input);
+        } else if (ch === "") {
+          process.exit();
+        } else if (ch === "" || ch === "\b") {
+          if (input.length > 0) input = input.slice(0, -1);
+        } else {
+          input += ch;
+        }
+      };
+      process.stdin.on("data", onData);
+    } else {
+      rl.question(question, (answer) => {
+        rl.close();
+        resolve(answer.trim());
+      });
+    }
+  });
 }
 
 async function main() {
@@ -48,16 +89,35 @@ async function main() {
 
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
-    console.error("Missing DATABASE_URL in .env");
+    console.error("ERROR: DATABASE_URL not set in .env or .env.local");
     process.exit(1);
   }
 
-  const email = (process.env.ADMIN_EMAIL ?? "admin@qtodev.local")
-    .trim()
-    .toLowerCase();
-  const passwordFromEnv = process.env.ADMIN_PASSWORD?.trim();
-  const password = passwordFromEnv || generatePassword();
-  const generatedPassword = !passwordFromEnv;
+  // Resolve email: CLI arg > interactive prompt (no env var fallback)
+  let email = parseArg("email");
+  if (!email) {
+    email = await prompt("Email: ");
+  }
+  email = email.trim().toLowerCase();
+  if (!email || !email.includes("@")) {
+    console.error("ERROR: Invalid email address.");
+    process.exit(1);
+  }
+
+  // Resolve password: CLI arg > interactive prompt (no env var fallback)
+  let password = parseArg("password");
+  if (!password) {
+    password = await prompt("Password: ", true);
+    const confirm = await prompt("Confirm password: ", true);
+    if (password !== confirm) {
+      console.error("ERROR: Passwords do not match.");
+      process.exit(1);
+    }
+  }
+  if (!password || password.length < 8) {
+    console.error("ERROR: Password must be at least 8 characters.");
+    process.exit(1);
+  }
 
   const passwordHash = await hash(password, 12);
 
@@ -73,24 +133,18 @@ async function main() {
   });
 
   try {
-    await pool.query(
+    const result = await pool.query(
       `INSERT INTO admin_users (id, email, password_hash, updated_at)
        VALUES (gen_random_uuid(), $1, $2, now())
-       ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, updated_at = now()`,
+       ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, updated_at = now()
+       RETURNING (xmax = 0) AS inserted`,
       [email, passwordHash]
     );
-    console.log(`\nAdmin user upserted: ${email}`);
+    const inserted = result.rows[0]?.inserted;
+    console.log(`\n${inserted ? "Created" : "Updated"} admin user: ${email}`);
+    console.log("You can now sign in at http://localhost:3000/admin/login");
   } finally {
     await pool.end();
-  }
-
-  console.log("\n--- Admin login (http://localhost:3000/admin/login) ---");
-  console.log("Email:   ", email);
-  if (generatedPassword) {
-    console.log("Password:", password);
-    console.log("\nSave this password; it was generated for this run only.");
-  } else {
-    console.log("Password: (from ADMIN_PASSWORD in .env)");
   }
 }
 

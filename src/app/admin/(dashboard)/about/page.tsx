@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { auth } from "@/auth"
+import { getServerSession } from "@/lib/auth/session"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 
 export default async function AboutPage() {
-  const session = await auth()
+  const session = await getServerSession()
   if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
 
   const rows = await prisma.aboutContent.findMany({ orderBy: { order: "asc" } })

@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { auth } from "@/auth"
+import { getServerSession } from "@/lib/auth/session"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -59,7 +59,7 @@ const QUICK_ACTIONS = [
 ]
 
 export default async function AdminDashboardPage() {
-  const session = await auth()
+  const session = await getServerSession()
   if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
 
   const [
@@ -110,7 +110,7 @@ export default async function AdminDashboardPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Dashboard Overview"
-        subtitle={`Welcome back${session?.user?.name ? `, ${session.user.name}` : ""}. Here's what's happening with your content.`}
+        subtitle={`Welcome back${session?.user?.email ? `, ${session.user.email.split("@")[0]}` : ""}. Here's what's happening with your content.`}
       />
 
       {/* Top stat cards */}

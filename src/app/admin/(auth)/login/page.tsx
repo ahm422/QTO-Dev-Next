@@ -2,7 +2,6 @@
 
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
 import { FormInput } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -30,14 +29,18 @@ function AdminLoginForm() {
 
     setIsSubmitting(true);
     try {
-      const result = await signIn("credentials", {
-        email: email.trim(),
-        password,
-        redirect: false,
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password }),
       });
 
-      if (!result || result.error) {
-        setFormError("Invalid email or password.");
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        setFormError(
+          typeof body?.error === "string" ? body.error : "Invalid email or password."
+        );
         return;
       }
 

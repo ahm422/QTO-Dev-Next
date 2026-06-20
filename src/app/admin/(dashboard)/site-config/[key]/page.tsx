@@ -1,10 +1,10 @@
-import { auth } from "@/auth"
+import { getServerSession } from "@/lib/auth/session"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import SiteConfigForm from "./SiteConfigForm"
 
 export default async function SiteConfigFormPage({ params }: { params: Promise<{ key: string }> }) {
-  const session = await auth()
+  const session = await getServerSession()
   if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
 
   const { key } = await params

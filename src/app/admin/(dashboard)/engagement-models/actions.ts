@@ -1,6 +1,6 @@
 "use server"
 
-import { auth } from "@/auth"
+import { getServerSession } from "@/lib/auth/session"
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
@@ -8,7 +8,7 @@ import { engagementModelSchema, type EngagementModelInput } from "@/lib/validato
 import { persistOrderUpdates } from "@/lib/admin/reorder"
 
 async function requireAdmin() {
-  const session = await auth()
+  const session = await getServerSession()
   if (session?.user?.role !== "admin") throw new Error("Unauthorized")
 }
 
