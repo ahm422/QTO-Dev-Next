@@ -61,19 +61,21 @@ async function main() {
 
   const passwordHash = await hash(password, 12);
 
-  // Strip sslmode from the URL and pass ssl options directly to avoid
-  // pg's new verify-full alias behaviour for sslmode=require.
   const url = new URL(databaseUrl);
+  const sslMode = url.searchParams.get("sslmode");
+  const usesTls =
+    sslMode === "require" || sslMode === "verify-ca" || sslMode === "verify-full";
   url.searchParams.delete("sslmode");
+
   const pool = new Pool({
     connectionString: url.toString(),
-    ssl: { rejectUnauthorized: false },
+    ...(usesTls ? { ssl: { rejectUnauthorized: false } } : {}),
   });
 
   try {
     await pool.query(
-      `INSERT INTO admin_users (email, password_hash)
-       VALUES ($1, $2)
+      `INSERT INTO admin_users (id, email, password_hash, updated_at)
+       VALUES (gen_random_uuid(), $1, $2, now())
        ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, updated_at = now()`,
       [email, passwordHash]
     );
