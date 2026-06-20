@@ -13,11 +13,33 @@ import { Label } from "@/components/ui/label"
 import { createWhyChooseUs, updateWhyChooseUs } from "../actions"
 import type { WhyChooseUs } from "@prisma/client"
 
+const emptyWhyChooseUsValues: WhyChooseUsInput = {
+  context: "homepage",
+  title: "",
+  description: "",
+  icon: "",
+  order: 0,
+  isPublished: false,
+}
+
+function toWhyChooseUsFormValues(record?: WhyChooseUs): WhyChooseUsInput {
+  if (!record) return emptyWhyChooseUsValues
+
+  return {
+    context: record.context,
+    title: record.title,
+    description: record.description,
+    icon: record.icon ?? "",
+    order: record.order,
+    isPublished: record.isPublished,
+  }
+}
+
 export default function WhyChooseUsForm({ defaultValues }: { defaultValues?: WhyChooseUs }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<WhyChooseUsInput>({
     resolver: formResolver(whyChooseUsSchema),
-    defaultValues: defaultValues ?? { context: "homepage", title: "", description: "", icon: "", order: 0, isPublished: false },
+    defaultValues: toWhyChooseUsFormValues(defaultValues),
   })
   const { isSubmitting } = form.formState
 

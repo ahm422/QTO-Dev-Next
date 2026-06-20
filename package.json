@@ -14,6 +14,8 @@
     "prisma:validate": "prisma validate",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",
+    "db:up": "docker compose up -d",
+    "db:setup": "docker compose up -d && prisma migrate deploy && prisma db seed",
     "admin:create-user": "tsx scripts/create-admin-user.ts",
     "preview": "opennextjs-cloudflare build && wrangler dev",
     "deploy": "opennextjs-cloudflare build && wrangler deploy",
