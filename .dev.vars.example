@@ -11,13 +11,8 @@ DIRECT_URL=postgresql://postgres:<db-password>@db.<project-ref>.supabase.co:5432
 
 PGSSL_REJECT_UNAUTHORIZED=false
 
-# NextAuth v5 — JWT secret (generate with: openssl rand -base64 33)
-AUTH_SECRET=replace-with-strong-random-secret
-
-# JWT signing secrets for Phase 2 refresh-token auth. Generate: openssl rand -hex 64
-# AUTH_SECRET remains required during the NextAuth migration period.
+# JWT signing secret for custom auth. Generate: openssl rand -hex 64
 JWT_ACCESS_SECRET=replace-with-64-char-hex-secret
-JWT_REFRESH_SECRET=replace-with-64-char-hex-secret
 
 # Optional — only for `npm run admin:create-user` (local dev superuser bootstrap)
 # ADMIN_EMAIL=admin@qtodev.local

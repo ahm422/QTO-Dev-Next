@@ -1,4 +1,4 @@
-import { SignJWT, jwtVerify } from "jose";
+import { SignJWT, jwtVerify, errors } from "jose";
 import { ACCESS_TOKEN_EXPIRY } from "./constants";
 
 export type AccessTokenPayload = {
@@ -34,6 +34,32 @@ export async function signAccessToken(
     .setExpirationTime(`${ACCESS_TOKEN_EXPIRY}s`)
     .setIssuedAt()
     .sign(getSecret());
+}
+
+export type DecodeResult =
+  | { status: "valid"; payload: AccessTokenPayload }
+  | { status: "expired" }
+  | { status: "invalid" };
+
+export async function decodeAccessToken(token: string): Promise<DecodeResult> {
+  try {
+    const { payload } = await jwtVerify(token, getSecret(), {
+      issuer: ISS,
+      audience: AUD,
+    });
+    return {
+      status: "valid",
+      payload: {
+        sub: payload.sub as string,
+        email: payload["email"] as string,
+        role: payload["role"] as string,
+        jti: payload.jti as string,
+      },
+    };
+  } catch (err) {
+    if (err instanceof errors.JWTExpired) return { status: "expired" };
+    return { status: "invalid" };
+  }
 }
 
 export async function verifyAccessToken(

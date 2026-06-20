@@ -133,13 +133,13 @@ Where to set values:
 
 Copy from `.env.example` / `.dev.vars.example` into the Cloudflare dashboard (Production and Preview if used). Never commit real secrets.
 
-**Server-only (never use `NEXT_PUBLIC_` prefix):** `AUTH_SECRET`, `REVALIDATE_SECRET`, Garage/Resend keys, and other secrets below.
+**Server-only (never use `NEXT_PUBLIC_` prefix):** `JWT_ACCESS_SECRET`, `REVALIDATE_SECRET`, Garage/Resend keys, and other secrets below.
 
 | Variable | Cloudflare type | Notes |
 |----------|-----------------|--------|
 | `DATABASE_URL` | Secret | Supabase transaction pooler (port `6543`), `sslmode=require` |
 | `DIRECT_URL` | Secret | Optional at runtime; needed for `prisma migrate` from CI |
-| `AUTH_SECRET` | Secret | NextAuth JWT signing (`openssl rand -base64 33`) |
+| `JWT_ACCESS_SECRET` | Secret | JWT signing secret (`openssl rand -hex 64`) |
 | `GARAGE_ENDPOINT` | Secret | S3-compatible endpoint |
 | `GARAGE_ACCESS_KEY_ID` | Secret | |
 | `GARAGE_SECRET_ACCESS_KEY` | Secret | |
@@ -154,9 +154,9 @@ Copy from `.env.example` / `.dev.vars.example` into the Cloudflare dashboard (Pr
 | `UPSTASH_REDIS_REST_URL` | Secret | Optional; rate limiting |
 | `UPSTASH_REDIS_REST_TOKEN` | Secret | Optional; rate limiting |
 
-CLI alternative for secrets: `wrangler secret put AUTH_SECRET` (repeat per secret).
+CLI alternative for secrets: `wrangler secret put JWT_ACCESS_SECRET` (repeat per secret).
 
-**Admin CMS sign-in:** see [docs/admin-auth.md](docs/admin-auth.md) for NextAuth credentials, `npm run admin:create-user`, and local smoke tests.
+**Admin CMS sign-in:** see [docs/admin-auth.md](docs/admin-auth.md) for custom JWT auth, `npm run admin:create-user`, and local smoke tests.
 
 ### Local development
 
