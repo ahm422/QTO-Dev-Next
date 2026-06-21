@@ -33,14 +33,19 @@ function useAdminBreadcrumbs() {
   return crumbs
 }
 
-export default function AdminHeader() {
+interface AdminHeaderProps {
+  userEmail?: string
+  userRole?: string
+}
+
+export default function AdminHeader({ userEmail, userRole }: AdminHeaderProps) {
   const breadcrumbs = useAdminBreadcrumbs()
   const isRoot = breadcrumbs.length === 1
   const { theme, toggleAdminTheme } = useAdminTheme()
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-background/95 backdrop-blur-sm px-4 lg:px-6">
-      <AdminMobileNav />
+      <AdminMobileNav userEmail={userEmail} userRole={userRole} />
 
       {/* Breadcrumbs */}
       <nav className="flex-1 flex items-center gap-1 min-w-0" aria-label="Breadcrumb">

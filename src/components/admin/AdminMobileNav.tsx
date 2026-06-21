@@ -4,15 +4,21 @@ import { useState } from "react"
 import AdminNavList, { AdminNavLogout } from "@/components/admin/AdminNavList"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Menu } from "lucide-react"
 import { useAdminTheme } from "@/components/admin/AdminThemeProvider"
 import { SiteLogo } from "@/components/common/SiteLogo"
-import SidebarUserProfile from "@/components/admin/navigation/SidebarUserProfile"
 
-export default function AdminMobileNav() {
+interface AdminMobileNavProps {
+  userEmail?: string
+  userRole?: string
+}
+
+export default function AdminMobileNav({ userEmail = "", userRole = "admin" }: AdminMobileNavProps) {
   const [open, setOpen] = useState(false)
   const { theme } = useAdminTheme()
   const themeClass = theme === "dark" ? "admin-dark" : "admin-light"
+  const initials = userEmail.slice(0, 2).toUpperCase()
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -29,7 +35,17 @@ export default function AdminMobileNav() {
         </SheetHeader>
         <AdminNavList onNavigate={() => setOpen(false)} />
         <div className="border-t border-border shrink-0">
-          <SidebarUserProfile />
+          <div className="flex items-center gap-3 px-3 py-2">
+            <Avatar className="h-8 w-8 shrink-0">
+              <AvatarFallback className="bg-primary/20 text-primary text-xs font-semibold">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-foreground leading-none">{userEmail}</p>
+              <p className="truncate text-xs text-muted-foreground mt-0.5 capitalize">{userRole}</p>
+            </div>
+          </div>
           <div className="px-3 pb-3">
             <AdminNavLogout />
           </div>
