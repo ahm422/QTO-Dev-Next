@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       return response;
     }
 
-    const accessToken = await signAccessToken({ sub: user.id, email: user.email, role: user.role });
+    const accessToken = await signAccessToken({ sub: user.id, role: user.role });
 
     const response = NextResponse.json({ success: true, ok: true }, { status: 200 });
     setAuthCookies(response, { accessToken, refreshToken: rotated.rawToken });

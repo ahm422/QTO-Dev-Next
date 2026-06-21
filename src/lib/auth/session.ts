@@ -3,17 +3,16 @@ import { verifyAccessToken } from "./jwt";
 import { COOKIE_ACCESS_TOKEN } from "./constants";
 
 export interface ServerSession {
-  user: { id: string; email: string; role: string };
+  user: { id: string; role: string };
 }
 
 export async function getServerSession(): Promise<ServerSession | null> {
   // Fast path: middleware already verified the token and forwarded user identity
   const h = await headers();
   const userId = h.get("x-user-id");
-  const email = h.get("x-user-email");
   const role = h.get("x-user-role");
-  if (userId && email && role) {
-    return { user: { id: userId, email, role } };
+  if (userId && role) {
+    return { user: { id: userId, role } };
   }
 
   // Fallback: verify cookie directly (API routes, pages not behind middleware)
@@ -24,5 +23,5 @@ export async function getServerSession(): Promise<ServerSession | null> {
   const payload = await verifyAccessToken(token);
   if (!payload) return null;
 
-  return { user: { id: payload.sub, email: payload.email, role: payload.role } };
+  return { user: { id: payload.sub, role: payload.role } };
 }

@@ -26,7 +26,6 @@ export async function POST(request: NextRequest) {
     await writeAuditLog({
       action: AUDIT_ACTIONS.LOGOUT_ALL,
       userId: payload.sub,
-      email: payload.email,
       ip,
       userAgent,
     });

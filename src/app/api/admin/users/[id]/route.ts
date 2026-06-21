@@ -84,7 +84,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       await writeAuditLog({
         action: AUDIT_ACTIONS.ADMIN_ROLE_CHANGED,
         userId: session!.user.id,
-        email: session!.user.email,
         metadata: { targetUserId: id, previousRole, newRole: changes.role },
       });
     }
@@ -96,7 +95,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       await writeAuditLog({
         action: AUDIT_ACTIONS.ADMIN_USER_UPDATED,
         userId: session!.user.id,
-        email: session!.user.email,
         metadata: { targetUserId: id, changes: otherChanges },
       });
     }
@@ -140,7 +138,6 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     await writeAuditLog({
       action: AUDIT_ACTIONS.ADMIN_DEACTIVATED,
       userId: session!.user.id,
-      email: session!.user.email,
       metadata: { targetUserId: id },
     });
 

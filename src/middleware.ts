@@ -148,7 +148,6 @@ function forwardAuthenticated(
   const requestHeaders = new Headers(request.headers);
   if (payload) {
     requestHeaders.set("x-user-id", payload.sub);
-    requestHeaders.set("x-user-email", payload.email);
     requestHeaders.set("x-user-role", payload.role);
   }
 

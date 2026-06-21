@@ -16,3 +16,11 @@ service = "qtodev-site"
 # Image optimization: https://opennext.js.org/cloudflare/howtos/image
 [images]
 binding = "IMAGES"
+
+# Nightly token cleanup — fires at 03:00 UTC and calls GET /api/cron/cleanup-tokens
+# via an external cron service (e.g. Upstash QStash or EasyCron) with:
+#   Authorization: Bearer <CRON_SECRET>
+# Cloudflare scheduled events require a custom `scheduled` handler; until opennextjs-cloudflare
+# exposes one, use an external HTTP trigger pointed at your deployed worker URL.
+[triggers]
+crons = ["0 3 * * *"]

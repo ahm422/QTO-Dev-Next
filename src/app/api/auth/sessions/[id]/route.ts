@@ -35,7 +35,6 @@ export async function DELETE(
 
     await writeAuditLog({
       userId: payload.sub,
-      email: payload.email,
       action: AUDIT_ACTIONS.SESSION_REVOKED,
       ip,
       userAgent,
