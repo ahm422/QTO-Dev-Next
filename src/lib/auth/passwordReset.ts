@@ -25,6 +25,15 @@ export async function createPasswordResetToken(
   return { rawToken, expiresAt };
 }
 
+export async function validatePasswordResetToken(
+  rawToken: string
+): Promise<{ valid: boolean }> {
+  const tokenHash = await hashToken(rawToken);
+  const record = await prisma.passwordResetToken.findUnique({ where: { tokenHash } });
+  const valid = !!(record && record.usedAt === null && record.expiresAt > new Date());
+  return { valid };
+}
+
 export async function consumePasswordResetToken(
   rawToken: string,
   newPassword: string

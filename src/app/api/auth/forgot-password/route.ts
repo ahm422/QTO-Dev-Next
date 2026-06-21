@@ -7,7 +7,7 @@ import { forgotPasswordSchema } from "@/lib/validators/auth";
 import { formatZodFieldErrors } from "@/lib/validators/http";
 import { apiError, logApiError } from "@/lib/apiResponses";
 import { checkRateLimit, rateLimitExceededResponse } from "@/lib/rateLimit";
-import { getResendAddresses, isResendConfigured, sendResendReactEmail } from "@/lib/resend";
+import { getResendFromAddress, isResendConfigured, sendResendReactEmail } from "@/lib/resend";
 import PasswordResetEmail from "@/emails/PasswordResetEmail";
 
 const GENERIC_SUCCESS = {
@@ -53,12 +53,12 @@ export async function POST(request: NextRequest) {
         const resetUrl = `${siteUrl}/admin/reset-password?token=${rawToken}`;
 
         if (isResendConfigured()) {
-          const addresses = getResendAddresses();
-          if (!addresses) {
-            console.warn("[forgot-password] RESEND_FROM_EMAIL or RESEND_TO_EMAIL missing; skipping email");
+          const from = getResendFromAddress();
+          if (!from) {
+            console.warn("[forgot-password] RESEND_FROM_EMAIL missing; skipping email");
           } else {
             await sendResendReactEmail({
-              from: addresses.from,
+              from,
               to: email,
               subject: "Reset your admin password",
               react: jsx(PasswordResetEmail, { resetUrl }),
