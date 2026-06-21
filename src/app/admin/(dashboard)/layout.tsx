@@ -20,7 +20,7 @@ export default async function AdminDashboardLayout({
 
   return (
     <AdminThemeProvider>
-      <AdminSidebar userRole={userRole} />
+      <AdminSidebar userRole={userRole} userEmail={userEmail} />
       <div className="lg:pl-64 flex flex-col min-h-screen">
         <AdminHeader userEmail={userEmail} userRole={userRole} />
         <main className="flex-1 p-4 lg:p-6">{children}</main>

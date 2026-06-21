@@ -10,10 +10,20 @@ export default function AdminSidebarBrand() {
   return (
     <Link
       href="/admin"
-      className="flex items-center h-16 px-6 border-b border-border shrink-0"
+      className="relative flex items-center gap-3 h-16 px-5 border-b border-border shrink-0 overflow-hidden group"
       aria-label="QTO Dev Admin"
     >
-      <SiteLogo forcedTheme={theme} height={36} width={120} className="h-9 w-auto object-contain" priority />
+      {/* Subtle gradient wash */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+      {/* Left accent bar */}
+      <span className="relative shrink-0 h-7 w-[3px] rounded-full bg-gradient-to-b from-primary to-primary/30" />
+      <SiteLogo
+        forcedTheme={theme}
+        height={32}
+        width={110}
+        className="relative h-8 w-auto object-contain"
+        priority
+      />
     </Link>
   )
 }
