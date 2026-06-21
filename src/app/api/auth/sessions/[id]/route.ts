@@ -6,6 +6,7 @@ import {
 } from "@/lib/auth/tokens";
 import { clearAuthCookies } from "@/lib/auth/cookies";
 import { writeAuditLog } from "@/lib/auth/audit";
+import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { apiError, logApiError } from "@/lib/apiResponses";
 import { COOKIE_ACCESS_TOKEN, COOKIE_REFRESH_TOKEN } from "@/lib/auth/constants";
 
@@ -35,7 +36,7 @@ export async function DELETE(
     await writeAuditLog({
       userId: payload.sub,
       email: payload.email,
-      action: "session_revoked",
+      action: AUDIT_ACTIONS.SESSION_REVOKED,
       ip,
       userAgent,
       metadata: { sessionId, wasCurrent },

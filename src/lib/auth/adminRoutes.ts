@@ -1,5 +1,6 @@
 const ROUTE_RULES: { prefix: string; allowedRoles: string[] }[] = [
   { prefix: "/admin/users", allowedRoles: ["super_admin"] },
+  { prefix: "/admin/audit-log", allowedRoles: ["super_admin"] },
   { prefix: "/admin", allowedRoles: ["super_admin", "admin", "editor"] },
 ];
 

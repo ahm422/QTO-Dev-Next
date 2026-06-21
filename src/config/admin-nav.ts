@@ -20,6 +20,7 @@ import {
   Phone,
   Settings2,
   Shield,
+  ScrollText,
 } from "lucide-react"
 
 export type AdminNavGroup = "main" | "content" | "settings"
@@ -57,6 +58,7 @@ export const adminNavItems: AdminNavItem[] = [
   // SETTINGS
   { label: "Site Config",       href: "/admin/site-config",       icon: Settings2,      model: "SiteConfig",      group: "settings" },
   { label: "Admin Users",       href: "/admin/users",             icon: Shield,                                   group: "settings", requiredRole: ["super_admin"] },
+  { label: "Audit Log",         href: "/admin/audit-log",         icon: ScrollText,                               group: "settings", requiredRole: ["super_admin"] },
 ]
 
 export const GROUP_LABELS: Record<AdminNavGroup, string> = {

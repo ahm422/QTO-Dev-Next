@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { consumePasswordResetToken } from "@/lib/auth/passwordReset";
 import { writeAuditLog } from "@/lib/auth/audit";
+import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { resetPasswordSchema } from "@/lib/validators/auth";
 import { formatZodFieldErrors } from "@/lib/validators/http";
 import { apiError, logApiError } from "@/lib/apiResponses";
@@ -42,7 +43,7 @@ export async function POST(request: NextRequest) {
     }
 
     await writeAuditLog({
-      action: "password_reset_completed",
+      action: AUDIT_ACTIONS.PASSWORD_RESET_COMPLETED,
       userId: result.userId ?? null,
       ip,
       userAgent,

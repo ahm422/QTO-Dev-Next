@@ -5,6 +5,7 @@ import { signAccessToken } from "@/lib/auth/jwt";
 import { createRefreshToken } from "@/lib/auth/tokens";
 import { setAuthCookies } from "@/lib/auth/cookies";
 import { writeAuditLog } from "@/lib/auth/audit";
+import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { DUMMY_BCRYPT_HASH } from "@/lib/auth/dummyHash";
 import { MAX_FAILED_LOGINS, LOCKOUT_DURATION_MS } from "@/lib/auth/constants";
 import { loginSchema } from "@/lib/validators/auth";
@@ -60,7 +61,7 @@ export async function POST(request: NextRequest) {
     // Layer 2 — account lockout check (before bcrypt; don't increment while locked)
     if (user?.lockedUntil && user.lockedUntil > new Date()) {
       const secondsRemaining = (user.lockedUntil.getTime() - Date.now()) / 1000;
-      await writeAuditLog({ action: "login_failed", email, ip, userAgent, metadata: { reason: "account_locked" } });
+      await writeAuditLog({ action: AUDIT_ACTIONS.LOGIN_FAILED, email, ip, userAgent, metadata: { reason: "account_locked" } });
       return accountLockedResponse(secondsRemaining);
     }
 
@@ -78,7 +79,7 @@ export async function POST(request: NextRequest) {
             data: { failedLoginCount: newCount, lockedUntil },
           });
           await writeAuditLog({
-            action: "account_locked",
+            action: AUDIT_ACTIONS.ACCOUNT_LOCKED,
             userId: user.id,
             email,
             ip,
@@ -117,7 +118,7 @@ export async function POST(request: NextRequest) {
     );
     setAuthCookies(response, { accessToken, refreshToken });
 
-    await writeAuditLog({ action: "login_success", userId: user.id, email: user.email, ip, userAgent });
+    await writeAuditLog({ action: AUDIT_ACTIONS.LOGIN_SUCCESS, userId: user.id, email: user.email, ip, userAgent });
 
     return response;
   } catch (error) {

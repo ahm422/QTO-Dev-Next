@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getClientIp, rateLimitExceededResponse, RateLimitResult } from "@/lib/rateLimit";
+import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 
 export { getClientIp, rateLimitExceededResponse };
 
@@ -155,7 +156,7 @@ type AuditCtx = { email: string; userAgent: string | null };
 
 export async function recordFailedLoginAttempt(ip: string, ctx: AuditCtx): Promise<void> {
   const { writeAuditLog } = await import("@/lib/auth/audit");
-  await writeAuditLog({ action: "login_failed", email: ctx.email, ip, userAgent: ctx.userAgent });
+  await writeAuditLog({ action: AUDIT_ACTIONS.LOGIN_FAILED, email: ctx.email, ip, userAgent: ctx.userAgent });
 
   if (hasUpstashConfig()) {
     try {
@@ -169,7 +170,7 @@ export async function recordFailedLoginAttempt(ip: string, ctx: AuditCtx): Promi
         await redis.set(`bruteforce:blocked:${ip}`, 1, { ex: BRUTE_FORCE_BLOCK_TTL_SECONDS });
         const blockedUntil = new Date(Date.now() + BRUTE_FORCE_BLOCK_TTL_SECONDS * 1000);
         await writeAuditLog({
-          action: "ip_blocked_brute_force",
+          action: AUDIT_ACTIONS.IP_BLOCKED_BRUTE_FORCE,
           ip,
           userAgent: ctx.userAgent,
           metadata: { failureCount: count, blockedUntil },

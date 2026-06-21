@@ -1,10 +1,11 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import type { AuditAction } from "@/lib/auth/auditActions";
 
 interface AuditLogInput {
   userId?: string | null;
   email?: string | null;
-  action: string;
+  action: AuditAction | string;
   ip?: string | null;
   userAgent?: string | null;
   metadata?: Record<string, unknown>;

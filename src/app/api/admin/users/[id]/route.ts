@@ -8,6 +8,7 @@ import { formatZodFieldErrors } from "@/lib/validators/http";
 import { updateAdminUserSchema } from "@/lib/validators/admin/adminUser";
 import { revokeAllUserTokens } from "@/lib/auth/tokens";
 import { writeAuditLog } from "@/lib/auth/audit";
+import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 
 const SAFE_SELECT = {
   id: true,
@@ -55,8 +56,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   }
 
   // Safeguard: cannot demote last active super_admin
+  let previousRole: string | undefined;
   if (changes.role && changes.role !== "super_admin") {
     const target = await prisma.adminUser.findUnique({ where: { id }, select: { role: true } });
+    previousRole = target?.role;
     if (target?.role === "super_admin") {
       const count = await prisma.adminUser.count({
         where: { role: "super_admin", isActive: true },
@@ -65,6 +68,9 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         return apiError(409, "Cannot demote the last active super_admin.");
       }
     }
+  } else if (changes.role) {
+    const target = await prisma.adminUser.findUnique({ where: { id }, select: { role: true } });
+    previousRole = target?.role;
   }
 
   try {
@@ -74,12 +80,26 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       select: SAFE_SELECT,
     });
 
-    await writeAuditLog({
-      action: "admin_user_updated",
-      userId: session!.user.id,
-      email: session!.user.email,
-      metadata: { targetUserId: id, changes },
-    });
+    if (changes.role !== undefined) {
+      await writeAuditLog({
+        action: AUDIT_ACTIONS.ADMIN_ROLE_CHANGED,
+        userId: session!.user.id,
+        email: session!.user.email,
+        metadata: { targetUserId: id, previousRole, newRole: changes.role },
+      });
+    }
+
+    const otherChanges = Object.fromEntries(
+      Object.entries(changes).filter(([k]) => k !== "role")
+    );
+    if (Object.keys(otherChanges).length > 0) {
+      await writeAuditLog({
+        action: AUDIT_ACTIONS.ADMIN_USER_UPDATED,
+        userId: session!.user.id,
+        email: session!.user.email,
+        metadata: { targetUserId: id, changes: otherChanges },
+      });
+    }
 
     return apiSuccess({ user });
   } catch (e) {
@@ -118,7 +138,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     await revokeAllUserTokens(id);
 
     await writeAuditLog({
-      action: "admin_user_deactivated",
+      action: AUDIT_ACTIONS.ADMIN_DEACTIVATED,
       userId: session!.user.id,
       email: session!.user.email,
       metadata: { targetUserId: id },
