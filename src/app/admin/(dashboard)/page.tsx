@@ -74,6 +74,7 @@ export default async function AdminDashboardPage() {
     industryTotal,
     engagementTotal,
     activityItems,
+    currentUser,
   ] = await Promise.all([
     prisma.service.count(),
     prisma.service.count({ where: { isPublished: true } }),
@@ -90,6 +91,7 @@ export default async function AdminDashboardPage() {
     prisma.industry.count(),
     prisma.engagementModel.count(),
     getActivityFeedItems(),
+    prisma.adminUser.findUnique({ where: { id: session!.user.id }, select: { email: true, displayName: true } }),
   ])
 
   const totalContent = servicesTotal + processStepsTotal + blogTotal + projectsTotal + teamTotal + testimonialTotal + techTotal + faqTotal + industryTotal + engagementTotal
@@ -110,7 +112,7 @@ export default async function AdminDashboardPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Dashboard Overview"
-        subtitle={`Welcome back${session?.user?.email ? `, ${session.user.email.split("@")[0]}` : ""}. Here's what's happening with your content.`}
+        subtitle={`Welcome back${currentUser ? `, ${currentUser.displayName ?? currentUser.email.split("@")[0]}` : ""}. Here's what's happening with your content.`}
       />
 
       {/* Top stat cards */}

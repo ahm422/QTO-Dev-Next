@@ -3,7 +3,6 @@ import { ACCESS_TOKEN_EXPIRY } from "./constants";
 
 export type AccessTokenPayload = {
   sub: string;
-  email: string;
   role: string;
   jti: string;
 };
@@ -18,6 +17,11 @@ function getSecret(): Uint8Array {
       "JWT_ACCESS_SECRET is not set. Generate one with: openssl rand -hex 64"
     );
   }
+  if (process.env.NODE_ENV === "production" && secret.length < 64) {
+    throw new Error(
+      "JWT_ACCESS_SECRET must be ≥ 64 hex chars in production. Generate: openssl rand -hex 64"
+    );
+  }
   return new TextEncoder().encode(secret);
 }
 
@@ -25,7 +29,7 @@ export async function signAccessToken(
   payload: Omit<AccessTokenPayload, "jti">
 ): Promise<string> {
   const jti = crypto.randomUUID();
-  return new SignJWT({ email: payload.email, role: payload.role })
+  return new SignJWT({ role: payload.role })
     .setProtectedHeader({ alg: "HS256" })
     .setSubject(payload.sub)
     .setJti(jti)
@@ -51,7 +55,6 @@ export async function decodeAccessToken(token: string): Promise<DecodeResult> {
       status: "valid",
       payload: {
         sub: payload.sub as string,
-        email: payload["email"] as string,
         role: payload["role"] as string,
         jti: payload.jti as string,
       },
@@ -72,7 +75,6 @@ export async function verifyAccessToken(
     });
     return {
       sub: payload.sub as string,
-      email: payload["email"] as string,
       role: payload["role"] as string,
       jti: payload.jti as string,
     };

@@ -68,3 +68,20 @@ export async function consumePasswordResetToken(
 
   return { success: true, userId: user.id };
 }
+
+const RESET_TOKEN_RETENTION_DAYS = 30;
+
+export async function cleanupExpiredPasswordResetTokens(): Promise<number> {
+  const retentionCutoff = new Date(
+    Date.now() - RESET_TOKEN_RETENTION_DAYS * 24 * 60 * 60 * 1000
+  );
+  const { count } = await prisma.passwordResetToken.deleteMany({
+    where: {
+      OR: [
+        { expiresAt: { lt: new Date() }, usedAt: null },  // expired, never used
+        { usedAt: { lt: retentionCutoff } },              // used 30+ days ago
+      ],
+    },
+  });
+  return count;
+}

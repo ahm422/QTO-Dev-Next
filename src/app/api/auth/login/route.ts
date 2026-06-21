@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const accessToken = await signAccessToken({ sub: user.id, email: user.email, role: user.role });
+    const accessToken = await signAccessToken({ sub: user.id, role: user.role });
     const { rawToken: refreshToken } = await createRefreshToken(user.id, ip, userAgent ?? undefined);
 
     const response = NextResponse.json(

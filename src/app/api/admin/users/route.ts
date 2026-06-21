@@ -60,7 +60,6 @@ export async function POST(request: NextRequest) {
     await writeAuditLog({
       action: AUDIT_ACTIONS.ADMIN_CREATED,
       userId: session!.user.id,
-      email: session!.user.email,
       metadata: { targetUserId: user.id, targetEmail: email, role },
     });
 

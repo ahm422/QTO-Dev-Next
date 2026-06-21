@@ -21,7 +21,6 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
     await writeAuditLog({
       action: AUDIT_ACTIONS.ADMIN_USER_FORCE_LOGOUT,
       userId: session!.user.id,
-      email: session!.user.email,
       metadata: { targetUserId: id, revokedTokens: revoked },
     });
 

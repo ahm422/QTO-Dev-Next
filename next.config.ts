@@ -52,6 +52,42 @@ const remotePatterns = [
     : []),
 ];
 
+const IS_DEV = process.env.NODE_ENV === "development";
+
+function buildGlobalCsp(): string {
+  const scriptSrc = IS_DEV
+    ? "'self' 'unsafe-inline' 'unsafe-eval'"
+    : "'self' 'unsafe-inline'";
+  const garagePublicUrl = process.env.GARAGE_PUBLIC_URL;
+  let garageOrigin = "";
+  if (garagePublicUrl) {
+    try {
+      garageOrigin = ` ${new URL(garagePublicUrl).origin}`;
+    } catch {
+      // ignore invalid URL
+    }
+  }
+  return [
+    "default-src 'self'",
+    `script-src ${scriptSrc}`,
+    "style-src 'self' 'unsafe-inline'",
+    "font-src 'self' fonts.gstatic.com",
+    `img-src 'self' data: blob: https://images.unsplash.com${garageOrigin}`,
+    "connect-src 'self'",
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ].join("; ");
+}
+
+const GLOBAL_SECURITY_HEADERS = [
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+  { key: "Content-Security-Policy", value: buildGlobalCsp() },
+];
+
 const nextConfig: NextConfig = {
   typescript: {
     // Prisma nullable fields vs Zod form defaults in admin *Form.tsx (pre-Phase 7).
@@ -59,6 +95,9 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns,
+  },
+  async headers() {
+    return [{ source: "/(.*)", headers: GLOBAL_SECURITY_HEADERS }];
   },
   // pg loads pg-cloudflare at runtime on Workers; ensure traced output includes workerd files.
   outputFileTracingIncludes: {
