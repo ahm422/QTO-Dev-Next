@@ -14,11 +14,14 @@ export default async function AdminDashboardLayout({
     redirect("/admin/login")
   }
 
+  const userEmail = session?.user?.email ?? ""
+  const userRole = session?.user?.role ?? "admin"
+
   return (
     <AdminThemeProvider>
       <AdminSidebar />
       <div className="lg:pl-64 flex flex-col min-h-screen">
-        <AdminHeader />
+        <AdminHeader userEmail={userEmail} userRole={userRole} />
         <main className="flex-1 p-4 lg:p-6">{children}</main>
       </div>
     </AdminThemeProvider>

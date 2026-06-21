@@ -61,9 +61,9 @@ export default function FilterBar({ searchPlaceholder = "Search…", filters = [
   const searchValue = searchParams.get("q") ?? ""
 
   return (
-    <div className={cn("flex flex-wrap items-center gap-2 mb-4", className)}>
+    <div className={cn("flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 mb-4", className)}>
       {/* Search */}
-      <div className="relative flex-1 min-w-48">
+      <div className="relative w-full sm:flex-1 sm:min-w-48 min-w-0">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
         <Input
           value={searchValue}

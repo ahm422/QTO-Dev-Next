@@ -1,6 +1,8 @@
 "use client"
 
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts"
+import { useAdminTheme } from "@/components/admin/AdminThemeProvider"
+import { getAdminChartTheme } from "@/lib/admin/chartTheme"
 
 export interface DonutDataPoint {
   label: string
@@ -15,6 +17,8 @@ interface ContentStatusDonutProps {
 }
 
 export default function ContentStatusDonut({ data, total, centerLabel = "Total" }: ContentStatusDonutProps) {
+  const { theme } = useAdminTheme()
+  const ct = getAdminChartTheme(theme)
   const sum = total ?? data.reduce((acc, d) => acc + d.value, 0)
 
   return (
@@ -37,7 +41,8 @@ export default function ContentStatusDonut({ data, total, centerLabel = "Total" 
               ))}
             </Pie>
             <Tooltip
-              contentStyle={{ background: "#18181B", border: "1px solid #27272A", borderRadius: 8, fontSize: 12, color: "#fafafa" }}
+              contentStyle={ct.tooltip.contentStyle}
+              labelStyle={ct.tooltip.labelStyle}
             />
           </PieChart>
         </ResponsiveContainer>

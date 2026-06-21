@@ -91,7 +91,7 @@ export default function AdminPageHeader({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 sm:shrink-0">
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap sm:shrink-0">
           {actions}
           {primaryAction && (
             primaryAction.href ? (

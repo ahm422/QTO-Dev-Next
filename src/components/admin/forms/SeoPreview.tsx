@@ -19,7 +19,7 @@ export default function SeoPreview({ title = "", description = "", slug = "", cl
 
   return (
     <div className={cn("space-y-3", className)}>
-      <div className="rounded-xl border border-border bg-[#1a1a1a] p-4">
+      <div className="rounded-xl border border-border bg-[var(--admin-seo-bg)] p-4">
         <p className="text-[10px] text-muted-foreground mb-3 font-medium uppercase tracking-wide">Google Preview</p>
         <div className="flex items-center gap-2 mb-1">
           <div className="h-4 w-4 rounded-sm bg-muted flex items-center justify-center">
@@ -27,10 +27,10 @@ export default function SeoPreview({ title = "", description = "", slug = "", cl
           </div>
           <span className="text-xs text-muted-foreground">{displayUrl}</span>
         </div>
-        <p className={cn("text-sm font-medium leading-snug", title ? "text-[#8ab4f8]" : "text-muted-foreground/40")}>
+        <p className={cn("text-sm font-medium leading-snug", title ? "text-[var(--admin-seo-link)]" : "text-muted-foreground/40")}>
           {title || "Page title will appear here"} {titleLen > 0 && `— QTO House`}
         </p>
-        <p className={cn("text-xs mt-1 leading-relaxed", description ? "text-[#bdc1c6]" : "text-muted-foreground/40")}>
+        <p className={cn("text-xs mt-1 leading-relaxed", description ? "text-[var(--admin-seo-desc)]" : "text-muted-foreground/40")}>
           {description || "Meta description will appear here. Keep it under 155 characters for best results."}
         </p>
       </div>
