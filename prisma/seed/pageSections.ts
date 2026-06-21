@@ -365,6 +365,7 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
         primaryCtaText: "View Open Roles",
         primaryCtaHref: "#open-roles",
         secondaryCtaText: "Open Career Portal",
+        secondaryCtaHref: "/careers#open-roles",
         breadcrumbLabel: "Careers",
       },
       whyWork: {

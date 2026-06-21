@@ -78,7 +78,7 @@ export function CareersHeroSection({ config }: { config?: CareersPageConfigType 
               />
             </Link>
             <Link
-              href={hero.secondaryCtaHref}
+              href={hero.secondaryCtaHref ?? "#"}
               className={cn(
                 "inline-flex items-center justify-center gap-2 rounded-xl border-2 border-white/90 text-white px-6 py-3 text-base font-semibold",
                 "hover:bg-white/10 transition-all duration-300",
