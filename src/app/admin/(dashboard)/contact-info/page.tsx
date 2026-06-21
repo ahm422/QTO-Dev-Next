@@ -1,5 +1,5 @@
 import { getServerSession } from "@/lib/auth/session"
-import { roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
+import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -16,10 +16,11 @@ export default async function ContactInfoPage() {
         title="Contact Info"
         subtitle="Contact methods and office locations"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Contact Info" }]}
-        primaryAction={{ label: "+ Add Entry", href: "/admin/contact-info/new" }}
+        primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Entry", href: "/admin/contact-info/new" } : undefined}
       />
       <ContactInfoTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}
+        canCreate={roleCanCreateContent(role as AdminRole)}
       />
     </div>
   )

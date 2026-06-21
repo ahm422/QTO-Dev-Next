@@ -2,13 +2,15 @@ import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { cn } from "@/components/theme/cn";
 import { projectsPageConfig } from "@/config/projectsPage";
+type ProjectsPageConfigType = typeof projectsPageConfig;
 import { findPublishedWorkValues } from "@/lib/cms/workValues";
 
 const HEADING_ID = "projects-value-heading";
 
-export async function ProjectsValueSection() {
+export async function ProjectsValueSection({ config }: { config?: ProjectsPageConfigType }) {
+  const cfg = config ?? projectsPageConfig;
   const items = await findPublishedWorkValues();
-  const { valueSection } = projectsPageConfig;
+  const { valueSection } = cfg;
 
   return (
     <section

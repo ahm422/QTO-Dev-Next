@@ -20,7 +20,7 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const { error } = await requireAdminSession();
+  const { error } = await requireAdminSession({ allowedRoles: ["super_admin", "admin"] });
   if (error) return error;
   const { body, error: bodyError } = await parseJsonBody(request);
   if (bodyError) return bodyError;

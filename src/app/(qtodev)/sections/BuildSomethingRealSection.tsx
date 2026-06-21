@@ -5,13 +5,14 @@ import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { buildSomethingRealConfig } from "@/config/buildSomethingReal";
+type BuildSomethingRealConfigType = typeof buildSomethingRealConfig;
 import { cn } from "@/components/theme/cn";
 import { Reveal } from "@/components/animations/Reveal";
 
 const HEADING_ID = "build-something-real-heading";
 
-export function BuildSomethingRealSection() {
-  const cfg = buildSomethingRealConfig;
+export function BuildSomethingRealSection({ config }: { config?: BuildSomethingRealConfigType }) {
+  const cfg = config ?? buildSomethingRealConfig;
 
   return (
     <section

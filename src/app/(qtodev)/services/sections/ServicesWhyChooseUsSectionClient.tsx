@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { servicesPageConfig } from "@/config/servicesPage";
+type ServicesPageConfigType = typeof servicesPageConfig;
 import type { WhyChooseUsItem } from "@/types/whyChooseUs";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Reveal } from "@/components/animations/Reveal";
@@ -12,12 +13,13 @@ import { cn } from "@/components/theme/cn";
 
 const HEADING_ID = "services-why-choose-us-heading";
 
-export function ServicesWhyChooseUsSectionClient({ items }: { items: WhyChooseUsItem[] }) {
+export function ServicesWhyChooseUsSectionClient({ items, config }: { items: WhyChooseUsItem[]; config?: ServicesPageConfigType }) {
   if (items.length === 0) return null;
+  const cfg = config ?? servicesPageConfig;
   const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
   const currentItem = items[currentIndex];
-  const config = servicesPageConfig.whyChooseUs;
+  const whyChooseUsCfg = cfg.whyChooseUs;
 
   const goPrev = useCallback(() => {
     setCurrentIndex((i) => (i <= 0 ? items.length - 1 : i - 1));
@@ -73,17 +75,17 @@ export function ServicesWhyChooseUsSectionClient({ items }: { items: WhyChooseUs
             {/* Left: heading, body, CTA */}
             <div className="flex flex-col gap-7" data-reveal>
               <SectionHeader
-                subtitle={config.subtitle}
+                subtitle={whyChooseUsCfg.subtitle}
                 subtitleClassName="text-primary font-semibold tracking-widest"
                 subtitlePill
-                title={config.title}
-                titleHighlight={config.titleHighlight}
-                description={config.body}
+                title={whyChooseUsCfg.title}
+                titleHighlight={whyChooseUsCfg.titleHighlight}
+                description={whyChooseUsCfg.body}
                 headingId={HEADING_ID}
                 centered={false}
               />
               <Link
-                href={config.ctaHref}
+                href={whyChooseUsCfg.ctaHref}
                 className={cn(
                   "group/cta inline-flex w-fit items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-base font-semibold text-primary-foreground",
                   "shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30",
@@ -91,7 +93,7 @@ export function ServicesWhyChooseUsSectionClient({ items }: { items: WhyChooseUs
                   "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 )}
               >
-                {config.ctaLabel}
+                {whyChooseUsCfg.ctaLabel}
                 <AppIcon
                   name="arrow-right"
                   size="sm"
@@ -138,7 +140,7 @@ export function ServicesWhyChooseUsSectionClient({ items }: { items: WhyChooseUs
                 aria-hidden
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-white/95 animate-pulse" />
-                {config.cardLabel}
+                {whyChooseUsCfg.cardLabel}
               </span>
 
               {currentItem && (

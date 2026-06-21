@@ -1,5 +1,5 @@
 import { getServerSession } from "@/lib/auth/session"
-import { roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
+import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -16,10 +16,11 @@ export default async function TechnologiesPage() {
         title="Technologies"
         subtitle="Tech stack and tools showcased on the site"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Technologies" }]}
-        primaryAction={{ label: "+ Add Technology", href: "/admin/technologies/new" }}
+        primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Technology", href: "/admin/technologies/new" } : undefined}
       />
       <TechnologiesTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}
+        canCreate={roleCanCreateContent(role as AdminRole)}
       />
     </div>
   )

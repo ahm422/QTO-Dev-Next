@@ -1,5 +1,5 @@
 import { getServerSession } from "@/lib/auth/session"
-import { roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
+import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -38,7 +38,7 @@ export default async function ServicesPage({
         title="Services"
         subtitle="Manage your service offerings"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Services" }]}
-        primaryAction={{ label: "+ Add Service", href: "/admin/services/new" }}
+        primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Service", href: "/admin/services/new" } : undefined}
       />
 
       <StatCardGrid cols={4}>
@@ -64,6 +64,7 @@ export default async function ServicesPage({
 
       <ServicesTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}
+        canCreate={roleCanCreateContent(role as AdminRole)}
       />
     </div>
   )

@@ -7,12 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import { Reveal } from "@/components/animations/Reveal";
 import { cn } from "@/components/theme/cn";
 import { blogsPageConfig } from "@/config/blogsPage";
+type BlogsPageConfigType = typeof blogsPageConfig;
 import type { BlogPost } from "@/types/blog";
 
 const HEADING_ID = "featured-posts-heading";
 
-export function FeaturedPostsSectionClient({ posts }: { posts: BlogPost[] }) {
-  const { featured } = blogsPageConfig;
+export function FeaturedPostsSectionClient({ posts, config }: { posts: BlogPost[]; config?: BlogsPageConfigType }) {
+  const cfg = config ?? blogsPageConfig;
+  const { featured } = cfg;
   if (posts.length === 0) return null;
 
   return (

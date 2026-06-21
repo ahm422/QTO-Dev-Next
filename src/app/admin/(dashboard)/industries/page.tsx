@@ -1,5 +1,5 @@
 import { getServerSession } from "@/lib/auth/session"
-import { roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
+import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -16,10 +16,11 @@ export default async function IndustriesPage() {
         title="Industries"
         subtitle="Industry verticals served by QTO"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Industries" }]}
-        primaryAction={{ label: "+ Add Industry", href: "/admin/industries/new" }}
+        primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Industry", href: "/admin/industries/new" } : undefined}
       />
       <IndustriesTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}
+        canCreate={roleCanCreateContent(role as AdminRole)}
       />
     </div>
   )

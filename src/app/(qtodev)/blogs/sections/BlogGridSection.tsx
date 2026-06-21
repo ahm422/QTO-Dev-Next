@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Reveal } from "@/components/animations/Reveal";
 import { cn } from "@/components/theme/cn";
 import { blogsPageConfig } from "@/config/blogsPage";
+type BlogsPageConfigType = typeof blogsPageConfig;
 import type { BlogPost } from "@/types/blog";
 
 const HEADING_ID = "blog-grid-heading";
@@ -15,8 +16,9 @@ interface BlogGridSectionProps {
   posts: BlogPost[];
 }
 
-export function BlogGridSection({ posts }: BlogGridSectionProps) {
-  const { grid } = blogsPageConfig;
+export function BlogGridSection({ posts, config }: BlogGridSectionProps & { config?: BlogsPageConfigType }) {
+  const cfg = config ?? blogsPageConfig;
+  const { grid } = cfg;
 
   return (
     <section

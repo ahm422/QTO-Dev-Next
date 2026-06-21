@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { testimonialsConfig } from "@/config/testimonials";
+type TestimonialsConfigType = typeof testimonialsConfig;
 import type { TestimonialItem } from "@/types/testimonials";
 import { cn } from "@/components/theme/cn";
 import { Reveal } from "@/components/animations/Reveal";
@@ -91,7 +92,8 @@ function QuoteIcon() {
   );
 }
 
-export function TestimonialsSectionClient({ items }: { items: TestimonialItem[] }) {
+export function TestimonialsSectionClient({ items , config}: { items: TestimonialItem[] ; config?: TestimonialsConfigType}) {
+  const cfg = config ?? testimonialsConfig;
   if (items.length === 0) return null;
   const [activeIndex, setActiveIndex] = useState(0);
   const activeItem: TestimonialItem | undefined = items[activeIndex];
@@ -142,11 +144,11 @@ export function TestimonialsSectionClient({ items }: { items: TestimonialItem[] 
         <Reveal staggerSelector="[data-reveal]">
           <div data-reveal className="text-center max-w-2xl mx-auto mb-14 md:mb-16">
             <SectionHeader
-              subtitle={testimonialsConfig.subtitle}
+              subtitle={cfg.subtitle}
               subtitleClassName="text-primary font-semibold tracking-[0.2em]"
               subtitlePill
-              title={testimonialsConfig.title}
-              titleHighlight={testimonialsConfig.titleHighlight}
+              title={cfg.title}
+              titleHighlight={cfg.titleHighlight}
               headingId={HEADING_ID}
             />
           </div>

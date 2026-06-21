@@ -4,16 +4,20 @@ import { ServicesTechnologiesSection } from "./sections/ServicesTechnologiesSect
 import { ServicesProcessSection } from "./sections/ServicesProcessSection";
 import { ServicesWhyChooseUsSection } from "./sections/ServicesWhyChooseUsSection";
 import { ServicesCTASection } from "./sections/ServicesCTASection";
+import { servicesPageConfig } from "@/config/servicesPage";
+import { findPageSection } from "@/lib/cms/pageContent";
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const cmsConfig = await findPageSection("services.page") as typeof servicesPageConfig | null;
+  const cfg = cmsConfig ?? undefined;
   return (
     <>
-      <ServicesHeroSection />
+      <ServicesHeroSection config={cfg} />
       <ServicesGridSection />
       <ServicesTechnologiesSection />
       <ServicesProcessSection />
       <ServicesWhyChooseUsSection />
-      <ServicesCTASection />
+      <ServicesCTASection config={cfg} />
     </>
   );
 }

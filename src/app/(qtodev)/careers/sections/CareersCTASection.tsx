@@ -2,10 +2,12 @@
 
 import { CTA } from "@/components/common/CTA";
 import { careersPageConfig } from "@/config/careersPage";
+type CareersPageConfigType = typeof careersPageConfig;
 import { analytics } from "@/lib/analytics";
 
-export function CareersCTASection() {
-  const { cta } = careersPageConfig;
+export function CareersCTASection({ config }: { config?: CareersPageConfigType }) {
+  const cfg = config ?? careersPageConfig;
+  const { cta } = cfg;
 
   return (
     <CTA

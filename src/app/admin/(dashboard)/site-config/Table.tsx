@@ -23,14 +23,14 @@ function SiteConfigActions({ row }: { row: SiteConfig }) {
   )
 }
 
-export default function SiteConfigTable({ rows, canDelete }: { rows: SiteConfig[] ; canDelete?: boolean }) {
+export default function SiteConfigTable({ rows, canDelete, canCreate }: { rows: SiteConfig[]; canDelete?: boolean; canCreate?: boolean }) {
   if (rows.length === 0) {
     return (
       <div className="rounded-xl border border-border bg-card">
         <EmptyState
           message="No config entries yet."
           icon={Settings}
-          action={{ label: "+ Add Config", href: "/admin/site-config/new" }}
+          action={canCreate !== false ? { label: "+ Add Config", href: "/admin/site-config/new" } : undefined}
         />
       </div>
     )

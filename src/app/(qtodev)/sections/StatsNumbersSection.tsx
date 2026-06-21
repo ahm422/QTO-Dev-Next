@@ -3,6 +3,7 @@ import { SectionHeader } from "@/components/common/SectionHeader";
 import { StatsAreaChart, StatsBarChart } from "@/app/(qtodev)/sections/StatsNumbersCharts";
 import { statsNumbersConfig } from "@/config/statsNumbers";
 import { findPublishedStats } from "@/lib/cms/stats";
+import { findPageSection } from "@/lib/cms/pageContent";
 import { cn } from "@/components/theme/cn";
 import type { StatsNumbersItem, StatsNumbersVariant } from "@/types/statsNumbers";
 import { Reveal } from "@/components/animations/Reveal";
@@ -123,7 +124,11 @@ function StatCard({ item }: { item: StatsNumbersItem }) {
 }
 
 export async function StatsNumbersSection() {
-  const statsNumbersItems = await findPublishedStats();
+  const [statsNumbersItems, sectionConfig] = await Promise.all([
+    findPublishedStats(),
+    findPageSection("homepage.stats-header"),
+  ]);
+  const cfg = (sectionConfig as typeof statsNumbersConfig | null) ?? statsNumbersConfig;
   if (statsNumbersItems.length === 0) return null;
   const [projects, clientSat, countries, years] = statsNumbersItems;
 
@@ -179,10 +184,10 @@ export async function StatsNumbersSection() {
         <Reveal staggerSelector="[data-reveal]">
           <div data-reveal className="text-center max-w-2xl mx-auto">
             <SectionHeader
-              subtitle={statsNumbersConfig.subtitle}
+              subtitle={cfg.subtitle}
               subtitleClassName="text-primary font-semibold tracking-[0.2em]"
               subtitlePill
-              title={statsNumbersConfig.title}
+              title={cfg.title}
               headingId={HEADING_ID}
             />
           </div>

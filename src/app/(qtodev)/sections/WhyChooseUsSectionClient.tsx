@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { whyChooseUsConfig } from "@/config/whyChooseUs";
+type WhyChooseUsConfigType = typeof whyChooseUsConfig;
 import type { WhyChooseUsItem } from "@/types/whyChooseUs";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Reveal } from "@/components/animations/Reveal";
@@ -12,7 +13,8 @@ import { cn } from "@/components/theme/cn";
 
 const HEADING_ID = "why-choose-us-heading";
 
-export function WhyChooseUsSectionClient({ items }: { items: WhyChooseUsItem[] }) {
+export function WhyChooseUsSectionClient({ items , config}: { items: WhyChooseUsItem[] ; config?: WhyChooseUsConfigType}) {
+  const cfg = config ?? whyChooseUsConfig;
   if (items.length === 0) return null;
   const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -71,21 +73,21 @@ export function WhyChooseUsSectionClient({ items }: { items: WhyChooseUsItem[] }
                 subtitle="WHY CHOOSE US"
                 subtitleClassName="text-primary font-semibold tracking-widest"
                 subtitlePill
-                title={whyChooseUsConfig.heading}
+                title={cfg.heading}
                 titleHighlight="Choose"
-                description={whyChooseUsConfig.body}
+                description={cfg.body}
                 headingId={HEADING_ID}
                 centered={false}
               />
               <Link
-                href={whyChooseUsConfig.ctaHref}
+                href={cfg.ctaHref}
                 className={cn(
                   "inline-flex w-fit items-center gap-2 rounded-xl bg-primary px-5 py-3 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/20",
                   "hover:bg-primary-hover hover:shadow-primary/25 transition-all duration-200",
                   "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 )}
               >
-                {whyChooseUsConfig.ctaLabel}
+                {cfg.ctaLabel}
                 <AppIcon name="arrow-right" size="sm" className="shrink-0" />
               </Link>
             </div>
@@ -127,7 +129,7 @@ export function WhyChooseUsSectionClient({ items }: { items: WhyChooseUsItem[] }
                 aria-hidden
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-white/90" />
-                {whyChooseUsConfig.cardLabel}
+                {cfg.cardLabel}
               </span>
 
               {currentItem && (

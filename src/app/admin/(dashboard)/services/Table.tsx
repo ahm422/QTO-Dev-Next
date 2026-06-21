@@ -34,7 +34,7 @@ const columns: AdminTableColumn<Service>[] = [
   },
 ]
 
-export default function ServicesTable({ rows, canDelete }: { rows: Service[] ; canDelete?: boolean }) {
+export default function ServicesTable({ rows, canDelete, canCreate }: { rows: Service[] ; canDelete?: boolean; canCreate?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -45,7 +45,7 @@ export default function ServicesTable({ rows, canDelete }: { rows: Service[] ; c
       getItemName={(r) => r.title}
       emptyMessage="No services yet."
       emptyIcon={Briefcase}
-      emptyAction={{ label: "+ Add Service", href: "/admin/services/new" }}
+      emptyAction={canCreate !== false ? { label: "+ Add Service", href: "/admin/services/new" } : undefined}
       canDelete={canDelete}
     />
   )

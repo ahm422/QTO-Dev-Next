@@ -1,6 +1,6 @@
 "use server"
 
-import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
+import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { projectSchema, type ProjectInput } from "@/lib/validators/admin/project"
@@ -10,7 +10,7 @@ import { persistOrderUpdates } from "@/lib/admin/reorder"
 
 
 export async function createProject(data: ProjectInput) {
-  await requireAdminAction()
+  await requireCreateAction()
   const { completedAt, ...rest } = projectSchema.parse(data)
   await prisma.project.create({ data: { ...rest, completedAt: completedAt ? new Date(completedAt) : null } })
   revalidatePaths([...projectPaths(rest.slug)])

@@ -1,5 +1,5 @@
 import { getServerSession } from "@/lib/auth/session"
-import { roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
+import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -16,10 +16,11 @@ export default async function WorkValuesPage() {
         title="Work Values"
         subtitle="Core values and culture items"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Work Values" }]}
-        primaryAction={{ label: "+ Add Value", href: "/admin/work-values/new" }}
+        primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Value", href: "/admin/work-values/new" } : undefined}
       />
       <WorkValuesTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}
+        canCreate={roleCanCreateContent(role as AdminRole)}
       />
     </div>
   )

@@ -12,11 +12,13 @@ import type { AppIconName } from "@/components/ui/shared/AppIcon";
 import { Reveal } from "@/components/animations/Reveal";
 import { cn } from "@/components/theme/cn";
 import { servicesPageConfig } from "@/config/servicesPage";
+type ServicesPageConfigType = typeof servicesPageConfig;
 
 const HEADING_ID = "services-grid-heading";
 
-export function ServicesGridSectionClient({ services }: { services: Service[] }) {
-  const { grid } = servicesPageConfig;
+export function ServicesGridSectionClient({ services, config }: { services: Service[]; config?: ServicesPageConfigType }) {
+  const cfg = config ?? servicesPageConfig;
+  const { grid } = cfg;
 
   return (
     <section

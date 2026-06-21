@@ -5,12 +5,14 @@ import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
 import { careersPageConfig } from "@/config/careersPage";
+type CareersPageConfigType = typeof careersPageConfig;
 import { cn } from "@/components/theme/cn";
 
 const HEADING_ID = "culture-heading";
 
-export function CultureSection() {
-  const { culture } = careersPageConfig;
+export function CultureSection({ config }: { config?: CareersPageConfigType }) {
+  const cfg = config ?? careersPageConfig;
+  const { culture } = cfg;
   const [smallTeams, biasTowardShipping, respectfulCollab] = culture.highlights ?? [];
 
   return (

@@ -1,6 +1,6 @@
 "use server"
 
-import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
+import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { workValueSchema, type WorkValueInput } from "@/lib/validators/admin/workValue"
@@ -11,7 +11,7 @@ const PATHS = ["/", "/projects"] as const
 
 
 export async function createWorkValue(data: WorkValueInput) {
-  await requireAdminAction()
+  await requireCreateAction()
   await prisma.workValue.create({ data: workValueSchema.parse(data) })
   revalidatePaths([...PATHS])
   redirect("/admin/work-values")

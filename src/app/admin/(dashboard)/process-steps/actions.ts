@@ -1,6 +1,6 @@
 "use server"
 
-import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
+import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { processStepSchema, type ProcessStepInput } from "@/lib/validators/admin/processStep"
@@ -11,7 +11,7 @@ const PATHS = ["/", "/services"] as const
 
 
 export async function createProcessStep(data: ProcessStepInput) {
-  await requireAdminAction()
+  await requireCreateAction()
   await prisma.processStep.create({ data: processStepSchema.parse(data) })
   revalidatePaths([...PATHS])
   redirect("/admin/process-steps")

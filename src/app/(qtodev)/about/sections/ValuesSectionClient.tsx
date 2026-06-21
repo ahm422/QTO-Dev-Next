@@ -6,12 +6,14 @@ import { SectionHeader } from "@/components/common/SectionHeader";
 import { Card } from "@/components/ui/card";
 import { Reveal } from "@/components/animations/Reveal";
 import { aboutPageConfig } from "@/config/aboutPage";
+type AboutPageConfigType = typeof aboutPageConfig;
 import { cn } from "@/components/theme/cn";
 
 const HEADING_ID = "about-values-heading";
 
-export function ValuesSectionClient({ content }: { content: AboutPageContent }) {
-  const { values: valuesConfig } = aboutPageConfig;
+export function ValuesSectionClient({ content, config }: { content: AboutPageContent; config?: AboutPageConfigType }) {
+  const cfg = config ?? aboutPageConfig;
+  const { values: valuesConfig } = cfg;
 
   return (
     <section

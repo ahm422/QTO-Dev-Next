@@ -10,29 +10,34 @@ import { insightsConfig } from "@/config/insights";
 import type { BlogPost } from "@/types/blog";
 import { cn } from "@/components/theme/cn";
 
+type InsightsConfigType = typeof insightsConfig;
+
 const HEADING_ID = "insights-heading";
 
 interface InsightsSectionContentProps {
   latestPosts: BlogPost[];
   headlinePosts: BlogPost[];
   todayFormatted: string;
+  config?: InsightsConfigType;
 }
 
 export function InsightsSectionContent({
   latestPosts,
   headlinePosts,
   todayFormatted,
+  config,
 }: InsightsSectionContentProps) {
+  const cfg = config ?? insightsConfig;
   return (
     <Container className="relative">
       <Reveal staggerSelector="[data-reveal]">
         <div className="max-w-3xl mx-auto text-center" data-reveal>
           <SectionHeader
-            subtitle={insightsConfig.subtitle}
+            subtitle={cfg.subtitle}
             subtitleClassName="text-primary font-semibold"
             subtitlePill
-            title={insightsConfig.title}
-            description={insightsConfig.description}
+            title={cfg.title}
+            description={cfg.description}
             headingId={HEADING_ID}
             centered
           />
@@ -52,10 +57,10 @@ export function InsightsSectionContent({
               <div>
                 <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
                   <h3 className="font-heading text-xl font-semibold text-foreground">
-                    {insightsConfig.latestPostsLabel}
+                    {cfg.latestPostsLabel}
                   </h3>
                   <span className="rounded-full bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary">
-                    {insightsConfig.todayLabel}: {todayFormatted}
+                    {cfg.todayLabel}: {todayFormatted}
                   </span>
                 </div>
                 <div className="space-y-6">
@@ -63,8 +68,8 @@ export function InsightsSectionContent({
                     <div key={post.id} data-reveal>
                       <LatestPostCard
                         post={post}
-                        authorLabel={insightsConfig.authorLabel}
-                        readMoreLabel={insightsConfig.readMoreLabel}
+                        authorLabel={cfg.authorLabel}
+                        readMoreLabel={cfg.readMoreLabel}
                       />
                     </div>
                   ))}
@@ -74,7 +79,7 @@ export function InsightsSectionContent({
               {/* Right column — Headline Posts */}
               <div>
                 <h3 className="font-heading mb-8 text-xl font-semibold text-foreground">
-                  {insightsConfig.headlinePostsLabel}
+                  {cfg.headlinePostsLabel}
                 </h3>
                 <ul className="space-y-4" role="list">
                   {headlinePosts.map((post) => (
@@ -97,7 +102,7 @@ export function InsightsSectionContent({
                   "transition-all duration-200"
                 )}
               >
-                {insightsConfig.viewAllPostsLabel}
+                {cfg.viewAllPostsLabel}
                 <AppIcon name="arrow-right" size="sm" />
               </Link>
             </div>

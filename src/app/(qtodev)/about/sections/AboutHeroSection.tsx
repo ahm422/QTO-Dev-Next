@@ -4,13 +4,15 @@ import { Heading } from "@/components/ui/shared/Heading";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
 import { aboutPageConfig } from "@/config/aboutPage";
+type AboutPageConfigType = typeof aboutPageConfig;
 import Image from "next/image";
 import { PEXELS_TECH_IMAGES } from "@/config/pexelsImages";
 
 const HEADING_ID = "about-hero-heading";
 
-export function AboutHeroSection() {
-  const { hero } = aboutPageConfig;
+export function AboutHeroSection({ config }: { config?: AboutPageConfigType }) {
+  const cfg = config ?? aboutPageConfig;
+  const { hero } = cfg;
   // Use a much smaller source image to reduce bytes before Next optimization kicks in.
   const heroImage = PEXELS_TECH_IMAGES[3];
 

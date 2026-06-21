@@ -1,5 +1,5 @@
 import { getServerSession } from "@/lib/auth/session"
-import { roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
+import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -16,10 +16,11 @@ export default async function TeamPage() {
         title="Team"
         subtitle="Team members and leadership"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Team" }]}
-        primaryAction={{ label: "+ Add Member", href: "/admin/team/new" }}
+        primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Member", href: "/admin/team/new" } : undefined}
       />
       <TeamTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}
+        canCreate={roleCanCreateContent(role as AdminRole)}
       />
     </div>
   )

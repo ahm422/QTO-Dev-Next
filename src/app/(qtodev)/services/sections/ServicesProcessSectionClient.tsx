@@ -7,13 +7,15 @@ import type { AppIconName } from "@/components/ui/shared/AppIcon";
 import { Reveal } from "@/components/animations/Reveal";
 import { cn } from "@/components/theme/cn";
 import { servicesPageConfig } from "@/config/servicesPage";
+type ServicesPageConfigType = typeof servicesPageConfig;
 import type { WorkProcessStep } from "@/types/service";
 
 const SECTION_HEADING_ID = "services-process-heading";
 
-export function ServicesProcessSectionClient({ steps }: { steps: WorkProcessStep[] }) {
+export function ServicesProcessSectionClient({ steps, config }: { steps: WorkProcessStep[]; config?: ServicesPageConfigType }) {
   if (steps.length === 0) return null;
-  const { process: processConfig } = servicesPageConfig;
+  const cfg = config ?? servicesPageConfig;
+  const { process: processConfig } = cfg;
 
   return (
     <section

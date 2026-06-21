@@ -6,14 +6,16 @@ import { Heading } from "@/components/ui/shared/Heading";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
 import { careersPageConfig } from "@/config/careersPage";
+type CareersPageConfigType = typeof careersPageConfig;
 import { careerPortalHomeUrl } from "@/config/careersPortal";
 import Image from "next/image";
 import { PEXELS_TECH_IMAGES } from "@/config/pexelsImages";
 
 const HEADING_ID = "careers-hero-heading";
 
-export function CareersHeroSection() {
-  const { hero } = careersPageConfig;
+export function CareersHeroSection({ config }: { config?: CareersPageConfigType }) {
+  const cfg = config ?? careersPageConfig;
+  const { hero } = cfg;
   const heroImage = PEXELS_TECH_IMAGES[5];
 
   return (
@@ -76,7 +78,7 @@ export function CareersHeroSection() {
               />
             </Link>
             <Link
-              href={hero.secondaryCtaHref}
+              href={hero.secondaryCtaHref ?? "#"}
               className={cn(
                 "inline-flex items-center justify-center gap-2 rounded-xl border-2 border-white/90 text-white px-6 py-3 text-base font-semibold",
                 "hover:bg-white/10 transition-all duration-300",

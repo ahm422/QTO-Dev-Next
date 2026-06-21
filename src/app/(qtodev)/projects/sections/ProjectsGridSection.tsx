@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
 import { projectsPageConfig } from "@/config/projectsPage";
+type ProjectsPageConfigType = typeof projectsPageConfig;
 import type { Project } from "@/types/project";
 
 const HEADING_ID = "projects-grid-heading";
@@ -14,8 +15,9 @@ interface ProjectsGridSectionProps {
   projects: Project[];
 }
 
-export function ProjectsGridSection({ projects }: ProjectsGridSectionProps) {
-  const { grid } = projectsPageConfig;
+export function ProjectsGridSection({ projects, config }: ProjectsGridSectionProps & { config?: ProjectsPageConfigType }) {
+  const cfg = config ?? projectsPageConfig;
+  const { grid } = cfg;
 
   return (
     <section

@@ -1,6 +1,6 @@
 "use server"
 
-import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
+import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { technologySchema, type TechnologyInput } from "@/lib/validators/admin/technology"
@@ -11,7 +11,7 @@ const PATHS = ["/", "/services"] as const
 
 
 export async function createTechnology(data: TechnologyInput) {
-  await requireAdminAction()
+  await requireCreateAction()
   await prisma.technology.create({ data: technologySchema.parse(data) })
   revalidatePaths([...PATHS])
   redirect("/admin/technologies")

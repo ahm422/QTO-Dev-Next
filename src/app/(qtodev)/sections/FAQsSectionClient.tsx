@@ -6,12 +6,14 @@ import { SectionHeader } from "@/components/common/SectionHeader";
 import { FaqAccordionItem } from "@/components/faq";
 import { Reveal } from "@/components/animations/Reveal";
 import { faqsConfig } from "@/config/faqs";
+type FaqsConfigType = typeof faqsConfig;
 import type { Faq } from "@/types/faq";
 import { cn } from "@/components/theme/cn";
 
 const HEADING_ID = "faqs-heading";
 
-export function FAQsSectionClient({ items }: { items: Faq[] }) {
+export function FAQsSectionClient({ items , config}: { items: Faq[] ; config?: FaqsConfigType}) {
+  const cfg = config ?? faqsConfig;
   if (items.length === 0) return null;
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -43,11 +45,11 @@ export function FAQsSectionClient({ items }: { items: Faq[] }) {
         <Reveal staggerSelector="[data-reveal]">
           <div className="max-w-3xl mx-auto text-center" data-reveal>
             <SectionHeader
-              subtitle={faqsConfig.subtitle}
+              subtitle={cfg.subtitle}
               subtitleClassName="text-primary font-semibold"
               subtitlePill
-              title={faqsConfig.title}
-              description={faqsConfig.description}
+              title={cfg.title}
+              description={cfg.description}
               headingId={HEADING_ID}
             />
           </div>

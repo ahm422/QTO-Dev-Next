@@ -12,4 +12,5 @@ export async function requireServerAction(allowedRoles: AdminRole[] = ALL_ROLES)
 }
 
 export const requireAdminAction = () => requireServerAction();
+export const requireCreateAction = () => requireServerAction(["super_admin", "admin"]);
 export const requireDeleteAction = () => requireServerAction(["super_admin", "admin"]);

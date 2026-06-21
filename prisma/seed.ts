@@ -1,5 +1,6 @@
 import { disconnect } from "./seed/helpers";
 import { seedAboutContent } from "./seed/aboutContent";
+import { seedPageSections } from "./seed/pageSections";
 import { seedBlogPosts } from "./seed/blogPosts";
 import { seedContactInfo } from "./seed/contactInfo";
 import { seedEngagementModels } from "./seed/engagementModels";
@@ -39,6 +40,7 @@ async function main() {
   await seedJobs();
   await seedContactInfo();
   await seedSiteConfig();
+  await seedPageSections();
 
   console.log("Seed completed.");
 }

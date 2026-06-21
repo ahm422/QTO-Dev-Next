@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { ourServicesConfig } from "@/config/ourServices";
+type OurServicesConfigType = typeof ourServicesConfig;
 import type { Service } from "@/types/service";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import type { AppIconName } from "@/components/ui/shared/AppIcon";
@@ -17,7 +18,8 @@ function getLearnMoreHref(service: Service): string {
   return service.learnMoreHref ?? `/services/${service.slug}`;
 }
 
-export function OurServicesSectionClient({ services }: { services: Service[] }) {
+export function OurServicesSectionClient({ services , config}: { services: Service[] ; config?: OurServicesConfigType}) {
+  const cfg = config ?? ourServicesConfig;
   if (services.length === 0) {
     return (
       <section
@@ -57,12 +59,12 @@ export function OurServicesSectionClient({ services }: { services: Service[] }) 
         <Reveal staggerSelector="[data-reveal]">
           <div data-reveal className="mb-14 md:mb-16">
             <SectionHeader
-              subtitle={ourServicesConfig.subtitle}
+              subtitle={cfg.subtitle}
               subtitleClassName="text-primary font-semibold tracking-widest"
               subtitlePill
-              title={ourServicesConfig.title}
-              titleHighlight={ourServicesConfig.titleHighlight}
-              description={ourServicesConfig.description}
+              title={cfg.title}
+              titleHighlight={cfg.titleHighlight}
+              description={cfg.description}
               headingId={HEADING_ID}
             />
           </div>
@@ -140,7 +142,7 @@ export function OurServicesSectionClient({ services }: { services: Service[] }) 
                 "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-muted"
               )}
             >
-              {ourServicesConfig.exploreMoreLabel}
+              {cfg.exploreMoreLabel}
               <span className="inline-flex items-center justify-center rounded-full bg-primary-foreground/15 p-1">
                 <AppIcon
                   name="arrow-right"

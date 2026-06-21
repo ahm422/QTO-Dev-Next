@@ -1,5 +1,5 @@
 import { getServerSession } from "@/lib/auth/session"
-import { roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
+import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -16,10 +16,11 @@ export default async function TestimonialsPage() {
         title="Testimonials"
         subtitle="Client reviews and social proof"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Testimonials" }]}
-        primaryAction={{ label: "+ Add Testimonial", href: "/admin/testimonials/new" }}
+        primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Testimonial", href: "/admin/testimonials/new" } : undefined}
       />
       <TestimonialsTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}
+        canCreate={roleCanCreateContent(role as AdminRole)}
       />
     </div>
   )

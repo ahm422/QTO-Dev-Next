@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/common/Container";
 import { featuredWorkConfig } from "@/config/featuredWork";
+type FeaturedWorkConfigType = typeof featuredWorkConfig;
 import type { FeaturedWorkItem } from "@/types/featuredWork";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
@@ -31,7 +32,8 @@ function getBackgroundLabel(item: FeaturedWorkItem, index: number): string {
   return `${item.title}/${initial}`;
 }
 
-export function FeaturedWorkSectionClient({ items }: { items: FeaturedWorkItem[] }) {
+export function FeaturedWorkSectionClient({ items , config}: { items: FeaturedWorkItem[] ; config?: FeaturedWorkConfigType}) {
+  const cfg = config ?? featuredWorkConfig;
   if (items.length === 0) return null;
   const [activeIndex, setActiveIndex] = useState(0);
   const [displayIndex, setDisplayIndex] = useState(0);
@@ -197,7 +199,7 @@ export function FeaturedWorkSectionClient({ items }: { items: FeaturedWorkItem[]
             <Container className="shrink-0 pt-6 mt-auto">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 py-6 border-t border-white/10">
                 <span className="text-white/50 text-xs font-medium uppercase tracking-widest">
-                  {featuredWorkConfig.footerLabel}
+                  {cfg.footerLabel}
                 </span>
 
                 <div className="flex flex-wrap items-center gap-4 sm:gap-6">
@@ -210,11 +212,11 @@ export function FeaturedWorkSectionClient({ items }: { items: FeaturedWorkItem[]
                     )}
                     aria-label={`View project: ${displayItem.title}`}
                   >
-                    {featuredWorkConfig.viewProjectLabel}
+                    {cfg.viewProjectLabel}
                     <AppIcon name="arrow-right" size="sm" className="shrink-0" />
                   </Link>
                   <Link
-                    href={featuredWorkConfig.contactHref}
+                    href={cfg.contactHref}
                     className={cn(
                       "inline-flex items-center gap-2 rounded-xl border-2 border-primary bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground",
                       "hover:bg-primary-hover transition-colors duration-200",
@@ -222,7 +224,7 @@ export function FeaturedWorkSectionClient({ items }: { items: FeaturedWorkItem[]
                     )}
                     aria-label="Let's talk"
                   >
-                    {featuredWorkConfig.letsTalkLabel}
+                    {cfg.letsTalkLabel}
                   </Link>
 
                   <div className="flex items-center gap-1" role="group" aria-label="Carousel navigation">

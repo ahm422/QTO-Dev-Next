@@ -6,6 +6,7 @@ import { Container } from "@/components/common/Container";
 import { Heading } from "@/components/ui/shared/Heading";
 import { Text } from "@/components/ui/shared/Text";
 import { aboutCompanyConfig } from "@/config/aboutCompany";
+type AboutCompanyConfigType = typeof aboutCompanyConfig;
 import { PEXELS_TECH_IMAGES, PEXELS_ALT_TECH } from "@/config/pexelsImages";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import type { AppIconName } from "@/components/ui/shared/AppIcon";
@@ -17,8 +18,8 @@ const IMAGE_MEETING = PEXELS_TECH_IMAGES[1];
 const IMAGE_ALT_OFFICE = PEXELS_ALT_TECH[0];
 const IMAGE_ALT_MEETING = PEXELS_ALT_TECH[1];
 
-export function AboutCompanySection() {
-  const { subtitle, title, description, tags, exploreMoreHref } = aboutCompanyConfig;
+export function AboutCompanySection({ config }: { config?: AboutCompanyConfigType }) {
+  const { subtitle, title, description, tags, exploreMoreHref } = config ?? aboutCompanyConfig;
 
   return (
     <section

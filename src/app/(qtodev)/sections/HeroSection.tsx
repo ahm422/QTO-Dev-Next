@@ -9,15 +9,18 @@ import { HeroHeading } from "@/components/hero/HeroHeading";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Button } from "@/components/ui/button";
 import { heroConfig } from "@/config/hero";
+type HeroConfigType = typeof heroConfig;
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/components/theme/cn";
 
-export function HeroSection() {
+export function HeroSection({ config }: { config?: HeroConfigType }) {
   const sectionRef = useRef<HTMLElement>(null);
   const reducedMotion = useReducedMotion();
 
   const {
     badge,
+    heading,
+    headingHighlight,
     subtext,
     ctaPrimary,
     ctaPrimaryHref,
@@ -25,7 +28,7 @@ export function HeroSection() {
     ctaSecondaryHref,
     trustedByLabel,
     terminalLines,
-  } = heroConfig;
+  } = config ?? heroConfig;
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent<HTMLElement>) => {
@@ -89,7 +92,7 @@ export function HeroSection() {
                   "animate-hero-content-fade animation-delay-150 animation-fill-backwards"
               )}
             >
-              <HeroHeading className="text-center lg:text-left" />
+              <HeroHeading className="text-center lg:text-left" heading={heading} headingHighlight={headingHighlight} />
             </div>
 
             {subtext ? (

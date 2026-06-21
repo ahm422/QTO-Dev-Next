@@ -1,5 +1,5 @@
 import { getServerSession } from "@/lib/auth/session"
-import { roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
+import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -40,7 +40,7 @@ export default async function ProcessStepsPage({
         title="Process Steps"
         subtitle="Manage your workflow and methodology steps"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Process Steps" }]}
-        primaryAction={{ label: "+ Add Step", href: "/admin/process-steps/new" }}
+        primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Step", href: "/admin/process-steps/new" } : undefined}
       />
 
       <StatCardGrid cols={3}>
@@ -66,6 +66,7 @@ export default async function ProcessStepsPage({
           />
           <ProcessStepsTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}
+        canCreate={roleCanCreateContent(role as AdminRole)}
       />
         </div>
 

@@ -32,7 +32,7 @@ const columns: AdminTableColumn<Technology>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function TechnologiesTable({ rows, canDelete }: { rows: Technology[] ; canDelete?: boolean }) {
+export default function TechnologiesTable({ rows, canDelete, canCreate }: { rows: Technology[] ; canDelete?: boolean; canCreate?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -43,7 +43,7 @@ export default function TechnologiesTable({ rows, canDelete }: { rows: Technolog
       getItemName={(r) => r.name}
       emptyMessage="No technologies yet."
       emptyIcon={Cpu}
-      emptyAction={{ label: "+ Add Technology", href: "/admin/technologies/new" }}
+      emptyAction={canCreate !== false ? { label: "+ Add Technology", href: "/admin/technologies/new" } : undefined}
       canDelete={canDelete}
     />
   )

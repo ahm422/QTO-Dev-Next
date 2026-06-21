@@ -316,15 +316,16 @@ model WorkValue {
 
 // ─── ABOUT PAGE CONTENT ──────────────────────────────────────────────────────
 model AboutContent {
-  id        String   @id @default(uuid()) @db.Uuid
-  section   String   @unique
-  title     String?
-  subtitle  String?
-  body      String?
-  metadata  Json?
-  imageUrl  String?  @map("image_url")
-  order     Int      @default(0)
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id          String   @id @default(uuid()) @db.Uuid
+  section     String   @unique
+  title       String?
+  subtitle    String?
+  body        String?
+  metadata    Json?
+  imageUrl    String?  @map("image_url")
+  order       Int      @default(0)
+  isPublished Boolean  @default(true) @map("is_published")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("about_content")
 }
@@ -410,6 +411,17 @@ model ContactInfo {
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("contact_info")
+}
+
+// ─── PAGE SECTIONS (per-page chrome: heroes, headings, CTAs) ────────────────
+model PageSection {
+  slug        String   @id           // e.g. "homepage.hero", "services.page"
+  label       String?                // human-readable name shown in admin
+  data        Json                   // section content (title, subtitle, CTAs, etc.)
+  isPublished Boolean  @default(true) @map("is_published")
+  updatedAt   DateTime @updatedAt   @map("updated_at")
+
+  @@map("page_sections")
 }
 
 // ─── SITE CONFIG (global key-value settings) ─────────────────────────────────

@@ -17,7 +17,7 @@ const columns: AdminTableColumn<EngagementModel>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function EngagementModelsTable({ rows, canDelete }: { rows: EngagementModel[] ; canDelete?: boolean }) {
+export default function EngagementModelsTable({ rows, canDelete, canCreate }: { rows: EngagementModel[] ; canDelete?: boolean; canCreate?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -28,7 +28,7 @@ export default function EngagementModelsTable({ rows, canDelete }: { rows: Engag
       getItemName={(r) => r.title}
       emptyMessage="No engagement models yet."
       emptyIcon={Layers}
-      emptyAction={{ label: "+ Add Model", href: "/admin/engagement-models/new" }}
+      emptyAction={canCreate !== false ? { label: "+ Add Model", href: "/admin/engagement-models/new" } : undefined}
       canDelete={canDelete}
     />
   )

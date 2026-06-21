@@ -1,5 +1,5 @@
 import { getServerSession } from "@/lib/auth/session"
-import { roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
+import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -29,11 +29,12 @@ export default async function BlogPage({
         title="Blog"
         subtitle="Manage blog posts and articles"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Blog" }]}
-        primaryAction={{ label: "+ New Post", href: "/admin/blog/new" }}
+        primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ New Post", href: "/admin/blog/new" } : undefined}
       />
       <FilterBar searchPlaceholder="Search posts…" filters={[{ key: "status", placeholder: "All Statuses", options: [{ label: "Published", value: "published" }, { label: "Draft", value: "draft" }] }]} />
       <BlogTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}
+        canCreate={roleCanCreateContent(role as AdminRole)}
       />
     </div>
   )

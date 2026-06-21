@@ -24,7 +24,7 @@ const columns: AdminTableColumn<Testimonial>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function TestimonialsTable({ rows, canDelete }: { rows: Testimonial[] ; canDelete?: boolean }) {
+export default function TestimonialsTable({ rows, canDelete, canCreate }: { rows: Testimonial[] ; canDelete?: boolean; canCreate?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -35,7 +35,7 @@ export default function TestimonialsTable({ rows, canDelete }: { rows: Testimoni
       getItemName={(r) => r.clientName}
       emptyMessage="No testimonials yet."
       emptyIcon={MessageSquare}
-      emptyAction={{ label: "+ Add Testimonial", href: "/admin/testimonials/new" }}
+      emptyAction={canCreate !== false ? { label: "+ Add Testimonial", href: "/admin/testimonials/new" } : undefined}
       canDelete={canDelete}
     />
   )

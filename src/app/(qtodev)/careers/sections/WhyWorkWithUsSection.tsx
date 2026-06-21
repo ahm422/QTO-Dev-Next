@@ -5,12 +5,14 @@ import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { careersPageConfig } from "@/config/careersPage";
+type CareersPageConfigType = typeof careersPageConfig;
 import { cn } from "@/components/theme/cn";
 
 const HEADING_ID = "why-work-with-us-heading";
 
-export function WhyWorkWithUsSection() {
-  const { whyWork } = careersPageConfig;
+export function WhyWorkWithUsSection({ config }: { config?: CareersPageConfigType }) {
+  const cfg = config ?? careersPageConfig;
+  const { whyWork } = cfg;
 
   return (
     <section

@@ -1,5 +1,5 @@
 import { getServerSession } from "@/lib/auth/session"
-import { roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
+import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -18,10 +18,11 @@ export default async function SiteConfigPage() {
         title="Site Config"
         subtitle="Global site configuration key-value settings"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Site Config" }]}
-        primaryAction={{ label: "+ Add Entry", href: "/admin/site-config/new" }}
+        primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Entry", href: "/admin/site-config/new" } : undefined}
       />
       <SiteConfigTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}
+        canCreate={roleCanCreateContent(role as AdminRole)}
       />
     </div>
   )

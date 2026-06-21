@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { portfolioConfig } from "@/config/portfolio";
+type PortfolioConfigType = typeof portfolioConfig;
 import type { PortfolioCase, PortfolioGradientKey } from "@/types/portfolio";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Reveal } from "@/components/animations/Reveal";
@@ -102,7 +103,8 @@ function PortfolioCard({
   return <div className={cardClassName}>{cardContent}</div>;
 }
 
-export function PortfolioSectionClient({ cases }: { cases: PortfolioCase[] }) {
+export function PortfolioSectionClient({ cases , config}: { cases: PortfolioCase[] ; config?: PortfolioConfigType}) {
+  const cfg = config ?? portfolioConfig;
   if (cases.length === 0) return null;
   return (
     <section
@@ -123,19 +125,19 @@ export function PortfolioSectionClient({ cases }: { cases: PortfolioCase[] }) {
           <div className="flex flex-col items-center text-center">
             <div data-reveal className="max-w-2xl">
               <SectionHeader
-                subtitle={portfolioConfig.subtitle}
+                subtitle={cfg.subtitle}
                 subtitleClassName="text-primary font-semibold tracking-widest"
                 subtitlePill
-                title={portfolioConfig.title}
-                titleHighlight={portfolioConfig.titleHighlight}
-                description={portfolioConfig.description}
+                title={cfg.title}
+                titleHighlight={cfg.titleHighlight}
+                description={cfg.description}
                 headingId={SECTION_HEADING_ID}
                 centered={true}
               />
             </div>
             <Link
               data-reveal
-              href={portfolioConfig.viewAllHref}
+              href={cfg.viewAllHref}
               className={cn(
                 "mt-8 inline-flex items-center gap-2 rounded-full border-2 border-primary bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground",
                 "shadow-md shadow-primary/25 transition-all duration-300",
@@ -144,7 +146,7 @@ export function PortfolioSectionClient({ cases }: { cases: PortfolioCase[] }) {
               )}
               aria-label="View all featured work"
             >
-              {portfolioConfig.viewAllLabel}
+              {cfg.viewAllLabel}
               <AppIcon name="arrow-right" size="sm" className="shrink-0" />
             </Link>
           </div>

@@ -6,17 +6,20 @@ import { LeadershipSection } from "./sections/LeadershipSection";
 import { TrustSection } from "./sections/TrustSection";
 import { CTA } from "@/components/common/CTA";
 import { aboutPageConfig } from "@/config/aboutPage";
+import { findPageSection } from "@/lib/cms/pageContent";
 
-export default function AboutPage() {
-  const { cta } = aboutPageConfig;
+export default async function AboutPage() {
+  const cmsConfig = await findPageSection("about.page") as typeof aboutPageConfig | null;
+  const cfg = cmsConfig ?? aboutPageConfig;
+  const { cta } = cfg;
   return (
     <>
-      <AboutHeroSection />
+      <AboutHeroSection config={cmsConfig ?? undefined} />
       <CompanySnapshotSection />
-      <MissionVisionSection />
-      <ValuesSection />
+      <MissionVisionSection config={cmsConfig ?? undefined} />
+      <ValuesSection config={cmsConfig ?? undefined} />
       <LeadershipSection />
-      <TrustSection />
+      <TrustSection config={cmsConfig ?? undefined} />
       <CTA
         title={cta.title}
         description={cta.description}

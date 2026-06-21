@@ -5,6 +5,7 @@ import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
 import { TechIcon, resolveSimpleIconColor } from "@/components/technologies/TechIcon";
 import { servicesPageConfig } from "@/config/servicesPage";
+type ServicesPageConfigType = typeof servicesPageConfig;
 import { cn } from "@/components/theme/cn";
 
 const HEADING_ID = "services-technologies-heading";
@@ -13,11 +14,14 @@ type TechEntry = { name: string; iconKey: string }
 
 export function ServicesTechnologiesSectionClient({
   technologies,
+  config,
 }: {
   technologies: TechEntry[];
+  config?: ServicesPageConfigType;
 }) {
   if (technologies.length === 0) return null;
-  const { technologiesWeMaster } = servicesPageConfig;
+  const cfg = config ?? servicesPageConfig;
+  const { technologiesWeMaster } = cfg;
 
   return (
     <section

@@ -9,6 +9,10 @@ export function roleCanManageUsers(role: AdminRole): boolean {
   return role === "super_admin";
 }
 
+export function roleCanCreateContent(role: AdminRole): boolean {
+  return role === "super_admin" || role === "admin";
+}
+
 export function roleCanDeleteContent(role: AdminRole): boolean {
   return role === "super_admin" || role === "admin";
 }
