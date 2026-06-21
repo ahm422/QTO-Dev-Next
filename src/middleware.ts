@@ -4,6 +4,7 @@ import { isRoleAllowedForPath } from "@/lib/auth/adminRoutes";
 import { applySecurityHeaders } from "@/lib/securityHeaders";
 import { COOKIE_ACCESS_TOKEN, COOKIE_REFRESH_TOKEN } from "@/lib/auth/constants";
 import { sanitizeAdminRedirect } from "@/lib/auth/redirect";
+import { checkAuthGlobalRateLimit, rateLimitExceededResponse } from "@/lib/auth/rate-limit";
 
 const LOGIN_PATH = "/admin/login";
 const UNAUTHORIZED_PATH = "/admin/unauthorized";
@@ -39,6 +40,14 @@ function redirectToLogin(request: NextRequest, pathname: string, clearCookies = 
 
 export default async function middleware(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
+
+  // Layer 3 — global auth rate limit on all /api/auth/* routes (100 req / 15 min per IP)
+  // Note: the internal attemptRefresh() fetch also passes through here, which is intentional.
+  if (pathname.startsWith("/api/auth/")) {
+    const result = await checkAuthGlobalRateLimit(request);
+    if (!result.allowed) return rateLimitExceededResponse(result.retryAfterSeconds);
+    return NextResponse.next();
+  }
 
   // Public admin paths — always allow; just add security headers
   if (
@@ -148,5 +157,5 @@ function forwardAuthenticated(
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/api/auth/:path*"],
 };
