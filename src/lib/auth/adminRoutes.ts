@@ -1,5 +1,6 @@
 const ROUTE_RULES: { prefix: string; allowedRoles: string[] }[] = [
-  { prefix: "/admin", allowedRoles: ["admin"] },
+  { prefix: "/admin/users", allowedRoles: ["super_admin"] },
+  { prefix: "/admin", allowedRoles: ["super_admin", "admin", "editor"] },
 ];
 
 export function isRoleAllowedForPath(role: string, pathname: string): boolean {

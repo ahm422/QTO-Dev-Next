@@ -10,11 +10,12 @@ import { LogOut } from "lucide-react"
 interface AdminNavListProps {
   onNavigate?: () => void
   className?: string
+  userRole?: string
 }
 
 const GROUP_ORDER: AdminNavGroup[] = ["main", "content", "settings"]
 
-export default function AdminNavList({ onNavigate }: AdminNavListProps) {
+export default function AdminNavList({ onNavigate, userRole }: AdminNavListProps) {
   const pathname = usePathname()
 
   function isActive(href: string) {
@@ -24,7 +25,11 @@ export default function AdminNavList({ onNavigate }: AdminNavListProps) {
 
   const grouped = GROUP_ORDER.map((group) => ({
     group,
-    items: adminNavItems.filter((item) => item.group === group),
+    items: adminNavItems.filter(
+      (item) =>
+        item.group === group &&
+        (!item.requiredRole || (userRole ? item.requiredRole.includes(userRole) : false))
+    ),
   }))
 
   return (

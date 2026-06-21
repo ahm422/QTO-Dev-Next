@@ -43,7 +43,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const { error } = await requireAdminSession();
+  const { error } = await requireAdminSession({ allowedRoles: ["super_admin", "admin"] });
   if (error) return error;
   const { id } = await params;
   try {

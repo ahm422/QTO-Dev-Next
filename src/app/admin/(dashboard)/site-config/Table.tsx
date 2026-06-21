@@ -23,7 +23,7 @@ function SiteConfigActions({ row }: { row: SiteConfig }) {
   )
 }
 
-export default function SiteConfigTable({ rows }: { rows: SiteConfig[] }) {
+export default function SiteConfigTable({ rows, canDelete }: { rows: SiteConfig[] ; canDelete?: boolean }) {
   if (rows.length === 0) {
     return (
       <div className="rounded-xl border border-border bg-card">

@@ -9,7 +9,7 @@ import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 
 export default async function AboutPage() {
   const session = await getServerSession()
-  if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
+  if (!["super_admin", "admin", "editor"].includes(session?.user?.role ?? "")) redirect("/admin/unauthorized")
 
   const rows = await prisma.aboutContent.findMany({ orderBy: { order: "asc" } })
 

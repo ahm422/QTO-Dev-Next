@@ -19,7 +19,7 @@ const columns: AdminTableColumn<WhyChooseUs>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function WhyChooseUsTable({ rows }: { rows: WhyChooseUs[] }) {
+export default function WhyChooseUsTable({ rows, canDelete }: { rows: WhyChooseUs[] ; canDelete?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -31,6 +31,7 @@ export default function WhyChooseUsTable({ rows }: { rows: WhyChooseUs[] }) {
       emptyMessage="No items yet."
       emptyIcon={CheckCircle}
       emptyAction={{ label: "+ Add Item", href: "/admin/why-choose-us/new" }}
+      canDelete={canDelete}
     />
   )
 }

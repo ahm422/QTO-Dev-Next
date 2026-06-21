@@ -1,4 +1,5 @@
 import { getServerSession } from "@/lib/auth/session"
+import { roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -14,7 +15,8 @@ export default async function ServicesPage({
   searchParams: Promise<{ q?: string; status?: string }>
 }) {
   const session = await getServerSession()
-  if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
+  if (!["super_admin", "admin", "editor"].includes(session?.user?.role ?? "")) redirect("/admin/unauthorized")
+  const role = session?.user?.role ?? ""
 
   const { q, status } = await searchParams
 
@@ -60,7 +62,9 @@ export default async function ServicesPage({
         ]}
       />
 
-      <ServicesTable rows={rows} />
+      <ServicesTable rows={rows}
+        canDelete={roleCanDeleteContent(role as AdminRole)}
+      />
     </div>
   )
 }

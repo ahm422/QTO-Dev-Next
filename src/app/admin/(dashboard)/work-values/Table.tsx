@@ -22,7 +22,7 @@ const columns: AdminTableColumn<WorkValue>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function WorkValuesTable({ rows }: { rows: WorkValue[] }) {
+export default function WorkValuesTable({ rows, canDelete }: { rows: WorkValue[] ; canDelete?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -34,6 +34,7 @@ export default function WorkValuesTable({ rows }: { rows: WorkValue[] }) {
       emptyMessage="No work values yet."
       emptyIcon={Heart}
       emptyAction={{ label: "+ Add Value", href: "/admin/work-values/new" }}
+      canDelete={canDelete}
     />
   )
 }

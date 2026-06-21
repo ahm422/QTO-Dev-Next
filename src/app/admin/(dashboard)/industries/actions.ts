@@ -1,26 +1,22 @@
 "use server"
 
-import { getServerSession } from "@/lib/auth/session"
+import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { industrySchema, type IndustryInput } from "@/lib/validators/admin/industry"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
 
-async function requireAdmin() {
-  const session = await getServerSession()
-  if (session?.user?.role !== "admin") throw new Error("Unauthorized")
-}
 
 export async function createIndustry(data: IndustryInput) {
-  await requireAdmin()
+  await requireAdminAction()
   await prisma.industry.create({ data: industrySchema.parse(data) })
   revalidatePath("/")
   redirect("/admin/industries")
 }
 
 export async function updateIndustry(id: string, data: IndustryInput) {
-  await requireAdmin()
+  await requireAdminAction()
   const parsed = industrySchema.parse(data)
   await prisma.industry.update({ where: { id }, data: parsed })
   revalidatePath("/")
@@ -29,19 +25,19 @@ export async function updateIndustry(id: string, data: IndustryInput) {
 }
 
 export async function deleteIndustry(id: string) {
-  await requireAdmin()
+  await requireDeleteAction()
   await prisma.industry.delete({ where: { id } })
   revalidatePath("/")
 }
 
 export async function toggleIndustryPublished(id: string, value: boolean) {
-  await requireAdmin()
+  await requireAdminAction()
   await prisma.industry.update({ where: { id }, data: { isPublished: value } })
   revalidatePath("/")
 }
 
 export async function reorderIndustries(items: { id: string; order: number }[]) {
-  await requireAdmin()
+  await requireAdminAction()
   await persistOrderUpdates(items, (id, order) =>
     prisma.industry.update({ where: { id }, data: { order } })
   )

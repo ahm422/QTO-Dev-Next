@@ -22,7 +22,7 @@ const columns: AdminTableColumn<Stat>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function StatsTable({ rows }: { rows: Stat[] }) {
+export default function StatsTable({ rows, canDelete }: { rows: Stat[] ; canDelete?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -34,6 +34,7 @@ export default function StatsTable({ rows }: { rows: Stat[] }) {
       emptyMessage="No stats yet."
       emptyIcon={BarChart3}
       emptyAction={{ label: "+ Add Stat", href: "/admin/stats/new" }}
+      canDelete={canDelete}
     />
   )
 }

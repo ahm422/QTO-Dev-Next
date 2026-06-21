@@ -49,6 +49,7 @@ interface AdminTableProps<T extends OrderableRow> {
   isLoading?: boolean
   emptyMessage?: string
   onReorder?: (items: { id: string; order: number }[]) => Promise<void>
+  canDelete?: boolean
 }
 
 const MOBILE_COLUMN_LIMIT = 4
@@ -88,11 +89,13 @@ function TableActions<T extends { id: string }>({
   editBasePath,
   onDelete,
   getItemName,
+  canDelete = true,
 }: {
   row: T
   editBasePath: string
   onDelete: (id: string) => Promise<void>
   getItemName?: (row: T) => string
+  canDelete?: boolean
 }) {
   return (
     <div className="flex items-center justify-end gap-1 shrink-0">
@@ -102,10 +105,12 @@ function TableActions<T extends { id: string }>({
           <span className="sr-only">Edit</span>
         </Link>
       </Button>
-      <ConfirmDelete
-        itemName={getItemName ? getItemName(row) : String(row.id)}
-        onConfirm={() => onDelete(row.id)}
-      />
+      {canDelete && (
+        <ConfirmDelete
+          itemName={getItemName ? getItemName(row) : String(row.id)}
+          onConfirm={() => onDelete(row.id)}
+        />
+      )}
     </div>
   )
 }
@@ -117,6 +122,7 @@ function SortableTableRow<T extends OrderableRow>({
   onDelete,
   getItemName,
   showDrag,
+  canDelete,
 }: {
   row: T
   columns: AdminTableColumn<T>[]
@@ -124,6 +130,7 @@ function SortableTableRow<T extends OrderableRow>({
   onDelete: (id: string) => Promise<void>
   getItemName?: (row: T) => string
   showDrag: boolean
+  canDelete?: boolean
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: row.id,
@@ -152,6 +159,7 @@ function SortableTableRow<T extends OrderableRow>({
           editBasePath={editBasePath}
           onDelete={onDelete}
           getItemName={getItemName}
+          canDelete={canDelete}
         />
       </TableCell>
     </TableRow>
@@ -166,6 +174,7 @@ function SortableMobileCard<T extends OrderableRow>({
   onDelete,
   getItemName,
   showDrag,
+  canDelete,
 }: {
   row: T
   columns: AdminTableColumn<T>[]
@@ -174,6 +183,7 @@ function SortableMobileCard<T extends OrderableRow>({
   onDelete: (id: string) => Promise<void>
   getItemName?: (row: T) => string
   showDrag: boolean
+  canDelete?: boolean
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: row.id,
@@ -203,6 +213,7 @@ function SortableMobileCard<T extends OrderableRow>({
           editBasePath={editBasePath}
           onDelete={onDelete}
           getItemName={getItemName}
+          canDelete={canDelete}
         />
       </div>
       <dl className="space-y-2 text-sm">
@@ -232,6 +243,7 @@ export default function AdminTable<T extends OrderableRow>({
   isLoading,
   emptyMessage = "No items yet.",
   onReorder,
+  canDelete = true,
 }: AdminTableProps<T>) {
   const router = useRouter()
   const [items, setItems] = useState(initialRows)
@@ -305,6 +317,7 @@ export default function AdminTable<T extends OrderableRow>({
             onDelete={onDelete}
             getItemName={getItemName}
             showDrag={showDrag}
+            canDelete={canDelete}
           />
         ))}
       </div>
@@ -330,6 +343,7 @@ export default function AdminTable<T extends OrderableRow>({
                 onDelete={onDelete}
                 getItemName={getItemName}
                 showDrag={showDrag}
+                canDelete={canDelete}
               />
             ))}
           </TableBody>

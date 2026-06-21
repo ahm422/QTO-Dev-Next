@@ -1,17 +1,13 @@
 "use server"
 
-import { getServerSession } from "@/lib/auth/session"
+import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { siteConfigSchema, type SiteConfigInput } from "@/lib/validators/admin/siteConfig"
 
-async function requireAdmin() {
-  const session = await getServerSession()
-  if (session?.user?.role !== "admin") throw new Error("Unauthorized")
-}
 
 export async function upsertSiteConfig(data: SiteConfigInput) {
-  await requireAdmin()
+  await requireAdminAction()
   const parsed = siteConfigSchema.parse(data)
   await prisma.siteConfig.upsert({
     where: { key: parsed.key },
@@ -22,7 +18,7 @@ export async function upsertSiteConfig(data: SiteConfigInput) {
 }
 
 export async function deleteSiteConfig(key: string) {
-  await requireAdmin()
+  await requireDeleteAction()
   await prisma.siteConfig.delete({ where: { key } })
   revalidatePath("/")
 }

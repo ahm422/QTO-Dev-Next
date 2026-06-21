@@ -32,7 +32,7 @@ const columns: AdminTableColumn<Technology>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function TechnologiesTable({ rows }: { rows: Technology[] }) {
+export default function TechnologiesTable({ rows, canDelete }: { rows: Technology[] ; canDelete?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -44,6 +44,7 @@ export default function TechnologiesTable({ rows }: { rows: Technology[] }) {
       emptyMessage="No technologies yet."
       emptyIcon={Cpu}
       emptyAction={{ label: "+ Add Technology", href: "/admin/technologies/new" }}
+      canDelete={canDelete}
     />
   )
 }

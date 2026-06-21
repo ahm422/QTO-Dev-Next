@@ -1,6 +1,6 @@
 "use server"
 
-import { getServerSession } from "@/lib/auth/session"
+import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { processStepSchema, type ProcessStepInput } from "@/lib/validators/admin/processStep"
@@ -9,33 +9,29 @@ import { persistOrderUpdates } from "@/lib/admin/reorder"
 
 const PATHS = ["/", "/services"] as const
 
-async function requireAdmin() {
-  const session = await getServerSession()
-  if (session?.user?.role !== "admin") throw new Error("Unauthorized")
-}
 
 export async function createProcessStep(data: ProcessStepInput) {
-  await requireAdmin()
+  await requireAdminAction()
   await prisma.processStep.create({ data: processStepSchema.parse(data) })
   revalidatePaths([...PATHS])
   redirect("/admin/process-steps")
 }
 
 export async function updateProcessStep(id: string, data: ProcessStepInput) {
-  await requireAdmin()
+  await requireAdminAction()
   await prisma.processStep.update({ where: { id }, data: processStepSchema.parse(data) })
   revalidatePaths([...PATHS])
   redirect("/admin/process-steps")
 }
 
 export async function deleteProcessStep(id: string) {
-  await requireAdmin()
+  await requireDeleteAction()
   await prisma.processStep.delete({ where: { id } })
   revalidatePaths([...PATHS])
 }
 
 export async function reorderProcessSteps(items: { id: string; order: number }[]) {
-  await requireAdmin()
+  await requireAdminAction()
   await persistOrderUpdates(items, (id, order) =>
     prisma.processStep.update({ where: { id }, data: { order } })
   )
@@ -43,7 +39,7 @@ export async function reorderProcessSteps(items: { id: string; order: number }[]
 }
 
 export async function toggleProcessStepPublished(id: string, value: boolean) {
-  await requireAdmin()
+  await requireAdminAction()
   await prisma.processStep.update({ where: { id }, data: { isPublished: value } })
   revalidatePaths([...PATHS])
 }

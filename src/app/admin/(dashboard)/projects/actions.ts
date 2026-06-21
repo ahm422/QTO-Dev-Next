@@ -1,6 +1,6 @@
 "use server"
 
-import { getServerSession } from "@/lib/auth/session"
+import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { projectSchema, type ProjectInput } from "@/lib/validators/admin/project"
@@ -8,13 +8,9 @@ import { revalidatePaths } from "@/lib/revalidate"
 import { projectPaths } from "@/lib/revalidate-paths"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
 
-async function requireAdmin() {
-  const session = await getServerSession()
-  if (session?.user?.role !== "admin") throw new Error("Unauthorized")
-}
 
 export async function createProject(data: ProjectInput) {
-  await requireAdmin()
+  await requireAdminAction()
   const { completedAt, ...rest } = projectSchema.parse(data)
   await prisma.project.create({ data: { ...rest, completedAt: completedAt ? new Date(completedAt) : null } })
   revalidatePaths([...projectPaths(rest.slug)])
@@ -22,7 +18,7 @@ export async function createProject(data: ProjectInput) {
 }
 
 export async function updateProject(id: string, data: ProjectInput) {
-  await requireAdmin()
+  await requireAdminAction()
   const { completedAt, ...rest } = projectSchema.parse(data)
   await prisma.project.update({ where: { id }, data: { ...rest, completedAt: completedAt ? new Date(completedAt) : null } })
   revalidatePaths([...projectPaths(rest.slug)])
@@ -30,21 +26,21 @@ export async function updateProject(id: string, data: ProjectInput) {
 }
 
 export async function deleteProject(id: string) {
-  await requireAdmin()
+  await requireDeleteAction()
   const project = await prisma.project.findUnique({ where: { id }, select: { slug: true } })
   await prisma.project.delete({ where: { id } })
   revalidatePaths([...projectPaths(project?.slug)])
 }
 
 export async function toggleProjectPublished(id: string, value: boolean) {
-  await requireAdmin()
+  await requireAdminAction()
   const project = await prisma.project.findUnique({ where: { id }, select: { slug: true } })
   await prisma.project.update({ where: { id }, data: { isPublished: value } })
   revalidatePaths([...projectPaths(project?.slug)])
 }
 
 export async function reorderProjects(items: { id: string; order: number }[]) {
-  await requireAdmin()
+  await requireAdminAction()
   await persistOrderUpdates(items, (id, order) =>
     prisma.project.update({ where: { id }, data: { order } })
   )
