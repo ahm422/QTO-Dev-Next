@@ -14,6 +14,10 @@ export function isResendConfigured(): boolean {
   return Boolean(process.env.RESEND_API_KEY?.trim());
 }
 
+export function getResendFromAddress(): string | null {
+  return process.env.RESEND_FROM_EMAIL?.trim() ?? null;
+}
+
 export function getResendAddresses(): { from: string; adminTo: string } | null {
   const from = process.env.RESEND_FROM_EMAIL?.trim();
   const adminTo = process.env.RESEND_TO_EMAIL?.trim();

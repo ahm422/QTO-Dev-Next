@@ -8,6 +8,8 @@ import { checkAuthGlobalRateLimit, rateLimitExceededResponse } from "@/lib/auth/
 
 const LOGIN_PATH = "/admin/login";
 const UNAUTHORIZED_PATH = "/admin/unauthorized";
+const FORGOT_PASSWORD_PATH = "/admin/forgot-password";
+const RESET_PASSWORD_PATH = "/admin/reset-password";
 const ADMIN_HOME = "/admin";
 
 const IS_PROD = process.env.NODE_ENV === "production";
@@ -53,6 +55,8 @@ export default async function middleware(request: NextRequest): Promise<NextResp
   if (
     pathname === LOGIN_PATH ||
     pathname === UNAUTHORIZED_PATH ||
+    pathname === FORGOT_PASSWORD_PATH ||
+    pathname === RESET_PASSWORD_PATH ||
     pathname.startsWith("/admin/logout")
   ) {
     const response = NextResponse.next();

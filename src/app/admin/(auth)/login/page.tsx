@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { FormInput } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -90,6 +91,14 @@ function AdminLoginForm() {
           disabled={isSubmitting}
           required
         />
+        <div className="text-right">
+          <Link
+            href="/admin/forgot-password"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Forgot password?
+          </Link>
+        </div>
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? "Signing in…" : "Sign in"}
         </Button>
