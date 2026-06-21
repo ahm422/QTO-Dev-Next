@@ -24,7 +24,7 @@ const columns: AdminTableColumn<Job>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function JobsTable({ rows }: { rows: Job[] }) {
+export default function JobsTable({ rows, canDelete }: { rows: Job[] ; canDelete?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -36,6 +36,7 @@ export default function JobsTable({ rows }: { rows: Job[] }) {
       emptyMessage="No job listings yet."
       emptyIcon={Briefcase}
       emptyAction={{ label: "+ Add Job", href: "/admin/jobs/new" }}
+      canDelete={canDelete}
     />
   )
 }

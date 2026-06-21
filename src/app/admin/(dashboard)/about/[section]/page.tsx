@@ -5,7 +5,7 @@ import AboutContentForm from "./AboutContentForm"
 
 export default async function AboutContentFormPage({ params }: { params: Promise<{ section: string }> }) {
   const session = await getServerSession()
-  if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
+  if (!["super_admin", "admin", "editor"].includes(session?.user?.role ?? "")) redirect("/admin/unauthorized")
 
   const { section } = await params
   const decoded = decodeURIComponent(section)

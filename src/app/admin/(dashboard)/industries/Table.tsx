@@ -22,7 +22,7 @@ const columns: AdminTableColumn<Industry>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function IndustriesTable({ rows }: { rows: Industry[] }) {
+export default function IndustriesTable({ rows, canDelete }: { rows: Industry[] ; canDelete?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -34,6 +34,7 @@ export default function IndustriesTable({ rows }: { rows: Industry[] }) {
       emptyMessage="No industries yet."
       emptyIcon={Building2}
       emptyAction={{ label: "+ Add Industry", href: "/admin/industries/new" }}
+      canDelete={canDelete}
     />
   )
 }

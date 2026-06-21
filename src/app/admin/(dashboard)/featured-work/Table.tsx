@@ -17,7 +17,7 @@ const columns: AdminTableColumn<FeaturedWork>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function FeaturedWorkTable({ rows }: { rows: FeaturedWork[] }) {
+export default function FeaturedWorkTable({ rows, canDelete }: { rows: FeaturedWork[] ; canDelete?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -29,6 +29,7 @@ export default function FeaturedWorkTable({ rows }: { rows: FeaturedWork[] }) {
       emptyMessage="No featured work yet."
       emptyIcon={Star}
       emptyAction={{ label: "+ Add Work", href: "/admin/featured-work/new" }}
+      canDelete={canDelete}
     />
   )
 }

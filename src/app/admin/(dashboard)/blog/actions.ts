@@ -1,19 +1,15 @@
 "use server"
 
-import { getServerSession } from "@/lib/auth/session"
+import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { blogPostSchema, type BlogPostInput } from "@/lib/validators/admin/blogPost"
 import { revalidatePaths } from "@/lib/revalidate"
 import { blogPaths } from "@/lib/revalidate-paths"
 
-async function requireAdmin() {
-  const session = await getServerSession()
-  if (session?.user?.role !== "admin") throw new Error("Unauthorized")
-}
 
 export async function createBlogPost(data: BlogPostInput) {
-  await requireAdmin()
+  await requireAdminAction()
   const parsed = blogPostSchema.parse(data)
   await prisma.blogPost.create({
     data: {
@@ -26,7 +22,7 @@ export async function createBlogPost(data: BlogPostInput) {
 }
 
 export async function updateBlogPost(id: string, data: BlogPostInput) {
-  await requireAdmin()
+  await requireAdminAction()
   const parsed = blogPostSchema.parse(data)
   const existing = await prisma.blogPost.findUnique({ where: { id }, select: { isPublished: true, publishedAt: true } })
   const publishedAt = parsed.isPublished && !existing?.publishedAt ? new Date() : existing?.publishedAt ?? null
@@ -39,14 +35,14 @@ export async function updateBlogPost(id: string, data: BlogPostInput) {
 }
 
 export async function deleteBlogPost(id: string) {
-  await requireAdmin()
+  await requireDeleteAction()
   const post = await prisma.blogPost.findUnique({ where: { id }, select: { slug: true } })
   await prisma.blogPost.delete({ where: { id } })
   revalidatePaths([...blogPaths(post?.slug)])
 }
 
 export async function toggleBlogPostPublished(id: string, value: boolean) {
-  await requireAdmin()
+  await requireAdminAction()
   const existing = await prisma.blogPost.findUnique({ where: { id }, select: { publishedAt: true, slug: true } })
   const publishedAt = value && !existing?.publishedAt ? new Date() : existing?.publishedAt ?? null
   await prisma.blogPost.update({ where: { id }, data: { isPublished: value, publishedAt } })

@@ -33,7 +33,7 @@ export default function AdminMobileNav({ userEmail = "", userRole = "admin" }: A
           <SheetTitle className="sr-only">Navigation</SheetTitle>
           <SiteLogo forcedTheme={theme} height={28} width={100} className="h-7 w-auto object-contain" priority />
         </SheetHeader>
-        <AdminNavList onNavigate={() => setOpen(false)} />
+        <AdminNavList onNavigate={() => setOpen(false)} userRole={userRole} />
         <div className="border-t border-border shrink-0">
           <div className="flex items-center gap-3 px-3 py-2">
             <Avatar className="h-8 w-8 shrink-0">

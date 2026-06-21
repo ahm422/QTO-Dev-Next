@@ -60,7 +60,7 @@ const QUICK_ACTIONS = [
 
 export default async function AdminDashboardPage() {
   const session = await getServerSession()
-  if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
+  if (!["super_admin", "admin", "editor"].includes(session?.user?.role ?? "")) redirect("/admin/unauthorized")
 
   const [
     servicesTotal, servicesPublished,

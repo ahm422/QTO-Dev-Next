@@ -1,4 +1,5 @@
 import { getServerSession } from "@/lib/auth/session"
+import { roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -6,7 +7,8 @@ import EngagementModelsTable from "./Table"
 
 export default async function EngagementModelsPage() {
   const session = await getServerSession()
-  if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
+  if (!["super_admin", "admin", "editor"].includes(session?.user?.role ?? "")) redirect("/admin/unauthorized")
+  const role = session?.user?.role ?? ""
   const rows = await prisma.engagementModel.findMany({ orderBy: { order: "asc" } })
   return (
     <div className="space-y-6">
@@ -16,7 +18,9 @@ export default async function EngagementModelsPage() {
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Engagement Models" }]}
         primaryAction={{ label: "+ Add Model", href: "/admin/engagement-models/new" }}
       />
-      <EngagementModelsTable rows={rows} />
+      <EngagementModelsTable rows={rows}
+        canDelete={roleCanDeleteContent(role as AdminRole)}
+      />
     </div>
   )
 }

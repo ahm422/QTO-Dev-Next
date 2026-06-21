@@ -24,7 +24,7 @@ const columns: AdminTableColumn<Testimonial>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function TestimonialsTable({ rows }: { rows: Testimonial[] }) {
+export default function TestimonialsTable({ rows, canDelete }: { rows: Testimonial[] ; canDelete?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -36,6 +36,7 @@ export default function TestimonialsTable({ rows }: { rows: Testimonial[] }) {
       emptyMessage="No testimonials yet."
       emptyIcon={MessageSquare}
       emptyAction={{ label: "+ Add Testimonial", href: "/admin/testimonials/new" }}
+      canDelete={canDelete}
     />
   )
 }

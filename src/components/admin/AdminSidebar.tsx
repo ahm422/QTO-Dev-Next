@@ -2,14 +2,14 @@ import AdminNavList, { AdminNavLogout } from "@/components/admin/AdminNavList"
 import SidebarUserProfile from "@/components/admin/navigation/SidebarUserProfile"
 import AdminSidebarBrand from "@/components/admin/AdminSidebarBrand"
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ userRole }: { userRole: string }) {
   return (
     <aside className="hidden lg:flex flex-col fixed top-0 left-0 h-screen w-64 bg-[var(--sidebar)] border-r border-border z-40">
       {/* Brand */}
       <AdminSidebarBrand />
 
       {/* Navigation */}
-      <AdminNavList />
+      <AdminNavList userRole={userRole} />
 
       {/* Footer: user profile + logout */}
       <div className="border-t border-border shrink-0">

@@ -1,10 +1,15 @@
 /**
- * Create (or update) an admin user in the admin_users table.
+ * Bootstrap script — create (or update) an admin user in the admin_users table.
+ * Use this ONLY for initial setup or recovery. Day-to-day user management lives at
+ * /admin/users in the dashboard.
  *
  * Usage:
- *   npm run admin:create-user                              # interactive prompts
- *   npm run admin:create-user -- --email=you@example.com  # prompts for password only
+ *   npm run admin:create-user                                          # interactive prompts
+ *   npm run admin:create-user -- --email=you@example.com              # prompts for password only
  *   npm run admin:create-user -- --email=you@example.com --password=MyPass123!
+ *   npm run admin:create-user -- --email=you@example.com --role=admin  # defaults to super_admin
+ *
+ * Valid roles: super_admin (default), admin, editor
  *
  * Requires DATABASE_URL in .env or .env.local.
  */
@@ -104,6 +109,16 @@ async function main() {
     process.exit(1);
   }
 
+  // Resolve role: CLI arg > default super_admin
+  const VALID_ROLES = ["super_admin", "admin", "editor"] as const;
+  type ValidRole = (typeof VALID_ROLES)[number];
+  const roleArg = parseArg("role") as ValidRole | undefined;
+  const role: ValidRole = roleArg && VALID_ROLES.includes(roleArg) ? roleArg : "super_admin";
+  if (roleArg && !VALID_ROLES.includes(roleArg)) {
+    console.error(`ERROR: Invalid role "${roleArg}". Valid roles: ${VALID_ROLES.join(", ")}`);
+    process.exit(1);
+  }
+
   // Resolve password: CLI arg > interactive prompt (no env var fallback)
   let password = parseArg("password");
   if (!password) {
@@ -134,14 +149,14 @@ async function main() {
 
   try {
     const result = await pool.query(
-      `INSERT INTO admin_users (id, email, password_hash, updated_at)
-       VALUES (gen_random_uuid(), $1, $2, now())
-       ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, updated_at = now()
+      `INSERT INTO admin_users (id, email, password_hash, role, updated_at)
+       VALUES (gen_random_uuid(), $1, $2, $3, now())
+       ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, role = EXCLUDED.role, updated_at = now()
        RETURNING (xmax = 0) AS inserted`,
-      [email, passwordHash]
+      [email, passwordHash, role]
     );
     const inserted = result.rows[0]?.inserted;
-    console.log(`\n${inserted ? "Created" : "Updated"} admin user: ${email}`);
+    console.log(`\n${inserted ? "Created" : "Updated"} admin user: ${email} (role: ${role})`);
     console.log("You can now sign in at http://localhost:3000/admin/login");
   } finally {
     await pool.end();

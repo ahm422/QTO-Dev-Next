@@ -19,6 +19,7 @@ import {
   Handshake,
   Phone,
   Settings2,
+  Shield,
 } from "lucide-react"
 
 export type AdminNavGroup = "main" | "content" | "settings"
@@ -29,6 +30,7 @@ export type AdminNavItem = {
   icon: LucideIcon
   model?: string
   group: AdminNavGroup
+  requiredRole?: string[]
 }
 
 export const adminNavItems: AdminNavItem[] = [
@@ -54,6 +56,7 @@ export const adminNavItems: AdminNavItem[] = [
   { label: "Contact Info",      href: "/admin/contact-info",      icon: Phone,          model: "ContactInfo",     group: "content" },
   // SETTINGS
   { label: "Site Config",       href: "/admin/site-config",       icon: Settings2,      model: "SiteConfig",      group: "settings" },
+  { label: "Admin Users",       href: "/admin/users",             icon: Shield,                                   group: "settings", requiredRole: ["super_admin"] },
 ]
 
 export const GROUP_LABELS: Record<AdminNavGroup, string> = {

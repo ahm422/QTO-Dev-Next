@@ -15,6 +15,7 @@ interface DataTableProps<T extends OrderableRow> {
   emptyMessage?: string
   emptyIcon?: LucideIcon
   emptyAction?: { label: string; href: string }
+  canDelete?: boolean
 }
 
 export default function DataTable<T extends OrderableRow>({
@@ -28,6 +29,7 @@ export default function DataTable<T extends OrderableRow>({
   emptyMessage = "No items yet.",
   emptyIcon,
   emptyAction,
+  canDelete,
 }: DataTableProps<T>) {
   if (!isLoading && rows.length === 0) {
     return (
@@ -48,6 +50,7 @@ export default function DataTable<T extends OrderableRow>({
         onReorder={onReorder}
         isLoading={isLoading}
         emptyMessage={emptyMessage}
+        canDelete={canDelete}
       />
     </div>
   )

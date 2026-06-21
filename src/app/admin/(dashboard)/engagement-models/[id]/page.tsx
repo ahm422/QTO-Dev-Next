@@ -6,7 +6,7 @@ import EngagementModelForm from "./EngagementModelForm"
 
 export default async function EngagementModelFormPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession()
-  if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
+  if (!["super_admin", "admin", "editor"].includes(session?.user?.role ?? "")) redirect("/admin/unauthorized")
   const { id } = await params
 
   if (id === "new") {

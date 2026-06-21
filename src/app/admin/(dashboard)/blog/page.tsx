@@ -1,4 +1,5 @@
 import { getServerSession } from "@/lib/auth/session"
+import { roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -11,7 +12,8 @@ export default async function BlogPage({
   searchParams: Promise<{ q?: string; status?: string }>
 }) {
   const session = await getServerSession()
-  if (session?.user?.role !== "admin") redirect("/admin/unauthorized")
+  if (!["super_admin", "admin", "editor"].includes(session?.user?.role ?? "")) redirect("/admin/unauthorized")
+  const role = session?.user?.role ?? ""
 
   const { q, status } = await searchParams
   const where = {
@@ -30,7 +32,9 @@ export default async function BlogPage({
         primaryAction={{ label: "+ New Post", href: "/admin/blog/new" }}
       />
       <FilterBar searchPlaceholder="Search posts…" filters={[{ key: "status", placeholder: "All Statuses", options: [{ label: "Published", value: "published" }, { label: "Draft", value: "draft" }] }]} />
-      <BlogTable rows={rows} />
+      <BlogTable rows={rows}
+        canDelete={roleCanDeleteContent(role as AdminRole)}
+      />
     </div>
   )
 }
