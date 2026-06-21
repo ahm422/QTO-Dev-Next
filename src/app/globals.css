@@ -149,6 +149,21 @@
   --admin-success: #22C55E;
   --admin-warning: #EAB308;
   --admin-radius: 12px;
+  /* Chart semantic tokens */
+  --chart-1: #F97316;
+  --chart-2: #3B82F6;
+  --chart-3: #A855F7;
+  --chart-4: #06B6D4;
+  --chart-5: #22C55E;
+  /* Elevation */
+  --admin-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+  --admin-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+  /* SEO preview panel — intentionally dark in both themes (mimics Google dark SERP) */
+  --admin-seo-bg: #1a1a1a;
+  --admin-seo-link: #8ab4f8;
+  --admin-seo-desc: #bdc1c6;
+  /* Raised contrast: #71717A on #18181B is ~3.9:1; #A1A1AA reaches ~5.9:1 (WCAG AA) */
+  --muted-foreground: #A1A1AA;
 }
 
 .admin-light {
@@ -185,6 +200,19 @@
   --admin-success: #16a34a;
   --admin-warning: #ca8a04;
   --admin-radius: 12px;
+  /* Chart semantic tokens */
+  --chart-1: #EA6F0A;
+  --chart-2: #2563EB;
+  --chart-3: #7C3AED;
+  --chart-4: #0891B2;
+  --chart-5: #16A34A;
+  /* Elevation */
+  --admin-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+  --admin-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.06);
+  /* SEO preview panel — intentionally dark in both themes (mimics Google dark SERP) */
+  --admin-seo-bg: #1a1a1a;
+  --admin-seo-link: #8ab4f8;
+  --admin-seo-desc: #bdc1c6;
 }
 
 /* Tailwind v4 theme: map semantic names to CSS variables for utilities (bg-background, text-foreground, etc.) */

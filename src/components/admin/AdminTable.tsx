@@ -213,8 +213,8 @@ function SortableMobileCard<T extends OrderableRow>({
           }
           return (
             <div key={col.key} className="flex gap-2 min-w-0">
-              <dt className="text-muted-foreground shrink-0 w-24">{col.label}</dt>
-              <dd className="text-foreground truncate min-w-0 flex-1">{text}</dd>
+              <dt className="text-muted-foreground shrink-0 w-20 sm:w-24">{col.label}</dt>
+              <dd className="text-foreground break-words min-w-0 flex-1">{text}</dd>
             </div>
           )
         })}

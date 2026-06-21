@@ -19,7 +19,7 @@ export default function AdminPageSection({
   className,
 }: AdminPageSectionProps) {
   return (
-    <section className={cn("rounded-xl border border-border bg-card", className)}>
+    <section className={cn("rounded-xl border border-border bg-card shadow-[var(--admin-shadow-sm)]", className)}>
       <div className="flex items-center justify-between px-5 py-4 border-b border-border">
         <div className="flex items-center gap-2.5">
           {Icon && (

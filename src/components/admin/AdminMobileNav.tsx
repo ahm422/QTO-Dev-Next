@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Menu } from "lucide-react"
 import { useAdminTheme } from "@/components/admin/AdminThemeProvider"
 import { SiteLogo } from "@/components/common/SiteLogo"
+import SidebarUserProfile from "@/components/admin/navigation/SidebarUserProfile"
 
 export default function AdminMobileNav() {
   const [open, setOpen] = useState(false)
@@ -27,8 +28,11 @@ export default function AdminMobileNav() {
           <SiteLogo forcedTheme={theme} height={28} width={100} className="h-7 w-auto object-contain" priority />
         </SheetHeader>
         <AdminNavList onNavigate={() => setOpen(false)} />
-        <div className="border-t border-border px-3 py-3 shrink-0">
-          <AdminNavLogout />
+        <div className="border-t border-border shrink-0">
+          <SidebarUserProfile />
+          <div className="px-3 pb-3">
+            <AdminNavLogout />
+          </div>
         </div>
       </SheetContent>
     </Sheet>

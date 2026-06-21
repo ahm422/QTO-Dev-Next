@@ -29,9 +29,9 @@ export default function AdminNavList({ onNavigate }: AdminNavListProps) {
 
   return (
     <nav className="flex-1 overflow-y-auto py-4 px-3 scrollbar-none">
-      {grouped.map(({ group, items }) =>
+      {grouped.map(({ group, items }, i) =>
         items.length === 0 ? null : (
-          <SidebarNavGroup key={group} label={GROUP_LABELS[group]}>
+          <SidebarNavGroup key={group} label={GROUP_LABELS[group]} isFirst={i === 0}>
             {items.map((item) => (
               <SidebarNavItem
                 key={item.href}
