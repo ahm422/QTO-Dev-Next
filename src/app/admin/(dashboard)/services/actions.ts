@@ -1,6 +1,6 @@
 "use server"
 
-import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
+import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { serviceSchema, type ServiceInput } from "@/lib/validators/admin/service"
@@ -10,7 +10,7 @@ import { persistOrderUpdates } from "@/lib/admin/reorder"
 
 
 export async function createService(data: ServiceInput) {
-  await requireAdminAction()
+  await requireCreateAction()
   const parsed = serviceSchema.parse(data)
   await prisma.service.create({ data: parsed })
   revalidatePaths([...servicePaths(parsed.slug)])

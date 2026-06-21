@@ -1,6 +1,6 @@
 "use server"
 
-import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
+import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { whyChooseUsSchema, type WhyChooseUsInput } from "@/lib/validators/admin/whyChooseUs"
@@ -11,7 +11,7 @@ const PATHS = ["/", "/services"] as const
 
 
 export async function createWhyChooseUs(data: WhyChooseUsInput) {
-  await requireAdminAction()
+  await requireCreateAction()
   await prisma.whyChooseUs.create({ data: whyChooseUsSchema.parse(data) })
   revalidatePaths([...PATHS])
   redirect("/admin/why-choose-us")

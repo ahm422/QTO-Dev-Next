@@ -1,13 +1,15 @@
 import { Container } from "@/components/common/Container";
 import { Heading } from "@/components/ui/shared/Heading";
 import { projectsPageConfig } from "@/config/projectsPage";
+type ProjectsPageConfigType = typeof projectsPageConfig;
 import Image from "next/image";
 import { PEXELS_TECH_IMAGES } from "@/config/pexelsImages";
 
 const HEADING_ID = "projects-hero-heading";
 
-export function ProjectsHeroSection() {
-  const { hero } = projectsPageConfig;
+export function ProjectsHeroSection({ config }: { config?: ProjectsPageConfigType }) {
+  const cfg = config ?? projectsPageConfig;
+  const { hero } = cfg;
   // Use a much smaller source image to reduce bytes before Next optimization kicks in.
   const heroImage = PEXELS_TECH_IMAGES[3];
 

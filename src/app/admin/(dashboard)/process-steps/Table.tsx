@@ -16,7 +16,7 @@ const columns: AdminTableColumn<ProcessStep>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function ProcessStepsTable({ rows, canDelete }: { rows: ProcessStep[] ; canDelete?: boolean }) {
+export default function ProcessStepsTable({ rows, canDelete, canCreate }: { rows: ProcessStep[] ; canDelete?: boolean; canCreate?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -27,7 +27,7 @@ export default function ProcessStepsTable({ rows, canDelete }: { rows: ProcessSt
       getItemName={(r) => r.title}
       emptyMessage="No process steps yet."
       emptyIcon={GitBranch}
-      emptyAction={{ label: "+ Add Step", href: "/admin/process-steps/new" }}
+      emptyAction={canCreate !== false ? { label: "+ Add Step", href: "/admin/process-steps/new" } : undefined}
       canDelete={canDelete}
     />
   )

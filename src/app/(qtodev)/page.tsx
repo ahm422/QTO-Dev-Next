@@ -13,15 +13,22 @@ import { BuildSomethingRealSection } from "./sections/BuildSomethingRealSection"
 import { StatsNumbersSection } from "./sections/StatsNumbersSection";
 import { TestimonialsSection } from "./sections/TestimonialsSection";
 import { IndustriesSection } from "./sections/IndustriesSection";
+import { findPageSection } from "@/lib/cms/pageContent";
 
 export default async function HomePage() {
+  const [heroConfig, aboutCompanyConfig, buildConfig] = await Promise.all([
+    findPageSection("homepage.hero"),
+    findPageSection("homepage.about-company"),
+    findPageSection("homepage.build-something-real"),
+  ]);
+
   return (
     <main
       id="main-content"
       className="min-h-0 bg-background selection:bg-primary/20 selection:text-foreground dark:selection:bg-primary/30"
     >
-      <HeroSection />
-      <AboutCompanySection />
+      <HeroSection config={heroConfig as any} />
+      <AboutCompanySection config={aboutCompanyConfig as any} />
       <OurServicesSection />
       <HowWeWorkSection />
       <PortfolioSection />
@@ -34,7 +41,7 @@ export default async function HomePage() {
       <FAQsSection />
       <InsightsSection />
       <PartnerUpSection />
-      <BuildSomethingRealSection />
+      <BuildSomethingRealSection config={buildConfig as any} />
     </main>
   );
 }

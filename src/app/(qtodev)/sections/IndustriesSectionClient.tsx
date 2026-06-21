@@ -5,6 +5,7 @@ import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { AppIcon, type AppIconName } from "@/components/ui/shared/AppIcon";
 import { industriesConfig } from "@/config/industries";
+type IndustriesConfigType = typeof industriesConfig;
 import type { IndustryItem, IndustryIconKey } from "@/types/industry";
 import { cn } from "@/components/theme/cn";
 import { Reveal } from "@/components/animations/Reveal";
@@ -104,7 +105,8 @@ function goPrev(index: number, total: number) {
   return index <= 0 ? total - 1 : index - 1;
 }
 
-export function IndustriesSectionClient({ items }: { items: IndustryItem[] }) {
+export function IndustriesSectionClient({ items , config}: { items: IndustryItem[] ; config?: IndustriesConfigType}) {
+  const cfg = config ?? industriesConfig;
   if (items.length === 0) return null;
   const [activeIndex, setActiveIndex] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
@@ -137,7 +139,7 @@ export function IndustriesSectionClient({ items }: { items: IndustryItem[] }) {
     if (reducedMotion || isPaused || items.length <= 1) return;
     const id = setInterval(() => {
       setActiveIndex((i) => goNext(i, items.length));
-    }, industriesConfig.autoScrollIntervalMs);
+    }, cfg.autoScrollIntervalMs);
     return () => clearInterval(id);
   }, [reducedMotion, isPaused, items.length]);
 
@@ -206,10 +208,10 @@ export function IndustriesSectionClient({ items }: { items: IndustryItem[] }) {
             className="text-center max-w-2xl mx-auto mb-12 md:mb-14"
           >
             <SectionHeader
-              subtitle={industriesConfig.subtitle}
+              subtitle={cfg.subtitle}
               subtitleClassName="text-primary font-semibold tracking-[0.2em]"
-              title={industriesConfig.title}
-              titleHighlight={industriesConfig.titleHighlight}
+              title={cfg.title}
+              titleHighlight={cfg.titleHighlight}
               headingId={HEADING_ID}
             />
           </div>
@@ -222,7 +224,7 @@ export function IndustriesSectionClient({ items }: { items: IndustryItem[] }) {
         className="w-full overflow-hidden"
         role="region"
         aria-roledescription="carousel"
-        aria-label={industriesConfig.carouselAriaLabel}
+        aria-label={cfg.carouselAriaLabel}
         tabIndex={0}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}

@@ -21,6 +21,10 @@ import {
   Settings2,
   Shield,
   ScrollText,
+  LayoutTemplate,
+  Inbox,
+  FileText,
+  ClipboardList,
 } from "lucide-react"
 
 export type AdminNavGroup = "main" | "content" | "settings"
@@ -55,6 +59,11 @@ export const adminNavItems: AdminNavItem[] = [
   { label: "Team",              href: "/admin/team",              icon: Users,          model: "TeamMember",      group: "content" },
   { label: "Jobs",              href: "/admin/jobs",              icon: Handshake,      model: "Job",             group: "content" },
   { label: "Contact Info",      href: "/admin/contact-info",      icon: Phone,          model: "ContactInfo",     group: "content" },
+  { label: "Pages",             href: "/admin/pages",             icon: LayoutTemplate, model: "PageSection",     group: "content" },
+  // SUBMISSIONS
+  { label: "Contact Inbox",     href: "/admin/contact-submissions", icon: Inbox,                                  group: "content" },
+  { label: "Job Applications",  href: "/admin/job-applications",  icon: FileText,                                 group: "content" },
+  { label: "Requirements",      href: "/admin/requirements",      icon: ClipboardList,                            group: "content" },
   // SETTINGS
   { label: "Site Config",       href: "/admin/site-config",       icon: Settings2,      model: "SiteConfig",      group: "settings" },
   { label: "Admin Users",       href: "/admin/users",             icon: Shield,                                   group: "settings", requiredRole: ["super_admin"] },

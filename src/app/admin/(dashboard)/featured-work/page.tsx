@@ -1,5 +1,5 @@
 import { getServerSession } from "@/lib/auth/session"
-import { roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
+import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -16,10 +16,11 @@ export default async function FeaturedWorkPage() {
         title="Featured Work"
         subtitle="Showcase items on the homepage"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Featured Work" }]}
-        primaryAction={{ label: "+ Add Item", href: "/admin/featured-work/new" }}
+        primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Item", href: "/admin/featured-work/new" } : undefined}
       />
       <FeaturedWorkTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}
+        canCreate={roleCanCreateContent(role as AdminRole)}
       />
     </div>
   )

@@ -5,11 +5,13 @@ import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
 import { cn } from "@/components/theme/cn";
 import { careersPageConfig } from "@/config/careersPage";
+type CareersPageConfigType = typeof careersPageConfig;
 
 const HEADING_ID = "benefits-heading";
 
-export function BenefitsSection() {
-  const { benefits } = careersPageConfig;
+export function BenefitsSection({ config }: { config?: CareersPageConfigType }) {
+  const cfg = config ?? careersPageConfig;
+  const { benefits } = cfg;
 
   return (
     <section

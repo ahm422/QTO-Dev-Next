@@ -1,6 +1,6 @@
 "use server"
 
-import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
+import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
@@ -9,7 +9,7 @@ import { persistOrderUpdates } from "@/lib/admin/reorder"
 
 
 export async function createTestimonial(data: TestimonialInput) {
-  await requireAdminAction()
+  await requireCreateAction()
   await prisma.testimonial.create({ data: testimonialSchema.parse(data) })
   revalidatePath("/")
   redirect("/admin/testimonials")

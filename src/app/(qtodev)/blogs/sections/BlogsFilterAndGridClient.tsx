@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { blogsPageConfig } from "@/config/blogsPage";
+type BlogsPageConfigType = typeof blogsPageConfig;
 import { BlogFilterBarSection } from "./BlogFilterBarSection";
 import { BlogGridSection } from "./BlogGridSection";
 import type { BlogPost } from "@/types/blog";
@@ -13,7 +14,8 @@ function getCategories(posts: BlogPost[]): string[] {
   return [allLabel, ...uniques];
 }
 
-export function BlogsFilterAndGridClient({ posts }: { posts: BlogPost[] }) {
+export function BlogsFilterAndGridClient({ posts, config }: { posts: BlogPost[]; config?: BlogsPageConfigType }) {
+  const cfg = config ?? blogsPageConfig;
   const [activeCategory, setActiveCategory] = useState<string>(allLabel);
   const categories = useMemo(() => getCategories(posts), [posts]);
   const filteredPosts = useMemo(

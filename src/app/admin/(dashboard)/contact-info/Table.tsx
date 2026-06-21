@@ -24,7 +24,7 @@ const columns: AdminTableColumn<ContactInfo>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function ContactInfoTable({ rows, canDelete }: { rows: ContactInfo[] ; canDelete?: boolean }) {
+export default function ContactInfoTable({ rows, canDelete, canCreate }: { rows: ContactInfo[] ; canDelete?: boolean; canCreate?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -35,7 +35,7 @@ export default function ContactInfoTable({ rows, canDelete }: { rows: ContactInf
       getItemName={(r) => r.label}
       emptyMessage="No contact info yet."
       emptyIcon={Phone}
-      emptyAction={{ label: "+ Add Contact", href: "/admin/contact-info/new" }}
+      emptyAction={canCreate !== false ? { label: "+ Add Contact", href: "/admin/contact-info/new" } : undefined}
       canDelete={canDelete}
     />
   )

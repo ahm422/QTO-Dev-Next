@@ -24,7 +24,7 @@ const columns: AdminTableColumn<Project>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function ProjectsTable({ rows, canDelete }: { rows: Project[] ; canDelete?: boolean }) {
+export default function ProjectsTable({ rows, canDelete, canCreate }: { rows: Project[] ; canDelete?: boolean; canCreate?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -35,7 +35,7 @@ export default function ProjectsTable({ rows, canDelete }: { rows: Project[] ; c
       getItemName={(r) => r.title}
       emptyMessage="No projects yet."
       emptyIcon={FolderOpen}
-      emptyAction={{ label: "+ Add Project", href: "/admin/projects/new" }}
+      emptyAction={canCreate !== false ? { label: "+ Add Project", href: "/admin/projects/new" } : undefined}
       canDelete={canDelete}
     />
   )

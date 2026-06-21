@@ -24,7 +24,7 @@ const columns: AdminTableColumn<BlogPost>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function BlogTable({ rows, canDelete }: { rows: BlogPost[] ; canDelete?: boolean }) {
+export default function BlogTable({ rows, canDelete, canCreate }: { rows: BlogPost[] ; canDelete?: boolean; canCreate?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -34,7 +34,7 @@ export default function BlogTable({ rows, canDelete }: { rows: BlogPost[] ; canD
       getItemName={(r) => r.title}
       emptyMessage="No blog posts yet."
       emptyIcon={FileText}
-      emptyAction={{ label: "+ Add Post", href: "/admin/blog/new" }}
+      emptyAction={canCreate !== false ? { label: "+ Add Post", href: "/admin/blog/new" } : undefined}
       canDelete={canDelete}
     />
   )

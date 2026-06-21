@@ -4,6 +4,7 @@ import { ProjectsPaginationSection } from "./sections/ProjectsPaginationSection"
 import { ProjectsValueSection } from "./sections/ProjectsValueSection";
 import { CTA } from "@/components/common/CTA";
 import { projectsPageConfig } from "@/config/projectsPage";
+import { findPageSection } from "@/lib/cms/pageContent";
 
 interface ProjectsPageProps {
   searchParams?: Promise<{
@@ -12,14 +13,18 @@ interface ProjectsPageProps {
 }
 
 export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
-  const { cta } = projectsPageConfig;
-  const sp = searchParams ? await searchParams : undefined;
+  const [cmsConfig, sp] = await Promise.all([
+    findPageSection("projects.page") as Promise<typeof projectsPageConfig | null>,
+    searchParams,
+  ]);
+  const cfg = cmsConfig ?? projectsPageConfig;
+  const { cta } = cfg;
   return (
     <>
-      <ProjectsHeroSection />
+      <ProjectsHeroSection config={cmsConfig ?? undefined} />
       <ProjectsFilterAndGrid activeCategory={sp?.category} />
       <ProjectsPaginationSection />
-      <ProjectsValueSection />
+      <ProjectsValueSection config={cmsConfig ?? undefined} />
       <CTA
         title={cta.title}
         description={cta.description}

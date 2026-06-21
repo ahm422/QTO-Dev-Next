@@ -19,7 +19,7 @@ const columns: AdminTableColumn<Faq>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function FaqsTable({ rows, canDelete }: { rows: Faq[] ; canDelete?: boolean }) {
+export default function FaqsTable({ rows, canDelete, canCreate }: { rows: Faq[] ; canDelete?: boolean; canCreate?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -30,7 +30,7 @@ export default function FaqsTable({ rows, canDelete }: { rows: Faq[] ; canDelete
       getItemName={(r) => r.question}
       emptyMessage="No FAQs yet."
       emptyIcon={HelpCircle}
-      emptyAction={{ label: "+ Add FAQ", href: "/admin/faqs/new" }}
+      emptyAction={canCreate !== false ? { label: "+ Add FAQ", href: "/admin/faqs/new" } : undefined}
       canDelete={canDelete}
     />
   )

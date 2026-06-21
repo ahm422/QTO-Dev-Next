@@ -5,6 +5,7 @@ import { SectionHeader } from "@/components/common/SectionHeader";
 import { Card } from "@/components/ui/card";
 import { Reveal } from "@/components/animations/Reveal";
 import { aboutPageConfig } from "@/config/aboutPage";
+type AboutPageConfigType = typeof aboutPageConfig;
 
 const HEADING_ID = "about-company-snapshot-heading";
 
@@ -14,8 +15,9 @@ const STATS = [
   { label: "Long-Term Partnerships", value: "Relationships that grow with you" },
 ] as const;
 
-export function CompanySnapshotSectionClient() {
-  const { companySnapshot } = aboutPageConfig;
+export function CompanySnapshotSectionClient({ config }: { config?: AboutPageConfigType }) {
+  const cfg = config ?? aboutPageConfig;
+  const { companySnapshot } = cfg;
 
   return (
     <section

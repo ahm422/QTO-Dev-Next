@@ -5,12 +5,14 @@ import { SectionHeader } from "@/components/common/SectionHeader";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Reveal } from "@/components/animations/Reveal";
 import { aboutPageConfig } from "@/config/aboutPage";
+type AboutPageConfigType = typeof aboutPageConfig;
 import { cn } from "@/components/theme/cn";
 
 const HEADING_ID = "about-trust-heading";
 
-export function TrustSection() {
-  const { trust } = aboutPageConfig;
+export function TrustSection({ config }: { config?: AboutPageConfigType }) {
+  const cfg = config ?? aboutPageConfig;
+  const { trust } = cfg;
 
   return (
     <section

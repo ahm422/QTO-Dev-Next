@@ -6,14 +6,16 @@ import { Heading } from "@/components/ui/shared/Heading";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
 import { careersPageConfig } from "@/config/careersPage";
+type CareersPageConfigType = typeof careersPageConfig;
 import { careerPortalHomeUrl } from "@/config/careersPortal";
 import Image from "next/image";
 import { PEXELS_TECH_IMAGES } from "@/config/pexelsImages";
 
 const HEADING_ID = "careers-hero-heading";
 
-export function CareersHeroSection() {
-  const { hero } = careersPageConfig;
+export function CareersHeroSection({ config }: { config?: CareersPageConfigType }) {
+  const cfg = config ?? careersPageConfig;
+  const { hero } = cfg;
   const heroImage = PEXELS_TECH_IMAGES[5];
 
   return (

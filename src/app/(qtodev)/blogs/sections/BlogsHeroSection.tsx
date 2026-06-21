@@ -1,13 +1,15 @@
 import { Container } from "@/components/common/Container";
 import { Heading } from "@/components/ui/shared/Heading";
 import { blogsPageConfig } from "@/config/blogsPage";
+type BlogsPageConfigType = typeof blogsPageConfig;
 import Image from "next/image";
 import { PEXELS_TECH_IMAGES } from "@/config/pexelsImages";
 
 const HEADING_ID = "blogs-hero-heading";
 
-export function BlogsHeroSection() {
-  const { hero } = blogsPageConfig;
+export function BlogsHeroSection({ config }: { config?: BlogsPageConfigType }) {
+  const cfg = config ?? blogsPageConfig;
+  const { hero } = cfg;
   const heroImage = PEXELS_TECH_IMAGES[4];
 
   return (

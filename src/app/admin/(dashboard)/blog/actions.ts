@@ -1,6 +1,6 @@
 "use server"
 
-import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
+import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { blogPostSchema, type BlogPostInput } from "@/lib/validators/admin/blogPost"
@@ -9,7 +9,7 @@ import { blogPaths } from "@/lib/revalidate-paths"
 
 
 export async function createBlogPost(data: BlogPostInput) {
-  await requireAdminAction()
+  await requireCreateAction()
   const parsed = blogPostSchema.parse(data)
   await prisma.blogPost.create({
     data: {

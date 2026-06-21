@@ -1,5 +1,5 @@
 import { getServerSession } from "@/lib/auth/session"
-import { roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
+import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
@@ -16,10 +16,11 @@ export default async function WhyChooseUsPage() {
         title="Why Choose Us"
         subtitle="Reasons and differentiators shown on the site"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Why Choose Us" }]}
-        primaryAction={{ label: "+ Add Item", href: "/admin/why-choose-us/new" }}
+        primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Item", href: "/admin/why-choose-us/new" } : undefined}
       />
       <WhyChooseUsTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}
+        canCreate={roleCanCreateContent(role as AdminRole)}
       />
     </div>
   )

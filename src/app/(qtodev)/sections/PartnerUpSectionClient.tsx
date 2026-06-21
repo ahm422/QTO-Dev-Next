@@ -8,6 +8,7 @@ import { FormTextarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { partnerUpConfig } from "@/config/partnerUp";
+type PartnerUpConfigType = typeof partnerUpConfig;
 import type { TestimonialItem } from "@/types/testimonials";
 import { cn } from "@/components/theme/cn";
 import { Reveal } from "@/components/animations/Reveal";
@@ -25,7 +26,8 @@ function goNext(index: number, total: number) {
 const cardClass =
   "rounded-2xl shadow-md bg-background/95 border border-border p-6 sm:p-8 md:p-8";
 
-export function PartnerUpSectionClient({ items }: { items: TestimonialItem[] }) {
+export function PartnerUpSectionClient({ items , config}: { items: TestimonialItem[] ; config?: PartnerUpConfigType}) {
+  const cfg = config ?? partnerUpConfig;
   if (items.length === 0) return null;
   const [activeIndex, setActiveIndex] = useState(0);
   const activeItem: TestimonialItem | undefined = items[activeIndex];
@@ -78,11 +80,11 @@ export function PartnerUpSectionClient({ items }: { items: TestimonialItem[] }) 
             {/* Left column: header, testimonial card, contact block */}
             <div className="flex flex-col gap-8" data-reveal>
               <SectionHeader
-                subtitle={partnerUpConfig.subtitle}
+                subtitle={cfg.subtitle}
                 subtitleClassName="text-primary font-semibold"
                 subtitlePill
-                title={partnerUpConfig.title}
-                titleHighlight={partnerUpConfig.titleHighlight}
+                title={cfg.title}
+                titleHighlight={cfg.titleHighlight}
                 headingId={HEADING_ID}
                 centered={false}
               />
@@ -202,9 +204,9 @@ export function PartnerUpSectionClient({ items }: { items: TestimonialItem[] }) 
                 </div>
                 <div className="text-sm text-foreground-muted min-w-0">
                   <p className="font-semibold text-foreground">
-                    {partnerUpConfig.locationLine1}
+                    {cfg.locationLine1}
                   </p>
-                  <p>{partnerUpConfig.locationLine2}</p>
+                  <p>{cfg.locationLine2}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 rounded-xl border border-border/80 bg-background/80 p-4 sm:p-5 shadow-sm w-full sm:w-auto sm:min-w-[200px]">
@@ -212,10 +214,10 @@ export function PartnerUpSectionClient({ items }: { items: TestimonialItem[] }) 
                   <AppIcon name="phone" size="sm" />
                 </div>
                 <a
-                  href={`tel:${partnerUpConfig.phone.replace(/\s/g, "")}`}
+                  href={`tel:${cfg.phone.replace(/\s/g, "")}`}
                   className="font-semibold text-foreground hover:text-primary transition-colors text-sm"
                 >
-                  {partnerUpConfig.phone}
+                  {cfg.phone}
                 </a>
               </div>
               <div className="flex items-center gap-4 rounded-xl border border-border/80 bg-background/80 p-4 sm:p-5 shadow-sm w-full sm:w-auto sm:min-w-[200px]">
@@ -223,10 +225,10 @@ export function PartnerUpSectionClient({ items }: { items: TestimonialItem[] }) 
                   <AppIcon name="envelope" size="sm" />
                 </div>
                 <a
-                  href={`mailto:${partnerUpConfig.email}`}
+                  href={`mailto:${cfg.email}`}
                   className="font-semibold text-foreground hover:text-primary transition-colors text-sm break-all"
                 >
-                  {partnerUpConfig.email}
+                  {cfg.email}
                 </a>
               </div>
             </div>
@@ -234,7 +236,7 @@ export function PartnerUpSectionClient({ items }: { items: TestimonialItem[] }) 
 
             {/* Right column: form card */}
             <div data-reveal>
-              <PartnerUpForm />
+              <PartnerUpForm cfg={cfg} />
             </div>
           </div>
         </Reveal>
@@ -243,7 +245,7 @@ export function PartnerUpSectionClient({ items }: { items: TestimonialItem[] }) 
   );
 }
 
-function PartnerUpForm() {
+function PartnerUpForm({ cfg }: { cfg: PartnerUpConfigType }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -311,25 +313,25 @@ function PartnerUpForm() {
     )}>
       <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl bg-primary/30" aria-hidden />
       <span className="text-xs sm:text-sm uppercase tracking-wider text-primary font-semibold block mb-4">
-        {partnerUpConfig.introLine}
+        {cfg.introLine}
       </span>
       <ul className="space-y-3 mb-6" role="list">
         <li className="flex items-center gap-3 text-foreground text-sm">
           <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-success/15 text-success">
             <AppIcon name="check" size="sm" />
           </span>
-          {partnerUpConfig.bullet1}
+          {cfg.bullet1}
         </li>
         <li className="flex items-center gap-3 text-foreground text-sm">
           <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-success/15 text-success">
             <AppIcon name="check" size="sm" />
           </span>
-          {partnerUpConfig.bullet2}
+          {cfg.bullet2}
         </li>
       </ul>
 
       <h3 className="font-heading text-xl font-semibold text-foreground mb-6">
-        {partnerUpConfig.formTitle}
+        {cfg.formTitle}
       </h3>
 
       {submitted ? (
@@ -342,40 +344,40 @@ function PartnerUpForm() {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <FormInput
-              label={partnerUpConfig.nameLabel}
+              label={cfg.nameLabel}
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder={partnerUpConfig.namePlaceholder}
+              placeholder={cfg.namePlaceholder}
               required
             />
             <FormInput
-              label={partnerUpConfig.emailLabel}
+              label={cfg.emailLabel}
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder={partnerUpConfig.emailPlaceholder}
+              placeholder={cfg.emailPlaceholder}
               required
             />
           </div>
 
           <FormInput
-            label={partnerUpConfig.phoneLabel}
+            label={cfg.phoneLabel}
             type="tel"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            placeholder={partnerUpConfig.phonePlaceholder}
+            placeholder={cfg.phonePlaceholder}
           />
 
           <FormTextarea
-            label={partnerUpConfig.messageLabel}
+            label={cfg.messageLabel}
             name="message"
             value={formData.message}
             onChange={handleChange}
-            placeholder={partnerUpConfig.messagePlaceholder}
+            placeholder={cfg.messagePlaceholder}
             rows={5}
             required
           />
@@ -389,7 +391,7 @@ function PartnerUpForm() {
                 onChange={handleChange}
                 className="w-4 h-4 rounded border-border bg-background text-primary focus:ring-primary"
               />
-              {partnerUpConfig.ndaLabel}
+              {cfg.ndaLabel}
             </label>
             <label className="flex items-center gap-2 cursor-pointer text-sm text-foreground-muted">
               <input
@@ -399,7 +401,7 @@ function PartnerUpForm() {
                 onChange={handleChange}
                 className="w-4 h-4 rounded border-border bg-background text-primary focus:ring-primary"
               />
-              {partnerUpConfig.notBotLabel}
+              {cfg.notBotLabel}
             </label>
           </div>
 
@@ -409,7 +411,7 @@ function PartnerUpForm() {
             className="w-full"
             disabled={submitting}
           >
-            {partnerUpConfig.submitLabel}
+            {cfg.submitLabel}
             <AppIcon name="arrow-right" size="sm" className="ml-2" />
           </Button>
         </form>

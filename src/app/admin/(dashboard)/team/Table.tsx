@@ -24,7 +24,7 @@ const columns: AdminTableColumn<TeamMember>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function TeamTable({ rows, canDelete }: { rows: TeamMember[] ; canDelete?: boolean }) {
+export default function TeamTable({ rows, canDelete, canCreate }: { rows: TeamMember[] ; canDelete?: boolean; canCreate?: boolean }) {
   return (
     <DataTable
       columns={columns}
@@ -35,7 +35,7 @@ export default function TeamTable({ rows, canDelete }: { rows: TeamMember[] ; ca
       getItemName={(r) => r.name}
       emptyMessage="No team members yet."
       emptyIcon={Users}
-      emptyAction={{ label: "+ Add Member", href: "/admin/team/new" }}
+      emptyAction={canCreate !== false ? { label: "+ Add Member", href: "/admin/team/new" } : undefined}
       canDelete={canDelete}
     />
   )

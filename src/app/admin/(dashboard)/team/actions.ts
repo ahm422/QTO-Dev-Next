@@ -1,6 +1,6 @@
 "use server"
 
-import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
+import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { teamMemberSchema, type TeamMemberInput } from "@/lib/validators/admin/teamMember"
@@ -11,7 +11,7 @@ const PATHS = ["/", "/about"] as const
 
 
 export async function createTeamMember(data: TeamMemberInput) {
-  await requireAdminAction()
+  await requireCreateAction()
   await prisma.teamMember.create({ data: teamMemberSchema.parse(data) })
   revalidatePaths([...PATHS])
   redirect("/admin/team")

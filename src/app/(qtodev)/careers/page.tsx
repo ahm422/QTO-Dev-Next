@@ -1,7 +1,12 @@
 import { generateSEOMetadata } from "@/lib/seo";
 import { CareersHeroSection } from "./sections/CareersHeroSection";
+import { BenefitsSection } from "./sections/BenefitsSection";
+import { CultureSection } from "./sections/CultureSection";
+import { WhyWorkWithUsSection } from "./sections/WhyWorkWithUsSection";
 import { OpenPositionsSection } from "./sections/OpenPositionsSection";
 import { CareersCTASection } from "./sections/CareersCTASection";
+import { careersPageConfig } from "@/config/careersPage";
+import { findPageSection } from "@/lib/cms/pageContent";
 
 export const metadata = generateSEOMetadata({
   title: "Careers at QTO Dev",
@@ -10,13 +15,17 @@ export const metadata = generateSEOMetadata({
   url: "/careers",
 });
 
-export default function CareersPage() {
+export default async function CareersPage() {
+  const cmsConfig = await findPageSection("careers.page") as typeof careersPageConfig | null;
+  const cfg = cmsConfig ?? undefined;
   return (
     <>
-      <CareersHeroSection />
+      <CareersHeroSection config={cfg} />
+      <WhyWorkWithUsSection config={cfg} />
+      <BenefitsSection config={cfg} />
+      <CultureSection config={cfg} />
       <OpenPositionsSection />
-      <CareersCTASection />
+      <CareersCTASection config={cfg} />
     </>
   );
 }
-

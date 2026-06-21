@@ -4,6 +4,7 @@ import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { EngagementCard } from "@/components/engagement";
 import { engagementModelsConfig } from "@/config/engagementModels";
+type EngagementModelsConfigType = typeof engagementModelsConfig;
 import type { EngagementModel } from "@/types/engagementModel";
 import { Reveal } from "@/components/animations/Reveal";
 
@@ -11,9 +12,12 @@ const HEADING_ID = "engagement-models-heading";
 
 export function EngagementModelsSectionClient({
   items,
+  config,
 }: {
   items: EngagementModel[];
+  config?: EngagementModelsConfigType;
 }) {
+  const cfg = config ?? engagementModelsConfig;
   if (items.length === 0) return null;
   return (
     <section
@@ -34,12 +38,12 @@ export function EngagementModelsSectionClient({
         <Reveal staggerSelector="[data-reveal]">
           <div data-reveal className="mb-16 md:mb-20">
             <SectionHeader
-              subtitle={engagementModelsConfig.subtitle}
+              subtitle={cfg.subtitle}
               subtitleClassName="text-primary font-semibold tracking-[0.2em]"
               subtitlePill
-              title={engagementModelsConfig.title}
-              titleHighlight={engagementModelsConfig.titleHighlight}
-              description={engagementModelsConfig.description}
+              title={cfg.title}
+              titleHighlight={cfg.titleHighlight}
+              description={cfg.description}
               headingId={HEADING_ID}
             />
           </div>
@@ -69,8 +73,8 @@ export function EngagementModelsSectionClient({
                     features={model.features}
                     isPopular={model.isPopular}
                     getStartedHref={model.getStartedHref}
-                    getStartedLabel={engagementModelsConfig.getStartedLabel}
-                    mostPopularLabel={engagementModelsConfig.mostPopularLabel}
+                    getStartedLabel={cfg.getStartedLabel}
+                    mostPopularLabel={cfg.mostPopularLabel}
                   />
                 </article>
               ))}
