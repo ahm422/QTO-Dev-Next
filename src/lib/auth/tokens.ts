@@ -75,6 +75,61 @@ export async function revokeAllUserTokens(userId: string): Promise<number> {
   return result.count;
 }
 
+export async function listActiveSessionsForUser(userId: string) {
+  return prisma.refreshToken.findMany({
+    where: {
+      userId,
+      revokedAt: null,
+      expiresAt: { gt: new Date() },
+    },
+    select: {
+      id: true,
+      ip: true,
+      userAgent: true,
+      createdAt: true,
+      lastUsedAt: true,
+      expiresAt: true,
+    },
+    orderBy: { lastUsedAt: "desc" },
+  });
+}
+
+export async function getCurrentSessionId(rawToken: string): Promise<string | null> {
+  const tokenHash = await hashToken(rawToken);
+  const row = await prisma.refreshToken.findFirst({
+    where: { tokenHash, revokedAt: null, expiresAt: { gt: new Date() } },
+    select: { id: true },
+  });
+  return row?.id ?? null;
+}
+
+export async function revokeSessionById(userId: string, sessionId: string): Promise<boolean> {
+  const result = await prisma.refreshToken.updateMany({
+    where: {
+      id: sessionId,
+      userId,
+      revokedAt: null,
+      expiresAt: { gt: new Date() },
+    },
+    data: { revokedAt: new Date() },
+  });
+  return result.count > 0;
+}
+
+export async function revokeAllSessionsExcept(userId: string, rawToken: string): Promise<number> {
+  const currentId = await getCurrentSessionId(rawToken);
+  const result = await prisma.refreshToken.updateMany({
+    where: {
+      userId,
+      revokedAt: null,
+      expiresAt: { gt: new Date() },
+      ...(currentId ? { id: { not: currentId } } : {}),
+    },
+    data: { revokedAt: new Date() },
+  });
+  return result.count;
+}
+
 export async function cleanupExpiredTokens(): Promise<number> {
   const retentionCutoff = new Date(
     Date.now() - REVOKED_TOKEN_RETENTION_DAYS * 24 * 60 * 60 * 1000

@@ -1,8 +1,13 @@
-import AdminNavList, { AdminNavLogout } from "@/components/admin/AdminNavList"
-import SidebarUserProfile from "@/components/admin/navigation/SidebarUserProfile"
+import AdminNavList from "@/components/admin/AdminNavList"
+import SidebarUserMenu from "@/components/admin/navigation/SidebarUserMenu"
 import AdminSidebarBrand from "@/components/admin/AdminSidebarBrand"
 
-export default function AdminSidebar({ userRole }: { userRole: string }) {
+interface AdminSidebarProps {
+  userRole: string
+  userEmail: string
+}
+
+export default function AdminSidebar({ userRole, userEmail }: AdminSidebarProps) {
   return (
     <aside className="hidden lg:flex flex-col fixed top-0 left-0 h-screen w-64 bg-[var(--sidebar)] border-r border-border z-40">
       {/* Brand */}
@@ -11,12 +16,9 @@ export default function AdminSidebar({ userRole }: { userRole: string }) {
       {/* Navigation */}
       <AdminNavList userRole={userRole} />
 
-      {/* Footer: user profile + logout */}
-      <div className="border-t border-border shrink-0">
-        <SidebarUserProfile />
-        <div className="px-3 pb-3">
-          <AdminNavLogout />
-        </div>
+      {/* Footer: user menu with profile dropdown */}
+      <div className="border-t border-border shrink-0 p-2">
+        <SidebarUserMenu email={userEmail} role={userRole} />
       </div>
     </aside>
   )

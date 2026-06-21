@@ -1,11 +1,12 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import AdminNavList, { AdminNavLogout } from "@/components/admin/AdminNavList"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Menu } from "lucide-react"
+import { Menu, Monitor } from "lucide-react"
 import { useAdminTheme } from "@/components/admin/AdminThemeProvider"
 import { SiteLogo } from "@/components/common/SiteLogo"
 
@@ -46,7 +47,18 @@ export default function AdminMobileNav({ userEmail = "", userRole = "admin" }: A
               <p className="truncate text-xs text-muted-foreground mt-0.5 capitalize">{userRole}</p>
             </div>
           </div>
-          <div className="px-3 pb-3">
+          <div className="px-3 pb-3 flex flex-col gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
+              asChild
+            >
+              <Link href="/admin/account/sessions" onClick={() => setOpen(false)}>
+                <Monitor className="h-4 w-4" />
+                Active Sessions
+              </Link>
+            </Button>
             <AdminNavLogout />
           </div>
         </div>
