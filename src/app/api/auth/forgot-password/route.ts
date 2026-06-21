@@ -3,6 +3,7 @@ import { jsx } from "react/jsx-runtime";
 import { prisma } from "@/lib/prisma";
 import { createPasswordResetToken } from "@/lib/auth/passwordReset";
 import { writeAuditLog } from "@/lib/auth/audit";
+import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { forgotPasswordSchema } from "@/lib/validators/auth";
 import { formatZodFieldErrors } from "@/lib/validators/http";
 import { apiError, logApiError } from "@/lib/apiResponses";
@@ -69,7 +70,7 @@ export async function POST(request: NextRequest) {
         }
 
         await writeAuditLog({
-          action: "password_reset_requested",
+          action: AUDIT_ACTIONS.PASSWORD_RESET_REQUESTED,
           userId: user.id,
           email,
           ip,

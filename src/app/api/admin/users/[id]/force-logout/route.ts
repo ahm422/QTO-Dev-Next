@@ -4,6 +4,7 @@ import { handleRouteError } from "@/lib/api/handleRouteError";
 import { apiSuccess, apiError } from "@/lib/apiResponses";
 import { revokeAllUserTokens } from "@/lib/auth/tokens";
 import { writeAuditLog } from "@/lib/auth/audit";
+import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -18,7 +19,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
     const revoked = await revokeAllUserTokens(id);
 
     await writeAuditLog({
-      action: "admin_user_force_logout",
+      action: AUDIT_ACTIONS.ADMIN_USER_FORCE_LOGOUT,
       userId: session!.user.id,
       email: session!.user.email,
       metadata: { targetUserId: id, revokedTokens: revoked },

@@ -4,6 +4,7 @@ import { signAccessToken } from "@/lib/auth/jwt";
 import { verifyAndRotateRefreshToken } from "@/lib/auth/tokens";
 import { setAuthCookies, clearAuthCookies } from "@/lib/auth/cookies";
 import { writeAuditLog } from "@/lib/auth/audit";
+import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { COOKIE_REFRESH_TOKEN } from "@/lib/auth/constants";
 import { apiError, logApiError } from "@/lib/apiResponses";
 
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
     const rotated = await verifyAndRotateRefreshToken(rawToken);
     if (!rotated) {
       await writeAuditLog({
-        action: "refresh_reuse_detected",
+        action: AUDIT_ACTIONS.REFRESH_REUSE_DETECTED,
         ip,
         userAgent,
         metadata: { reason: "invalid_or_revoked" },
@@ -43,6 +44,16 @@ export async function POST(request: NextRequest) {
 
     const response = NextResponse.json({ success: true, ok: true }, { status: 200 });
     setAuthCookies(response, { accessToken, refreshToken: rotated.rawToken });
+
+    if (process.env.AUDIT_LOG_TOKEN_REFRESH === "true") {
+      await writeAuditLog({
+        action: AUDIT_ACTIONS.TOKEN_REFRESH,
+        userId: user.id,
+        email: user.email,
+        ip,
+        userAgent,
+      });
+    }
 
     return response;
   } catch (error) {

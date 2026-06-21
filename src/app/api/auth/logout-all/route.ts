@@ -3,6 +3,7 @@ import { verifyAccessToken } from "@/lib/auth/jwt";
 import { revokeAllUserTokens } from "@/lib/auth/tokens";
 import { clearAuthCookies } from "@/lib/auth/cookies";
 import { writeAuditLog } from "@/lib/auth/audit";
+import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { COOKIE_ACCESS_TOKEN } from "@/lib/auth/constants";
 import { apiError, logApiError } from "@/lib/apiResponses";
 
@@ -23,7 +24,7 @@ export async function POST(request: NextRequest) {
     clearAuthCookies(response);
 
     await writeAuditLog({
-      action: "logout_all",
+      action: AUDIT_ACTIONS.LOGOUT_ALL,
       userId: payload.sub,
       email: payload.email,
       ip,

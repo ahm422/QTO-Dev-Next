@@ -8,6 +8,7 @@ import { formatZodFieldErrors } from "@/lib/validators/http";
 import { createAdminUserSchema } from "@/lib/validators/admin/adminUser";
 import { hashPassword } from "@/lib/auth/password";
 import { writeAuditLog } from "@/lib/auth/audit";
+import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 
 const SAFE_SELECT = {
   id: true,
@@ -57,7 +58,7 @@ export async function POST(request: NextRequest) {
     });
 
     await writeAuditLog({
-      action: "admin_user_created",
+      action: AUDIT_ACTIONS.ADMIN_CREATED,
       userId: session!.user.id,
       email: session!.user.email,
       metadata: { targetUserId: user.id, targetEmail: email, role },
