@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, ExternalLink } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export interface AdminBreadcrumb {
@@ -20,6 +20,7 @@ export interface AdminPageHeaderProps {
   breadcrumbs?: AdminBreadcrumb[]
   badges?: AdminHeaderBadge[]
   actions?: React.ReactNode
+  publicHref?: string
   primaryAction?: {
     label: string
     href?: string
@@ -42,6 +43,7 @@ export default function AdminPageHeader({
   breadcrumbs,
   badges,
   actions,
+  publicHref,
   primaryAction,
   className,
 }: AdminPageHeaderProps) {
@@ -93,6 +95,14 @@ export default function AdminPageHeader({
         {/* Actions */}
         <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap sm:shrink-0">
           {actions}
+          {publicHref && (
+            <Button variant="ghost" size="sm" asChild>
+              <a href={publicHref} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="mr-1.5 h-4 w-4" />
+                View on site
+              </a>
+            </Button>
+          )}
           {primaryAction && (
             primaryAction.href ? (
               <Button size="sm" className="gap-1.5 bg-primary text-primary-foreground hover:bg-primary/90" asChild>

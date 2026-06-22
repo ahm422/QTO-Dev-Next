@@ -3,6 +3,7 @@ import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/li
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
+import AdminContentContext from "@/components/admin/layout/AdminContentContext"
 import StatsTable from "./Table"
 
 export default async function StatsPage() {
@@ -16,7 +17,13 @@ export default async function StatsPage() {
         title="Stats"
         subtitle="Numerical highlights displayed on the site"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Stats" }]}
+        publicHref="/"
         primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Stat", href: "/admin/stats/new" } : undefined}
+      />
+      <AdminContentContext
+        publicPaths={[{ label: "Homepage → Stats", href: "/" }]}
+        description="Feeds the animated stats counter row on the homepage."
+        component="StatsNumbersSection in src/app/(qtodev)/sections/StatsNumbersSection.tsx"
       />
       <StatsTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}

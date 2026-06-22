@@ -3,6 +3,7 @@ import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/li
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
+import AdminContentContext from "@/components/admin/layout/AdminContentContext"
 import FilterBar from "@/components/admin/data/FilterBar"
 import BlogTable from "./Table"
 
@@ -29,7 +30,16 @@ export default async function BlogPage({
         title="Blog"
         subtitle="Manage blog posts and articles"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Blog" }]}
+        publicHref="/blog"
         primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ New Post", href: "/admin/blog/new" } : undefined}
+      />
+      <AdminContentContext
+        publicPaths={[
+          { label: "Blog listing", href: "/blog" },
+          { label: "Individual posts", href: "/blog" },
+        ]}
+        description="Each published post appears on /blog and at /blog/[slug]."
+        component="Blog grid in src/app/(qtodev)/blogs/"
       />
       <FilterBar searchPlaceholder="Search posts…" filters={[{ key: "status", placeholder: "All Statuses", options: [{ label: "Published", value: "published" }, { label: "Draft", value: "draft" }] }]} />
       <BlogTable rows={rows}

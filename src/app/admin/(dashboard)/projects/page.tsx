@@ -3,6 +3,7 @@ import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/li
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
+import AdminContentContext from "@/components/admin/layout/AdminContentContext"
 import ProjectsTable from "./Table"
 
 export default async function ProjectsPage() {
@@ -16,7 +17,16 @@ export default async function ProjectsPage() {
         title="Projects"
         subtitle="Portfolio and case study items"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Projects" }]}
+        publicHref="/projects"
         primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Project", href: "/admin/projects/new" } : undefined}
+      />
+      <AdminContentContext
+        publicPaths={[
+          { label: "Projects listing", href: "/projects" },
+          { label: "Homepage → Portfolio strip", href: "/" },
+        ]}
+        description="Listed on /projects; featured items may also appear in the homepage portfolio strip."
+        component="PortfolioSection + ProjectsGridSection in src/app/(qtodev)/projects/"
       />
       <ProjectsTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}

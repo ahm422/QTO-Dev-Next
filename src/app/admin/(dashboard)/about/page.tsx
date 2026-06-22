@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Pencil } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
+import AdminContentContext from "@/components/admin/layout/AdminContentContext"
 
 export default async function AboutPage() {
   const session = await getServerSession()
@@ -19,6 +20,13 @@ export default async function AboutPage() {
         title="About"
         subtitle="Key-value sections for the About page"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "About" }]}
+        publicHref="/about"
+      />
+
+      <AdminContentContext
+        publicPaths={[{ label: "About page", href: "/about" }]}
+        description="Controls About page hero content and main text sections."
+        component="AboutHeroSection in src/app/(qtodev)/about/sections/AboutHeroSection.tsx"
       />
 
       {rows.length === 0 ? (

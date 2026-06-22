@@ -3,6 +3,7 @@ import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/li
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
+import AdminContentContext from "@/components/admin/layout/AdminContentContext"
 import Link from "next/link"
 import { Pencil, Globe, CheckCircle, XCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -44,7 +45,14 @@ export default async function PagesAdminPage() {
         title="Pages"
         subtitle="Manage page-level copy: heroes, headings, CTAs, and section text"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Pages" }]}
+        publicHref="/"
         primaryAction={canCreate ? { label: "+ New Section", href: "/admin/pages/new" } : undefined}
+      />
+
+      <AdminContentContext
+        publicPaths={[{ label: "Varies by section", href: "/" }]}
+        description="Manages page-level copy (heroes, headings, CTAs) injected into public routes via pageSection slugs like homepage.hero, about.page, etc. These are not standalone /[slug] pages — each slug prefix maps to a public route."
+        component="findPageSection() consumers across src/app/(qtodev)/"
       />
 
       {Object.entries(grouped).map(([page, items]) => (
