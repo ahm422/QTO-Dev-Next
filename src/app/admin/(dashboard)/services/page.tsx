@@ -3,6 +3,7 @@ import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/li
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
+import AdminContentContext from "@/components/admin/layout/AdminContentContext"
 import StatCard from "@/components/admin/data/StatCard"
 import StatCardGrid from "@/components/admin/data/StatCardGrid"
 import FilterBar from "@/components/admin/data/FilterBar"
@@ -38,7 +39,17 @@ export default async function ServicesPage({
         title="Services"
         subtitle="Manage your service offerings"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Services" }]}
+        publicHref="/"
         primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Service", href: "/admin/services/new" } : undefined}
+      />
+
+      <AdminContentContext
+        publicPaths={[
+          { label: "Homepage → What We Do", href: "/" },
+          { label: "Services page", href: "/services" },
+        ]}
+        description="Displayed in the 'What We Do' section on the homepage and the dedicated /services page. Order here controls display order."
+        component="OurServicesSection in src/app/(qtodev)/sections/OurServicesSection.tsx"
       />
 
       <StatCardGrid cols={4}>

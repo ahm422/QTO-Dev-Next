@@ -3,6 +3,7 @@ import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/li
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
+import AdminContentContext from "@/components/admin/layout/AdminContentContext"
 import ContactInfoTable from "./Table"
 
 export default async function ContactInfoPage() {
@@ -16,7 +17,13 @@ export default async function ContactInfoPage() {
         title="Contact Info"
         subtitle="Contact methods and office locations"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Contact Info" }]}
+        publicHref="/contact"
         primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Entry", href: "/admin/contact-info/new" } : undefined}
+      />
+      <AdminContentContext
+        publicPaths={[{ label: "Contact page", href: "/contact" }]}
+        description="Populates address, phone, email, and map on /contact."
+        component="ContactDetailsSection in src/app/(qtodev)/contact/sections/ContactDetailsSection.tsx"
       />
       <ContactInfoTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}

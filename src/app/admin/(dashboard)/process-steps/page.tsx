@@ -3,6 +3,7 @@ import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/li
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
+import AdminContentContext from "@/components/admin/layout/AdminContentContext"
 import StatCard from "@/components/admin/data/StatCard"
 import StatCardGrid from "@/components/admin/data/StatCardGrid"
 import FilterBar from "@/components/admin/data/FilterBar"
@@ -40,7 +41,14 @@ export default async function ProcessStepsPage({
         title="Process Steps"
         subtitle="Manage your workflow and methodology steps"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Process Steps" }]}
+        publicHref="/"
         primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Step", href: "/admin/process-steps/new" } : undefined}
+      />
+
+      <AdminContentContext
+        publicPaths={[{ label: "Homepage → How We Work", href: "/" }]}
+        description="Shown in the 'How We Work' process section on the homepage."
+        component="HowWeWorkSection in src/app/(qtodev)/sections/HowWeWorkSection.tsx"
       />
 
       <StatCardGrid cols={3}>

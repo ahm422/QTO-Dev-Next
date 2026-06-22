@@ -19,19 +19,19 @@ const ACTION_SEVERITY: Record<string, Severity> = {
 }
 
 const SEVERITY_CLASSES: Record<Severity, string> = {
-  success: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
-  warning: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800",
-  info: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800",
-  destructive: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800",
-  default: "bg-muted text-muted-foreground border-border",
+  success: "bg-emerald-500 text-white border-transparent",
+  warning: "bg-amber-500 text-white border-transparent",
+  info: "bg-blue-500 text-white border-transparent",
+  destructive: "bg-red-500 text-white border-transparent",
+  default: "bg-slate-500 text-white border-transparent",
 }
 
-export default function ActionBadge({ action }: { action: string }) {
+export default function ActionBadge({ action }: { readonly action: string }) {
   const severity = ACTION_SEVERITY[action] ?? "default"
   return (
     <Badge
       variant="outline"
-      className={cn("font-mono text-xs", SEVERITY_CLASSES[severity])}
+      className={cn("font-mono text-xs font-semibold", SEVERITY_CLASSES[severity])}
     >
       {action}
     </Badge>
