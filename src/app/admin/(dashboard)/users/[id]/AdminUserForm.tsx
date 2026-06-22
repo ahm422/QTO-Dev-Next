@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { FormInput } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -15,7 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import AdminForm from "@/components/admin/AdminForm";
+import FormGrid from "@/components/admin/forms/FormGrid";
 import { ADMIN_ROLES } from "@/lib/auth/roles";
 
 const ROLE_LABELS: Record<string, string> = {
@@ -123,33 +123,37 @@ export default function AdminUserForm({ defaultValues, currentUserId }: AdminUse
 
   return (
     <form onSubmit={handleSubmit}>
-      <Card>
-        <CardContent className="pt-6 space-y-6">
-          {formError && (
-            <Alert variant="destructive">
-              <AlertDescription>{formError}</AlertDescription>
-            </Alert>
-          )}
+      <AdminForm
+        isSubmitting={isSubmitting}
+        cancelHref="/admin/users"
+        submitLabel={isEdit ? "Save changes" : "Create user"}
+      >
+        {formError && (
+          <Alert variant="destructive">
+            <AlertDescription>{formError}</AlertDescription>
+          </Alert>
+        )}
 
-          {/* Email */}
-          {isEdit ? (
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-muted-foreground">Email</Label>
-              <p className="text-sm text-foreground">{defaultValues.email}</p>
-            </div>
-          ) : (
-            <FormInput
-              label="Email"
-              name="email"
-              type="email"
-              autoComplete="off"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={isSubmitting}
-              required
-            />
-          )}
+        {/* Email */}
+        {isEdit ? (
+          <div className="space-y-1">
+            <Label className="text-sm font-medium text-muted-foreground">Email</Label>
+            <p className="text-sm text-foreground">{defaultValues.email}</p>
+          </div>
+        ) : (
+          <FormInput
+            label="Email"
+            name="email"
+            type="email"
+            autoComplete="off"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isSubmitting}
+            required
+          />
+        )}
 
+        <FormGrid cols={2}>
           {/* Display name */}
           <FormInput
             label="Display name (optional)"
@@ -183,10 +187,12 @@ export default function AdminUserForm({ defaultValues, currentUserId }: AdminUse
               <p className="text-xs text-muted-foreground">You cannot change your own role.</p>
             )}
           </div>
+        </FormGrid>
 
-          {/* Password fields (create only) */}
-          {!isEdit && (
-            <>
+        {/* Password fields (create only) */}
+        {!isEdit && (
+          <>
+            <FormGrid cols={2}>
               <FormInput
                 label="Password"
                 name="password"
@@ -207,68 +213,54 @@ export default function AdminUserForm({ defaultValues, currentUserId }: AdminUse
                 disabled={isSubmitting}
                 required
               />
-              <div className="rounded-md bg-muted/50 px-4 py-3 text-xs text-muted-foreground space-y-0.5">
-                <p className="font-medium text-foreground">Password requirements</p>
-                <ul className="list-disc list-inside space-y-0.5 mt-1">
-                  <li>At least 12 characters</li>
-                  <li>Uppercase letter, lowercase letter, digit, special character</li>
-                </ul>
-              </div>
-            </>
-          )}
-
-          {/* Active toggle (edit only) */}
-          {isEdit && (
-            <div className="flex items-center gap-3">
-              <Switch
-                id="isActive"
-                checked={isActive}
-                onCheckedChange={setIsActive}
-                disabled={isSubmitting || isSelf}
-              />
-              <Label htmlFor="isActive">Active</Label>
-              {isSelf && (
-                <span className="text-xs text-muted-foreground">Cannot deactivate yourself.</span>
-              )}
+            </FormGrid>
+            <div className="rounded-md bg-muted/50 px-4 py-3 text-xs text-muted-foreground space-y-0.5">
+              <p className="font-medium text-foreground">Password requirements</p>
+              <ul className="list-disc list-inside space-y-0.5 mt-1">
+                <li>At least 12 characters</li>
+                <li>Uppercase letter, lowercase letter, digit, special character</li>
+              </ul>
             </div>
-          )}
+          </>
+        )}
 
-          {/* Read-only metadata (edit only) */}
-          {isEdit && (
-            <dl className="space-y-2 rounded-md border border-border bg-muted/30 px-4 py-3">
-              <MetaRow
-                label="Created"
-                value={new Date(defaultValues.createdAt).toLocaleString()}
-              />
-              <MetaRow
-                label="Last login"
-                value={
-                  defaultValues.lastLoginAt
-                    ? new Date(defaultValues.lastLoginAt).toLocaleString()
-                    : "Never"
-                }
-              />
-              {defaultValues.lastLoginIp && (
-                <MetaRow label="Last IP" value={defaultValues.lastLoginIp} />
-              )}
-            </dl>
-          )}
-        </CardContent>
+        {/* Active toggle (edit only) */}
+        {isEdit && (
+          <div className="flex items-center gap-3">
+            <Switch
+              id="isActive"
+              checked={isActive}
+              onCheckedChange={setIsActive}
+              disabled={isSubmitting || isSelf}
+            />
+            <Label htmlFor="isActive">Active</Label>
+            {isSelf && (
+              <span className="text-xs text-muted-foreground">Cannot deactivate yourself.</span>
+            )}
+          </div>
+        )}
 
-        <CardFooter className="flex flex-col-reverse gap-3 border-t border-border pt-6 sm:flex-row sm:justify-end">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.push("/admin/users")}
-            disabled={isSubmitting}
-          >
-            Cancel
-          </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Saving…" : isEdit ? "Save changes" : "Create user"}
-          </Button>
-        </CardFooter>
-      </Card>
+        {/* Read-only metadata (edit only) */}
+        {isEdit && (
+          <dl className="space-y-2 rounded-md border border-border bg-muted/30 px-4 py-3">
+            <MetaRow
+              label="Created"
+              value={new Date(defaultValues.createdAt).toLocaleString()}
+            />
+            <MetaRow
+              label="Last login"
+              value={
+                defaultValues.lastLoginAt
+                  ? new Date(defaultValues.lastLoginAt).toLocaleString()
+                  : "Never"
+              }
+            />
+            {defaultValues.lastLoginIp && (
+              <MetaRow label="Last IP" value={defaultValues.lastLoginIp} />
+            )}
+          </dl>
+        )}
+      </AdminForm>
     </form>
   );
 }

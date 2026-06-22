@@ -4,14 +4,16 @@ import { ReactNode } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Loader2 } from "lucide-react"
 
 interface AdminFormProps {
   children: ReactNode
   isSubmitting: boolean
   cancelHref?: string
+  submitLabel?: string
 }
 
-export default function AdminForm({ children, isSubmitting, cancelHref }: AdminFormProps) {
+export default function AdminForm({ children, isSubmitting, cancelHref, submitLabel }: AdminFormProps) {
   const router = useRouter()
 
   function handleCancel() {
@@ -23,14 +25,15 @@ export default function AdminForm({ children, isSubmitting, cancelHref }: AdminF
   }
 
   return (
-    <Card>
-      <CardContent className="pt-6 space-y-6">{children}</CardContent>
-      <CardFooter className="flex flex-col-reverse gap-3 border-t border-border pt-6 sm:flex-row sm:justify-end">
-        <Button type="button" variant="outline" onClick={handleCancel} disabled={isSubmitting}>
+    <Card className="w-full max-w-3xl mx-auto">
+      <CardContent className="p-4 md:p-6 space-y-5">{children}</CardContent>
+      <CardFooter className="px-4 md:px-6 pb-4 md:pb-6 flex flex-col-reverse sm:flex-row gap-2 sm:justify-end border-t border-border pt-4">
+        <Button type="button" variant="outline" onClick={handleCancel} disabled={isSubmitting} className="w-full sm:w-auto">
           Cancel
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Saving…" : "Save"}
+        <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto gap-2">
+          {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+          {isSubmitting ? "Saving…" : (submitLabel ?? "Save")}
         </Button>
       </CardFooter>
     </Card>

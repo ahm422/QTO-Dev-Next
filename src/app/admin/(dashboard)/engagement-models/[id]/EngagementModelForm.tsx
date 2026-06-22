@@ -5,6 +5,7 @@ import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { engagementModelSchema, type EngagementModelInput } from "@/lib/validators/admin/engagementModel"
 import AdminForm from "@/components/admin/AdminForm"
+import FormGrid from "@/components/admin/forms/FormGrid"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -34,14 +35,14 @@ export default function EngagementModelForm({ defaultValues }: { defaultValues?:
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/engagement-models">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <FormGrid cols={2}>
             <FormField control={form.control} name="number" render={({ field }) => (
               <FormItem><FormLabel>Number</FormLabel><FormControl><Input {...field} type="number" /></FormControl><FormMessage /></FormItem>
             )} />
             <FormField control={form.control} name="order" render={({ field }) => (
               <FormItem><FormLabel>Order</FormLabel><FormControl><Input {...field} type="number" /></FormControl><FormMessage /></FormItem>
             )} />
-          </div>
+          </FormGrid>
           <FormField control={form.control} name="title" render={({ field }) => (
             <FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
           )} />
@@ -51,14 +52,14 @@ export default function EngagementModelForm({ defaultValues }: { defaultValues?:
           <FormField control={form.control} name="features" render={({ field }) => (
             <FormItem><FormLabel>Features (one per line)</FormLabel><FormControl><Textarea value={field.value.join("\n")} onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))} rows={4} /></FormControl><FormMessage /></FormItem>
           )} />
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <FormGrid cols={2}>
             <FormField control={form.control} name="ctaLabel" render={({ field }) => (
               <FormItem><FormLabel>CTA label</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
             <FormField control={form.control} name="ctaLink" render={({ field }) => (
               <FormItem><FormLabel>CTA link</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
-          </div>
+          </FormGrid>
           <div className="flex gap-6">
             <FormField control={form.control} name="isMostPopular" render={({ field }) => (
               <FormItem><div className="flex items-center gap-3"><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} id="popular" /></FormControl><Label htmlFor="popular">Most popular</Label></div><FormMessage /></FormItem>

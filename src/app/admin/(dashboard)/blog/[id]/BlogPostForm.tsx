@@ -5,6 +5,7 @@ import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { blogPostSchema, type BlogPostInput } from "@/lib/validators/admin/blogPost"
 import AdminForm from "@/components/admin/AdminForm"
+import FormGrid from "@/components/admin/forms/FormGrid"
 import MediaUpload from "@/components/admin/MediaUpload"
 import RichTextEditor from "@/components/admin/RichTextEditor"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -72,14 +73,14 @@ export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPo
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/blog">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <FormGrid cols={2}>
             <FormField control={form.control} name="title" render={({ field }) => (
               <FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} onChange={(e) => { field.onChange(e); if (!isEdit) form.setValue("slug", slugify(e.target.value)) }} /></FormControl><FormMessage /></FormItem>
             )} />
             <FormField control={form.control} name="slug" render={({ field }) => (
               <FormItem><FormLabel>Slug</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
-          </div>
+          </FormGrid>
           <FormField control={form.control} name="excerpt" render={({ field }) => (
             <FormItem><FormLabel>Excerpt</FormLabel><FormControl><Textarea {...field} rows={2} /></FormControl><FormMessage /></FormItem>
           )} />
@@ -91,7 +92,7 @@ export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPo
               <FormMessage />
             </FormItem>
           )} />
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <FormGrid cols={3}>
             <FormField control={form.control} name="category" render={({ field }) => (
               <FormItem><FormLabel>Category</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
@@ -101,7 +102,7 @@ export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPo
             <FormField control={form.control} name="readTime" render={({ field }) => (
               <FormItem><FormLabel>Read time</FormLabel><FormControl><Input {...field} placeholder="5 min read" /></FormControl><FormMessage /></FormItem>
             )} />
-          </div>
+          </FormGrid>
           <FormField control={form.control} name="tags" render={({ field }) => (
             <FormItem><FormLabel>Tags (one per line)</FormLabel><FormControl><Textarea value={field.value.join("\n")} onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))} rows={3} /></FormControl><FormMessage /></FormItem>
           )} />

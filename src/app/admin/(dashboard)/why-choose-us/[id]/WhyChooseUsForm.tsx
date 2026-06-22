@@ -5,6 +5,7 @@ import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { whyChooseUsSchema, type WhyChooseUsInput } from "@/lib/validators/admin/whyChooseUs"
 import AdminForm from "@/components/admin/AdminForm"
+import FormGrid from "@/components/admin/forms/FormGrid"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -56,14 +57,14 @@ export default function WhyChooseUsForm({ defaultValues }: { defaultValues?: Why
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/why-choose-us">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <FormGrid cols={2}>
             <FormField control={form.control} name="context" render={({ field }) => (
               <FormItem><FormLabel>Context</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
             <FormField control={form.control} name="icon" render={({ field }) => (
               <FormItem><FormLabel>Icon key</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
-          </div>
+          </FormGrid>
           <FormField control={form.control} name="title" render={({ field }) => (
             <FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
           )} />

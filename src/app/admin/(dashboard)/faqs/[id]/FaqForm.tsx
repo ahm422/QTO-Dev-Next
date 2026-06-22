@@ -5,6 +5,7 @@ import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { faqSchema, type FaqInput } from "@/lib/validators/admin/faq"
 import AdminForm from "@/components/admin/AdminForm"
+import FormGrid from "@/components/admin/forms/FormGrid"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -34,14 +35,14 @@ export default function FaqForm({ defaultValues }: { defaultValues?: Faq }) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/faqs">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <FormGrid cols={2}>
             <FormField control={form.control} name="context" render={({ field }) => (
               <FormItem><FormLabel>Context</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
             <FormField control={form.control} name="order" render={({ field }) => (
               <FormItem><FormLabel>Order</FormLabel><FormControl><Input {...field} type="number" /></FormControl><FormMessage /></FormItem>
             )} />
-          </div>
+          </FormGrid>
           <FormField control={form.control} name="question" render={({ field }) => (
             <FormItem><FormLabel>Question</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
           )} />

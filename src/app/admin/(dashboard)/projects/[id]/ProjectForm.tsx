@@ -5,6 +5,7 @@ import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { projectSchema, type ProjectInput } from "@/lib/validators/admin/project"
 import AdminForm from "@/components/admin/AdminForm"
+import FormGrid from "@/components/admin/forms/FormGrid"
 import MediaUpload from "@/components/admin/MediaUpload"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -39,15 +40,15 @@ export default function ProjectForm({ defaultValues }: { defaultValues?: Project
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/projects">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <FormGrid cols={2}>
             <FormField control={form.control} name="title" render={({ field }) => (
               <FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} onChange={(e) => { field.onChange(e); if (!isEdit) form.setValue("slug", slugify(e.target.value)) }} /></FormControl><FormMessage /></FormItem>
             )} />
             <FormField control={form.control} name="slug" render={({ field }) => (
               <FormItem><FormLabel>Slug</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          </FormGrid>
+          <FormGrid cols={3}>
             <FormField control={form.control} name="client" render={({ field }) => (
               <FormItem><FormLabel>Client</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
@@ -57,7 +58,7 @@ export default function ProjectForm({ defaultValues }: { defaultValues?: Project
             <FormField control={form.control} name="order" render={({ field }) => (
               <FormItem><FormLabel>Order</FormLabel><FormControl><Input {...field} type="number" /></FormControl><FormMessage /></FormItem>
             )} />
-          </div>
+          </FormGrid>
           <FormField control={form.control} name="excerpt" render={({ field }) => (
             <FormItem><FormLabel>Excerpt</FormLabel><FormControl><Textarea {...field} rows={2} /></FormControl><FormMessage /></FormItem>
           )} />
@@ -82,14 +83,14 @@ export default function ProjectForm({ defaultValues }: { defaultValues?: Project
           <FormField control={form.control} name="coverImageUrl" render={({ field }) => (
             <FormItem><FormControl><MediaUpload value={field.value ?? ""} onChange={field.onChange} label="Cover image" /></FormControl><FormMessage /></FormItem>
           )} />
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <FormGrid cols={2}>
             <FormField control={form.control} name="liveUrl" render={({ field }) => (
               <FormItem><FormLabel>Live URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
             <FormField control={form.control} name="completedAt" render={({ field }) => (
               <FormItem><FormLabel>Completed at</FormLabel><FormControl><Input {...field} type="date" value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
             )} />
-          </div>
+          </FormGrid>
           <div className="flex gap-6">
             <FormField control={form.control} name="isFeatured" render={({ field }) => (
               <FormItem><div className="flex items-center gap-3"><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} id="featured" /></FormControl><Label htmlFor="featured">Featured</Label></div><FormMessage /></FormItem>
