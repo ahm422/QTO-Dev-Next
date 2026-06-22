@@ -26,11 +26,11 @@ export default function FormActions({
   }
 
   return (
-    <div className={cn("flex items-center justify-end gap-3 pt-2", className)}>
-      <Button type="button" variant="outline" onClick={handleCancel} disabled={isSubmitting} className="border-border">
+    <div className={cn("flex flex-col-reverse sm:flex-row gap-2 sm:justify-end pt-2", className)}>
+      <Button type="button" variant="outline" onClick={handleCancel} disabled={isSubmitting} className="w-full sm:w-auto border-border">
         Cancel
       </Button>
-      <Button type="submit" disabled={isSubmitting} className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 min-w-28">
+      <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90 gap-2 min-w-28">
         {isSubmitting ? <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Saving…</> : submitLabel}
       </Button>
     </div>

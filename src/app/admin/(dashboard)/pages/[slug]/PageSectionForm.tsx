@@ -4,6 +4,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { updatePageSection, createPageSection } from "../actions"
 import AdminForm from "@/components/admin/AdminForm"
+import FormGrid from "@/components/admin/forms/FormGrid"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -52,7 +53,7 @@ export default function PageSectionForm({ defaultValues }: { defaultValues?: Pag
   return (
     <form onSubmit={handleSubmit}>
       <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/pages">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <FormGrid cols={2}>
           <div className="space-y-1.5">
             <Label htmlFor="slug">Slug</Label>
             <Input
@@ -74,7 +75,7 @@ export default function PageSectionForm({ defaultValues }: { defaultValues?: Pag
               placeholder="Homepage — Hero"
             />
           </div>
-        </div>
+        </FormGrid>
 
         <div className="space-y-1.5">
           <Label htmlFor="data">Section Data (JSON)</Label>

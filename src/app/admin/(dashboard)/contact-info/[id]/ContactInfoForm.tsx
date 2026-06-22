@@ -5,6 +5,7 @@ import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { contactInfoSchema, type ContactInfoInput } from "@/lib/validators/admin/contactInfo"
 import AdminForm from "@/components/admin/AdminForm"
+import FormGrid from "@/components/admin/forms/FormGrid"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
@@ -33,22 +34,22 @@ export default function ContactInfoForm({ defaultValues }: { defaultValues?: Con
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/contact-info">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <FormGrid cols={2}>
             <FormField control={form.control} name="type" render={({ field }) => (
               <FormItem><FormLabel>Type</FormLabel><FormControl><Input {...field} placeholder="email, phone, address…" /></FormControl><FormMessage /></FormItem>
             )} />
             <FormField control={form.control} name="icon" render={({ field }) => (
               <FormItem><FormLabel>Icon key</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          </FormGrid>
+          <FormGrid cols={2}>
             <FormField control={form.control} name="label" render={({ field }) => (
               <FormItem><FormLabel>Label</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
             <FormField control={form.control} name="subLabel" render={({ field }) => (
               <FormItem><FormLabel>Sub-label</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
-          </div>
+          </FormGrid>
           <FormField control={form.control} name="value" render={({ field }) => (
             <FormItem><FormLabel>Value</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
           )} />

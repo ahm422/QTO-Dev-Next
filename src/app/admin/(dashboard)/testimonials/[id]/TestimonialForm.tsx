@@ -5,6 +5,7 @@ import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { testimonialSchema, type TestimonialInput } from "@/lib/validators/admin/testimonial"
 import AdminForm from "@/components/admin/AdminForm"
+import FormGrid from "@/components/admin/forms/FormGrid"
 import MediaUpload from "@/components/admin/MediaUpload"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -37,7 +38,7 @@ export default function TestimonialForm({ defaultValues }: { defaultValues?: Tes
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/testimonials">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <FormGrid cols={3}>
             <FormField control={form.control} name="clientName" render={({ field }) => (
               <FormItem><FormLabel>Client name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
@@ -47,7 +48,7 @@ export default function TestimonialForm({ defaultValues }: { defaultValues?: Tes
             <FormField control={form.control} name="clientCompany" render={({ field }) => (
               <FormItem><FormLabel>Company</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
-          </div>
+          </FormGrid>
           <FormField control={form.control} name="quote" render={({ field }) => (
             <FormItem><FormLabel>Quote</FormLabel><FormControl><Textarea {...field} rows={4} /></FormControl><FormMessage /></FormItem>
           )} />
@@ -71,7 +72,7 @@ export default function TestimonialForm({ defaultValues }: { defaultValues?: Tes
           <FormField control={form.control} name="avatarUrl" render={({ field }) => (
             <FormItem><FormControl><MediaUpload value={field.value ?? ""} onChange={field.onChange} label="Avatar" /></FormControl><FormMessage /></FormItem>
           )} />
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <FormGrid cols={3}>
             <FormField control={form.control} name="rating" render={({ field }) => (
               <FormItem><FormLabel>Rating (1–5)</FormLabel><FormControl><Input {...field} type="number" min={1} max={5} /></FormControl><FormMessage /></FormItem>
             )} />
@@ -81,7 +82,7 @@ export default function TestimonialForm({ defaultValues }: { defaultValues?: Tes
             <FormField control={form.control} name="order" render={({ field }) => (
               <FormItem><FormLabel>Order</FormLabel><FormControl><Input {...field} type="number" /></FormControl><FormMessage /></FormItem>
             )} />
-          </div>
+          </FormGrid>
           <FormField control={form.control} name="isPublished" render={({ field }) => (
             <FormItem><div className="flex items-center gap-3"><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} id="pub" /></FormControl><Label htmlFor="pub">Published</Label></div><FormMessage /></FormItem>
           )} />
