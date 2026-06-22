@@ -96,7 +96,7 @@ export default async function PagesAdminPage() {
                     {canDelete && (
                       <ConfirmDelete
                         itemName={section.label ?? section.slug}
-                        onConfirm={() => deletePageSection(section.slug)}
+                        onConfirm={deletePageSection.bind(null, section.slug)}
                       />
                     )}
                   </div>
