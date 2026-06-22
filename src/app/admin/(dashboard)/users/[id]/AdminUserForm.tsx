@@ -3,25 +3,28 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { User, Shield } from "lucide-react";
 import { FormInput } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
-  Select,
+  FormSelect,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import AdminForm from "@/components/admin/AdminForm";
+import FormSection from "@/components/admin/forms/FormSection";
 import FormGrid from "@/components/admin/forms/FormGrid";
+import { PasswordRequirementsChecklist } from "@/components/admin/forms/PasswordRequirementsChecklist";
 import { ADMIN_ROLES } from "@/lib/auth/roles";
 
-const ROLE_LABELS: Record<string, string> = {
-  super_admin: "Super Admin",
-  admin: "Admin",
-  editor: "Editor",
+const ROLE_CONFIG: Record<string, { label: string; dotClass: string }> = {
+  super_admin: { label: "Super Admin", dotClass: "bg-rose-500" },
+  admin: { label: "Admin", dotClass: "bg-primary" },
+  editor: { label: "Editor", dotClass: "bg-emerald-500" },
 };
 
 interface AdminUserFormUser {
@@ -134,64 +137,80 @@ export default function AdminUserForm({ defaultValues, currentUserId }: AdminUse
           </Alert>
         )}
 
-        {/* Email */}
-        {isEdit ? (
-          <div className="space-y-1">
-            <Label className="text-sm font-medium text-muted-foreground">Email</Label>
-            <p className="text-sm text-foreground">{defaultValues.email}</p>
-          </div>
-        ) : (
-          <FormInput
-            label="Email"
-            name="email"
-            type="email"
-            autoComplete="off"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={isSubmitting}
-            required
-          />
-        )}
+        {/* Account section */}
+        <FormSection title="Account" icon={User}>
+          {/* Email (full width, above the 2-col grid) */}
+          {isEdit ? (
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-muted-foreground">Email</Label>
+              <p className="text-sm text-foreground">{defaultValues.email}</p>
+            </div>
+          ) : (
+            <FormInput
+              label="Email address"
+              name="email"
+              type="email"
+              autoComplete="off"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isSubmitting}
+              required
+              description="This will be their login email and cannot be changed after creation."
+            />
+          )}
 
-        <FormGrid cols={2}>
-          {/* Display name */}
-          <FormInput
-            label="Display name (optional)"
-            name="displayName"
-            type="text"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            disabled={isSubmitting}
-          />
+          <FormGrid cols={2}>
+            {/* Display name */}
+            <FormInput
+              label="Display name"
+              name="displayName"
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              disabled={isSubmitting}
+              description="Shown in the admin panel. Defaults to email if left blank."
+            />
 
-          {/* Role */}
-          <div className="space-y-2">
-            <Label htmlFor="role">Role</Label>
-            <Select
+            {/* Role */}
+            <FormSelect
+              label="Role"
+              required
               value={role}
               onValueChange={setRole}
               disabled={isSubmitting || isSelf}
+              description={
+                isSelf
+                  ? "You cannot change your own role."
+                  : "Controls what this user can access in the admin."
+              }
             >
               <SelectTrigger id="role">
-                <SelectValue placeholder="Select role" />
+                <SelectValue placeholder="Select role">
+                  {role && ROLE_CONFIG[role] && (
+                    <span className="flex items-center gap-2">
+                      <span className={`h-2 w-2 rounded-full shrink-0 ${ROLE_CONFIG[role].dotClass}`} />
+                      {ROLE_CONFIG[role].label}
+                    </span>
+                  )}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {ADMIN_ROLES.map((r) => (
                   <SelectItem key={r} value={r}>
-                    {ROLE_LABELS[r] ?? r}
+                    <span className="flex items-center gap-2">
+                      <span className={`h-2 w-2 rounded-full shrink-0 ${ROLE_CONFIG[r]?.dotClass ?? "bg-muted"}`} />
+                      {ROLE_CONFIG[r]?.label ?? r}
+                    </span>
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>
-            {isSelf && (
-              <p className="text-xs text-muted-foreground">You cannot change your own role.</p>
-            )}
-          </div>
-        </FormGrid>
+            </FormSelect>
+          </FormGrid>
+        </FormSection>
 
-        {/* Password fields (create only) */}
+        {/* Security section (create only) */}
         {!isEdit && (
-          <>
+          <FormSection title="Security" icon={Shield}>
             <FormGrid cols={2}>
               <FormInput
                 label="Password"
@@ -214,14 +233,8 @@ export default function AdminUserForm({ defaultValues, currentUserId }: AdminUse
                 required
               />
             </FormGrid>
-            <div className="rounded-md bg-muted/50 px-4 py-3 text-xs text-muted-foreground space-y-0.5">
-              <p className="font-medium text-foreground">Password requirements</p>
-              <ul className="list-disc list-inside space-y-0.5 mt-1">
-                <li>At least 12 characters</li>
-                <li>Uppercase letter, lowercase letter, digit, special character</li>
-              </ul>
-            </div>
-          </>
+            <PasswordRequirementsChecklist password={password} />
+          </FormSection>
         )}
 
         {/* Active toggle (edit only) */}

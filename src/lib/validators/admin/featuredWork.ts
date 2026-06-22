@@ -2,7 +2,7 @@ import { z } from "zod"
 
 export const featuredWorkSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
+  description: z.string().min(1, "Description is required").max(200, "Description cannot exceed 200 characters."),
   imageUrl: z.string().optional().default(""),
   imageAlt: z.string().optional().default(""),
   tags: z.array(z.string()).default([]),
