@@ -13,6 +13,7 @@ interface MediaUploadProps {
   onChange: (url: string) => void
   accept?: string
   label?: string
+  variant?: "default" | "featured"
 }
 
 function isVideoMime(mime: string | null): boolean {
@@ -76,6 +77,7 @@ export default function MediaUpload({
   onChange,
   accept = "image/*",
   label = "Upload media",
+  variant = "default",
 }: MediaUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -160,53 +162,83 @@ export default function MediaUpload({
       {label && <Label>{label}</Label>}
 
       {value ? (
-        <div className="relative inline-block">
-          {isVideo ? (
-            <div className="relative w-60 h-40 rounded-md border border-border overflow-hidden bg-black">
-              <video
-                ref={videoRef}
-                src={value}
-                className="h-full w-full object-cover"
-                muted
-                playsInline
-                controls={videoPlaying}
-                onEnded={() => setVideoPlaying(false)}
-              />
-              {!videoPlaying && (
-                <button
-                  type="button"
-                  className={cn(
-                    "absolute inset-0 flex items-center justify-center",
-                    "bg-black/30 hover:bg-black/40 transition-colors",
-                  )}
-                  onClick={handleVideoPlay}
-                  aria-label="Play video preview"
-                >
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
-                    <Play className="h-6 w-6 ml-0.5" fill="currentColor" />
-                  </span>
-                </button>
-              )}
-            </div>
-          ) : (
+        variant === "featured" && !isVideo ? (
+          <div className="relative rounded-xl overflow-hidden aspect-video w-full">
             <Image
               src={value}
               alt="Uploaded media"
-              width={240}
-              height={160}
-              className="rounded-md object-cover border border-border"
+              fill
+              className="object-cover"
             />
-          )}
-          <Button
-            type="button"
-            variant="destructive"
-            size="icon"
-            className="absolute -top-2 -right-2 h-6 w-6"
-            onClick={handleClear}
-          >
-            <X className="h-3 w-3" />
-          </Button>
-        </div>
+            <Button
+              type="button"
+              variant="destructive"
+              size="icon"
+              className="absolute top-2 right-2 h-6 w-6"
+              onClick={handleClear}
+            >
+              <X className="h-3 w-3" />
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="absolute bottom-2 right-2"
+              onClick={() => inputRef.current?.click()}
+              disabled={uploading}
+            >
+              {uploading ? `Uploading… ${progress}%` : "Replace"}
+            </Button>
+          </div>
+        ) : (
+          <div className="relative inline-block">
+            {isVideo ? (
+              <div className="relative w-60 h-40 rounded-md border border-border overflow-hidden bg-black">
+                <video
+                  ref={videoRef}
+                  src={value}
+                  className="h-full w-full object-cover"
+                  muted
+                  playsInline
+                  controls={videoPlaying}
+                  onEnded={() => setVideoPlaying(false)}
+                />
+                {!videoPlaying && (
+                  <button
+                    type="button"
+                    className={cn(
+                      "absolute inset-0 flex items-center justify-center",
+                      "bg-black/30 hover:bg-black/40 transition-colors",
+                    )}
+                    onClick={handleVideoPlay}
+                    aria-label="Play video preview"
+                  >
+                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
+                      <Play className="h-6 w-6 ml-0.5" fill="currentColor" />
+                    </span>
+                  </button>
+                )}
+              </div>
+            ) : (
+              <Image
+                src={value}
+                alt="Uploaded media"
+                width={240}
+                height={160}
+                className="rounded-md object-cover border border-border"
+              />
+            )}
+            <Button
+              type="button"
+              variant="destructive"
+              size="icon"
+              className="absolute -top-2 -right-2 h-6 w-6"
+              onClick={handleClear}
+            >
+              <X className="h-3 w-3" />
+            </Button>
+          </div>
+        )
       ) : (
         <div
           className={cn(
@@ -254,7 +286,7 @@ export default function MediaUpload({
         disabled={uploading}
       />
 
-      {value && (
+      {value && variant === "default" && (
         <Button
           type="button"
           variant="outline"

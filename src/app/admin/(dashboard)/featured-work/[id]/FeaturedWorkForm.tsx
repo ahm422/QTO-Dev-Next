@@ -36,32 +36,125 @@ export default function FeaturedWorkForm({ defaultValues }: { defaultValues?: Fe
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <AdminForm isSubmitting={isSubmitting} cancelHref="/admin/featured-work">
-          <FormField control={form.control} name="title" render={({ field }) => (
-            <FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-          )} />
-          <FormField control={form.control} name="description" render={({ field }) => (
-            <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>
-          )} />
-          <FormField control={form.control} name="imageUrl" render={({ field }) => (
-            <FormItem><FormControl><MediaUpload value={field.value ?? ""} onChange={field.onChange} label="Image" /></FormControl><FormMessage /></FormItem>
-          )} />
-          <FormField control={form.control} name="imageAlt" render={({ field }) => (
-            <FormItem><FormLabel>Image alt</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-          )} />
-          <FormField control={form.control} name="tags" render={({ field }) => (
-            <FormItem><FormLabel>Tags (one per line)</FormLabel><FormControl><Textarea value={field.value.join("\n")} onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))} rows={3} /></FormControl><FormMessage /></FormItem>
-          )} />
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Title</FormLabel>
+                <FormControl><Input {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Textarea {...field} rows={3} maxLength={200} className="pb-6" />
+                    <span className="absolute bottom-2 right-3 text-xs text-muted-foreground pointer-events-none">
+                      {(field.value?.length ?? 0)}/200
+                    </span>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="imageUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <MediaUpload
+                    value={field.value ?? ""}
+                    onChange={field.onChange}
+                    label="Image"
+                    variant="featured"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="imageAlt"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Image alt</FormLabel>
+                <FormControl><Input {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="tags"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tags (one per line)</FormLabel>
+                <FormControl>
+                  <Textarea
+                    value={field.value.join("\n")}
+                    onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))}
+                    rows={3}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormGrid cols={2}>
-            <FormField control={form.control} name="link" render={({ field }) => (
-              <FormItem><FormLabel>Link</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-            )} />
-            <FormField control={form.control} name="order" render={({ field }) => (
-              <FormItem><FormLabel>Order</FormLabel><FormControl><Input {...field} type="number" /></FormControl><FormMessage /></FormItem>
-            )} />
+            <FormField
+              control={form.control}
+              name="link"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Link</FormLabel>
+                  <FormControl><Input {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="order"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Order</FormLabel>
+                  <FormControl><Input {...field} type="number" /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </FormGrid>
-          <FormField control={form.control} name="isPublished" render={({ field }) => (
-            <FormItem><div className="flex items-center gap-3"><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} id="pub" /></FormControl><Label htmlFor="pub">Published</Label></div><FormMessage /></FormItem>
-          )} />
+
+          <FormField
+            control={form.control}
+            name="isPublished"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex items-center gap-3">
+                  <FormControl>
+                    <Switch checked={field.value} onCheckedChange={field.onChange} id="pub" />
+                  </FormControl>
+                  <Label htmlFor="pub">Published</Label>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </AdminForm>
       </form>
     </Form>
