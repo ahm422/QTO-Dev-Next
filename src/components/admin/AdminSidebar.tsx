@@ -5,9 +5,10 @@ import AdminSidebarBrand from "@/components/admin/AdminSidebarBrand"
 interface AdminSidebarProps {
   userRole: string
   userEmail: string
+  displayName?: string | null
 }
 
-export default function AdminSidebar({ userRole, userEmail }: AdminSidebarProps) {
+export default function AdminSidebar({ userRole, userEmail, displayName }: AdminSidebarProps) {
   return (
     <aside className="hidden lg:flex flex-col fixed top-0 left-0 h-screen w-64 bg-[var(--sidebar)] border-r border-border z-40 overflow-hidden">
       {/* Decorative ambient glow — top-right corner */}
@@ -24,7 +25,7 @@ export default function AdminSidebar({ userRole, userEmail }: AdminSidebarProps)
 
       {/* Footer: profile dropdown */}
       <div className="relative shrink-0 border-t border-border/60 bg-gradient-to-t from-primary/5 to-transparent p-2">
-        <SidebarUserMenu email={userEmail} role={userRole} />
+        <SidebarUserMenu email={userEmail} role={userRole} displayName={displayName} />
       </div>
     </aside>
   )

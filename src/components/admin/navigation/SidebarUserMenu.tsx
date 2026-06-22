@@ -1,84 +1,78 @@
 "use client";
 
 import Link from "next/link";
-import { Monitor, LogOut, ChevronUp } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Monitor, LogOut, ChevronsUpDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import RoleBadge from "@/components/admin/data/RoleBadge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const ROLE_COLORS: Record<string, string> = {
-  super_admin: "bg-rose-500/15 text-rose-500",
-  admin: "bg-primary/15 text-primary",
-  editor: "bg-emerald-500/15 text-emerald-500",
-};
-
 interface SidebarUserMenuProps {
   email: string;
   role: string;
+  displayName?: string | null;
 }
 
-export default function SidebarUserMenu({ email, role }: SidebarUserMenuProps) {
+export default function SidebarUserMenu({ email, role, displayName }: SidebarUserMenuProps) {
   const initials = email.slice(0, 2).toUpperCase();
-  const roleColor = ROLE_COLORS[role] ?? "bg-muted text-muted-foreground";
-  const roleLabel = role.replace("_", " ");
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all duration-200 hover:bg-accent/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-          <Avatar className="h-8 w-8 shrink-0 ring-2 ring-primary/25 ring-offset-1 ring-offset-[var(--sidebar)]">
-            <AvatarFallback className="bg-primary/20 text-primary text-xs font-bold">
+        <Button
+          variant="ghost"
+          className="w-full h-auto p-2.5 rounded-xl hover:bg-[var(--accent)] flex items-center gap-3 group"
+        >
+          <div className="relative shrink-0">
+            <div className="h-9 w-9 rounded-xl bg-primary/20 flex items-center justify-center text-primary font-bold text-sm ring-2 ring-transparent group-hover:ring-primary/30 transition-all">
               {initials}
-            </AvatarFallback>
-          </Avatar>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-foreground leading-tight">{email}</p>
-            <span
-              className={`mt-0.5 inline-block rounded-full px-1.5 py-px text-[10px] font-semibold capitalize leading-none ${roleColor}`}
-            >
-              {roleLabel}
-            </span>
+            </div>
+            <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 border-2 border-[var(--sidebar)]" />
           </div>
-          <ChevronUp className="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-transform duration-200 group-data-[state=open]:rotate-180" />
-        </button>
+
+          <div className="flex-1 min-w-0 text-left">
+            <p className="text-xs font-medium truncate">{email}</p>
+            <RoleBadge role={role} size="xs" />
+          </div>
+
+          <ChevronsUpDown className="h-3.5 w-3.5 text-muted-foreground shrink-0 transition-transform group-data-[state=open]:rotate-180" />
+        </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent side="top" align="start" className="w-56" sideOffset={6}>
-        <DropdownMenuLabel className="font-normal py-2">
-          <div className="flex items-center gap-2.5">
-            <Avatar className="h-7 w-7 shrink-0">
-              <AvatarFallback className="bg-primary/20 text-primary text-xs font-bold">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-foreground truncate leading-tight">{email}</p>
-              <span className={`mt-0.5 inline-block rounded-full px-1.5 py-px text-[10px] font-semibold capitalize leading-none ${roleColor}`}>
-                {roleLabel}
-              </span>
-            </div>
+      <DropdownMenuContent
+        side="top"
+        align="start"
+        sideOffset={8}
+        className="w-64 p-1.5 rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-xl shadow-black/20"
+      >
+        <div className="px-3 py-3 rounded-lg bg-[var(--muted)] mb-1.5 flex items-center gap-3">
+          <div className="h-10 w-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary font-bold">
+            {initials}
           </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/admin/account/sessions" className="flex items-center gap-2 cursor-pointer">
-            <Monitor className="h-4 w-4" />
+          <div className="min-w-0">
+            <p className="text-xs font-semibold truncate">{displayName ?? email}</p>
+            <p className="text-[11px] text-muted-foreground truncate">{email}</p>
+            <RoleBadge role={role} size="xs" className="mt-0.5" />
+          </div>
+        </div>
+
+        <DropdownMenuItem asChild className="rounded-lg h-9 cursor-pointer text-sm gap-2.5 px-3 hover:bg-[var(--accent)] focus:bg-[var(--accent)] transition-colors">
+          <Link href="/admin/account/sessions" className="flex items-center gap-2.5">
+            <Monitor className="h-4 w-4 text-muted-foreground" />
             Active Sessions
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <form action="/admin/logout" method="post" className="w-full">
-            <button
-              type="submit"
-              className="flex items-center gap-2 w-full text-sm text-destructive focus:text-destructive"
-            >
+
+        <DropdownMenuSeparator className="my-1 bg-[var(--border)]" />
+
+        <DropdownMenuItem asChild className="rounded-lg h-9 cursor-pointer text-sm gap-2.5 px-3 text-destructive hover:bg-destructive/10 focus:bg-destructive/10 focus:text-destructive transition-colors">
+          <form action="/admin/logout" method="POST" className="w-full">
+            <button type="submit" className="flex items-center gap-2.5 w-full">
               <LogOut className="h-4 w-4" />
               Sign out
             </button>
