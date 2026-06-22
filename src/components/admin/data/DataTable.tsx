@@ -40,7 +40,7 @@ export default function DataTable<T extends OrderableRow>({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card overflow-hidden">
+    <div className="rounded-xl bg-card overflow-hidden">
       <AdminTable
         columns={columns}
         rows={rows}
