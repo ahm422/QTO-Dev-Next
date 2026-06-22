@@ -48,7 +48,7 @@ export default function StatCard({
   className,
 }: StatCardProps) {
   return (
-    <div className={cn("rounded-xl border border-border bg-card p-4 flex flex-col gap-3 shadow-[var(--admin-shadow-sm)] hover:shadow-[var(--admin-shadow-md)] transition-shadow duration-200", className)}>
+    <div className={cn("rounded-xl border border-border bg-card p-3 md:p-5 flex flex-col gap-3 shadow-[var(--admin-shadow-sm)] hover:shadow-[var(--admin-shadow-md)] transition-shadow duration-200", className)}>
       <div className="flex items-start justify-between gap-2">
         {Icon && (
           <div className={cn("h-9 w-9 rounded-lg flex items-center justify-center shrink-0", iconColorStyles[iconColor])}>
@@ -62,7 +62,7 @@ export default function StatCard({
         )}
       </div>
       <div>
-        <p className="text-2xl font-bold text-foreground tabular-nums">{value}</p>
+        <p className="text-xl md:text-2xl font-bold text-foreground tabular-nums">{value}</p>
         <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
       </div>
       {typeof progress === "number" && (

@@ -61,15 +61,15 @@ export default function FilterBar({ searchPlaceholder = "Search…", filters = [
   const searchValue = searchParams.get("q") ?? ""
 
   return (
-    <div className={cn("flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 mb-4", className)}>
-      {/* Search */}
-      <div className="relative w-full sm:flex-1 sm:min-w-48 min-w-0">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+    <div className={cn("flex flex-col sm:flex-row gap-2 mb-4", className)}>
+      {/* Search — full width on mobile, flex-1 on sm+ */}
+      <div className="relative flex-1">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
         <Input
           value={searchValue}
           onChange={(e) => setParam("q", e.target.value)}
           placeholder={searchPlaceholder}
-          className="pl-8 h-8 text-sm bg-card border-border"
+          className="pl-9 h-9 text-sm bg-card border-border"
         />
         {searchValue && (
           <button
@@ -81,30 +81,34 @@ export default function FilterBar({ searchPlaceholder = "Search…", filters = [
         )}
       </div>
 
-      {/* Dynamic filters */}
-      {filters.map((filter) => (
-        <Select
-          key={filter.key}
-          value={searchParams.get(filter.key) ?? "all"}
-          onValueChange={(v) => setParam(filter.key, v)}
-        >
-          <SelectTrigger className="h-8 w-auto min-w-32 text-sm bg-card border-border">
-            <SelectValue placeholder={filter.placeholder} />
-          </SelectTrigger>
-          <SelectContent className={themeClass}>
-            <SelectItem value="all">{filter.placeholder}</SelectItem>
-            {filter.options.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      ))}
+      {/* Filters + clear grouped so they wrap together on narrow screens */}
+      {(filters.length > 0 || hasFilters) && (
+        <div className="flex gap-2 flex-wrap">
+          {filters.map((filter) => (
+            <Select
+              key={filter.key}
+              value={searchParams.get(filter.key) ?? "all"}
+              onValueChange={(v) => setParam(filter.key, v)}
+            >
+              <SelectTrigger className="h-9 w-auto min-w-32 text-sm bg-card border-border">
+                <SelectValue placeholder={filter.placeholder} />
+              </SelectTrigger>
+              <SelectContent className={themeClass}>
+                <SelectItem value="all">{filter.placeholder}</SelectItem>
+                {filter.options.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ))}
 
-      {hasFilters && (
-        <Button variant="ghost" size="sm" onClick={clearAll} className="h-8 text-muted-foreground hover:text-foreground gap-1.5 px-2.5">
-          <X className="h-3.5 w-3.5" />
-          Clear
-        </Button>
+          {hasFilters && (
+            <Button variant="ghost" size="sm" onClick={clearAll} className="h-9 text-muted-foreground hover:text-foreground gap-1.5 px-2.5">
+              <X className="h-3.5 w-3.5" />
+              Clear
+            </Button>
+          )}
+        </div>
       )}
     </div>
   )

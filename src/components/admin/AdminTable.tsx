@@ -52,8 +52,6 @@ interface AdminTableProps<T extends OrderableRow> {
   canDelete?: boolean
 }
 
-const MOBILE_COLUMN_LIMIT = 4
-
 function cellText<T>(row: T, col: AdminTableColumn<T>): string {
   if (col.render) {
     const rendered = col.render(row)
@@ -169,7 +167,6 @@ function SortableTableRow<T extends OrderableRow>({
 function SortableMobileCard<T extends OrderableRow>({
   row,
   columns,
-  mobileColumns,
   editBasePath,
   onDelete,
   getItemName,
@@ -178,7 +175,6 @@ function SortableMobileCard<T extends OrderableRow>({
 }: {
   row: T
   columns: AdminTableColumn<T>[]
-  mobileColumns: AdminTableColumn<T>[]
   editBasePath: string
   onDelete: (id: string) => Promise<void>
   getItemName?: (row: T) => string
@@ -194,20 +190,60 @@ function SortableMobileCard<T extends OrderableRow>({
     opacity: isDragging ? 0.5 : 1,
   }
 
-  const title =
-    getItemName?.(row) ?? cellText(row, columns[0] ?? { key: "id", label: "ID" })
+  const primaryCol = columns[0] ?? { key: "id", label: "ID" }
+  const title = getItemName?.(row) ?? cellText(row, primaryCol)
+
+  // Detect a status/badge column to show in the header
+  const badgeCol = columns.find(
+    (col) => col.key === "isPublished" || col.label.toLowerCase().includes("status")
+  )
+
+  // Secondary fields: skip primary, badge, and order/#; cap at 3
+  const secondaryFields = columns
+    .filter(
+      (col) =>
+        col.key !== primaryCol.key &&
+        col !== badgeCol &&
+        col.key !== "order" &&
+        col.label !== "#"
+    )
+    .slice(0, 3)
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className="rounded-lg border border-border border-l-2 border-l-primary/20 bg-card p-4 space-y-2"
+      className="rounded-xl border border-border bg-card p-4 flex flex-col gap-2.5 active:scale-[0.99] transition-transform"
     >
-      <div className="flex items-start justify-between gap-3">
+      {/* Header: drag handle + title + optional status badge */}
+      <div className="flex items-start justify-between gap-2">
         <div className="flex items-start gap-2 min-w-0 flex-1">
           {showDrag && <DragHandle listeners={listeners} attributes={attributes} />}
-          <p className="font-medium text-foreground line-clamp-2 min-w-0 flex-1">{title}</p>
+          <span className="font-medium text-foreground line-clamp-2 min-w-0 flex-1">{title}</span>
         </div>
+        {badgeCol && (
+          <div className="shrink-0">
+            {badgeCol.render ? badgeCol.render(row) : cellText(row, badgeCol)}
+          </div>
+        )}
+      </div>
+
+      {/* Secondary fields: render() output used when available */}
+      {secondaryFields.length > 0 && (
+        <div className="space-y-1.5 text-sm">
+          {secondaryFields.map((col) => (
+            <div key={col.key} className="flex items-start justify-between gap-2">
+              <span className="text-muted-foreground shrink-0">{col.label}</span>
+              <span className="text-foreground font-medium text-right min-w-0">
+                {col.render ? col.render(row) : cellText(row, col)}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Actions: bottom bar with top border */}
+      <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
         <TableActions
           row={row}
           editBasePath={editBasePath}
@@ -216,20 +252,6 @@ function SortableMobileCard<T extends OrderableRow>({
           canDelete={canDelete}
         />
       </div>
-      <dl className="space-y-2 text-sm">
-        {mobileColumns.map((col) => {
-          const text = cellText(row, col)
-          if (text === "—" && col.key === columns[0]?.key && getItemName) {
-            return null
-          }
-          return (
-            <div key={col.key} className="flex gap-2 min-w-0">
-              <dt className="text-muted-foreground shrink-0 w-20 sm:w-24">{col.label}</dt>
-              <dd className="text-foreground break-words min-w-0 flex-1">{text}</dd>
-            </div>
-          )
-        })}
-      </dl>
     </div>
   )
 }
@@ -249,7 +271,6 @@ export default function AdminTable<T extends OrderableRow>({
   const [items, setItems] = useState(initialRows)
   const [, startTransition] = useTransition()
   const sensors = useSensors(useSensor(PointerSensor))
-  const mobileColumns = columns.slice(0, MOBILE_COLUMN_LIMIT)
   const showDrag = Boolean(onReorder)
 
   useEffect(() => {
@@ -282,9 +303,9 @@ export default function AdminTable<T extends OrderableRow>({
   if (isLoading) {
     return (
       <>
-        <div className="space-y-3 md:hidden">
+        <div className="space-y-2 p-2 md:hidden">
           {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="h-28 w-full rounded-lg" />
+            <Skeleton key={i} className="h-32 w-full rounded-xl" />
           ))}
         </div>
         <div className="hidden md:block space-y-2">
@@ -306,13 +327,12 @@ export default function AdminTable<T extends OrderableRow>({
 
   const listContent = (
     <>
-      <div className="space-y-3 md:hidden">
+      <div className="space-y-2 p-2 md:hidden">
         {items.map((row) => (
           <SortableMobileCard
             key={row.id}
             row={row}
             columns={columns}
-            mobileColumns={mobileColumns}
             editBasePath={editBasePath}
             onDelete={onDelete}
             getItemName={getItemName}
@@ -322,8 +342,8 @@ export default function AdminTable<T extends OrderableRow>({
         ))}
       </div>
 
-      <div className="hidden md:block rounded-lg border border-border bg-card overflow-hidden shadow-sm">
-        <Table>
+      <div className="hidden md:block overflow-x-auto rounded-lg border border-border bg-card shadow-sm">
+        <Table className="w-full min-w-[640px]">
           <TableHeader className="bg-muted/40">
             <TableRow>
               {showDrag && <TableHead className="w-10" />}
