@@ -118,27 +118,43 @@ Copy from `.env.example` / `.dev.vars.example` into the Cloudflare dashboard (Pr
 
 **Server-only (never use `NEXT_PUBLIC_` prefix):** `JWT_ACCESS_SECRET`, `REVALIDATE_SECRET`, Garage/Resend keys, and other secrets below.
 
-| Variable | Cloudflare type | Notes |
-|----------|-----------------|--------|
-| `DATABASE_URL` | Secret | **Preview fallback only** — local dev / `npm run preview` when Hyperdrive binding is unavailable. Not used by production Worker runtime after Hyperdrive is configured. |
-| `DIRECT_URL` | — | Local/CI only — `prisma migrate` and seed scripts |
-| `HYPERDRIVE` | Binding | Production DB access via [`wrangler.toml`](wrangler.toml) — create with [`scripts/create-hyperdrive.sh`](scripts/create-hyperdrive.sh) |
-| `JWT_ACCESS_SECRET` | Secret | JWT signing secret (`openssl rand -hex 64`) |
-| `GARAGE_ENDPOINT` | Secret | S3-compatible endpoint |
-| `GARAGE_ACCESS_KEY_ID` | Secret | |
-| `GARAGE_SECRET_ACCESS_KEY` | Secret | |
-| `GARAGE_BUCKET_NAME` | Secret | e.g. `qtodev-media` |
-| `GARAGE_PUBLIC_URL` | Plain | Public CDN base URL |
-| `RESEND_API_KEY` | Secret | |
-| `RESEND_FROM_EMAIL` | Plain or Secret | |
-| `RESEND_TO_EMAIL` | Plain or Secret | |
-| `NEXT_PUBLIC_SITE_URL` | Plain | |
-| `REVALIDATE_SECRET` | Secret | Bearer token for `POST /api/revalidate` |
-| `PGSSL_REJECT_UNAUTHORIZED` | Plain | Optional; local TLS workaround |
-| `UPSTASH_REDIS_REST_URL` | Secret | Optional; rate limiting |
-| `UPSTASH_REDIS_REST_TOKEN` | Secret | Optional; rate limiting |
+**Secrets** (encrypted — `wrangler secret put <NAME>` or dashboard Secrets):
 
-CLI alternative for secrets: `wrangler secret put JWT_ACCESS_SECRET` (repeat per secret).
+| Variable | Notes |
+|----------|--------|
+| `DATABASE_URL` | **Preview fallback only** — when Hyperdrive binding is unavailable. Remove from Workers after Hyperdrive is verified in prod. |
+| `JWT_ACCESS_SECRET` | JWT signing secret (`openssl rand -hex 64`) |
+| `CRON_SECRET` | Bearer token for `GET /api/cron/cleanup-tokens` (`openssl rand -hex 32`) |
+| `REVALIDATE_SECRET` | Bearer token for `POST /api/revalidate` (`openssl rand -hex 32`) |
+| `RESEND_API_KEY` | Resend transactional email |
+| `UPSTASH_REDIS_REST_URL` | **Required in production** — in-memory rate limit is dev-only |
+| `UPSTASH_REDIS_REST_TOKEN` | **Required in production** |
+| `GARAGE_ENDPOINT` | S3-compatible endpoint |
+| `GARAGE_REGION` | e.g. `garage` |
+| `GARAGE_ACCESS_KEY_ID` | |
+| `GARAGE_SECRET_ACCESS_KEY` | |
+| `GARAGE_BUCKET_NAME` | e.g. `qto-dev` |
+
+**Plain variables** (Workers → Settings → Variables, or `[vars]` in `wrangler.toml`):
+
+| Variable | Notes |
+|----------|--------|
+| `NEXT_PUBLIC_SITE_URL` | Canonical URLs, auth redirects |
+| `GARAGE_PUBLIC_URL` | Public CDN base URL |
+| `RESEND_FROM_EMAIL` | Verified domain sender |
+| `RESEND_TO_EMAIL` | Internal notification recipient |
+| `PGSSL_REJECT_UNAUTHORIZED` | `true` in production; `false` locally |
+
+**Bindings / local-only:**
+
+| Variable | Notes |
+|----------|--------|
+| `HYPERDRIVE` | Production DB access via [`wrangler.toml`](wrangler.toml) — create with [`scripts/create-hyperdrive.sh`](scripts/create-hyperdrive.sh) |
+| `DIRECT_URL` | Local/CI only — `prisma migrate` and seed scripts |
+
+CLI: `wrangler secret put JWT_ACCESS_SECRET` (repeat per secret). Verify: `npm run secrets:verify`.
+
+**Not used:** `JWT_REFRESH_SECRET` (opaque refresh tokens in Postgres), `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` (use `GARAGE_*`).
 
 **Admin CMS sign-in:** see [docs/admin-auth.md](docs/admin-auth.md) for custom JWT auth, `npm run admin:create-user`, and local smoke tests.
 

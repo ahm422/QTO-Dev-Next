@@ -20,7 +20,8 @@
     "preview": "opennextjs-cloudflare build && wrangler dev",
     "deploy": "opennextjs-cloudflare build && wrangler deploy",
     "upload": "npm run cf:build && opennextjs-cloudflare upload",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "secrets:verify": "bash scripts/verify-wrangler-secrets.sh"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1058.0",
