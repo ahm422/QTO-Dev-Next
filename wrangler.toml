@@ -19,6 +19,10 @@ service = "qtodev-site"
 [images]
 binding = "IMAGES"
 
+# Non-secret production vars — set in Workers → Settings → Variables (not in this file):
+#   NEXT_PUBLIC_SITE_URL, GARAGE_PUBLIC_URL, RESEND_FROM_EMAIL, RESEND_TO_EMAIL,
+#   PGSSL_REJECT_UNAUTHORIZED=true
+#
 # Nightly token cleanup — fires at 03:00 UTC and calls GET /api/cron/cleanup-tokens
 # via an external cron service (e.g. Upstash QStash or EasyCron) with:
 #   Authorization: Bearer <CRON_SECRET>
