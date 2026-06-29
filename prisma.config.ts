@@ -15,9 +15,7 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    // Prisma CLI (migrations/status) must use a non-transaction-pooler connection.
-    // In this environment the true direct host (db.<ref>.supabase.co:5432) is not reachable,
-    // so DIRECT_URL should point to the *session pooler* (5432).
+    // Prisma CLI (migrations/status) uses DIRECT_URL or DATABASE_URL from .env — not Hyperdrive.
     url: datasourceUrl,
   },
 });

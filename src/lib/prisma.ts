@@ -7,16 +7,31 @@ const globalForPrisma = globalThis as unknown as {
   prismaPgPool?: Pool;
 };
 
-const databaseUrl = process.env.DATABASE_URL;
-const rejectUnauthorized = process.env.PGSSL_REJECT_UNAUTHORIZED === "true";
+const cloudflareContextSymbol = Symbol.for("__cloudflare-context__");
 
-function getPoolConnectionString() {
-  if (!databaseUrl) return databaseUrl;
+function getHyperdriveConnectionString(): string | undefined {
+  const ctx = (globalThis as Record<symbol, unknown>)[cloudflareContextSymbol] as
+    | { env?: CloudflareEnv }
+    | undefined;
+  if (!ctx?.env?.HYPERDRIVE) return undefined;
+  try {
+    return ctx.env.HYPERDRIVE.connectionString;
+  } catch {
+    return undefined;
+  }
+}
+
+function getConnectionString(): string {
+  const hyperdriveUrl = getHyperdriveConnectionString();
+  if (hyperdriveUrl) return hyperdriveUrl;
+
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) throw new Error("DATABASE_URL is not set");
 
   const url = new URL(databaseUrl);
   const sslMode = url.searchParams.get("sslmode");
   const usesTls = sslMode === "require" || sslMode === "verify-ca" || sslMode === "verify-full";
-
+  const rejectUnauthorized = process.env.PGSSL_REJECT_UNAUTHORIZED === "true";
   if (!usesTls || rejectUnauthorized) return databaseUrl;
 
   url.searchParams.set("sslmode", "no-verify");
@@ -25,9 +40,7 @@ function getPoolConnectionString() {
 
 const pool =
   globalForPrisma.prismaPgPool ??
-  new Pool({
-    connectionString: getPoolConnectionString(),
-  });
+  new Pool({ connectionString: getConnectionString() });
 
 export const prisma =
   globalForPrisma.prisma ??
