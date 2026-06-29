@@ -3,11 +3,11 @@
 
 NEXTJS_ENV=development
 
-# Supabase Transaction Pooler (port 6543) — used by Prisma at runtime
-DATABASE_URL=postgresql://postgres.<project-ref>:<db-password>@aws-<region>.pooler.supabase.com:6543/postgres?sslmode=require
+# Fallback when HYPERDRIVE binding is unavailable in preview (local Postgres or remote URL)
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/qtodev
 
 # Prisma CLI only (migrations); optional in .dev.vars
-DIRECT_URL=postgresql://postgres:<db-password>@db.<project-ref>.supabase.co:5432/postgres?sslmode=require
+DIRECT_URL=postgresql://postgres:postgres@localhost:5432/qtodev
 
 PGSSL_REJECT_UNAUTHORIZED=false
 

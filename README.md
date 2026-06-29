@@ -45,31 +45,14 @@ cp .env.example .env
 
 2. Set `DATABASE_URL` in `.env` to your PostgreSQL connection string.
 
-   For Supabase (recommended for this project), use the Transaction Pooler URI:
+   **Local dev** (Docker Compose — `npm run db:up`):
 
    ```env
-   DATABASE_URL="postgresql://postgres.<project-ref>:<db-password>@aws-<region>.pooler.supabase.com:6543/postgres?sslmode=require"
+   DATABASE_URL="postgresql://postgres:postgres@localhost:5432/qtodev"
+   DIRECT_URL="postgresql://postgres:postgres@localhost:5432/qtodev"
    ```
 
-   Notes:
-   - Use your Supabase **Database Password** (not your Supabase account password).
-   - URL-encode password special characters (for example `@` -> `%40`, `&` -> `%26`).
-   - Keep `sslmode=require`.
-
-   Prisma CLI note (important):
-   - For migrations/introspection, set `DIRECT_URL` to Supabase **direct** connection (port 5432).
-   - If the direct host is unreachable from your network, use Supabase **Session pooler** on port `5432` as `DIRECT_URL`.
-   - Example:
-
-   ```env
-   DIRECT_URL="postgresql://postgres:<db-password>@db.<project-ref>.supabase.co:5432/postgres?sslmode=require"
-   ```
-
-   Session pooler fallback:
-
-   ```env
-   DIRECT_URL="postgresql://postgres.<project-ref>:<db-password>@aws-<region>.pooler.supabase.com:5432/postgres?sslmode=require"
-   ```
+   **Self-hosted production:** use your server's connection string in CI/local `.env` for Prisma migrations only. The deployed Worker uses [Cloudflare Hyperdrive](#postgresql-on-workers-hyperdrive) (not `DATABASE_URL`).
 
 3. Generate the Prisma Client:
 
@@ -137,8 +120,9 @@ Copy from `.env.example` / `.dev.vars.example` into the Cloudflare dashboard (Pr
 
 | Variable | Cloudflare type | Notes |
 |----------|-----------------|--------|
-| `DATABASE_URL` | Secret | Supabase transaction pooler (port `6543`), `sslmode=require` |
-| `DIRECT_URL` | Secret | Optional at runtime; needed for `prisma migrate` from CI |
+| `DATABASE_URL` | Secret | **Preview fallback only** — local dev / `npm run preview` when Hyperdrive binding is unavailable. Not used by production Worker runtime after Hyperdrive is configured. |
+| `DIRECT_URL` | — | Local/CI only — `prisma migrate` and seed scripts |
+| `HYPERDRIVE` | Binding | Production DB access via [`wrangler.toml`](wrangler.toml) — create with [`scripts/create-hyperdrive.sh`](scripts/create-hyperdrive.sh) |
 | `JWT_ACCESS_SECRET` | Secret | JWT signing secret (`openssl rand -hex 64`) |
 | `GARAGE_ENDPOINT` | Secret | S3-compatible endpoint |
 | `GARAGE_ACCESS_KEY_ID` | Secret | |
@@ -174,9 +158,27 @@ cp .dev.vars.example .dev.vars   # fill values
 npm run preview
 ```
 
-### Prisma on Workers
+### PostgreSQL on Workers (Hyperdrive)
 
-`/api/contact` and `/api/requirements` use Prisma + `pg` on Workers with `nodejs_compat`. If writes fail in production, enable [Prisma Accelerate](https://www.prisma.io/data-platform/accelerate) or migrate those routes to the Supabase JS client. Do **not** set `export const runtime = "edge"` — it is [not supported by OpenNext on Cloudflare](https://opennext.js.org/cloudflare/get-started).
+Cloudflare Workers cannot open raw TCP connections to PostgreSQL. Production uses **Hyperdrive** (`HYPERDRIVE` binding in [`wrangler.toml`](wrangler.toml)); [`src/lib/prisma.ts`](src/lib/prisma.ts) reads `ctx.env.HYPERDRIVE.connectionString` on Workers and falls back to `DATABASE_URL` for `npm run dev` / preview.
+
+**One-time setup** (PostgreSQL origin must be **publicly reachable** — not `localhost` or `192.168.x.x`):
+
+```bash
+export DB_PASSWORD='your-postgres-password'
+./scripts/create-hyperdrive.sh \
+  --host db.your-domain.com \
+  --port 5432 \
+  --user postgres \
+  --database qtodev
+npm run cf-typegen
+```
+
+Or pass a full URL: `export HYPERDRIVE_ORIGIN_URL='postgresql://...'` then `./scripts/create-hyperdrive.sh`.
+
+After Hyperdrive is verified in production, remove `DATABASE_URL` from Workers → Variables and Secrets. Keep `DATABASE_URL` / `DIRECT_URL` in `.env` for local dev and Prisma CLI.
+
+Do **not** set `export const runtime = "edge"` on Prisma routes — [not supported by OpenNext on Cloudflare](https://opennext.js.org/cloudflare/get-started).
 
 ### Optional: ISR / revalidation cache
 
