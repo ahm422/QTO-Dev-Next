@@ -7,6 +7,7 @@ import { writeAuditLog } from "@/lib/auth/audit";
 import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { COOKIE_REFRESH_TOKEN } from "@/lib/auth/constants";
 import { apiError, logApiError } from "@/lib/apiResponses";
+import { persistD1BookmarkOnResponse } from "@/lib/d1/session";
 
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
@@ -54,6 +55,8 @@ export async function POST(request: NextRequest) {
         userAgent,
       });
     }
+
+    await persistD1BookmarkOnResponse(response);
 
     return response;
   } catch (error) {

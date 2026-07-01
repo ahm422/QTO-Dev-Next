@@ -2,6 +2,7 @@
 
 import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
+import { persistD1Bookmark } from "@/lib/d1/session"
 import { redirect } from "next/navigation"
 import { whyChooseUsSchema, type WhyChooseUsInput } from "@/lib/validators/admin/whyChooseUs"
 import { revalidatePaths } from "@/lib/revalidate"
@@ -14,6 +15,7 @@ export async function createWhyChooseUs(data: WhyChooseUsInput) {
   await requireCreateAction()
   await prisma.whyChooseUs.create({ data: whyChooseUsSchema.parse(data) })
   revalidatePaths([...PATHS])
+  await persistD1Bookmark()
   redirect("/admin/why-choose-us")
 }
 
@@ -21,6 +23,7 @@ export async function updateWhyChooseUs(id: string, data: WhyChooseUsInput) {
   await requireAdminAction()
   await prisma.whyChooseUs.update({ where: { id }, data: whyChooseUsSchema.parse(data) })
   revalidatePaths([...PATHS])
+  await persistD1Bookmark()
   redirect("/admin/why-choose-us")
 }
 
@@ -28,12 +31,14 @@ export async function deleteWhyChooseUs(id: string) {
   await requireDeleteAction()
   await prisma.whyChooseUs.delete({ where: { id } })
   revalidatePaths([...PATHS])
+  await persistD1Bookmark()
 }
 
 export async function toggleWhyChooseUsPublished(id: string, value: boolean) {
   await requireAdminAction()
   await prisma.whyChooseUs.update({ where: { id }, data: { isPublished: value } })
   revalidatePaths([...PATHS])
+  await persistD1Bookmark()
 }
 
 export async function reorderWhyChooseUs(items: { id: string; order: number }[]) {
@@ -42,4 +47,5 @@ export async function reorderWhyChooseUs(items: { id: string; order: number }[])
     prisma.whyChooseUs.update({ where: { id }, data: { order } })
   )
   revalidatePaths([...PATHS])
+  await persistD1Bookmark()
 }

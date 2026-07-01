@@ -1,3 +1,4 @@
+/** ETL writes must use primary — never replica routing via Sessions API. */
 import { getPlatformProxy } from "wrangler";
 import { PrismaClient } from "@prisma/client";
 import { PrismaD1 } from "@prisma/adapter-d1";
@@ -42,7 +43,8 @@ export async function initD1Target(target: D1Target): Promise<PrismaClient> {
     );
   }
 
-  d1Client = new PrismaClient({ adapter: new PrismaD1(env.DB) });
+  const db = env.DB.withSession("first-primary");
+  d1Client = new PrismaClient({ adapter: new PrismaD1(db) });
   return d1Client;
 }
 
