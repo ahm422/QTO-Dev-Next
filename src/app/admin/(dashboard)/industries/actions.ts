@@ -2,15 +2,15 @@
 
 import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
+import { fromPrismaIndustry, toPrismaIndustryData } from "@/lib/prisma/jsonModelData"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { industrySchema, type IndustryInput } from "@/lib/validators/admin/industry"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
 
-
 export async function createIndustry(data: IndustryInput) {
   await requireCreateAction()
-  await prisma.industry.create({ data: industrySchema.parse(data) })
+  await prisma.industry.create({ data: toPrismaIndustryData(industrySchema.parse(data)) })
   revalidatePath("/")
   redirect("/admin/industries")
 }
@@ -18,7 +18,7 @@ export async function createIndustry(data: IndustryInput) {
 export async function updateIndustry(id: string, data: IndustryInput) {
   await requireAdminAction()
   const parsed = industrySchema.parse(data)
-  await prisma.industry.update({ where: { id }, data: parsed })
+  await prisma.industry.update({ where: { id }, data: toPrismaIndustryData(parsed) })
   revalidatePath("/")
   revalidatePath(`/industries/${parsed.slug}`)
   redirect("/admin/industries")

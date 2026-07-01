@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { parseMetadata } from "@/lib/metadata";
 import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { apiSuccess } from "@/lib/apiResponses";
@@ -36,7 +37,10 @@ export async function GET(request: NextRequest) {
     ]);
 
     return apiSuccess({
-      items,
+      items: items.map((item) => ({
+        ...item,
+        metadata: parseMetadata(item.metadata),
+      })),
       pagination: {
         page: query.page,
         pageSize: query.pageSize,

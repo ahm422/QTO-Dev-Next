@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
+import { parseMetadata } from "@/lib/metadata";
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader";
 import StatCard from "@/components/admin/data/StatCard";
 import StatCardGrid from "@/components/admin/data/StatCardGrid";
@@ -36,7 +37,7 @@ export default async function AuditLogPage({
   const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);
   const last7d = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-  const [rows, total, failedLogins24h, adminActions7d] = await Promise.all([
+  const [rawRows, total, failedLogins24h, adminActions7d] = await Promise.all([
     prisma.auditLog.findMany({
       where,
       orderBy: { createdAt: "desc" },
@@ -55,6 +56,11 @@ export default async function AuditLogPage({
       },
     }),
   ]);
+
+  const rows = rawRows.map((row) => ({
+    ...row,
+    metadata: parseMetadata(row.metadata),
+  }));
 
   const totalPages = Math.ceil(total / query.pageSize);
 

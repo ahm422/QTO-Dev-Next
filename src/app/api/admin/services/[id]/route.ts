@@ -7,15 +7,24 @@ import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { serviceSchema } from "@/lib/validators/admin/service";
+import {
+  fromPrismaService,
+  serviceWithTagsInclude,
+  toPrismaServicePartialUpdateData,
+  toPrismaServiceUpdateData,
+} from "@/lib/prisma/serviceData";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error } = await requireAdminSession();
   if (error) return error;
   const { id } = await params;
   try {
-    const item = await prisma.service.findUnique({ where: { id } });
+    const item = await prisma.service.findUnique({
+      where: { id },
+      include: serviceWithTagsInclude,
+    });
     if (!item) return apiError(404, "Not found");
-    return apiSuccess({ item });
+    return apiSuccess({ item: fromPrismaService(item) });
   } catch (e) {
     return handleRouteError("GET /api/admin/services/[id]", e);
   }
@@ -31,12 +40,20 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   if (!parsed.success)
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
-    const item = await prisma.service.update({ where: { id }, data: parsed.data });
+    const updateData =
+      Object.keys(parsed.data).length === Object.keys(serviceSchema.shape).length
+        ? toPrismaServiceUpdateData(parsed.data as Parameters<typeof toPrismaServiceUpdateData>[0])
+        : toPrismaServicePartialUpdateData(parsed.data);
+    const item = await prisma.service.update({
+      where: { id },
+      data: updateData,
+      include: serviceWithTagsInclude,
+    });
     revalidatePath("/");
     revalidatePath("/services");
     revalidatePath("/sitemap.xml");
     if (item.slug) revalidatePath(`/services/${item.slug}`);
-    return apiSuccess({ item });
+    return apiSuccess({ item: fromPrismaService(item) });
   } catch (e) {
     return handleRouteError("PATCH /api/admin/services/[id]", e);
   }

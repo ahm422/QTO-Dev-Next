@@ -1,4 +1,8 @@
 import { blogPosts } from "@/data/blog";
+import {
+  createOrderedChildren,
+  replaceOrderedChildren,
+} from "@/lib/prisma/arrayFields";
 import { prisma } from "./helpers";
 
 export async function seedBlogPosts() {
@@ -13,7 +17,7 @@ export async function seedBlogPosts() {
         excerpt: post.excerpt ?? post.description,
         content: post.content,
         category: post.category,
-        tags: post.tags,
+        tags: createOrderedChildren(post.tags),
         author: post.author,
         imageUrl,
         imageAlt,
@@ -28,7 +32,7 @@ export async function seedBlogPosts() {
         excerpt: post.excerpt ?? post.description,
         content: post.content,
         category: post.category,
-        tags: post.tags,
+        tags: replaceOrderedChildren(post.tags),
         author: post.author,
         imageUrl,
         imageAlt,

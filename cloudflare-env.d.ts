@@ -12,12 +12,12 @@ interface __BaseEnv_CloudflareEnv {
 	DIRECT_URL: string;
 	PGSSL_REJECT_UNAUTHORIZED: string;
 	JWT_ACCESS_SECRET: string;
-	GARAGE_ENDPOINT: string;
-	GARAGE_REGION: string;
-	GARAGE_ACCESS_KEY_ID: string;
-	GARAGE_SECRET_ACCESS_KEY: string;
-	GARAGE_BUCKET_NAME: string;
-	GARAGE_PUBLIC_URL: string;
+	R2_S3_ENDPOINT: string;
+	R2_REGION: string;
+	R2_ACCESS_KEY_ID: string;
+	R2_SECRET_ACCESS_KEY: string;
+	R2_BUCKET_NAME: string;
+	R2_PUBLIC_URL: string;
 	RESEND_API_KEY: string;
 	RESEND_FROM_EMAIL: string;
 	RESEND_TO_EMAIL: string;
@@ -39,7 +39,7 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "NEXTJS_ENV" | "DATABASE_URL" | "DIRECT_URL" | "PGSSL_REJECT_UNAUTHORIZED" | "JWT_ACCESS_SECRET" | "GARAGE_ENDPOINT" | "GARAGE_REGION" | "GARAGE_ACCESS_KEY_ID" | "GARAGE_SECRET_ACCESS_KEY" | "GARAGE_BUCKET_NAME" | "GARAGE_PUBLIC_URL" | "RESEND_API_KEY" | "RESEND_FROM_EMAIL" | "RESEND_TO_EMAIL" | "NEXT_PUBLIC_SITE_URL" | "REVALIDATE_SECRET" | "CRON_SECRET" | "UPSTASH_REDIS_REST_URL" | "UPSTASH_REDIS_REST_TOKEN">> {}
+	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "NEXTJS_ENV" | "DATABASE_URL" | "DIRECT_URL" | "PGSSL_REJECT_UNAUTHORIZED" | "JWT_ACCESS_SECRET" | "R2_S3_ENDPOINT" | "R2_REGION" | "R2_ACCESS_KEY_ID" | "R2_SECRET_ACCESS_KEY" | "R2_BUCKET_NAME" | "R2_PUBLIC_URL" | "RESEND_API_KEY" | "RESEND_FROM_EMAIL" | "RESEND_TO_EMAIL" | "NEXT_PUBLIC_SITE_URL" | "REVALIDATE_SECRET" | "CRON_SECRET" | "UPSTASH_REDIS_REST_URL" | "UPSTASH_REDIS_REST_TOKEN">> {}
 }
 
 // Begin runtime types

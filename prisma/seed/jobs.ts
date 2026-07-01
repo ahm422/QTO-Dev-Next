@@ -1,10 +1,13 @@
 import { jobs } from "@/data/jobs";
+import { stringifyStringArray } from "@/lib/prisma/arrayFields";
 import { prisma, upsertBy } from "./helpers";
 
 export async function seedJobs() {
   for (let i = 0; i < jobs.length; i++) {
     const job = jobs[i];
     const location = `${job.location} (${job.workMode})`;
+    const requirements = stringifyStringArray(job.requirements);
+    const niceToHave = stringifyStringArray(job.tags);
     await upsertBy(
       () =>
         prisma.job.findFirst({
@@ -18,8 +21,8 @@ export async function seedJobs() {
             location,
             type: job.employmentType,
             description: job.description,
-            requirements: job.requirements,
-            niceToHave: job.tags,
+            requirements,
+            niceToHave,
             salaryRange: job.compensationNote ?? null,
             applyUrl: job.applyUrl,
             order: i,
@@ -33,8 +36,8 @@ export async function seedJobs() {
             location,
             type: job.employmentType,
             description: job.description,
-            requirements: job.requirements,
-            niceToHave: job.tags,
+            requirements,
+            niceToHave,
             salaryRange: job.compensationNote ?? null,
             applyUrl: job.applyUrl,
             order: i,

@@ -1,4 +1,4 @@
-import { disconnect } from "./seed/helpers";
+import { disconnect, initSeedPrisma } from "./seed/helpers";
 import { seedAboutContent } from "./seed/aboutContent";
 import { seedPageSections } from "./seed/pageSections";
 import { seedBlogPosts } from "./seed/blogPosts";
@@ -20,6 +20,7 @@ import { seedWhyChooseUs } from "./seed/whyChooseUs";
 import { seedWorkValues } from "./seed/workValues";
 
 async function main() {
+  await initSeedPrisma();
   console.log("Seeding CMS content from static data…");
 
   await seedServices();

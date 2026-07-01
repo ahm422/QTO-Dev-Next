@@ -7,6 +7,11 @@ import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { blogPostSchema } from "@/lib/validators/admin/blogPost";
+import {
+  blogPostWithTagsInclude,
+  fromPrismaBlogPost,
+  toPrismaBlogPostCreateData,
+} from "@/lib/prisma/blogPostData";
 
 export async function GET(request: NextRequest) {
   const { error } = await requireAdminSession();
@@ -22,8 +27,9 @@ export async function GET(request: NextRequest) {
         ...(isPublished !== undefined && { isPublished }),
       },
       orderBy: { createdAt: "desc" },
+      include: blogPostWithTagsInclude,
     });
-    return apiSuccess({ items });
+    return apiSuccess({ items: items.map(fromPrismaBlogPost) });
   } catch (e) {
     return handleRouteError("GET /api/admin/blog", e);
   }
@@ -38,11 +44,13 @@ export async function POST(request: NextRequest) {
   if (!parsed.success)
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
-    const data = {
-      ...parsed.data,
-      publishedAt: parsed.data.isPublished ? new Date() : null,
-    };
-    const item = await prisma.blogPost.create({ data });
+    const item = await prisma.blogPost.create({
+      data: {
+        ...toPrismaBlogPostCreateData(parsed.data),
+        publishedAt: parsed.data.isPublished ? new Date() : null,
+      },
+      include: blogPostWithTagsInclude,
+    });
     revalidatePath("/");
     revalidatePath("/blogs");
     revalidatePath("/sitemap.xml");

@@ -12,11 +12,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { createIndustry, updateIndustry } from "../actions"
-import type { Industry } from "@prisma/client"
+import type { IndustryInput } from "@/lib/validators/admin/industry"
 
 function slugify(s: string) { return s.toLowerCase().trim().replace(/[^a-z0-9\s-]/g,"").replace(/\s+/g,"-").replace(/-+/g,"-") }
 
-export default function IndustryForm({ defaultValues }: { defaultValues?: Industry }) {
+export default function IndustryForm({ defaultValues }: { defaultValues?: IndustryInput & { id?: string } }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<IndustryInput>({
     resolver: formResolver(industrySchema),

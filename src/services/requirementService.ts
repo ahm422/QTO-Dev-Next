@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
+import { stringifyMetadata } from "@/lib/metadata";
 
 export type CreateRequirementInput = {
   intent: string;
@@ -28,7 +28,7 @@ export type CreateRequirementInput = {
   referrer?: string | null;
   userAgent?: string | null;
   ip?: string | null;
-  metadata?: Prisma.InputJsonValue | null;
+  metadata?: Record<string, unknown> | null;
 };
 
 export async function createRequirementSubmission(input: CreateRequirementInput) {
@@ -60,7 +60,7 @@ export async function createRequirementSubmission(input: CreateRequirementInput)
       referrer: input.referrer ?? null,
       userAgent: input.userAgent ?? null,
       ip: input.ip ?? null,
-      metadata: input.metadata ?? Prisma.DbNull,
+      metadata: stringifyMetadata(input.metadata),
     },
     select: { id: true },
   });

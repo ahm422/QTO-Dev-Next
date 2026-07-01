@@ -1,10 +1,12 @@
 import { engagementModelItems } from "@/data/engagementModels";
+import { stringifyStringArray } from "@/lib/prisma/arrayFields";
 import { prisma, upsertBy } from "./helpers";
 
 export async function seedEngagementModels() {
   for (let i = 0; i < engagementModelItems.length; i++) {
     const item = engagementModelItems[i];
     const number = i + 1;
+    const features = stringifyStringArray(item.features);
     await upsertBy(
       () => prisma.engagementModel.findFirst({ where: { number } }),
       () =>
@@ -13,7 +15,7 @@ export async function seedEngagementModels() {
             number,
             title: item.title,
             description: item.description,
-            features: item.features,
+            features,
             isMostPopular: item.isPopular,
             ctaLabel: "Get Started",
             ctaLink: item.getStartedHref,
@@ -27,7 +29,7 @@ export async function seedEngagementModels() {
           data: {
             title: item.title,
             description: item.description,
-            features: item.features,
+            features,
             isMostPopular: item.isPopular,
             ctaLink: item.getStartedHref,
             order: i,

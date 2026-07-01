@@ -2,8 +2,11 @@ account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
 
 name = "qtodev-site"
 main = ".open-next/worker.js"
-compatibility_date = "2025-06-29"
+compatibility_date = "2025-12-30"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+
+[alias]
+sqlite = "./scripts/workerd-sqlite-shim.js"
 
 [assets]
 directory = ".open-next/assets"
@@ -20,7 +23,7 @@ service = "qtodev-site"
 binding = "IMAGES"
 
 # Non-secret production vars — set in Workers → Settings → Variables (not in this file):
-#   NEXT_PUBLIC_SITE_URL, GARAGE_PUBLIC_URL, RESEND_FROM_EMAIL, RESEND_TO_EMAIL,
+#   NEXT_PUBLIC_SITE_URL, R2_PUBLIC_URL, RESEND_FROM_EMAIL, RESEND_TO_EMAIL,
 #   PGSSL_REJECT_UNAUTHORIZED=true
 #
 # Nightly token cleanup — fires at 03:00 UTC and calls GET /api/cron/cleanup-tokens

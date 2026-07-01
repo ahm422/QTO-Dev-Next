@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
+import { stringifyMetadata } from "@/lib/metadata";
 
 export type CreateContactInput = {
   name: string;
@@ -10,7 +10,7 @@ export type CreateContactInput = {
   referrer?: string | null;
   userAgent?: string | null;
   ip?: string | null;
-  metadata?: Prisma.InputJsonValue | null;
+  metadata?: Record<string, unknown> | null;
 };
 
 export async function createContactSubmission(input: CreateContactInput) {
@@ -24,7 +24,7 @@ export async function createContactSubmission(input: CreateContactInput) {
       referrer: input.referrer ?? null,
       userAgent: input.userAgent ?? null,
       ip: input.ip ?? null,
-      metadata: input.metadata ?? Prisma.DbNull,
+      metadata: stringifyMetadata(input.metadata),
     },
     select: { id: true },
   });

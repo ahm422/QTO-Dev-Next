@@ -2,6 +2,7 @@ import { getServerSession } from "@/lib/auth/session"
 import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
+import { fromPrismaBlogPost, blogPostWithTagsInclude } from "@/lib/prisma/blogPostData"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import AdminContentContext from "@/components/admin/layout/AdminContentContext"
 import FilterBar from "@/components/admin/data/FilterBar"
@@ -22,7 +23,7 @@ export default async function BlogPage({
     ...(status === "published" ? { isPublished: true } : status === "draft" ? { isPublished: false } : {}),
   }
 
-  const rows = await prisma.blogPost.findMany({ where, orderBy: { createdAt: "desc" } })
+  const rows = await prisma.blogPost.findMany({ where, orderBy: { createdAt: "desc" }, include: blogPostWithTagsInclude })
 
   return (
     <div className="space-y-6">
@@ -42,7 +43,7 @@ export default async function BlogPage({
         component="Blog grid in src/app/(qtodev)/blogs/"
       />
       <FilterBar searchPlaceholder="Search posts…" filters={[{ key: "status", placeholder: "All Statuses", options: [{ label: "Published", value: "published" }, { label: "Draft", value: "draft" }] }]} />
-      <BlogTable rows={rows}
+      <BlogTable rows={rows.map(fromPrismaBlogPost)}
         canDelete={roleCanDeleteContent(role as AdminRole)}
         canCreate={roleCanCreateContent(role as AdminRole)}
       />

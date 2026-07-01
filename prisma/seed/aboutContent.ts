@@ -1,4 +1,5 @@
 import { aboutData } from "@/data/about";
+import { stringifyMetadata } from "@/lib/metadata";
 import { prisma } from "./helpers";
 
 export async function seedAboutContent() {
@@ -45,14 +46,14 @@ export async function seedAboutContent() {
         title: row.title ?? null,
         subtitle: row.subtitle ?? null,
         body: row.body ?? null,
-        metadata: row.metadata ?? undefined,
+        metadata: stringifyMetadata(row.metadata),
         order: row.order,
       },
       update: {
         title: row.title ?? null,
         subtitle: row.subtitle ?? null,
         body: row.body ?? null,
-        metadata: row.metadata ?? undefined,
+        metadata: stringifyMetadata(row.metadata),
         order: row.order,
       },
     });

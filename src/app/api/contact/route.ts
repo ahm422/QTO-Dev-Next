@@ -9,7 +9,6 @@
  */
 import { NextRequest } from "next/server";
 import { jsx } from "react/jsx-runtime";
-import type { Prisma } from "@prisma/client";
 import ContactConfirmation from "@/emails/ContactConfirmation";
 import ContactNotification from "@/emails/ContactNotification";
 import { createContactSubmission } from "@/services/contactService";
@@ -55,7 +54,7 @@ export async function POST(request: NextRequest) {
       asOptionalHeader(request.headers.get("x-forwarded-for"))?.split(",")[0]?.trim() ??
       null;
 
-    const metadata = (body.metadata as Prisma.InputJsonValue | undefined) ?? null;
+    const metadata = body.metadata ?? null;
 
     try {
       const created = await createContactSubmission({

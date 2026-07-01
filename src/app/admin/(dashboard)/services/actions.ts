@@ -7,12 +7,16 @@ import { serviceSchema, type ServiceInput } from "@/lib/validators/admin/service
 import { revalidatePaths } from "@/lib/revalidate"
 import { servicePaths } from "@/lib/revalidate-paths"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
+import {
+  toPrismaServiceCreateData,
+  toPrismaServiceUpdateData,
+} from "@/lib/prisma/serviceData"
 
 
 export async function createService(data: ServiceInput) {
   await requireCreateAction()
   const parsed = serviceSchema.parse(data)
-  await prisma.service.create({ data: parsed })
+  await prisma.service.create({ data: toPrismaServiceCreateData(parsed) })
   revalidatePaths([...servicePaths(parsed.slug)])
   redirect("/admin/services")
 }
@@ -20,7 +24,7 @@ export async function createService(data: ServiceInput) {
 export async function updateService(id: string, data: ServiceInput) {
   await requireAdminAction()
   const parsed = serviceSchema.parse(data)
-  await prisma.service.update({ where: { id }, data: parsed })
+  await prisma.service.update({ where: { id }, data: toPrismaServiceUpdateData(parsed) })
   revalidatePaths([...servicePaths(parsed.slug)])
   redirect("/admin/services")
 }

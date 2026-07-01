@@ -7,13 +7,14 @@ import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { industrySchema } from "@/lib/validators/admin/industry";
+import { fromPrismaIndustry, toPrismaIndustryData } from "@/lib/prisma/jsonModelData";
 
 export async function GET() {
   const { error } = await requireAdminSession();
   if (error) return error;
   try {
     const items = await prisma.industry.findMany({ orderBy: { order: "asc" } });
-    return apiSuccess({ items });
+    return apiSuccess({ items: items.map(fromPrismaIndustry) });
   } catch (e) {
     return handleRouteError("GET /api/admin/industries", e);
   }
@@ -28,7 +29,7 @@ export async function POST(request: NextRequest) {
   if (!parsed.success)
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
-    const item = await prisma.industry.create({ data: parsed.data });
+    const item = await prisma.industry.create({ data: toPrismaIndustryData(parsed.data) });
     revalidatePath("/");
     revalidatePath("/industries");
     return apiSuccess({ id: item.id }, 201);

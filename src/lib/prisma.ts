@@ -1,55 +1,38 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
+import { PrismaD1 } from "@prisma/adapter-d1";
+import { getRuntimeD1Database } from "@/lib/d1/localD1Context";
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
-  prismaPgPool?: Pool;
 };
 
-const cloudflareContextSymbol = Symbol.for("__cloudflare-context__");
-
-function getHyperdriveConnectionString(): string | undefined {
-  const ctx = (globalThis as Record<symbol, unknown>)[cloudflareContextSymbol] as
-    | { env?: CloudflareEnv }
-    | undefined;
-  if (!ctx?.env?.HYPERDRIVE) return undefined;
-  try {
-    return ctx.env.HYPERDRIVE.connectionString;
-  } catch {
-    return undefined;
+function createPrismaClient(): PrismaClient {
+  const db = getRuntimeD1Database();
+  if (!db) {
+    throw new Error(
+      "D1 binding (env.DB) is not available. Use `npm run preview` (wrangler dev) with local D1 — plain `next dev` has no Workers bindings."
+    );
   }
-}
-
-function getConnectionString(): string {
-  const hyperdriveUrl = getHyperdriveConnectionString();
-  if (hyperdriveUrl) return hyperdriveUrl;
-
-  const databaseUrl = process.env.DATABASE_URL;
-  if (!databaseUrl) throw new Error("DATABASE_URL is not set");
-
-  const url = new URL(databaseUrl);
-  const sslMode = url.searchParams.get("sslmode");
-  const usesTls = sslMode === "require" || sslMode === "verify-ca" || sslMode === "verify-full";
-  const rejectUnauthorized = process.env.PGSSL_REJECT_UNAUTHORIZED === "true";
-  if (!usesTls || rejectUnauthorized) return databaseUrl;
-
-  url.searchParams.set("sslmode", "no-verify");
-  return url.toString();
-}
-
-const pool =
-  globalForPrisma.prismaPgPool ??
-  new Pool({ connectionString: getConnectionString() });
-
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    adapter: new PrismaPg(pool),
+  return new PrismaClient({
+    adapter: new PrismaD1(db),
     log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
   });
-
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
-  globalForPrisma.prismaPgPool = pool;
 }
+
+function getPrismaClient(): PrismaClient {
+  if (!globalForPrisma.prisma) {
+    globalForPrisma.prisma = createPrismaClient();
+  }
+  return globalForPrisma.prisma;
+}
+
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_target, prop) {
+    const client = getPrismaClient();
+    const value = client[prop as keyof PrismaClient];
+    if (typeof value === "function") {
+      return (value as (...args: unknown[]) => unknown).bind(client);
+    }
+    return value;
+  },
+});

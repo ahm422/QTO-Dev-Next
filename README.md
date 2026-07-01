@@ -129,18 +129,18 @@ Copy from `.env.example` / `.dev.vars.example` into the Cloudflare dashboard (Pr
 | `RESEND_API_KEY` | Resend transactional email |
 | `UPSTASH_REDIS_REST_URL` | **Required in production** — in-memory rate limit is dev-only |
 | `UPSTASH_REDIS_REST_TOKEN` | **Required in production** |
-| `GARAGE_ENDPOINT` | S3-compatible endpoint |
-| `GARAGE_REGION` | e.g. `garage` |
-| `GARAGE_ACCESS_KEY_ID` | |
-| `GARAGE_SECRET_ACCESS_KEY` | |
-| `GARAGE_BUCKET_NAME` | e.g. `qto-dev` |
+| `R2_S3_ENDPOINT` | S3-compatible R2 API endpoint |
+| `R2_REGION` | `auto` |
+| `R2_ACCESS_KEY_ID` | R2 API token access key |
+| `R2_SECRET_ACCESS_KEY` | R2 API token secret |
+| `R2_BUCKET_NAME` | e.g. `qtodev-media` |
 
 **Plain variables** (Workers → Settings → Variables, or `[vars]` in `wrangler.toml`):
 
 | Variable | Notes |
 |----------|--------|
 | `NEXT_PUBLIC_SITE_URL` | Canonical URLs, auth redirects |
-| `GARAGE_PUBLIC_URL` | Public CDN base URL |
+| `R2_PUBLIC_URL` | Public CDN base URL for uploaded media |
 | `RESEND_FROM_EMAIL` | Verified domain sender |
 | `RESEND_TO_EMAIL` | Internal notification recipient |
 | `PGSSL_REJECT_UNAUTHORIZED` | `true` in production; `false` locally |
@@ -156,7 +156,7 @@ Copy from `.env.example` / `.dev.vars.example` into the Cloudflare dashboard (Pr
 
 CLI: `wrangler secret put JWT_ACCESS_SECRET` (repeat per secret). Verify: `npm run secrets:verify`.
 
-**Not used:** `JWT_REFRESH_SECRET` (opaque refresh tokens in Postgres), `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` (use `GARAGE_*`).
+**Not used:** `JWT_REFRESH_SECRET` (opaque refresh tokens in D1), `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` (use `R2_*`).
 
 **Admin CMS sign-in:** see [docs/admin-auth.md](docs/admin-auth.md) for custom JWT auth, `npm run admin:create-user`, and local smoke tests.
 

@@ -1,6 +1,7 @@
 import { getServerSession } from "@/lib/auth/session"
 import { notFound, redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
+import { fromPrismaIndustry } from "@/lib/prisma/jsonModelData"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import IndustryForm from "./IndustryForm"
 
@@ -24,7 +25,7 @@ export default async function IndustryFormPage({ params }: { params: Promise<{ i
   return (
     <div className="space-y-6">
       <AdminPageHeader title="Edit Industry" subtitle={record.name} badges={[{ label: record.isPublished ? "Published" : "Draft", variant: record.isPublished ? "success" : "warning" }]} breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Industries", href: "/admin/industries" }, { label: "Edit" }]} />
-      <IndustryForm defaultValues={record} />
+      <IndustryForm defaultValues={fromPrismaIndustry(record)} />
     </div>
   )
 }

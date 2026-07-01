@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { blogPostWithTagsInclude } from "@/lib/prisma/blogPostData";
 import { mapBlogPost } from "./mappers";
 import type { BlogPost } from "@/types/blog";
 
@@ -10,6 +11,7 @@ export const findAllPublishedBlogPosts = cache(
       const items = await prisma.blogPost.findMany({
         where: { isPublished: true },
         orderBy: { publishedAt: "desc" },
+        include: blogPostWithTagsInclude,
       });
       return items.map(mapBlogPost);
     },
@@ -23,6 +25,7 @@ export const findBlogPostBySlug = cache(
     async (slug: string) => {
       const item = await prisma.blogPost.findFirst({
         where: { slug, isPublished: true },
+        include: blogPostWithTagsInclude,
       });
       return item ? mapBlogPost(item) : null;
     },

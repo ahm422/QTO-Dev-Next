@@ -1,4 +1,5 @@
-import type { Project as PrismaProject } from "@prisma/client";
+import type { ProjectWithRelations } from "@/lib/prisma/projectData";
+import { orderedTagValues, parseStringArray } from "@/lib/prisma/arrayFields";
 import type { Project } from "@/content/projects/types";
 
 const defaultHero = {
@@ -12,9 +13,13 @@ const defaultFeatureImage = {
 };
 
 export function mapPrismaToContentProject(
-  item: PrismaProject,
-  all: PrismaProject[]
+  item: ProjectWithRelations,
+  all: ProjectWithRelations[]
 ): Project {
+  const tags = orderedTagValues(item.tags);
+  const techStack = orderedTagValues(item.techStack);
+  const results = parseStringArray(item.results);
+
   const heroUrl = item.coverImageUrl ?? defaultHero.url;
   const related = all
     .filter((p) => p.slug !== item.slug)
@@ -42,7 +47,7 @@ export function mapPrismaToContentProject(
       client: item.client ?? "Confidential Client",
     },
     services: ["Product Discovery", "UI/UX Design", "Full-Stack Development", "QA"],
-    techStack: item.techStack,
+    techStack,
     team: "PM + Designer + Engineers + QA",
     timeline: "12–24 Weeks",
     problem: item.challenge
@@ -52,14 +57,14 @@ export function mapPrismaToContentProject(
       ? [item.solution]
       : ["Implemented scalable architecture with strong QA and clearer user flows."],
     outcomes:
-      item.results.length > 0
-        ? item.results
+      results.length > 0
+        ? results
         : ["Improved performance and stronger product adoption."],
     features: [
       {
         title: "Core Platform",
-        bullets: item.tags.slice(0, 3).length
-          ? item.tags.slice(0, 3)
+        bullets: tags.slice(0, 3).length
+          ? tags.slice(0, 3)
           : ["Role-based access", "Workflow automation", "Reporting"],
         benefit: item.excerpt,
         image: { url: heroUrl, alt: item.title },
@@ -72,8 +77,8 @@ export function mapPrismaToContentProject(
       },
       {
         title: "Outcomes",
-        bullets: item.results.slice(0, 3).length
-          ? item.results.slice(0, 3)
+        bullets: results.slice(0, 3).length
+          ? results.slice(0, 3)
           : ["Faster delivery cycles", "Higher user satisfaction"],
         benefit: "Measurable business impact after launch.",
         image: defaultFeatureImage,
@@ -88,7 +93,7 @@ export function mapPrismaToContentProject(
         "Launch and optimization.",
       ],
     },
-    technologiesLogos: item.techStack,
+    technologiesLogos: techStack,
     relatedProjects: related,
     demoUrl: item.liveUrl ?? "/contact?intent=request-demo",
   };
