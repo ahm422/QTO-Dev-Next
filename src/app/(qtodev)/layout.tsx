@@ -1,5 +1,7 @@
 import { Navbar } from "@/components/common/Navbar";
 import { Footer } from "@/components/common/Footer";
+import MaintenanceBanner from "@/components/common/MaintenanceBanner";
+import { isWriteFrozen } from "@/lib/freeze-writes";
 
 export const revalidate = 3600;
 
@@ -13,6 +15,7 @@ export default function QTODevLayout({
 }) {
   return (
     <div className="flex flex-col min-h-screen">
+      {isWriteFrozen() && <MaintenanceBanner />}
       <Navbar />
       <main className="flex-grow">{children}</main>
       <Footer />

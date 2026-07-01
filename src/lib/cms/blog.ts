@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { getCachedReadPrisma } from "@/lib/prisma/cachedRead";
 import { blogPostWithTagsInclude } from "@/lib/prisma/blogPostData";
 import { mapBlogPost } from "./mappers";
 import type { BlogPost } from "@/types/blog";
@@ -8,7 +8,7 @@ import type { BlogPost } from "@/types/blog";
 export const findAllPublishedBlogPosts = cache(
   unstable_cache(
     async (): Promise<BlogPost[]> => {
-      const items = await prisma.blogPost.findMany({
+      const items = await (await getCachedReadPrisma()).blogPost.findMany({
         where: { isPublished: true },
         orderBy: { publishedAt: "desc" },
         include: blogPostWithTagsInclude,
@@ -23,7 +23,7 @@ export const findAllPublishedBlogPosts = cache(
 export const findBlogPostBySlug = cache(
   unstable_cache(
     async (slug: string) => {
-      const item = await prisma.blogPost.findFirst({
+      const item = await (await getCachedReadPrisma()).blogPost.findFirst({
         where: { slug, isPublished: true },
         include: blogPostWithTagsInclude,
       });
@@ -37,7 +37,7 @@ export const findBlogPostBySlug = cache(
 export const findPublishedBlogSlugs = cache(
   unstable_cache(
     async () => {
-      const items = await prisma.blogPost.findMany({
+      const items = await (await getCachedReadPrisma()).blogPost.findMany({
         where: { isPublished: true },
         select: { slug: true },
         orderBy: { publishedAt: "desc" },

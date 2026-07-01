@@ -4,20 +4,25 @@
  * /admin/users in the dashboard.
  *
  * Usage:
- *   npm run admin:create-user                                          # interactive prompts
- *   npm run admin:create-user -- --email=you@example.com              # prompts for password only
- *   npm run admin:create-user -- --email=you@example.com --password=MyPass123!
- *   npm run admin:create-user -- --email=you@example.com --role=admin  # defaults to super_admin
+ *   npm run admin:create-user -- --d1=local --email=you@example.com --password=MyPass123!
+ *   npm run admin:create-user -- --d1=staging --email=you@example.com
+ *   npm run admin:create-user -- --email=you@example.com              # Postgres if DATABASE_URL set
  *
  * Valid roles: super_admin (default), admin, editor
  *
- * Requires DATABASE_URL in .env or .env.local.
+ * D1 targets use wrangler bindings (--d1=local|staging|remote).
+ * Postgres fallback requires DATABASE_URL in .env or .env.local.
  */
 import { Pool } from "pg";
 import { hash } from "bcryptjs";
 import { createInterface } from "node:readline";
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
+import {
+  disconnectD1Target,
+  initD1Target,
+} from "./migration/d1-target";
+import type { D1Target } from "./migration/cli";
 
 function loadEnvFile(path: string) {
   if (!existsSync(path)) return;
@@ -48,14 +53,13 @@ function parseArg(name: string): string | undefined {
 }
 
 function prompt(question: string, hidden = false): Promise<string> {
-  return new Promise((resolve) => {
+  return new Promise((resolvePrompt) => {
     const rl = createInterface({
       input: process.stdin,
       output: process.stdout,
     });
 
     if (hidden) {
-      // Write question manually; suppress echoed input
       process.stdout.write(question);
       process.stdin.setRawMode?.(true);
       let input = "";
@@ -69,7 +73,7 @@ function prompt(question: string, hidden = false): Promise<string> {
           process.stdin.removeListener("data", onData);
           process.stdout.write("\n");
           rl.close();
-          resolve(input);
+          resolvePrompt(input);
         } else if (ch === "") {
           process.exit();
         } else if (ch === "" || ch === "\b") {
@@ -82,23 +86,20 @@ function prompt(question: string, hidden = false): Promise<string> {
     } else {
       rl.question(question, (answer) => {
         rl.close();
-        resolve(answer.trim());
+        resolvePrompt(answer.trim());
       });
     }
   });
 }
 
-async function main() {
-  loadEnvFile(resolve(process.cwd(), ".env"));
-  loadEnvFile(resolve(process.cwd(), ".env.local"));
+const VALID_ROLES = ["super_admin", "admin", "editor"] as const;
+type ValidRole = (typeof VALID_ROLES)[number];
 
-  const databaseUrl = process.env.DATABASE_URL;
-  if (!databaseUrl) {
-    console.error("ERROR: DATABASE_URL not set in .env or .env.local");
-    process.exit(1);
-  }
-
-  // Resolve email: CLI arg > interactive prompt (no env var fallback)
+async function resolveCredentials(): Promise<{
+  email: string;
+  password: string;
+  role: ValidRole;
+}> {
   let email = parseArg("email");
   if (!email) {
     email = await prompt("Email: ");
@@ -109,9 +110,6 @@ async function main() {
     process.exit(1);
   }
 
-  // Resolve role: CLI arg > default super_admin
-  const VALID_ROLES = ["super_admin", "admin", "editor"] as const;
-  type ValidRole = (typeof VALID_ROLES)[number];
   const roleArg = parseArg("role") as ValidRole | undefined;
   const role: ValidRole = roleArg && VALID_ROLES.includes(roleArg) ? roleArg : "super_admin";
   if (roleArg && !VALID_ROLES.includes(roleArg)) {
@@ -119,7 +117,6 @@ async function main() {
     process.exit(1);
   }
 
-  // Resolve password: CLI arg > interactive prompt (no env var fallback)
   let password = parseArg("password");
   if (!password) {
     password = await prompt("Password: ", true);
@@ -134,7 +131,44 @@ async function main() {
     process.exit(1);
   }
 
-  const passwordHash = await hash(password, 12);
+  return { email, password, role };
+}
+
+async function upsertAdminUserD1(
+  target: D1Target,
+  email: string,
+  passwordHash: string,
+  role: ValidRole
+): Promise<boolean> {
+  const prisma = await initD1Target(target);
+  const existing = await prisma.adminUser.findUnique({ where: { email } });
+
+  if (existing) {
+    await prisma.adminUser.update({
+      where: { email },
+      data: { passwordHash, role },
+    });
+    return false;
+  }
+
+  await prisma.adminUser.create({
+    data: { email, passwordHash, role },
+  });
+  return true;
+}
+
+async function upsertAdminUserPostgres(
+  email: string,
+  passwordHash: string,
+  role: ValidRole
+): Promise<boolean> {
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    console.error(
+      "ERROR: Provide --d1=local|staging|remote or set DATABASE_URL for Postgres fallback."
+    );
+    process.exit(1);
+  }
 
   const url = new URL(databaseUrl);
   const sslMode = url.searchParams.get("sslmode");
@@ -155,15 +189,39 @@ async function main() {
        RETURNING (xmax = 0) AS inserted`,
       [email, passwordHash, role]
     );
-    const inserted = result.rows[0]?.inserted;
-    console.log(`\n${inserted ? "Created" : "Updated"} admin user: ${email} (role: ${role})`);
-    console.log("You can now sign in at http://localhost:3000/admin/login");
+    return Boolean(result.rows[0]?.inserted);
   } finally {
     await pool.end();
   }
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+async function main() {
+  loadEnvFile(resolve(process.cwd(), ".env"));
+  loadEnvFile(resolve(process.cwd(), ".env.local"));
+
+  const d1Arg = parseArg("d1") as D1Target | undefined;
+  if (d1Arg && !["local", "staging", "remote"].includes(d1Arg)) {
+    console.error(`ERROR: Invalid --d1 value "${d1Arg}". Use local, staging, or remote.`);
+    process.exit(1);
+  }
+
+  const { email, password, role } = await resolveCredentials();
+  const passwordHash = await hash(password, 12);
+
+  const inserted = d1Arg
+    ? await upsertAdminUserD1(d1Arg, email, passwordHash, role)
+    : await upsertAdminUserPostgres(email, passwordHash, role);
+
+  console.log(`\n${inserted ? "Created" : "Updated"} admin user: ${email} (role: ${role})`);
+  if (d1Arg) {
+    console.log(`Target: D1 (${d1Arg})`);
+  }
+  console.log("You can now sign in at /admin/login");
+}
+
+main()
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  })
+  .finally(() => disconnectD1Target());

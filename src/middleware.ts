@@ -6,6 +6,7 @@ import { COOKIE_ACCESS_TOKEN, COOKIE_REFRESH_TOKEN } from "@/lib/auth/constants"
 import { sanitizeAdminRedirect } from "@/lib/auth/redirect";
 import { checkAuthGlobalRateLimit, rateLimitExceededResponse } from "@/lib/auth/rate-limit";
 import { D1_BOOKMARK_COOKIE, D1_BOOKMARK_HEADER } from "@/lib/d1/session";
+import { checkWriteFreeze } from "@/lib/freeze-writes";
 
 const LOGIN_PATH = "/admin/login";
 const UNAUTHORIZED_PATH = "/admin/unauthorized";
@@ -65,6 +66,9 @@ function redirectToLogin(request: NextRequest, pathname: string, clearCookies = 
 
 export default async function middleware(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
+
+  const frozen = checkWriteFreeze(request);
+  if (frozen) return frozen;
 
   // Public CMS / contact API routes — forward D1 bookmark only (no admin auth)
   if (pathname.startsWith("/api/") && !pathname.startsWith("/api/auth/")) {

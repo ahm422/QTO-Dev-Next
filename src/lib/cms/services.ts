@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { getCachedReadPrisma } from "@/lib/prisma/cachedRead";
 import { serviceWithTagsInclude } from "@/lib/prisma/serviceData";
 import { mapService } from "./mappers";
 import { mapPrismaToContentService } from "./mapContentService";
@@ -9,7 +9,7 @@ import type { WebDevelopmentServiceData } from "@/content/services/web-developme
 export const findPublishedServices = cache(
   unstable_cache(
     async () => {
-      const items = await prisma.service.findMany({
+      const items = await (await getCachedReadPrisma()).service.findMany({
         where: { isPublished: true },
         orderBy: { order: "asc" },
         include: serviceWithTagsInclude,
@@ -24,7 +24,7 @@ export const findPublishedServices = cache(
 export const findServiceBySlug = cache(
   unstable_cache(
     async (slug: string) => {
-      const item = await prisma.service.findFirst({
+      const item = await (await getCachedReadPrisma()).service.findFirst({
         where: { slug, isPublished: true },
         include: serviceWithTagsInclude,
       });
@@ -38,7 +38,7 @@ export const findServiceBySlug = cache(
 export const findPublishedServiceSlugs = cache(
   unstable_cache(
     async () => {
-      const items = await prisma.service.findMany({
+      const items = await (await getCachedReadPrisma()).service.findMany({
         where: { isPublished: true },
         select: { slug: true },
         orderBy: { order: "asc" },
@@ -53,7 +53,7 @@ export const findPublishedServiceSlugs = cache(
 export const findContentServiceBySlug = cache(
   unstable_cache(
     async (slug: string): Promise<WebDevelopmentServiceData | null> => {
-      const row = await prisma.service.findFirst({
+      const row = await (await getCachedReadPrisma()).service.findFirst({
         where: { slug, isPublished: true },
         include: serviceWithTagsInclude,
       });
