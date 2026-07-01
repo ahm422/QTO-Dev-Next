@@ -38,3 +38,15 @@ crons = ["0 3 * * *"]
 binding = "HYPERDRIVE"
 id = "00000000000000000000000000000000"
 localConnectionString = "postgresql://postgres:postgres@localhost:5432/qtodev"
+
+# D1 (Workers runtime). Apply schema: wrangler d1 migrations apply qtodev-d1 --remote
+# Local dev: wrangler d1 migrations apply qtodev-d1 --local
+[[d1_databases]]
+binding = "DB"
+database_name = "qtodev-d1"
+database_id = "YOUR_D1_DATABASE_ID"
+migrations_dir = "./migrations/d1"
+
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "qtodev-media"

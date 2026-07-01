@@ -150,6 +150,8 @@ Copy from `.env.example` / `.dev.vars.example` into the Cloudflare dashboard (Pr
 | Variable | Notes |
 |----------|--------|
 | `HYPERDRIVE` | Production DB access via [`wrangler.toml`](wrangler.toml) — create with [`scripts/create-hyperdrive.sh`](scripts/create-hyperdrive.sh) |
+| `DB` | D1 database (`qtodev-d1`) — provisioned; app uses in Phase 3+ ([docs/d1-provisioning.md](docs/d1-provisioning.md)) |
+| `MEDIA` | R2 bucket (`qtodev-media`) — provisioned; app uses in Phase 3+ |
 | `DIRECT_URL` | Local/CI only — `prisma migrate` and seed scripts |
 
 CLI: `wrangler secret put JWT_ACCESS_SECRET` (repeat per secret). Verify: `npm run secrets:verify`.
@@ -195,6 +197,10 @@ Or pass a full URL: `export HYPERDRIVE_ORIGIN_URL='postgresql://...'` then `./sc
 After Hyperdrive is verified in production, remove `DATABASE_URL` from Workers → Variables and Secrets. Keep `DATABASE_URL` / `DIRECT_URL` in `.env` for local dev and Prisma CLI.
 
 Do **not** set `export const runtime = "edge"` on Prisma routes — [not supported by OpenNext on Cloudflare](https://opennext.js.org/cloudflare/get-started).
+
+### D1 + R2 (migration in progress)
+
+D1 (`DB`) and R2 (`MEDIA`) bindings are provisioned in [`wrangler.toml`](wrangler.toml) for the Postgres → D1 migration. **Production still reads/writes via Hyperdrive** until cutover (Phase 7). Provisioning commands, migration apply, and verification: [docs/d1-provisioning.md](docs/d1-provisioning.md).
 
 ### Optional: ISR / revalidation cache
 
