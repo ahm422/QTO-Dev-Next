@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-const ENV_FILES = [".env", ".env.local", ".env.migrate"];
+const ENV_FILES = [".env", ".env.local"];
 
 function loadEnvFile(path: string) {
   if (!existsSync(path)) return;
@@ -25,20 +25,12 @@ function loadEnvFile(path: string) {
   }
 }
 
-/** Load .env, .env.local, and .env.migrate from project root. */
+/** Load .env and .env.local from project root. */
 export function loadMigrationEnv() {
   const root = process.cwd();
   for (const file of ENV_FILES) {
     loadEnvFile(resolve(root, file));
   }
-}
-
-export function requireDatabaseUrl(): string {
-  const url = process.env.DATABASE_URL ?? process.env.DIRECT_URL;
-  if (!url) {
-    throw new Error("DATABASE_URL or DIRECT_URL is required in .env or .env.migrate");
-  }
-  return url;
 }
 
 export function requireGarageEnv() {

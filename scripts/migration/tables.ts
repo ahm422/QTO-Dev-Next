@@ -101,26 +101,22 @@ export const MIGRATION_ORDER: TableName[] = [
 /** Reverse order for wipe (children first). */
 export const WIPE_ORDER: TableName[] = [...MIGRATION_ORDER].reverse();
 
-/** Derived join-table checks: Postgres array sum vs D1 join row count. */
+/** Derived join-table checks: snapshot expected vs D1 join row count. */
 export const DERIVED_JOIN_CHECKS = [
   {
     name: "service_technology_tags",
-    pgSql: `SELECT COALESCE(SUM(cardinality(technology_tags)), 0)::int AS total FROM services`,
     d1Table: "service_technology_tags" as TableName,
   },
   {
     name: "blog_post_tags",
-    pgSql: `SELECT COALESCE(SUM(cardinality(tags)), 0)::int AS total FROM blog_posts`,
     d1Table: "blog_post_tags" as TableName,
   },
   {
     name: "project_tags",
-    pgSql: `SELECT COALESCE(SUM(cardinality(tags)), 0)::int AS total FROM projects`,
     d1Table: "project_tags" as TableName,
   },
   {
     name: "project_tech_stack_items",
-    pgSql: `SELECT COALESCE(SUM(cardinality(tech_stack)), 0)::int AS total FROM projects`,
     d1Table: "project_tech_stack_items" as TableName,
   },
 ] as const;

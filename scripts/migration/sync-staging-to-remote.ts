@@ -1,6 +1,6 @@
 /**
  * Push local staging D1 data to remote qtodev-d1-staging.
- * Use after `npm run migrate:to-d1 -- --d1=staging` when getPlatformProxy cannot reach remote D1.
+ * Use after staging D1 is populated when getPlatformProxy cannot reach remote D1.
  *
  * Usage:
  *   npx tsx scripts/migration/sync-staging-to-remote.ts

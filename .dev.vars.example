@@ -1,15 +1,8 @@
 # Wrangler local dev (copy to .dev.vars and fill in values).
 # https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
+# D1 database comes from the DB binding in wrangler.toml (apply: npm run d1:migrate:local).
 
 NEXTJS_ENV=development
-
-# Fallback when HYPERDRIVE binding is unavailable in preview (local Postgres or remote URL)
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/qtodev
-
-# Prisma CLI only (migrations); optional in .dev.vars
-DIRECT_URL=postgresql://postgres:postgres@localhost:5432/qtodev
-
-PGSSL_REJECT_UNAUTHORIZED=false
 
 # JWT signing secret for custom auth. Generate: openssl rand -hex 64
 JWT_ACCESS_SECRET=replace-with-64-char-hex-secret

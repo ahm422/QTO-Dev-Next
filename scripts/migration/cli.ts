@@ -1,5 +1,4 @@
 export type D1Target = "local" | "staging" | "remote";
-export type DataSource = "postgres" | "d1";
 
 export interface MigrationCliOptions {
   dryRun: boolean;
@@ -9,7 +8,6 @@ export interface MigrationCliOptions {
   force: boolean;
   sample: number;
   checkUrls: boolean;
-  source: DataSource;
   out?: string;
   snapshot?: string;
 }
@@ -32,7 +30,6 @@ function hasFlag(name: string): boolean {
 
 export function parseMigrationCli(defaults?: Partial<MigrationCliOptions>): MigrationCliOptions {
   const d1Arg = parseArg("d1") as D1Target | undefined;
-  const sourceArg = parseArg("source") as DataSource | undefined;
   const sampleArg = parseArg("sample");
 
   return {
@@ -43,7 +40,6 @@ export function parseMigrationCli(defaults?: Partial<MigrationCliOptions>): Migr
     force: hasFlag("force"),
     sample: sampleArg ? Number.parseInt(sampleArg, 10) : (defaults?.sample ?? 10),
     checkUrls: hasFlag("check-urls"),
-    source: sourceArg ?? defaults?.source ?? "d1",
     out: parseArg("out"),
     snapshot: parseArg("snapshot"),
   };
