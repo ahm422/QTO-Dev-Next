@@ -1,6 +1,5 @@
 import type {
   AboutContent,
-  BlogPost as PrismaBlogPost,
   ContactInfo,
   EngagementModel as PrismaEngagementModel,
   Faq as PrismaFaq,
@@ -8,7 +7,6 @@ import type {
   Industry,
   Job as PrismaJob,
   ProcessStep,
-  Project as PrismaProject,
   Service as PrismaService,
   SiteConfig,
   Stat,
@@ -31,6 +29,11 @@ import type { StatsNumbersItem, StatsNumbersVariant } from "@/types/statsNumbers
 import type { TestimonialItem } from "@/types/testimonials";
 import type { WhyChooseUsItem } from "@/types/whyChooseUs";
 import type { LeadershipMember } from "@/types/leadership";
+import type { BlogPostWithTags } from "@/lib/prisma/blogPostData";
+import type { ProjectWithRelations } from "@/lib/prisma/projectData";
+import type { ServiceWithTags } from "@/lib/prisma/serviceData";
+import { orderedTagValues, parseStringArray } from "@/lib/prisma/arrayFields";
+import { parseMetadata } from "@/lib/metadata";
 import { defaultSiteBranding } from "@/config/site";
 
 const PORTFOLIO_GRADIENTS: PortfolioGradientKey[] = [
@@ -53,7 +56,7 @@ const INDUSTRY_ICONS: IndustryIconKey[] = [
   "chart",
 ];
 
-export function mapService(row: PrismaService): Service {
+export function mapService(row: ServiceWithTags): Service {
   return {
     id: row.id,
     slug: row.slug,
@@ -61,8 +64,8 @@ export function mapService(row: PrismaService): Service {
     shortDescription: row.shortDescription,
     description: row.description,
     icon: row.icon,
-    features: row.features,
-    technologyTags: row.technologyTags,
+    features: parseStringArray(row.features),
+    technologyTags: orderedTagValues(row.technologyTags),
     image: row.imageUrl ?? undefined,
     imageAlt: row.imageAlt ?? undefined,
   };
@@ -78,6 +81,7 @@ export function mapProcessStep(row: ProcessStep): WorkProcessStep {
 }
 
 export function mapFeaturedWork(row: FeaturedWork, index: number): FeaturedWorkItem {
+  const tags = parseStringArray(row.tags);
   const slug =
     row.link?.replace(/^\/projects\//, "").replace(/^\//, "") ?? row.id;
   const caseNumber = String(row.order || index + 1).padStart(2, "0");
@@ -85,7 +89,7 @@ export function mapFeaturedWork(row: FeaturedWork, index: number): FeaturedWorkI
     id: row.id,
     caseNumber,
     title: row.title,
-    category: row.tags[0] ?? "PROJECT",
+    category: tags[0] ?? "PROJECT",
     description: row.description,
     slug,
     image: row.imageUrl ?? "",
@@ -149,7 +153,7 @@ export function mapEngagementModel(row: PrismaEngagementModel): EngagementModel 
     optionNumber: `OPTION ${row.number}`,
     title: row.title,
     description: row.description,
-    features: row.features,
+    features: parseStringArray(row.features),
     isPopular: row.isMostPopular,
     getStartedHref: row.ctaLink,
   };
@@ -162,7 +166,7 @@ export function mapFaq(row: PrismaFaq): Faq {
   };
 }
 
-export function mapBlogPost(row: PrismaBlogPost): BlogPost {
+export function mapBlogPost(row: BlogPostWithTags): BlogPost {
   const publishedAt = row.publishedAt?.toISOString().slice(0, 10) ?? row.createdAt.toISOString().slice(0, 10);
   return {
     id: row.id,
@@ -176,7 +180,7 @@ export function mapBlogPost(row: PrismaBlogPost): BlogPost {
     updatedAt: row.updatedAt.toISOString().slice(0, 10),
     featured: row.isFeatured,
     category: row.category,
-    tags: row.tags,
+    tags: orderedTagValues(row.tags),
     image: row.imageUrl ?? undefined,
     coverImage: row.imageUrl
       ? { url: row.imageUrl, alt: row.imageAlt ?? row.title }
@@ -194,7 +198,7 @@ export function mapTechnology(row: Technology) {
   };
 }
 
-export function mapProject(row: PrismaProject): Project {
+export function mapProject(row: ProjectWithRelations): Project {
   return {
     id: row.id,
     slug: row.slug,
@@ -204,8 +208,8 @@ export function mapProject(row: PrismaProject): Project {
     image: row.coverImageUrl ?? undefined,
     featured: row.isFeatured,
     category: row.category,
-    tags: row.tags,
-    technologies: row.techStack,
+    tags: orderedTagValues(row.tags),
+    technologies: orderedTagValues(row.techStack),
     link: row.liveUrl ?? undefined,
     caseStudy: Boolean(row.challenge || row.solution),
   };
@@ -221,6 +225,7 @@ export function mapWorkValue(row: WorkValue) {
 }
 
 export function mapJob(row: PrismaJob): Job {
+  const niceToHave = parseStringArray(row.niceToHave);
   return {
     id: row.id,
     title: row.title,
@@ -229,8 +234,8 @@ export function mapJob(row: PrismaJob): Job {
     employmentType: row.type,
     applyUrl: row.applyUrl ?? "#",
     description: row.description,
-    requirements: row.requirements,
-    tags: row.niceToHave.length > 0 ? row.niceToHave : undefined,
+    requirements: parseStringArray(row.requirements),
+    tags: niceToHave.length > 0 ? niceToHave : undefined,
     postedLabel: row.postedAt
       ? `Posted ${row.postedAt.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`
       : undefined,
@@ -267,7 +272,7 @@ export function mapTeamMember(row: TeamMember): LeadershipMember {
 }
 
 export function mapProjectToPortfolioCase(
-  row: PrismaProject,
+  row: ProjectWithRelations,
   index: number
 ): PortfolioCase {
   const initial = (row.client ?? row.title).charAt(0).toUpperCase();
@@ -301,14 +306,15 @@ export function buildAboutPageContent(
 ): AboutPageContent | null {
   if (sections.length === 0) return null;
   const bySection = Object.fromEntries(sections.map((s) => [s.section, s]));
-  const heroMeta = bySection.hero?.metadata as
-    | { founded?: number; team?: number; clients?: number; projects?: number }
-    | null
-    | undefined;
-  const valuesMeta = bySection.values?.metadata as
-    | { values?: { title: string; description: string }[] }
-    | null
-    | undefined;
+  const heroMeta = parseMetadata<{
+    founded?: number;
+    team?: number;
+    clients?: number;
+    projects?: number;
+  }>(bySection.hero?.metadata);
+  const valuesMeta = parseMetadata<{
+    values?: { title: string; description: string }[];
+  }>(bySection.values?.metadata);
 
   return {
     mission: bySection.mission?.body ?? "",

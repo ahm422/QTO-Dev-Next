@@ -5,10 +5,12 @@ import StatusBadge from "@/components/admin/data/StatusBadge"
 import CategoryBadge from "@/components/admin/data/CategoryBadge"
 import { type AdminTableColumn } from "@/components/admin/AdminTable"
 import { deleteProject, reorderProjects, toggleProjectPublished } from "./actions"
-import type { Project } from "@prisma/client"
+import type { ProjectInput } from "@/lib/validators/admin/project"
 import { FolderOpen } from "lucide-react"
 
-const columns: AdminTableColumn<Project>[] = [
+type ProjectTableRow = ProjectInput & { id: string }
+
+const columns: AdminTableColumn<ProjectTableRow>[] = [
   { key: "order", label: "#", render: (r) => <span className="text-muted-foreground text-xs tabular-nums">{r.order}</span> },
   {
     key: "title",
@@ -24,7 +26,7 @@ const columns: AdminTableColumn<Project>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function ProjectsTable({ rows, canDelete, canCreate }: { rows: Project[] ; canDelete?: boolean; canCreate?: boolean }) {
+export default function ProjectsTable({ rows, canDelete, canCreate }: { rows: ProjectTableRow[] ; canDelete?: boolean; canCreate?: boolean }) {
   return (
     <DataTable
       columns={columns}

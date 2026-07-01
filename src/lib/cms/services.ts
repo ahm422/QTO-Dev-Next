@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { serviceWithTagsInclude } from "@/lib/prisma/serviceData";
 import { mapService } from "./mappers";
 import { mapPrismaToContentService } from "./mapContentService";
 import type { WebDevelopmentServiceData } from "@/content/services/web-development";
@@ -11,6 +12,7 @@ export const findPublishedServices = cache(
       const items = await prisma.service.findMany({
         where: { isPublished: true },
         orderBy: { order: "asc" },
+        include: serviceWithTagsInclude,
       });
       return items.map(mapService);
     },
@@ -24,6 +26,7 @@ export const findServiceBySlug = cache(
     async (slug: string) => {
       const item = await prisma.service.findFirst({
         where: { slug, isPublished: true },
+        include: serviceWithTagsInclude,
       });
       return item ? mapService(item) : null;
     },
@@ -52,6 +55,7 @@ export const findContentServiceBySlug = cache(
     async (slug: string): Promise<WebDevelopmentServiceData | null> => {
       const row = await prisma.service.findFirst({
         where: { slug, isPublished: true },
+        include: serviceWithTagsInclude,
       });
       return row ? mapPrismaToContentService(row) : null;
     },

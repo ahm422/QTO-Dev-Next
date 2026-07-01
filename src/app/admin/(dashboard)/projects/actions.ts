@@ -7,21 +7,25 @@ import { projectSchema, type ProjectInput } from "@/lib/validators/admin/project
 import { revalidatePaths } from "@/lib/revalidate"
 import { projectPaths } from "@/lib/revalidate-paths"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
+import {
+  toPrismaProjectCreateData,
+  toPrismaProjectUpdateData,
+} from "@/lib/prisma/projectData"
 
 
 export async function createProject(data: ProjectInput) {
   await requireCreateAction()
-  const { completedAt, ...rest } = projectSchema.parse(data)
-  await prisma.project.create({ data: { ...rest, completedAt: completedAt ? new Date(completedAt) : null } })
-  revalidatePaths([...projectPaths(rest.slug)])
+  const parsed = projectSchema.parse(data)
+  await prisma.project.create({ data: toPrismaProjectCreateData(parsed) })
+  revalidatePaths([...projectPaths(parsed.slug)])
   redirect("/admin/projects")
 }
 
 export async function updateProject(id: string, data: ProjectInput) {
   await requireAdminAction()
-  const { completedAt, ...rest } = projectSchema.parse(data)
-  await prisma.project.update({ where: { id }, data: { ...rest, completedAt: completedAt ? new Date(completedAt) : null } })
-  revalidatePaths([...projectPaths(rest.slug)])
+  const parsed = projectSchema.parse(data)
+  await prisma.project.update({ where: { id }, data: toPrismaProjectUpdateData(parsed) })
+  revalidatePaths([...projectPaths(parsed.slug)])
   redirect("/admin/projects")
 }
 

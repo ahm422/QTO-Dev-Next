@@ -13,9 +13,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { createFeaturedWork, updateFeaturedWork } from "../actions"
-import type { FeaturedWork } from "@prisma/client"
+import type { FeaturedWorkInput } from "@/lib/validators/admin/featuredWork"
 
-export default function FeaturedWorkForm({ defaultValues }: { defaultValues?: FeaturedWork }) {
+export default function FeaturedWorkForm({ defaultValues }: { defaultValues?: FeaturedWorkInput & { id?: string } }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<FeaturedWorkInput>({
     resolver: formResolver(featuredWorkSchema),

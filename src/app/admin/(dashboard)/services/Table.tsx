@@ -5,10 +5,12 @@ import StatusBadge from "@/components/admin/data/StatusBadge"
 import CategoryBadge from "@/components/admin/data/CategoryBadge"
 import { type AdminTableColumn } from "@/components/admin/AdminTable"
 import { deleteService, reorderServices, toggleServicePublished } from "./actions"
-import type { Service } from "@prisma/client"
+import type { ServiceInput } from "@/lib/validators/admin/service"
 import { Briefcase } from "lucide-react"
 
-const columns: AdminTableColumn<Service>[] = [
+type ServiceTableRow = ServiceInput & { id: string; createdAt?: Date; updatedAt?: Date }
+
+const columns: AdminTableColumn<ServiceTableRow>[] = [
   { key: "order", label: "#", render: (r) => <span className="text-muted-foreground text-xs tabular-nums">{r.order}</span> },
   { key: "title", label: "Service", render: (r) => (
     <div>
@@ -23,18 +25,18 @@ const columns: AdminTableColumn<Service>[] = [
     label: "Tags",
     render: (r) => (
       <div className="flex flex-wrap gap-1">
-        {(r.technologyTags as string[]).slice(0, 3).map((t) => (
+        {r.technologyTags.slice(0, 3).map((t) => (
           <CategoryBadge key={t} category={t} />
         ))}
-        {(r.technologyTags as string[]).length > 3 && (
-          <span className="text-xs text-muted-foreground">+{(r.technologyTags as string[]).length - 3}</span>
+        {r.technologyTags.length > 3 && (
+          <span className="text-xs text-muted-foreground">+{r.technologyTags.length - 3}</span>
         )}
       </div>
     ),
   },
 ]
 
-export default function ServicesTable({ rows, canDelete, canCreate }: { rows: Service[] ; canDelete?: boolean; canCreate?: boolean }) {
+export default function ServicesTable({ rows, canDelete, canCreate }: { rows: ServiceTableRow[] ; canDelete?: boolean; canCreate?: boolean }) {
   return (
     <DataTable
       columns={columns}

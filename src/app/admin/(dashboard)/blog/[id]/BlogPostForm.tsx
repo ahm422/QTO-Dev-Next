@@ -14,27 +14,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { createBlogPost, updateBlogPost } from "../actions"
-import type { BlogPost } from "@prisma/client"
 
 function slugify(s: string) { return s.toLowerCase().trim().replace(/[^a-z0-9\s-]/g,"").replace(/\s+/g,"-").replace(/-+/g,"-") }
-
-function toFormValues(record: BlogPost): BlogPostInput {
-  return {
-    title: record.title,
-    slug: record.slug,
-    excerpt: record.excerpt,
-    content: record.content,
-    category: record.category,
-    tags: record.tags,
-    author: record.author,
-    imageUrl: record.imageUrl ?? "",
-    imageAlt: record.imageAlt ?? "",
-    readTime: record.readTime ?? undefined,
-    isFeatured: record.isFeatured,
-    isHeadline: record.isHeadline,
-    isPublished: record.isPublished,
-  }
-}
 
 const emptyDefaults: BlogPostInput = {
   title: "",
@@ -52,17 +33,17 @@ const emptyDefaults: BlogPostInput = {
   isPublished: false,
 }
 
-export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPost }) {
+export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPostInput & { id?: string } }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<BlogPostInput>({
     resolver: formResolver(blogPostSchema),
-    defaultValues: defaultValues ? toFormValues(defaultValues) : emptyDefaults,
+    defaultValues: defaultValues ?? emptyDefaults,
   })
   const { isSubmitting } = form.formState
 
   async function onSubmit(data: BlogPostInput) {
     try {
-      if (isEdit) await updateBlogPost(defaultValues.id, data)
+      if (isEdit && defaultValues?.id) await updateBlogPost(defaultValues.id, data)
       else await createBlogPost(data)
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")

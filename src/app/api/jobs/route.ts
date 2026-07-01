@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { apiSuccess } from "@/lib/apiResponses";
 import { handleRouteError } from "@/lib/api/handleRouteError";
+import { fromPrismaJob } from "@/lib/prisma/jsonModelData";
 
 export async function GET() {
   try {
@@ -8,7 +9,7 @@ export async function GET() {
       where: { isPublished: true },
       orderBy: { createdAt: "desc" },
     });
-    return apiSuccess({ items });
+    return apiSuccess({ items: items.map(fromPrismaJob) });
   } catch (e) {
     return handleRouteError("GET /api/jobs", e);
   }

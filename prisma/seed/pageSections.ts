@@ -1,3 +1,4 @@
+import { stringifyMetadata } from "@/lib/metadata";
 import { prisma } from "./helpers";
 
 const sections: { slug: string; label: string; data: Record<string, unknown> }[] = [
@@ -517,8 +518,8 @@ export async function seedPageSections() {
   for (const section of sections) {
     await prisma.pageSection.upsert({
       where: { slug: section.slug },
-      create: { slug: section.slug, label: section.label, data: section.data, isPublished: true },
-      update: { label: section.label, data: section.data },
+      create: { slug: section.slug, label: section.label, data: stringifyMetadata(section.data) ?? "{}", isPublished: true },
+      update: { label: section.label, data: stringifyMetadata(section.data) ?? "{}" },
     });
   }
   console.log(`  ✓ ${sections.length} page sections seeded`);

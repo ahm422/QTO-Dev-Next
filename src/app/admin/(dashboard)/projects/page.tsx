@@ -2,6 +2,7 @@ import { getServerSession } from "@/lib/auth/session"
 import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
+import { fromPrismaProject, projectWithRelationsInclude } from "@/lib/prisma/projectData"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import AdminContentContext from "@/components/admin/layout/AdminContentContext"
 import ProjectsTable from "./Table"
@@ -10,7 +11,7 @@ export default async function ProjectsPage() {
   const session = await getServerSession()
   if (!["super_admin", "admin", "editor"].includes(session?.user?.role ?? "")) redirect("/admin/unauthorized")
   const role = session?.user?.role ?? ""
-  const rows = await prisma.project.findMany({ orderBy: { order: "asc" } })
+  const rows = await prisma.project.findMany({ orderBy: { order: "asc" }, include: projectWithRelationsInclude })
   return (
     <div className="space-y-6">
       <AdminPageHeader
@@ -28,7 +29,7 @@ export default async function ProjectsPage() {
         description="Listed on /projects; featured items may also appear in the homepage portfolio strip."
         component="PortfolioSection + ProjectsGridSection in src/app/(qtodev)/projects/"
       />
-      <ProjectsTable rows={rows}
+      <ProjectsTable rows={rows.map(fromPrismaProject)}
         canDelete={roleCanDeleteContent(role as AdminRole)}
         canCreate={roleCanCreateContent(role as AdminRole)}
       />

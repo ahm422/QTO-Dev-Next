@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma"
-import { Prisma } from "@prisma/client"
+import { stringifyMetadata } from "@/lib/metadata"
 import type { JobApplicationInput } from "@/lib/validators/jobApplication"
 
 export type CreateJobApplicationInput = JobApplicationInput & {
@@ -7,7 +7,7 @@ export type CreateJobApplicationInput = JobApplicationInput & {
   referrer?: string | null
   userAgent?: string | null
   ip?: string | null
-  metadata?: Prisma.InputJsonValue | null
+  metadata?: Record<string, unknown> | null
 }
 
 export async function createJobApplication(input: CreateJobApplicationInput) {
@@ -25,7 +25,7 @@ export async function createJobApplication(input: CreateJobApplicationInput) {
       referrer: input.referrer ?? null,
       userAgent: input.userAgent ?? null,
       ip: input.ip ?? null,
-      metadata: input.metadata ?? Prisma.DbNull,
+      metadata: stringifyMetadata(input.metadata),
     },
     select: { id: true },
   })

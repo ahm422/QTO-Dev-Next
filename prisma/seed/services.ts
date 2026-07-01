@@ -1,5 +1,10 @@
 import { services } from "@/data/services";
 import { webDevelopmentServiceData } from "@/content/services/web-development";
+import {
+  createOrderedChildren,
+  replaceOrderedChildren,
+  stringifyStringArray,
+} from "@/lib/prisma/arrayFields";
 import { prisma } from "./helpers";
 
 export async function seedServices() {
@@ -15,6 +20,9 @@ export async function seedServices() {
       shortDescription = webDevelopmentServiceData.subheadline;
     }
 
+    const tags = s.technologyTags ?? [];
+    const featuresJson = stringifyStringArray(features);
+
     await prisma.service.upsert({
       where: { slug: s.slug },
       create: {
@@ -23,8 +31,8 @@ export async function seedServices() {
         shortDescription,
         description,
         icon: s.icon,
-        features,
-        technologyTags: s.technologyTags ?? [],
+        features: featuresJson,
+        technologyTags: createOrderedChildren(tags),
         imageUrl: s.image ?? null,
         imageAlt: s.imageAlt ?? null,
         order: i,
@@ -35,8 +43,8 @@ export async function seedServices() {
         shortDescription,
         description,
         icon: s.icon,
-        features,
-        technologyTags: s.technologyTags ?? [],
+        features: featuresJson,
+        technologyTags: replaceOrderedChildren(tags),
         imageUrl: s.image ?? null,
         imageAlt: s.imageAlt ?? null,
         order: i,

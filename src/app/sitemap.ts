@@ -1,17 +1,22 @@
 import { MetadataRoute } from 'next';
-import { findPublishedServiceSlugs } from '@/lib/cms/services';
-import { findPublishedProjectSlugs } from '@/lib/cms/projects';
-import { findPublishedBlogSlugs } from '@/lib/cms/blog';
+import {
+  findPublishedBlogSlugsForBuild,
+  findPublishedProjectSlugsForBuild,
+  findPublishedServiceSlugsForBuild,
+} from '@/lib/prisma/buildTimePrisma';
 
 export const revalidate = 3600;
+
+// CMS-driven; generated at the edge with D1 (not at compile time).
+export const dynamic = 'force-dynamic';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://qtodev.com';
 
   const [serviceSlugs, projectSlugs, blogSlugs] = await Promise.all([
-    findPublishedServiceSlugs(),
-    findPublishedProjectSlugs(),
-    findPublishedBlogSlugs(),
+    findPublishedServiceSlugsForBuild(),
+    findPublishedProjectSlugsForBuild(),
+    findPublishedBlogSlugsForBuild(),
   ]);
 
   const mainPages = [

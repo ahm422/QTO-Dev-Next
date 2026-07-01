@@ -12,9 +12,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { createEngagementModel, updateEngagementModel } from "../actions"
-import type { EngagementModel } from "@prisma/client"
+import type { EngagementModelInput } from "@/lib/validators/admin/engagementModel"
 
-export default function EngagementModelForm({ defaultValues }: { defaultValues?: EngagementModel }) {
+export default function EngagementModelForm({ defaultValues }: { defaultValues?: EngagementModelInput & { id?: string } }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<EngagementModelInput>({
     resolver: formResolver(engagementModelSchema),

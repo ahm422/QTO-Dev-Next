@@ -1,5 +1,5 @@
-import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { stringifyMetadata } from "@/lib/metadata";
 import type { AuditAction } from "@/lib/auth/auditActions";
 
 interface AuditLogInput {
@@ -20,7 +20,7 @@ export async function writeAuditLog(input: AuditLogInput): Promise<void> {
         action: input.action,
         ip: input.ip ?? null,
         userAgent: input.userAgent ?? null,
-        metadata: input.metadata as Prisma.InputJsonValue | undefined,
+        metadata: stringifyMetadata(input.metadata),
       },
     });
   } catch (err) {

@@ -45,7 +45,7 @@ export function buildMediaKey(filename: string): string {
 }
 
 export function getPublicUrl(key: string): string {
-  const publicBase = process.env.GARAGE_PUBLIC_URL!.replace(/\/$/, "")
+  const publicBase = process.env.R2_PUBLIC_URL!.replace(/\/$/, "")
   return `${publicBase}/${key}`
 }
 
@@ -102,17 +102,23 @@ async function getSigningKey(
   return hmacSHA256(kService, "aws4_request")
 }
 
+/** Normalize dashboard-copied endpoint (may include /bucket suffix) to S3 API base URL. */
+function normalizeR2S3Endpoint(raw: string, bucket: string): string {
+  const trimmed = raw.replace(/\/$/, "");
+  const bucketSuffix = `/${bucket}`;
+  return trimmed.endsWith(bucketSuffix) ? trimmed.slice(0, -bucketSuffix.length) : trimmed;
+}
+
 export async function getPresignedUploadUrl(
   key: string,
   contentType: string,
 ): Promise<{ presignedUrl: string; publicUrl: string }> {
-  const endpoint = process.env.GARAGE_ENDPOINT!
-  const accessKeyId = process.env.GARAGE_ACCESS_KEY_ID!
-  const secretAccessKey = process.env.GARAGE_SECRET_ACCESS_KEY!
-  const bucket =
-    process.env.GARAGE_BUCKET_NAME ?? process.env.GARAGE_BUCKET ?? ""
+  const bucket = process.env.R2_BUCKET_NAME ?? "qtodev-media";
+  const endpoint = normalizeR2S3Endpoint(process.env.R2_S3_ENDPOINT!, bucket);
+  const accessKeyId = process.env.R2_ACCESS_KEY_ID!;
+  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY!;
 
-  const region = process.env.GARAGE_REGION ?? "garage"
+  const region = process.env.R2_REGION ?? "auto"
   const service = "s3"
   const expiresIn = 300
 

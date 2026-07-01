@@ -1,32 +1,42 @@
-import "dotenv/config";
+import { getPlatformProxy } from "wrangler";
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
+import { PrismaD1 } from "@prisma/adapter-d1";
 
-function getPoolConnectionString() {
-  const databaseUrl = process.env.DATABASE_URL;
-  if (!databaseUrl) return databaseUrl;
+let prismaInstance: PrismaClient | undefined;
+let disposeProxy: (() => Promise<void>) | undefined;
 
-  const rejectUnauthorized = process.env.PGSSL_REJECT_UNAUTHORIZED === "true";
-  const url = new URL(databaseUrl);
-  const sslMode = url.searchParams.get("sslmode");
-  const usesTls =
-    sslMode === "require" || sslMode === "verify-ca" || sslMode === "verify-full";
+/** Initialize D1-backed Prisma for seed scripts. Call once at the start of main(). */
+export async function initSeedPrisma(): Promise<PrismaClient> {
+  if (prismaInstance) return prismaInstance;
 
-  if (!usesTls || rejectUnauthorized) return databaseUrl;
+  const { env, dispose } = await getPlatformProxy<CloudflareEnv>({
+    configPath: "./wrangler.toml",
+  });
+  disposeProxy = dispose;
 
-  url.searchParams.set("sslmode", "no-verify");
-  return url.toString();
+  if (!env.DB) {
+    throw new Error(
+      "D1 binding (DB) not found. Run `wrangler d1 migrations apply qtodev-d1 --local` first."
+    );
+  }
+
+  prismaInstance = new PrismaClient({ adapter: new PrismaD1(env.DB) });
+  prisma = prismaInstance;
+  return prismaInstance;
 }
 
-const pool = new Pool({ connectionString: getPoolConnectionString() });
-const adapter = new PrismaPg(pool);
-
-export const prisma = new PrismaClient({ adapter });
+/** Prisma client — available after initSeedPrisma() has been awaited. */
+export let prisma: PrismaClient;
 
 export async function disconnect() {
-  await prisma.$disconnect();
-  await pool.end();
+  if (prismaInstance) {
+    await prismaInstance.$disconnect();
+    prismaInstance = undefined;
+  }
+  if (disposeProxy) {
+    await disposeProxy();
+    disposeProxy = undefined;
+  }
 }
 
 export function slugify(name: string): string {

@@ -6,6 +6,10 @@ import { redirect } from "next/navigation"
 import { blogPostSchema, type BlogPostInput } from "@/lib/validators/admin/blogPost"
 import { revalidatePaths } from "@/lib/revalidate"
 import { blogPaths } from "@/lib/revalidate-paths"
+import {
+  toPrismaBlogPostCreateData,
+  toPrismaBlogPostUpdateData,
+} from "@/lib/prisma/blogPostData"
 
 
 export async function createBlogPost(data: BlogPostInput) {
@@ -13,7 +17,7 @@ export async function createBlogPost(data: BlogPostInput) {
   const parsed = blogPostSchema.parse(data)
   await prisma.blogPost.create({
     data: {
-      ...parsed,
+      ...toPrismaBlogPostCreateData(parsed),
       publishedAt: parsed.isPublished ? new Date() : null,
     },
   })
@@ -28,7 +32,10 @@ export async function updateBlogPost(id: string, data: BlogPostInput) {
   const publishedAt = parsed.isPublished && !existing?.publishedAt ? new Date() : existing?.publishedAt ?? null
   await prisma.blogPost.update({
     where: { id },
-    data: { ...parsed, publishedAt },
+    data: {
+      ...toPrismaBlogPostUpdateData(parsed),
+      publishedAt,
+    },
   })
   revalidatePaths([...blogPaths(parsed.slug)])
   redirect("/admin/blog")

@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { parseMetadata } from "@/lib/metadata";
 
 export const findPageSection = cache(
   unstable_cache(
@@ -8,7 +9,7 @@ export const findPageSection = cache(
       const row = await prisma.pageSection.findUnique({
         where: { slug, isPublished: true },
       });
-      return row?.data ?? null;
+      return row ? parseMetadata(row.data) : null;
     },
     ["page-section"],
     { revalidate: 3600, tags: ["page-sections"] }

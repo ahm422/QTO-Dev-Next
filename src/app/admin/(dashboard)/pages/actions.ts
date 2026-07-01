@@ -2,9 +2,14 @@
 
 import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
+import { stringifyMetadata } from "@/lib/metadata"
 import { revalidatePaths } from "@/lib/revalidate"
 import { pageSectionPaths } from "@/lib/revalidate-paths"
 import { redirect } from "next/navigation"
+
+function pageSectionDataString(data: object): string {
+  return stringifyMetadata(data) ?? "{}"
+}
 async function invalidate(slug: string) {
   revalidatePaths(pageSectionPaths(slug))
 }
@@ -13,7 +18,7 @@ export async function updatePageSection(slug: string, data: object, isPublished:
   await requireAdminAction()
   await prisma.pageSection.update({
     where: { slug },
-    data: { data: data as never, isPublished, label },
+    data: { data: pageSectionDataString(data), isPublished, label },
   })
   await invalidate(slug)
   redirect("/admin/pages")
@@ -27,7 +32,7 @@ export async function togglePageSectionPublished(slug: string, value: boolean) {
 
 export async function createPageSection(slug: string, label: string, data: object) {
   await requireCreateAction()
-  await prisma.pageSection.create({ data: { slug, label, data: data as never, isPublished: true } })
+  await prisma.pageSection.create({ data: { slug, label, data: pageSectionDataString(data), isPublished: true } })
   await invalidate(slug)
   redirect("/admin/pages")
 }

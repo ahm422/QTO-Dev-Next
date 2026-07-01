@@ -7,13 +7,14 @@ import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { jobSchema } from "@/lib/validators/admin/job";
+import { fromPrismaJob, toPrismaJobData } from "@/lib/prisma/jsonModelData";
 
 export async function GET() {
   const { error } = await requireAdminSession();
   if (error) return error;
   try {
     const items = await prisma.job.findMany({ orderBy: { createdAt: "desc" } });
-    return apiSuccess({ items });
+    return apiSuccess({ items: items.map(fromPrismaJob) });
   } catch (e) {
     return handleRouteError("GET /api/admin/jobs", e);
   }
@@ -28,7 +29,7 @@ export async function POST(request: NextRequest) {
   if (!parsed.success)
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
-    const item = await prisma.job.create({ data: parsed.data });
+    const item = await prisma.job.create({ data: toPrismaJobData(parsed.data) });
     revalidatePath("/");
     revalidatePath("/careers");
     return apiSuccess({ id: item.id }, 201);

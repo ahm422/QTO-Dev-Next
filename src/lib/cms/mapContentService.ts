@@ -1,4 +1,8 @@
-import type { Service as PrismaService } from "@prisma/client";
+import type { ServiceWithTags } from "@/lib/prisma/serviceData";
+import {
+  orderedTagValues,
+  parseStringArray,
+} from "@/lib/prisma/arrayFields";
 import {
   webDevelopmentServiceData,
   type WebDevelopmentServiceData,
@@ -11,7 +15,9 @@ const fallbackOverview =
 const fallbackProject =
   "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&h=800&fit=crop";
 
-export function mapPrismaToContentService(row: PrismaService): WebDevelopmentServiceData {
+export function mapPrismaToContentService(row: ServiceWithTags): WebDevelopmentServiceData {
+  const features = parseStringArray(row.features);
+  const technologyTags = orderedTagValues(row.technologyTags);
   return {
     ...webDevelopmentServiceData,
     slug: row.slug,
@@ -25,14 +31,14 @@ export function mapPrismaToContentService(row: PrismaService): WebDevelopmentSer
     overviewText:
       row.shortDescription ||
       "We bring strategic product thinking and high-quality engineering to deliver outcomes your business can measure. Our process is transparent, collaborative, and focused on speed without sacrificing reliability.",
-    overviewBenefits: row.features,
+    overviewBenefits: features,
     overviewImage: {
       url: row.imageUrl ?? fallbackOverview,
       alt: row.imageAlt ?? `${row.title} overview image`,
     },
     technologies:
-      row.technologyTags.length > 0
-        ? row.technologyTags
+      technologyTags.length > 0
+        ? technologyTags
         : webDevelopmentServiceData.technologies,
     relatedProjects: [
       {

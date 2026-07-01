@@ -37,6 +37,7 @@ export async function verifyAndRotateRefreshToken(
   const expiresAt = new Date(Date.now() + REFRESH_TOKEN_EXPIRY * 1000);
   const now = new Date();
 
+  // Flat batch transaction — D1/SQLite compatible (no nested transactions).
   await prisma.$transaction([
     prisma.refreshToken.update({
       where: { id: existing.id },

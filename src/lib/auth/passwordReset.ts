@@ -12,6 +12,7 @@ export async function createPasswordResetToken(
   const tokenHash = await hashToken(rawToken);
   const expiresAt = new Date(Date.now() + RESET_TOKEN_TTL_MS);
 
+  // Flat batch transaction — D1/SQLite compatible (no nested transactions).
   await prisma.$transaction([
     prisma.passwordResetToken.updateMany({
       where: { email, usedAt: null },
@@ -53,6 +54,7 @@ export async function consumePasswordResetToken(
 
   const passwordHash = await hashPassword(newPassword);
 
+  // Flat batch transaction — D1/SQLite compatible; revokeAllUserTokens runs after (correct).
   await prisma.$transaction([
     prisma.passwordResetToken.update({
       where: { id: record.id },

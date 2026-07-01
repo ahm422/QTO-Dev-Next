@@ -7,15 +7,24 @@ import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { blogPostSchema } from "@/lib/validators/admin/blogPost";
+import {
+  blogPostWithTagsInclude,
+  fromPrismaBlogPost,
+  toPrismaBlogPostPartialUpdateData,
+  toPrismaBlogPostUpdateData,
+} from "@/lib/prisma/blogPostData";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error } = await requireAdminSession();
   if (error) return error;
   const { id } = await params;
   try {
-    const item = await prisma.blogPost.findUnique({ where: { id } });
+    const item = await prisma.blogPost.findUnique({
+      where: { id },
+      include: blogPostWithTagsInclude,
+    });
     if (!item) return apiError(404, "Not found");
-    return apiSuccess({ item });
+    return apiSuccess({ item: fromPrismaBlogPost(item) });
   } catch (e) {
     return handleRouteError("GET /api/admin/blog/[id]", e);
   }
@@ -36,15 +45,20 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       parsed.data.isPublished && !existing?.publishedAt
         ? new Date()
         : existing?.publishedAt ?? null;
+    const updateData =
+      Object.keys(parsed.data).length === Object.keys(blogPostSchema.shape).length
+        ? toPrismaBlogPostUpdateData(parsed.data as Parameters<typeof toPrismaBlogPostUpdateData>[0])
+        : toPrismaBlogPostPartialUpdateData(parsed.data);
     const item = await prisma.blogPost.update({
       where: { id },
-      data: { ...parsed.data, publishedAt },
+      data: { ...updateData, ...(parsed.data.isPublished !== undefined ? { publishedAt } : {}) },
+      include: blogPostWithTagsInclude,
     });
     revalidatePath("/");
     revalidatePath("/blogs");
     revalidatePath("/sitemap.xml");
     if (item.slug) revalidatePath(`/blogs/${item.slug}`);
-    return apiSuccess({ item });
+    return apiSuccess({ item: fromPrismaBlogPost(item) });
   } catch (e) {
     return handleRouteError("PATCH /api/admin/blog/[id]", e);
   }

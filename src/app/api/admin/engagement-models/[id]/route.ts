@@ -7,6 +7,10 @@ import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { engagementModelSchema } from "@/lib/validators/admin/engagementModel";
+import {
+  fromPrismaEngagementModel,
+  toPartialPrismaEngagementModelData,
+} from "@/lib/prisma/jsonModelData";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error } = await requireAdminSession();
@@ -15,7 +19,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   try {
     const item = await prisma.engagementModel.findUnique({ where: { id } });
     if (!item) return apiError(404, "Not found");
-    return apiSuccess({ item });
+    return apiSuccess({ item: fromPrismaEngagementModel(item) });
   } catch (e) {
     return handleRouteError("GET /api/admin/engagement-models/[id]", e);
   }
@@ -31,9 +35,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   if (!parsed.success)
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
-    const item = await prisma.engagementModel.update({ where: { id }, data: parsed.data });
+    const item = await prisma.engagementModel.update({
+      where: { id },
+      data: toPartialPrismaEngagementModelData(parsed.data),
+    });
     revalidatePath("/");
-    return apiSuccess({ item });
+    return apiSuccess({ item: fromPrismaEngagementModel(item) });
   } catch (e) {
     return handleRouteError("PATCH /api/admin/engagement-models/[id]", e);
   }

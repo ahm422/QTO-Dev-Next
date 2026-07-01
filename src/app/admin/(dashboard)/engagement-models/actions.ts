@@ -2,22 +2,22 @@
 
 import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
+import { toPrismaEngagementModelData } from "@/lib/prisma/jsonModelData"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { engagementModelSchema, type EngagementModelInput } from "@/lib/validators/admin/engagementModel"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
 
-
 export async function createEngagementModel(data: EngagementModelInput) {
   await requireCreateAction()
-  await prisma.engagementModel.create({ data: engagementModelSchema.parse(data) })
+  await prisma.engagementModel.create({ data: toPrismaEngagementModelData(engagementModelSchema.parse(data)) })
   revalidatePath("/")
   redirect("/admin/engagement-models")
 }
 
 export async function updateEngagementModel(id: string, data: EngagementModelInput) {
   await requireAdminAction()
-  await prisma.engagementModel.update({ where: { id }, data: engagementModelSchema.parse(data) })
+  await prisma.engagementModel.update({ where: { id }, data: toPrismaEngagementModelData(engagementModelSchema.parse(data)) })
   revalidatePath("/")
   redirect("/admin/engagement-models")
 }

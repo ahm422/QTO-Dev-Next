@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { projectWithRelationsInclude } from "@/lib/prisma/projectData";
 import { mapProject, mapProjectToPortfolioCase } from "./mappers";
 import { mapPrismaToContentProject } from "./mapContentProject";
 import type { Project as ContentProject } from "@/content/projects/types";
@@ -14,6 +15,7 @@ export const findPublishedProjects = cache(
           ...(category !== undefined && category !== "" && { category }),
         },
         orderBy: { order: "asc" },
+        include: projectWithRelationsInclude,
       });
       return items.map(mapProject);
     },
@@ -29,6 +31,7 @@ export const findPortfolioProjects = cache(
         where: { isPublished: true },
         orderBy: { order: "asc" },
         take,
+        include: projectWithRelationsInclude,
       });
       return items.map((row, i) => mapProjectToPortfolioCase(row, i));
     },
@@ -42,6 +45,7 @@ export const findProjectBySlug = cache(
     async (slug: string) => {
       const item = await prisma.project.findFirst({
         where: { slug, isPublished: true },
+        include: projectWithRelationsInclude,
       });
       return item ? mapProject(item) : null;
     },
@@ -70,12 +74,14 @@ export const findContentProjectBySlug = cache(
     async (slug: string): Promise<ContentProject | null> => {
       const row = await prisma.project.findFirst({
         where: { slug, isPublished: true },
+        include: projectWithRelationsInclude,
       });
       if (!row) return null;
 
       const all = await prisma.project.findMany({
         where: { isPublished: true },
         orderBy: { order: "asc" },
+        include: projectWithRelationsInclude,
       });
       return mapPrismaToContentProject(row, all);
     },

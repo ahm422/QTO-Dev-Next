@@ -7,6 +7,11 @@ import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { projectSchema } from "@/lib/validators/admin/project";
+import {
+  fromPrismaProject,
+  projectWithRelationsInclude,
+  toPrismaProjectCreateData,
+} from "@/lib/prisma/projectData";
 
 export async function GET(request: NextRequest) {
   const { error } = await requireAdminSession();
@@ -17,8 +22,9 @@ export async function GET(request: NextRequest) {
     const items = await prisma.project.findMany({
       where: category !== undefined ? { category } : undefined,
       orderBy: { order: "asc" },
+      include: projectWithRelationsInclude,
     });
-    return apiSuccess({ items });
+    return apiSuccess({ items: items.map(fromPrismaProject) });
   } catch (e) {
     return handleRouteError("GET /api/admin/projects", e);
   }
@@ -33,7 +39,10 @@ export async function POST(request: NextRequest) {
   if (!parsed.success)
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
-    const item = await prisma.project.create({ data: parsed.data });
+    const item = await prisma.project.create({
+      data: toPrismaProjectCreateData(parsed.data),
+      include: projectWithRelationsInclude,
+    });
     revalidatePath("/");
     revalidatePath("/projects");
     return apiSuccess({ id: item.id }, 201);

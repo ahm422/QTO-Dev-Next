@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import {
   findContentServiceBySlug,
-  findPublishedServiceSlugs,
 } from "@/lib/cms/services";
+import { findPublishedServiceSlugsForBuild } from "@/lib/prisma/buildTimePrisma";
+import { skipBuildTimeD1 } from "@/lib/prisma/skipBuildTimeD1";
 import { HeroBanner } from "./components/HeroBanner";
 import { OverviewSection } from "./components/OverviewSection";
 import { ProcessTimeline } from "./components/ProcessTimeline";
@@ -43,7 +44,8 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export async function generateStaticParams() {
-  const slugs = await findPublishedServiceSlugs();
+  if (skipBuildTimeD1()) return [];
+  const slugs = await findPublishedServiceSlugsForBuild();
   return slugs.map((slug) => ({ slug }));
 }
 
