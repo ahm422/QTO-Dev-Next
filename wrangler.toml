@@ -61,10 +61,17 @@ bucket_name = "qtodev-media"
 [env.staging]
 name = "qtodev-site-staging"
 
+[[env.staging.services]]
+binding = "WORKER_SELF_REFERENCE"
+service = "qtodev-site-staging"
+
+[env.staging.images]
+binding = "IMAGES"
+
 [[env.staging.d1_databases]]
 binding = "DB"
 database_name = "qtodev-d1-staging"
-database_id = "00000000-0000-0000-0000-000000000000" # REPLACE after: wrangler d1 create qtodev-d1-staging
+database_id = "YOUR_STAGING_D1_DATABASE_ID"
 migrations_dir = "./migrations/d1"
 
 [[env.staging.r2_buckets]]

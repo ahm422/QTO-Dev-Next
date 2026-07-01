@@ -1,12 +1,12 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { getCachedReadPrisma } from "@/lib/prisma/cachedRead";
 import { mapContactMethod } from "./mappers";
 
 export const findPublishedContactInfo = cache(
   unstable_cache(
     async () => {
-      const items = await prisma.contactInfo.findMany({
+      const items = await (await getCachedReadPrisma()).contactInfo.findMany({
         where: { isPublished: true },
         orderBy: { order: "asc" },
       });

@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { getCachedReadPrisma } from "@/lib/prisma/cachedRead";
 import { projectWithRelationsInclude } from "@/lib/prisma/projectData";
 import { mapProject, mapProjectToPortfolioCase } from "./mappers";
 import { mapPrismaToContentProject } from "./mapContentProject";
@@ -9,7 +9,7 @@ import type { Project as ContentProject } from "@/content/projects/types";
 export const findPublishedProjects = cache(
   unstable_cache(
     async (category?: string) => {
-      const items = await prisma.project.findMany({
+      const items = await (await getCachedReadPrisma()).project.findMany({
         where: {
           isPublished: true,
           ...(category !== undefined && category !== "" && { category }),
@@ -27,7 +27,7 @@ export const findPublishedProjects = cache(
 export const findPortfolioProjects = cache(
   unstable_cache(
     async (take = 6) => {
-      const items = await prisma.project.findMany({
+      const items = await (await getCachedReadPrisma()).project.findMany({
         where: { isPublished: true },
         orderBy: { order: "asc" },
         take,
@@ -43,7 +43,7 @@ export const findPortfolioProjects = cache(
 export const findProjectBySlug = cache(
   unstable_cache(
     async (slug: string) => {
-      const item = await prisma.project.findFirst({
+      const item = await (await getCachedReadPrisma()).project.findFirst({
         where: { slug, isPublished: true },
         include: projectWithRelationsInclude,
       });
@@ -57,7 +57,7 @@ export const findProjectBySlug = cache(
 export const findPublishedProjectSlugs = cache(
   unstable_cache(
     async () => {
-      const items = await prisma.project.findMany({
+      const items = await (await getCachedReadPrisma()).project.findMany({
         where: { isPublished: true },
         select: { slug: true },
         orderBy: { order: "asc" },
@@ -72,13 +72,13 @@ export const findPublishedProjectSlugs = cache(
 export const findContentProjectBySlug = cache(
   unstable_cache(
     async (slug: string): Promise<ContentProject | null> => {
-      const row = await prisma.project.findFirst({
+      const row = await (await getCachedReadPrisma()).project.findFirst({
         where: { slug, isPublished: true },
         include: projectWithRelationsInclude,
       });
       if (!row) return null;
 
-      const all = await prisma.project.findMany({
+      const all = await (await getCachedReadPrisma()).project.findMany({
         where: { isPublished: true },
         orderBy: { order: "asc" },
         include: projectWithRelationsInclude,

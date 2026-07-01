@@ -5,6 +5,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getD1Session } from "@/lib/d1/session";
 
 const getPrismaClient = cache(async (): Promise<PrismaClient> => {
+  await getCloudflareContext({ async: true });
   const session = await getD1Session();
   return new PrismaClient({
     adapter: new PrismaD1(session),

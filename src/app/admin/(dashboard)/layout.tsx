@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma"
 import AdminSidebar from "@/components/admin/AdminSidebar"
 import AdminHeader from "@/components/admin/AdminHeader"
 import { AdminThemeProvider } from "@/components/admin/AdminThemeProvider"
+import MaintenanceBanner from "@/components/common/MaintenanceBanner"
+import { isWriteFrozen } from "@/lib/freeze-writes"
 
 export default async function AdminDashboardLayout({
   children,
@@ -29,6 +31,7 @@ export default async function AdminDashboardLayout({
 
   return (
     <AdminThemeProvider>
+      {isWriteFrozen() && <MaintenanceBanner />}
       <AdminSidebar userRole={userRole} userEmail={userEmail} displayName={displayName} />
       <div className="lg:pl-64 flex flex-col min-h-screen">
         <AdminHeader userEmail={userEmail} userRole={userRole} />
