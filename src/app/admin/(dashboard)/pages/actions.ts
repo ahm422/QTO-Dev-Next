@@ -2,6 +2,7 @@
 
 import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
+import { persistD1Bookmark } from "@/lib/d1/session"
 import { stringifyMetadata } from "@/lib/metadata"
 import { revalidatePaths } from "@/lib/revalidate"
 import { pageSectionPaths } from "@/lib/revalidate-paths"
@@ -21,6 +22,7 @@ export async function updatePageSection(slug: string, data: object, isPublished:
     data: { data: pageSectionDataString(data), isPublished, label },
   })
   await invalidate(slug)
+  await persistD1Bookmark()
   redirect("/admin/pages")
 }
 
@@ -28,12 +30,14 @@ export async function togglePageSectionPublished(slug: string, value: boolean) {
   await requireAdminAction()
   await prisma.pageSection.update({ where: { slug }, data: { isPublished: value } })
   await invalidate(slug)
+  await persistD1Bookmark()
 }
 
 export async function createPageSection(slug: string, label: string, data: object) {
   await requireCreateAction()
   await prisma.pageSection.create({ data: { slug, label, data: pageSectionDataString(data), isPublished: true } })
   await invalidate(slug)
+  await persistD1Bookmark()
   redirect("/admin/pages")
 }
 
@@ -41,4 +45,5 @@ export async function deletePageSection(slug: string) {
   await requireDeleteAction()
   await prisma.pageSection.delete({ where: { slug } })
   await invalidate(slug)
+  await persistD1Bookmark()
 }

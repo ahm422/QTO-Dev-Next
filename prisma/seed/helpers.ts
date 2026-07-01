@@ -1,3 +1,4 @@
+/** Seed writes must use primary — never replica routing via Sessions API. */
 import { getPlatformProxy } from "wrangler";
 import { PrismaClient } from "@prisma/client";
 import { PrismaD1 } from "@prisma/adapter-d1";
@@ -20,7 +21,8 @@ export async function initSeedPrisma(): Promise<PrismaClient> {
     );
   }
 
-  prismaInstance = new PrismaClient({ adapter: new PrismaD1(env.DB) });
+  const db = env.DB.withSession("first-primary");
+  prismaInstance = new PrismaClient({ adapter: new PrismaD1(db) });
   prisma = prismaInstance;
   return prismaInstance;
 }

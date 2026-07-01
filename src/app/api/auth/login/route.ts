@@ -11,6 +11,7 @@ import { MAX_FAILED_LOGINS, LOCKOUT_DURATION_MS } from "@/lib/auth/constants";
 import { loginSchema } from "@/lib/validators/auth";
 import { formatZodFieldErrors } from "@/lib/validators/http";
 import { apiError, logApiError } from "@/lib/apiResponses";
+import { persistD1BookmarkOnResponse } from "@/lib/d1/session";
 import {
   getClientIp,
   checkLoginIpRateLimit,
@@ -119,6 +120,8 @@ export async function POST(request: NextRequest) {
     setAuthCookies(response, { accessToken, refreshToken });
 
     await writeAuditLog({ action: AUDIT_ACTIONS.LOGIN_SUCCESS, userId: user.id, email: user.email, ip, userAgent });
+
+    await persistD1BookmarkOnResponse(response);
 
     return response;
   } catch (error) {
