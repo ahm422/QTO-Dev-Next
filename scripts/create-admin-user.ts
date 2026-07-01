@@ -6,14 +6,12 @@
  * Usage:
  *   npm run admin:create-user -- --d1=local --email=you@example.com --password=MyPass123!
  *   npm run admin:create-user -- --d1=staging --email=you@example.com
- *   npm run admin:create-user -- --email=you@example.com              # Postgres if DATABASE_URL set
+ *   npm run admin:create-user -- --d1=remote --email=you@example.com
  *
  * Valid roles: super_admin (default), admin, editor
  *
- * D1 targets use wrangler bindings (--d1=local|staging|remote).
- * Postgres fallback requires DATABASE_URL in .env or .env.local.
+ * Requires --d1=local|staging|remote (wrangler D1 bindings).
  */
-import { Pool } from "pg";
 import { hash } from "bcryptjs";
 import { createInterface } from "node:readline";
 import { readFileSync, existsSync } from "node:fs";
@@ -157,65 +155,23 @@ async function upsertAdminUserD1(
   return true;
 }
 
-async function upsertAdminUserPostgres(
-  email: string,
-  passwordHash: string,
-  role: ValidRole
-): Promise<boolean> {
-  const databaseUrl = process.env.DATABASE_URL;
-  if (!databaseUrl) {
-    console.error(
-      "ERROR: Provide --d1=local|staging|remote or set DATABASE_URL for Postgres fallback."
-    );
-    process.exit(1);
-  }
-
-  const url = new URL(databaseUrl);
-  const sslMode = url.searchParams.get("sslmode");
-  const usesTls =
-    sslMode === "require" || sslMode === "verify-ca" || sslMode === "verify-full";
-  url.searchParams.delete("sslmode");
-
-  const pool = new Pool({
-    connectionString: url.toString(),
-    ...(usesTls ? { ssl: { rejectUnauthorized: false } } : {}),
-  });
-
-  try {
-    const result = await pool.query(
-      `INSERT INTO admin_users (id, email, password_hash, role, updated_at)
-       VALUES (gen_random_uuid(), $1, $2, $3, now())
-       ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, role = EXCLUDED.role, updated_at = now()
-       RETURNING (xmax = 0) AS inserted`,
-      [email, passwordHash, role]
-    );
-    return Boolean(result.rows[0]?.inserted);
-  } finally {
-    await pool.end();
-  }
-}
-
 async function main() {
   loadEnvFile(resolve(process.cwd(), ".env"));
   loadEnvFile(resolve(process.cwd(), ".env.local"));
 
   const d1Arg = parseArg("d1") as D1Target | undefined;
-  if (d1Arg && !["local", "staging", "remote"].includes(d1Arg)) {
-    console.error(`ERROR: Invalid --d1 value "${d1Arg}". Use local, staging, or remote.`);
+  if (!d1Arg || !["local", "staging", "remote"].includes(d1Arg)) {
+    console.error("ERROR: --d1=local|staging|remote is required.");
     process.exit(1);
   }
 
   const { email, password, role } = await resolveCredentials();
   const passwordHash = await hash(password, 12);
 
-  const inserted = d1Arg
-    ? await upsertAdminUserD1(d1Arg, email, passwordHash, role)
-    : await upsertAdminUserPostgres(email, passwordHash, role);
+  const inserted = await upsertAdminUserD1(d1Arg, email, passwordHash, role);
 
   console.log(`\n${inserted ? "Created" : "Updated"} admin user: ${email} (role: ${role})`);
-  if (d1Arg) {
-    console.log(`Target: D1 (${d1Arg})`);
-  }
+  console.log(`Target: D1 (${d1Arg})`);
   console.log("You can now sign in at /admin/login");
 }
 

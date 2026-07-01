@@ -19,10 +19,6 @@ REQUIRED_SECRETS=(
   R2_BUCKET_NAME
 )
 
-OPTIONAL_SECRETS=(
-  DATABASE_URL
-)
-
 list_json="$(npx wrangler secret list 2>/dev/null)" || {
   echo "ERROR: wrangler secret list failed. Deploy the worker first: npm run deploy" >&2
   exit 1
@@ -48,11 +44,5 @@ if ((${#missing[@]} > 0)); then
   echo "Set each with: npx wrangler secret put <NAME>" >&2
   exit 1
 fi
-
-for name in "${OPTIONAL_SECRETS[@]}"; do
-  if ! echo "$registered" | grep -qx "$name"; then
-    echo "WARN: optional secret $name not set (fallback until Hyperdrive is verified)"
-  fi
-done
 
 echo "All required secrets are registered ($((${#REQUIRED_SECRETS[@]})) total)."

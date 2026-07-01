@@ -97,7 +97,6 @@ const nextConfig: NextConfig = {
     "@prisma/client",
     ".prisma/client",
     "@prisma/adapter-d1",
-    "@prisma/adapter-pg",
   ],
   images: {
     remotePatterns,

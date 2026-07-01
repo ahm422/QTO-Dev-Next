@@ -1,14 +1,12 @@
 import type { PrismaClient as D1Client } from "@prisma/client";
-import type { PrismaClient as PgClient } from "../../node_modules/.prisma/pg-source-client";
 import { DERIVED_JOIN_CHECKS, ALL_TABLES, type TableName } from "./tables";
-import { getPgPool } from "./pg-source";
 
 export type RowCounts = Record<TableName, number>;
 
 export type DerivedCounts = Record<string, number>;
 
 export interface SnapshotResult {
-  source: "postgres" | "d1";
+  source: "d1";
   timestamp: string;
   counts: RowCounts;
   derived?: DerivedCounts;
@@ -47,63 +45,12 @@ const D1_COUNT_QUERIES: Record<TableName, (d1: D1Client) => Promise<number>> = {
   audit_logs: (d1) => d1.auditLog.count(),
 };
 
-const PG_COUNT_QUERIES: Record<TableName, (pg: PgClient) => Promise<number>> = {
-  contacts: (pg) => pg.contact.count(),
-  requirements: (pg) => pg.requirement.count(),
-  services: (pg) => pg.service.count(),
-  service_technology_tags: async () => 0, // join table — use derived check
-  process_steps: (pg) => pg.processStep.count(),
-  featured_works: (pg) => pg.featuredWork.count(),
-  why_choose_us: (pg) => pg.whyChooseUs.count(),
-  stats: (pg) => pg.stat.count(),
-  testimonials: (pg) => pg.testimonial.count(),
-  industries: (pg) => pg.industry.count(),
-  engagement_models: (pg) => pg.engagementModel.count(),
-  faqs: (pg) => pg.faq.count(),
-  blog_posts: (pg) => pg.blogPost.count(),
-  blog_post_tags: async () => 0,
-  technologies: (pg) => pg.technology.count(),
-  projects: (pg) => pg.project.count(),
-  project_tags: async () => 0,
-  project_tech_stack_items: async () => 0,
-  work_values: (pg) => pg.workValue.count(),
-  about_content: (pg) => pg.aboutContent.count(),
-  team_members: (pg) => pg.teamMember.count(),
-  jobs: (pg) => pg.job.count(),
-  job_applications: (pg) => pg.jobApplication.count(),
-  contact_info: (pg) => pg.contactInfo.count(),
-  page_sections: (pg) => pg.pageSection.count(),
-  site_config: (pg) => pg.siteConfig.count(),
-  admin_users: (pg) => pg.adminUser.count(),
-  refresh_tokens: (pg) => pg.refreshToken.count(),
-  password_reset_tokens: (pg) => pg.passwordResetToken.count(),
-  audit_logs: (pg) => pg.auditLog.count(),
-};
-
 export async function countD1Tables(d1: D1Client): Promise<RowCounts> {
   const counts = {} as RowCounts;
   for (const table of ALL_TABLES) {
     counts[table] = await D1_COUNT_QUERIES[table](d1);
   }
   return counts;
-}
-
-export async function countPostgresTables(pg: PgClient): Promise<RowCounts> {
-  const counts = {} as RowCounts;
-  for (const table of ALL_TABLES) {
-    counts[table] = await PG_COUNT_QUERIES[table](pg);
-  }
-  return counts;
-}
-
-export async function countPostgresDerived(): Promise<DerivedCounts> {
-  const pool = getPgPool();
-  const derived: DerivedCounts = {};
-  for (const check of DERIVED_JOIN_CHECKS) {
-    const result = await pool.query<{ total: number }>(check.pgSql);
-    derived[check.name] = result.rows[0]?.total ?? 0;
-  }
-  return derived;
 }
 
 export async function countD1Derived(d1: D1Client): Promise<DerivedCounts> {
