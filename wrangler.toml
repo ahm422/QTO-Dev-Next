@@ -53,3 +53,20 @@ migrations_dir = "./migrations/d1"
 [[r2_buckets]]
 binding = "MEDIA"
 bucket_name = "qtodev-media"
+
+# Staging environment — separate D1 for Phase 4/6 migration dry-runs (not production).
+# Create: npx wrangler d1 create qtodev-d1-staging
+# Replace database_id below with output from create command.
+# Apply:  npx wrangler d1 migrations apply qtodev-d1-staging --remote --env staging
+[env.staging]
+name = "qtodev-site-staging"
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "qtodev-d1-staging"
+database_id = "00000000-0000-0000-0000-000000000000" # REPLACE after: wrangler d1 create qtodev-d1-staging
+migrations_dir = "./migrations/d1"
+
+[[env.staging.r2_buckets]]
+binding = "MEDIA"
+bucket_name = "qtodev-media"
