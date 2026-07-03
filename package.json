@@ -20,9 +20,15 @@
     "prisma:generate": "prisma generate",
     "d1:migrate:local": "wrangler d1 migrations apply qtodev-d1 --local",
     "d1:migrate:remote": "wrangler d1 migrations apply qtodev-d1 --remote",
+    "d1:migrate:staging": "wrangler d1 migrations apply qtodev-d1-staging --remote --env staging",
+    "d1:migrate:staging:local": "wrangler d1 migrations apply qtodev-d1-staging --local --env staging",
     "d1:setup": "wrangler d1 migrations apply qtodev-d1 --local && npm run db:seed:local",
+    "d1:setup:staging": "npm run d1:migrate:staging:local && npm run d1:migrate:staging && npm run db:seed:staging && npm run d1:sync:staging",
+    "d1:sync:staging": "npm run migrate:sync-staging-remote",
     "db:seed:local": "prisma db seed",
+    "db:seed:staging": "tsx prisma/seed.ts -- --d1=staging",
     "verify:seed-counts": "tsx scripts/verify-seed-counts.ts",
+    "verify:seed-counts:staging": "tsx scripts/verify-seed-counts.ts -- --d1=staging",
     "admin:create-user": "tsx scripts/create-admin-user.ts",
     "preview": "opennextjs-cloudflare preview -- --ip 127.0.0.1",
     "dev:worker": "opennextjs-cloudflare preview -- --ip 127.0.0.1",
@@ -31,7 +37,8 @@
     "d1:enable-replication": "bash scripts/enable-d1-read-replication.sh",
     "upload": "npm run cf:build && opennextjs-cloudflare upload",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
-    "secrets:verify": "bash scripts/verify-wrangler-secrets.sh"
+    "secrets:verify": "bash scripts/verify-wrangler-secrets.sh",
+    "secrets:verify:staging": "bash scripts/verify-wrangler-secrets.sh staging"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1058.0",

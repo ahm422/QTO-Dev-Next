@@ -12,7 +12,7 @@ export interface MigrationCliOptions {
   snapshot?: string;
 }
 
-function parseArg(name: string): string | undefined {
+export function parseArg(name: string): string | undefined {
   const eqFlag = `--${name}=`;
   const eqArg = process.argv.find((a) => a.startsWith(eqFlag));
   if (eqArg) return eqArg.slice(eqFlag.length).trim();
@@ -49,4 +49,11 @@ export function assertD1Target(value: string): asserts value is D1Target {
   if (!["local", "staging", "remote"].includes(value)) {
     throw new Error(`Invalid --d1 value "${value}". Use local, staging, or remote.`);
   }
+}
+
+export function parseCliD1Target(defaultTarget: D1Target = "local"): D1Target {
+  const d1Arg = parseArg("d1");
+  if (!d1Arg) return defaultTarget;
+  assertD1Target(d1Arg);
+  return d1Arg;
 }

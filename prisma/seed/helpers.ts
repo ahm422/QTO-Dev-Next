@@ -1,44 +1,29 @@
 /** Seed writes must use primary — never replica routing via Sessions API. */
-import { getPlatformProxy } from "wrangler";
 import { PrismaClient } from "@prisma/client";
-import { PrismaD1 } from "@prisma/adapter-d1";
-
-let prismaInstance: PrismaClient | undefined;
-let disposeProxy: (() => Promise<void>) | undefined;
-
-/** Initialize D1-backed Prisma for seed scripts. Call once at the start of main(). */
-export async function initSeedPrisma(): Promise<PrismaClient> {
-  if (prismaInstance) return prismaInstance;
-
-  const { env, dispose } = await getPlatformProxy<CloudflareEnv>({
-    configPath: "./wrangler.toml",
-  });
-  disposeProxy = dispose;
-
-  if (!env.DB) {
-    throw new Error(
-      "D1 binding (DB) not found. Run `wrangler d1 migrations apply qtodev-d1 --local` first."
-    );
-  }
-
-  const db = env.DB.withSession("first-primary");
-  prismaInstance = new PrismaClient({ adapter: new PrismaD1(db) });
-  prisma = prismaInstance;
-  return prismaInstance;
-}
+import {
+  disconnectD1Target,
+  initD1Target,
+} from "../../scripts/migration/d1-target";
+import { parseCliD1Target, type D1Target } from "../../scripts/migration/cli";
 
 /** Prisma client — available after initSeedPrisma() has been awaited. */
 export let prisma: PrismaClient;
 
+/** Resolve --d1=local|staging|remote from CLI (default: local). */
+export function resolveSeedD1Target(explicitTarget?: D1Target): D1Target {
+  return explicitTarget ?? parseCliD1Target("local");
+}
+
+/** Initialize D1-backed Prisma for seed scripts. Call once at the start of main(). */
+export async function initSeedPrisma(explicitTarget?: D1Target): Promise<PrismaClient> {
+  const target = resolveSeedD1Target(explicitTarget);
+  const client = await initD1Target(target);
+  prisma = client;
+  return client;
+}
+
 export async function disconnect() {
-  if (prismaInstance) {
-    await prismaInstance.$disconnect();
-    prismaInstance = undefined;
-  }
-  if (disposeProxy) {
-    await disposeProxy();
-    disposeProxy = undefined;
-  }
+  await disconnectD1Target();
 }
 
 export function slugify(name: string): string {
