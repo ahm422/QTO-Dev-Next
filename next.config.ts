@@ -8,11 +8,11 @@ const withBundleAnalyzer = isAnalyze
     require("@next/bundle-analyzer")({ enabled: true })
   : (config: NextConfig) => config;
 
-function garageImagePattern(): {
+function r2ImagePattern(): {
   protocol: "http" | "https";
   hostname: string;
 } | null {
-  const publicUrl = process.env.GARAGE_PUBLIC_URL;
+  const publicUrl = process.env.R2_PUBLIC_URL;
   if (!publicUrl) return null;
   try {
     const { protocol, hostname } = new URL(publicUrl);
@@ -28,27 +28,27 @@ function garageImagePattern(): {
   }
 }
 
-const garagePattern = garageImagePattern();
+const r2Pattern = r2ImagePattern();
 
-function garageCdnHostnamePattern(): {
+function r2CdnHostnamePattern(): {
   protocol: "http" | "https";
   hostname: string;
 } | null {
-  const hostname = process.env.GARAGE_CDN_HOSTNAME?.trim();
+  const hostname = process.env.R2_CDN_HOSTNAME?.trim();
   if (!hostname) return null;
   return { protocol: "https", hostname };
 }
 
-const garageCdnPattern = garageCdnHostnamePattern();
+const r2CdnPattern = r2CdnHostnamePattern();
 
 const remotePatterns = [
   {
     protocol: "https" as const,
     hostname: "images.unsplash.com",
   },
-  ...(garagePattern ? [garagePattern] : []),
-  ...(garageCdnPattern && garageCdnPattern.hostname !== garagePattern?.hostname
-    ? [garageCdnPattern]
+  ...(r2Pattern ? [r2Pattern] : []),
+  ...(r2CdnPattern && r2CdnPattern.hostname !== r2Pattern?.hostname
+    ? [r2CdnPattern]
     : []),
 ];
 
@@ -58,11 +58,11 @@ function buildGlobalCsp(): string {
   const scriptSrc = IS_DEV
     ? "'self' 'unsafe-inline' 'unsafe-eval'"
     : "'self' 'unsafe-inline'";
-  const garagePublicUrl = process.env.GARAGE_PUBLIC_URL;
-  let garageOrigin = "";
-  if (garagePublicUrl) {
+  const r2PublicUrl = process.env.R2_PUBLIC_URL;
+  let r2Origin = "";
+  if (r2PublicUrl) {
     try {
-      garageOrigin = ` ${new URL(garagePublicUrl).origin}`;
+      r2Origin = ` ${new URL(r2PublicUrl).origin}`;
     } catch {
       // ignore invalid URL
     }
@@ -72,7 +72,7 @@ function buildGlobalCsp(): string {
     `script-src ${scriptSrc}`,
     "style-src 'self' 'unsafe-inline'",
     "font-src 'self' fonts.gstatic.com",
-    `img-src 'self' data: blob: https://images.unsplash.com${garageOrigin}`,
+    `img-src 'self' data: blob: https://images.unsplash.com${r2Origin}`,
     "connect-src 'self'",
     "frame-ancestors 'none'",
     "base-uri 'self'",
@@ -93,18 +93,16 @@ const nextConfig: NextConfig = {
     // Prisma nullable fields vs Zod form defaults in admin *Form.tsx (pre-Phase 7).
     ignoreBuildErrors: true,
   },
+  serverExternalPackages: [
+    "@prisma/client",
+    ".prisma/client",
+    "@prisma/adapter-d1",
+  ],
   images: {
     remotePatterns,
   },
   async headers() {
     return [{ source: "/(.*)", headers: GLOBAL_SECURITY_HEADERS }];
-  },
-  // pg loads pg-cloudflare at runtime on Workers; ensure traced output includes workerd files.
-  outputFileTracingIncludes: {
-    "/*": [
-      "./node_modules/pg-cloudflare/dist/**",
-      "./node_modules/pg-cloudflare/esm/**",
-    ],
   },
 };
 

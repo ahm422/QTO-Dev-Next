@@ -13,14 +13,36 @@ import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { createJob, updateJob } from "../actions"
-import type { Job } from "@prisma/client"
+import type { JobInput } from "@/lib/validators/admin/job"
 
-export default function JobForm({ defaultValues }: { defaultValues?: Job }) {
+export default function JobForm({ defaultValues }: { defaultValues?: JobInput & { id?: string; postedAt?: Date | string | null; expiresAt?: Date | string | null } }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<JobInput>({
     resolver: formResolver(jobSchema),
     defaultValues: defaultValues
-      ? { ...defaultValues, postedAt: defaultValues.postedAt?.toISOString().split("T")[0] ?? "", expiresAt: defaultValues.expiresAt?.toISOString().split("T")[0] ?? "" }
+      ? {
+          title: defaultValues.title,
+          department: defaultValues.department,
+          location: defaultValues.location ?? "",
+          type: defaultValues.type ?? "",
+          description: defaultValues.description ?? "",
+          requirements: defaultValues.requirements ?? [],
+          niceToHave: defaultValues.niceToHave ?? [],
+          salaryRange: defaultValues.salaryRange ?? "",
+          applyUrl: defaultValues.applyUrl ?? "",
+          order: defaultValues.order ?? 0,
+          isPublished: defaultValues.isPublished ?? false,
+          postedAt: defaultValues.postedAt instanceof Date
+            ? defaultValues.postedAt.toISOString().split("T")[0]
+            : typeof defaultValues.postedAt === "string"
+              ? defaultValues.postedAt.split("T")[0]
+              : "",
+          expiresAt: defaultValues.expiresAt instanceof Date
+            ? defaultValues.expiresAt.toISOString().split("T")[0]
+            : typeof defaultValues.expiresAt === "string"
+              ? defaultValues.expiresAt.split("T")[0]
+              : "",
+        }
       : { title: "", department: "", location: "", type: "", description: "", requirements: [], niceToHave: [], salaryRange: "", applyUrl: "", order: 0, isPublished: false, postedAt: "", expiresAt: "" },
   })
   const { isSubmitting } = form.formState

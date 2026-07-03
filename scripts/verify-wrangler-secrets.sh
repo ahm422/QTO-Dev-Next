@@ -12,15 +12,11 @@ REQUIRED_SECRETS=(
   UPSTASH_REDIS_REST_URL
   UPSTASH_REDIS_REST_TOKEN
   REVALIDATE_SECRET
-  GARAGE_ENDPOINT
-  GARAGE_REGION
-  GARAGE_ACCESS_KEY_ID
-  GARAGE_SECRET_ACCESS_KEY
-  GARAGE_BUCKET_NAME
-)
-
-OPTIONAL_SECRETS=(
-  DATABASE_URL
+  R2_S3_ENDPOINT
+  R2_REGION
+  R2_ACCESS_KEY_ID
+  R2_SECRET_ACCESS_KEY
+  R2_BUCKET_NAME
 )
 
 list_json="$(npx wrangler secret list 2>/dev/null)" || {
@@ -48,11 +44,5 @@ if ((${#missing[@]} > 0)); then
   echo "Set each with: npx wrangler secret put <NAME>" >&2
   exit 1
 fi
-
-for name in "${OPTIONAL_SECRETS[@]}"; do
-  if ! echo "$registered" | grep -qx "$name"; then
-    echo "WARN: optional secret $name not set (fallback until Hyperdrive is verified)"
-  fi
-done
 
 echo "All required secrets are registered ($((${#REQUIRED_SECRETS[@]})) total)."

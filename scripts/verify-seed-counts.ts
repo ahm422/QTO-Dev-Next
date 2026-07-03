@@ -1,7 +1,9 @@
 import "dotenv/config";
-import { disconnect, prisma } from "../prisma/seed/helpers";
+import { disconnect, initSeedPrisma, prisma } from "../prisma/seed/helpers";
 
 async function main() {
+  await initSeedPrisma();
+
   const counts = {
     services: await prisma.service.count(),
     processSteps: await prisma.processStep.count(),

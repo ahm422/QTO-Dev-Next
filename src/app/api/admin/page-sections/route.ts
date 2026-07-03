@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { parseMetadata, stringifyMetadata } from "@/lib/metadata";
 import { apiSuccess, apiError } from "@/lib/apiResponses";
 import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
@@ -25,7 +26,12 @@ export async function GET(request: NextRequest) {
       where: page ? { slug: { startsWith: `${page}.` } } : undefined,
       orderBy: { slug: "asc" },
     });
-    return apiSuccess({ items });
+    return apiSuccess({
+      items: items.map((item) => ({
+        ...item,
+        data: parseMetadata(item.data) ?? {},
+      })),
+    });
   } catch (e) {
     return handleRouteError("GET /api/admin/page-sections", e);
   }
@@ -40,7 +46,14 @@ export async function POST(request: NextRequest) {
   if (!parsed.success)
     return apiError(400, "Validation failed", { fieldErrors: parsed.error.flatten().fieldErrors as Record<string, string[]> });
   try {
-    const item = await prisma.pageSection.create({ data: { ...parsed.data, data: parsed.data.data as never } });
+    const item = await prisma.pageSection.create({
+      data: {
+        slug: parsed.data.slug,
+        label: parsed.data.label,
+        data: stringifyMetadata(parsed.data.data) ?? "{}",
+        isPublished: parsed.data.isPublished,
+      },
+    });
     for (const p of pageSectionPaths(parsed.data.slug)) revalidatePath(p);
     return apiSuccess({ slug: item.slug }, 201);
   } catch (e) {

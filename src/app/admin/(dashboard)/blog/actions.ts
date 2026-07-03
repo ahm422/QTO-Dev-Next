@@ -2,10 +2,15 @@
 
 import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
+import { persistD1Bookmark } from "@/lib/d1/session"
 import { redirect } from "next/navigation"
 import { blogPostSchema, type BlogPostInput } from "@/lib/validators/admin/blogPost"
 import { revalidatePaths } from "@/lib/revalidate"
 import { blogPaths } from "@/lib/revalidate-paths"
+import {
+  toPrismaBlogPostCreateData,
+  toPrismaBlogPostUpdateData,
+} from "@/lib/prisma/blogPostData"
 
 
 export async function createBlogPost(data: BlogPostInput) {
@@ -13,11 +18,12 @@ export async function createBlogPost(data: BlogPostInput) {
   const parsed = blogPostSchema.parse(data)
   await prisma.blogPost.create({
     data: {
-      ...parsed,
+      ...toPrismaBlogPostCreateData(parsed),
       publishedAt: parsed.isPublished ? new Date() : null,
     },
   })
   revalidatePaths([...blogPaths(parsed.slug)])
+  await persistD1Bookmark()
   redirect("/admin/blog")
 }
 
@@ -28,9 +34,13 @@ export async function updateBlogPost(id: string, data: BlogPostInput) {
   const publishedAt = parsed.isPublished && !existing?.publishedAt ? new Date() : existing?.publishedAt ?? null
   await prisma.blogPost.update({
     where: { id },
-    data: { ...parsed, publishedAt },
+    data: {
+      ...toPrismaBlogPostUpdateData(parsed),
+      publishedAt,
+    },
   })
   revalidatePaths([...blogPaths(parsed.slug)])
+  await persistD1Bookmark()
   redirect("/admin/blog")
 }
 
@@ -39,6 +49,7 @@ export async function deleteBlogPost(id: string) {
   const post = await prisma.blogPost.findUnique({ where: { id }, select: { slug: true } })
   await prisma.blogPost.delete({ where: { id } })
   revalidatePaths([...blogPaths(post?.slug)])
+  await persistD1Bookmark()
 }
 
 export async function toggleBlogPostPublished(id: string, value: boolean) {
@@ -47,4 +58,5 @@ export async function toggleBlogPostPublished(id: string, value: boolean) {
   const publishedAt = value && !existing?.publishedAt ? new Date() : existing?.publishedAt ?? null
   await prisma.blogPost.update({ where: { id }, data: { isPublished: value, publishedAt } })
   revalidatePaths([...blogPaths(existing?.slug)])
+  await persistD1Bookmark()
 }

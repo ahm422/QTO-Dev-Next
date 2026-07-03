@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { parseMetadata, stringifyMetadata } from "@/lib/metadata";
 import { apiSuccess, apiError } from "@/lib/apiResponses";
 import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
@@ -21,7 +22,12 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
   try {
     const item = await prisma.pageSection.findUnique({ where: { slug } });
     if (!item) return apiError(404, "Not found");
-    return apiSuccess({ item });
+    return apiSuccess({
+      item: {
+        ...item,
+        data: parseMetadata(item.data) ?? {},
+      },
+    });
   } catch (e) {
     return handleRouteError("GET /api/admin/page-sections/[slug]", e);
   }
@@ -37,12 +43,21 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   if (!parsed.success)
     return apiError(400, "Validation failed", { fieldErrors: parsed.error.flatten().fieldErrors as Record<string, string[]> });
   try {
-    const updateData = parsed.data.data !== undefined
-      ? { ...parsed.data, data: parsed.data.data as never }
-      : parsed.data as { label?: string; isPublished?: boolean };
+    const updateData =
+      parsed.data.data !== undefined
+        ? {
+            ...parsed.data,
+            data: stringifyMetadata(parsed.data.data) ?? "{}",
+          }
+        : parsed.data;
     const item = await prisma.pageSection.update({ where: { slug }, data: updateData });
     for (const p of pageSectionPaths(slug)) revalidatePath(p);
-    return apiSuccess({ item });
+    return apiSuccess({
+      item: {
+        ...item,
+        data: parseMetadata(item.data) ?? {},
+      },
+    });
   } catch (e) {
     return handleRouteError("PATCH /api/admin/page-sections/[slug]", e);
   }

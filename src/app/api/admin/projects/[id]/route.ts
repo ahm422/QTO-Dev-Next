@@ -7,15 +7,24 @@ import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { projectSchema } from "@/lib/validators/admin/project";
+import {
+  fromPrismaProject,
+  projectWithRelationsInclude,
+  toPrismaProjectPartialUpdateData,
+  toPrismaProjectUpdateData,
+} from "@/lib/prisma/projectData";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error } = await requireAdminSession();
   if (error) return error;
   const { id } = await params;
   try {
-    const item = await prisma.project.findUnique({ where: { id } });
+    const item = await prisma.project.findUnique({
+      where: { id },
+      include: projectWithRelationsInclude,
+    });
     if (!item) return apiError(404, "Not found");
-    return apiSuccess({ item });
+    return apiSuccess({ item: fromPrismaProject(item) });
   } catch (e) {
     return handleRouteError("GET /api/admin/projects/[id]", e);
   }
@@ -31,11 +40,19 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   if (!parsed.success)
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
-    const item = await prisma.project.update({ where: { id }, data: parsed.data });
+    const updateData =
+      Object.keys(parsed.data).length === Object.keys(projectSchema.shape).length
+        ? toPrismaProjectUpdateData(parsed.data as Parameters<typeof toPrismaProjectUpdateData>[0])
+        : toPrismaProjectPartialUpdateData(parsed.data);
+    const item = await prisma.project.update({
+      where: { id },
+      data: updateData,
+      include: projectWithRelationsInclude,
+    });
     revalidatePath("/");
     revalidatePath("/projects");
     if (item.slug) revalidatePath(`/projects/${item.slug}`);
-    return apiSuccess({ item });
+    return apiSuccess({ item: fromPrismaProject(item) });
   } catch (e) {
     return handleRouteError("PATCH /api/admin/projects/[id]", e);
   }

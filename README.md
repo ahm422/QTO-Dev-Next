@@ -35,26 +35,24 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-## Prisma Setup
+## Prisma + D1 setup
 
-1. Copy the example env file and update your database connection:
+1. Copy the example env files:
 
 ```bash
 cp .env.example .env
+cp .dev.vars.example .dev.vars
 ```
 
-2. Set `DATABASE_URL` in `.env` to your PostgreSQL connection string.
+2. Apply local D1 migrations and seed:
 
-   **Local dev** (Docker Compose — `npm run db:up`):
+```bash
+npm run d1:setup
+```
 
-   ```env
-   DATABASE_URL="postgresql://postgres:postgres@localhost:5432/qtodev"
-   DIRECT_URL="postgresql://postgres:postgres@localhost:5432/qtodev"
-   ```
+   This runs `wrangler d1 migrations apply qtodev-d1 --local` then `prisma db seed`. Re-running seed is idempotent (upserts by slug/section keys). **Do not auto-seed production.**
 
-   **Self-hosted production:** use your server's connection string in CI/local `.env` for Prisma migrations only. The deployed Worker uses [Cloudflare Hyperdrive](#postgresql-on-workers-hyperdrive) (not `DATABASE_URL`).
-
-3. Generate the Prisma Client:
+3. Generate the Prisma Client (also runs on `npm install` via `postinstall`):
 
 ```bash
 npm run prisma:generate
@@ -66,29 +64,35 @@ npm run prisma:generate
 npm run prisma:validate
 ```
 
-5. Create/apply migrations after adding models to `prisma/schema.prisma`:
+5. **Schema changes** — edit `prisma/schema.prisma`, then:
 
 ```bash
-npm run prisma:migrate:dev -- --name init
+npx prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script > migrations/d1/NNNN_description.sql
+npm run d1:migrate:local
 ```
 
-   Phase 2 CMS models (18 tables): see [docs/phase2-schema.md](docs/phase2-schema.md) for migration name, seed command, and dev-only `npx prisma db seed`.
+   Phase 2 CMS models (18 tables): see [docs/phase2-schema.md](docs/phase2-schema.md) for seed command and verification.
 
-   **Phase 3 (dev/staging):** apply migration `20260602163327_add_cms_content_models`, then populate CMS tables from static data:
-
-   ```bash
-   npm run prisma:migrate:dev -- --name add_cms_content_models
-   npx prisma db seed
-   npx tsx scripts/verify-seed-counts.ts
-   ```
-
-   Re-running `npx prisma db seed` is idempotent (upserts by slug/section keys). **Phase 7:** public marketing routes read CMS content via Prisma in Server Components (`src/lib/cms/*`), with ISR (`revalidate = 3600` on `(qtodev)` layout) and `revalidatePath` on admin writes. `src/data/*` remains for seed scripts only. Do not auto-seed production.
-
-6. Optional connectivity smoke test:
+6. Verify seed counts:
 
 ```bash
-npx prisma db pull
+npm run verify:seed-counts
 ```
+
+7. **Production deploy** — apply remote migrations before or at deploy:
+
+```bash
+npm run d1:migrate:remote
+npm run deploy
+```
+
+8. **Admin bootstrap:**
+
+```bash
+npm run admin:create-user -- --d1=local --email=you@example.com
+```
+
+Canonical infrastructure doc: [docs/d1-provisioning.md](docs/d1-provisioning.md).
 
 ## Deploy on Cloudflare Workers
 
@@ -122,77 +126,56 @@ Copy from `.env.example` / `.dev.vars.example` into the Cloudflare dashboard (Pr
 
 | Variable | Notes |
 |----------|--------|
-| `DATABASE_URL` | **Preview fallback only** — when Hyperdrive binding is unavailable. Remove from Workers after Hyperdrive is verified in prod. |
 | `JWT_ACCESS_SECRET` | JWT signing secret (`openssl rand -hex 64`) |
 | `CRON_SECRET` | Bearer token for `GET /api/cron/cleanup-tokens` (`openssl rand -hex 32`) |
 | `REVALIDATE_SECRET` | Bearer token for `POST /api/revalidate` (`openssl rand -hex 32`) |
 | `RESEND_API_KEY` | Resend transactional email |
 | `UPSTASH_REDIS_REST_URL` | **Required in production** — in-memory rate limit is dev-only |
 | `UPSTASH_REDIS_REST_TOKEN` | **Required in production** |
-| `GARAGE_ENDPOINT` | S3-compatible endpoint |
-| `GARAGE_REGION` | e.g. `garage` |
-| `GARAGE_ACCESS_KEY_ID` | |
-| `GARAGE_SECRET_ACCESS_KEY` | |
-| `GARAGE_BUCKET_NAME` | e.g. `qto-dev` |
+| `R2_S3_ENDPOINT` | S3-compatible R2 API endpoint |
+| `R2_REGION` | `auto` |
+| `R2_ACCESS_KEY_ID` | R2 API token access key |
+| `R2_SECRET_ACCESS_KEY` | R2 API token secret |
+| `R2_BUCKET_NAME` | e.g. `qtodev-media` |
 
 **Plain variables** (Workers → Settings → Variables, or `[vars]` in `wrangler.toml`):
 
 | Variable | Notes |
 |----------|--------|
 | `NEXT_PUBLIC_SITE_URL` | Canonical URLs, auth redirects |
-| `GARAGE_PUBLIC_URL` | Public CDN base URL |
+| `R2_PUBLIC_URL` | Public CDN base URL for uploaded media |
 | `RESEND_FROM_EMAIL` | Verified domain sender |
 | `RESEND_TO_EMAIL` | Internal notification recipient |
-| `PGSSL_REJECT_UNAUTHORIZED` | `true` in production; `false` locally |
 
-**Bindings / local-only:**
+**Bindings:**
 
-| Variable | Notes |
+| Binding | Notes |
 |----------|--------|
-| `HYPERDRIVE` | Production DB access via [`wrangler.toml`](wrangler.toml) — create with [`scripts/create-hyperdrive.sh`](scripts/create-hyperdrive.sh) |
-| `DIRECT_URL` | Local/CI only — `prisma migrate` and seed scripts |
+| `DB` | D1 database (`qtodev-d1`) — see [docs/d1-provisioning.md](docs/d1-provisioning.md) |
+| `MEDIA` | R2 bucket (`qtodev-media`) |
 
 CLI: `wrangler secret put JWT_ACCESS_SECRET` (repeat per secret). Verify: `npm run secrets:verify`.
 
-**Not used:** `JWT_REFRESH_SECRET` (opaque refresh tokens in Postgres), `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` (use `GARAGE_*`).
+**Not used:** `JWT_REFRESH_SECRET` (opaque refresh tokens in D1), `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` (use `R2_*`).
 
 **Admin CMS sign-in:** see [docs/admin-auth.md](docs/admin-auth.md) for custom JWT auth, `npm run admin:create-user`, and local smoke tests.
 
 ### Local development
 
-**Next.js dev server** (default):
+**Next.js dev server** (UI only — no D1 binding):
 
 ```bash
 cp .env.example .env   # fill values
 npm run dev
 ```
 
-**Workers runtime preview** (matches production runtime):
+**Workers runtime preview** (matches production — D1 + R2):
 
 ```bash
 cp .dev.vars.example .dev.vars   # fill values
+npm run d1:setup
 npm run preview
 ```
-
-### PostgreSQL on Workers (Hyperdrive)
-
-Cloudflare Workers cannot open raw TCP connections to PostgreSQL. Production uses **Hyperdrive** (`HYPERDRIVE` binding in [`wrangler.toml`](wrangler.toml)); [`src/lib/prisma.ts`](src/lib/prisma.ts) reads `ctx.env.HYPERDRIVE.connectionString` on Workers and falls back to `DATABASE_URL` for `npm run dev` / preview.
-
-**One-time setup** (PostgreSQL origin must be **publicly reachable** — not `localhost` or `192.168.x.x`):
-
-```bash
-export DB_PASSWORD='your-postgres-password'
-./scripts/create-hyperdrive.sh \
-  --host db.your-domain.com \
-  --port 5432 \
-  --user postgres \
-  --database qtodev
-npm run cf-typegen
-```
-
-Or pass a full URL: `export HYPERDRIVE_ORIGIN_URL='postgresql://...'` then `./scripts/create-hyperdrive.sh`.
-
-After Hyperdrive is verified in production, remove `DATABASE_URL` from Workers → Variables and Secrets. Keep `DATABASE_URL` / `DIRECT_URL` in `.env` for local dev and Prisma CLI.
 
 Do **not** set `export const runtime = "edge"` on Prisma routes — [not supported by OpenNext on Cloudflare](https://opennext.js.org/cloudflare/get-started).
 

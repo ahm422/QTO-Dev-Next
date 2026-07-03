@@ -2,8 +2,11 @@ account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
 
 name = "qtodev-site"
 main = ".open-next/worker.js"
-compatibility_date = "2025-06-29"
+compatibility_date = "2025-12-30"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+
+[alias]
+sqlite = "./scripts/workerd-sqlite-shim.js"
 
 [assets]
 directory = ".open-next/assets"
@@ -20,8 +23,7 @@ service = "qtodev-site"
 binding = "IMAGES"
 
 # Non-secret production vars — set in Workers → Settings → Variables (not in this file):
-#   NEXT_PUBLIC_SITE_URL, GARAGE_PUBLIC_URL, RESEND_FROM_EMAIL, RESEND_TO_EMAIL,
-#   PGSSL_REJECT_UNAUTHORIZED=true
+#   NEXT_PUBLIC_SITE_URL, R2_PUBLIC_URL, RESEND_FROM_EMAIL, RESEND_TO_EMAIL
 #
 # Nightly token cleanup — fires at 03:00 UTC and calls GET /api/cron/cleanup-tokens
 # via an external cron service (e.g. Upstash QStash or EasyCron) with:
@@ -31,10 +33,38 @@ binding = "IMAGES"
 [triggers]
 crons = ["0 3 * * *"]
 
-# PostgreSQL via Hyperdrive (Workers runtime). Create config and set `id`:
-#   ./scripts/create-hyperdrive.sh --host YOUR_PUBLIC_DB_HOST --user postgres --database qtodev
-# Origin must be publicly reachable (not localhost / 192.168.x.x). See README.
-[[hyperdrive]]
-binding = "HYPERDRIVE"
-id = "00000000000000000000000000000000"
-localConnectionString = "postgresql://postgres:postgres@localhost:5432/qtodev"
+# D1 (Workers runtime). Apply schema: wrangler d1 migrations apply qtodev-d1 --remote
+# Local dev: wrangler d1 migrations apply qtodev-d1 --local
+[[d1_databases]]
+binding = "DB"
+database_name = "qtodev-d1"
+database_id = "YOUR_D1_DATABASE_ID"
+migrations_dir = "./migrations/d1"
+
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "qtodev-media"
+
+# Staging environment — separate D1 for Phase 4/6 migration dry-runs (not production).
+# Create: npx wrangler d1 create qtodev-d1-staging
+# Replace database_id below with output from create command.
+# Apply:  npx wrangler d1 migrations apply qtodev-d1-staging --remote --env staging
+[env.staging]
+name = "qtodev-site-staging"
+
+[[env.staging.services]]
+binding = "WORKER_SELF_REFERENCE"
+service = "qtodev-site-staging"
+
+[env.staging.images]
+binding = "IMAGES"
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "qtodev-d1-staging"
+database_id = "YOUR_STAGING_D1_DATABASE_ID"
+migrations_dir = "./migrations/d1"
+
+[[env.staging.r2_buckets]]
+binding = "MEDIA"
+bucket_name = "qtodev-media"

@@ -1,15 +1,8 @@
 # Wrangler local dev (copy to .dev.vars and fill in values).
 # https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
+# D1 database comes from the DB binding in wrangler.toml (apply: npm run d1:migrate:local).
 
 NEXTJS_ENV=development
-
-# Fallback when HYPERDRIVE binding is unavailable in preview (local Postgres or remote URL)
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/qtodev
-
-# Prisma CLI only (migrations); optional in .dev.vars
-DIRECT_URL=postgresql://postgres:postgres@localhost:5432/qtodev
-
-PGSSL_REJECT_UNAUTHORIZED=false
 
 # JWT signing secret for custom auth. Generate: openssl rand -hex 64
 JWT_ACCESS_SECRET=replace-with-64-char-hex-secret
@@ -18,13 +11,16 @@ JWT_ACCESS_SECRET=replace-with-64-char-hex-secret
 # ADMIN_EMAIL=admin@qtodev.local
 # ADMIN_PASSWORD=choose-a-strong-password
 
-# Garage (S3-compatible)
-GARAGE_ENDPOINT=http://localhost:3900
-GARAGE_REGION=garage
-GARAGE_ACCESS_KEY_ID=replace_me
-GARAGE_SECRET_ACCESS_KEY=replace_me
-GARAGE_BUCKET_NAME=qto-dev
-GARAGE_PUBLIC_URL=http://localhost:3902/qto-dev
+# Cloudflare R2 (S3-compatible) — qtodev-media bucket
+# Dashboard S3 API: https://<account_id>.r2.cloudflarestorage.com/qtodev-media
+# Use base URL below (without bucket path); code appends bucket automatically.
+R2_S3_ENDPOINT=https://YOUR_CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com
+R2_REGION=auto
+R2_ACCESS_KEY_ID=replace_me
+R2_SECRET_ACCESS_KEY=replace_me
+R2_BUCKET_NAME=qtodev-media
+# Enable Public Development URL in R2 → Settings, or attach a custom domain
+R2_PUBLIC_URL=https://pub-xxxxx.r2.dev
 
 # Resend
 RESEND_API_KEY=re_replace_me

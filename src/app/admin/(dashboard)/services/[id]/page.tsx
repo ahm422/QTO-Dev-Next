@@ -1,6 +1,7 @@
 import { getServerSession } from "@/lib/auth/session"
 import { notFound, redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
+import { fromPrismaService, serviceWithTagsInclude } from "@/lib/prisma/serviceData"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import ServiceForm from "./ServiceForm"
 
@@ -16,7 +17,10 @@ export default async function ServiceFormPage({
   const isNew = id === "new"
 
   if (!isNew) {
-    const service = await prisma.service.findUnique({ where: { id } })
+    const service = await prisma.service.findUnique({
+      where: { id },
+      include: serviceWithTagsInclude,
+    })
     if (!service) notFound()
 
     return (
@@ -31,7 +35,7 @@ export default async function ServiceFormPage({
           ]}
           badges={[{ label: service.isPublished ? "Published" : "Draft", variant: service.isPublished ? "success" : "warning" }]}
         />
-        <ServiceForm defaultValues={service} />
+        <ServiceForm defaultValues={fromPrismaService(service)} />
       </div>
     )
   }

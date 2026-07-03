@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation';
 import { Suspense } from "react";
-import { getBlogBySlug, getAllBlogPosts } from '@/lib/blog';
+import { getBlogBySlug } from '@/lib/blog';
+import { findPublishedBlogSlugsForBuild } from '@/lib/prisma/buildTimePrisma';
+import { skipBuildTimeD1 } from '@/lib/prisma/skipBuildTimeD1';
 import { ArticleHeader } from './_components/ArticleHeader';
 import { ArticleBody } from './_components/ArticleBody';
 import { ArticleSidebar } from './_components/ArticleSidebar';
@@ -41,8 +43,9 @@ export async function generateMetadata({ params }: BlogDetailPageProps) {
 }
 
 export async function generateStaticParams() {
-  const posts = await getAllBlogPosts();
-  return posts.map((p) => ({ slug: p.slug }));
+  if (skipBuildTimeD1()) return [];
+  const slugs = await findPublishedBlogSlugsForBuild();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export default async function BlogDetailPage({

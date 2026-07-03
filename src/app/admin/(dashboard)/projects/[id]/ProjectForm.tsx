@@ -13,23 +13,28 @@ import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { createProject, updateProject } from "../actions"
-import type { Project } from "@prisma/client"
 
 function slugify(s: string) { return s.toLowerCase().trim().replace(/[^a-z0-9\s-]/g,"").replace(/\s+/g,"-").replace(/-+/g,"-") }
 
-export default function ProjectForm({ defaultValues }: { defaultValues?: Project }) {
+export default function ProjectForm({ defaultValues }: { defaultValues?: ProjectInput & { id?: string } }) {
   const isEdit = !!defaultValues?.id
   const form = useForm<ProjectInput>({
     resolver: formResolver(projectSchema),
     defaultValues: defaultValues
-      ? { ...defaultValues, completedAt: defaultValues.completedAt?.toISOString().split("T")[0] ?? "" }
+      ? {
+          ...defaultValues,
+          completedAt:
+            typeof defaultValues.completedAt === "string"
+              ? defaultValues.completedAt
+              : "",
+        }
       : { title: "", slug: "", client: "", category: "", tags: [], excerpt: "", description: "", challenge: "", solution: "", results: [], coverImageUrl: "", images: [], techStack: [], liveUrl: "", isFeatured: false, order: 0, isPublished: false, completedAt: "" },
   })
   const { isSubmitting } = form.formState
 
   async function onSubmit(data: ProjectInput) {
     try {
-      if (isEdit) await updateProject(defaultValues.id, data)
+      if (isEdit && defaultValues?.id) await updateProject(defaultValues.id, data)
       else await createProject(data)
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")

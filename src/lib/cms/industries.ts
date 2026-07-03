@@ -1,12 +1,12 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { getCachedReadPrisma } from "@/lib/prisma/cachedRead";
 import { mapIndustry } from "./mappers";
 
 export const findPublishedIndustries = cache(
   unstable_cache(
     async () => {
-      const items = await prisma.industry.findMany({
+      const items = await (await getCachedReadPrisma()).industry.findMany({
         where: { isPublished: true },
         orderBy: { order: "asc" },
       });

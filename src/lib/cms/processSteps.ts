@@ -1,12 +1,12 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { getCachedReadPrisma } from "@/lib/prisma/cachedRead";
 import { mapProcessStep } from "./mappers";
 
 export const findPublishedProcessSteps = cache(
   unstable_cache(
     async (context: string) => {
-      const items = await prisma.processStep.findMany({
+      const items = await (await getCachedReadPrisma()).processStep.findMany({
         where: { isPublished: true, context },
         orderBy: [{ context: "asc" }, { order: "asc" }],
       });

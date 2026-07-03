@@ -7,13 +7,18 @@ import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { featuredWorkSchema } from "@/lib/validators/admin/featuredWork";
+import {
+  fromPrismaFeaturedWork,
+  toPartialPrismaFeaturedWorkData,
+  toPrismaFeaturedWorkData,
+} from "@/lib/prisma/jsonModelData";
 
 export async function GET() {
   const { error } = await requireAdminSession();
   if (error) return error;
   try {
     const items = await prisma.featuredWork.findMany({ orderBy: { order: "asc" } });
-    return apiSuccess({ items });
+    return apiSuccess({ items: items.map(fromPrismaFeaturedWork) });
   } catch (e) {
     return handleRouteError("GET /api/admin/featured-works", e);
   }
@@ -28,7 +33,7 @@ export async function POST(request: NextRequest) {
   if (!parsed.success)
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
-    const item = await prisma.featuredWork.create({ data: parsed.data });
+    const item = await prisma.featuredWork.create({ data: toPrismaFeaturedWorkData(parsed.data) });
     revalidatePath("/");
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {

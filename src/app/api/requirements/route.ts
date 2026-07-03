@@ -9,7 +9,6 @@
  */
 import { NextRequest } from "next/server";
 import { jsx } from "react/jsx-runtime";
-import type { Prisma } from "@prisma/client";
 import RequirementNotification from "@/emails/RequirementNotification";
 import { createRequirementSubmission } from "@/services/requirementService";
 import { requirementSubmissionSchema } from "@/lib/validators/requirement";
@@ -68,10 +67,10 @@ export async function POST(request: NextRequest) {
     const companyLocation = body.companyLocation?.trim();
     if (companyLocation) metaBase.companyLocation = companyLocation;
 
-    /** Deep-clone so JSONB only gets plain values (no undefined / non-JSON types). */
-    const metadata: Prisma.InputJsonValue | null =
+    /** Deep-clone so stored JSON only gets plain values (no undefined / non-JSON types). */
+    const metadata: Record<string, unknown> | null =
       Object.keys(metaBase).length > 0
-        ? (JSON.parse(JSON.stringify(metaBase)) as Prisma.InputJsonValue)
+        ? (JSON.parse(JSON.stringify(metaBase)) as Record<string, unknown>)
         : null;
 
     try {

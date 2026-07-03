@@ -1,5 +1,10 @@
 import { projects as legacyProjects } from "@/data/projects";
 import { getSeedDetailProjects } from "@/content/projects/index";
+import {
+  createOrderedChildren,
+  replaceOrderedChildren,
+  stringifyStringArray,
+} from "@/lib/prisma/arrayFields";
 import { prisma } from "./helpers";
 
 export async function seedProjects() {
@@ -23,15 +28,15 @@ export async function seedProjects() {
         title: legacy.title,
         client: detail?.about?.client ?? null,
         category: legacy.category,
-        tags: legacy.tags,
+        tags: createOrderedChildren(legacy.tags),
         excerpt: legacy.shortDescription,
         description: legacy.description,
         challenge,
         solution,
-        results,
+        results: stringifyStringArray(results),
         coverImageUrl: detail?.heroImage?.url ?? legacy.image ?? null,
-        images,
-        techStack: legacy.technologies,
+        images: stringifyStringArray(images),
+        techStack: createOrderedChildren(legacy.technologies),
         liveUrl: detail?.demoUrl ?? null,
         isFeatured: legacy.featured,
         order: i,
@@ -41,15 +46,15 @@ export async function seedProjects() {
         title: legacy.title,
         client: detail?.about?.client ?? null,
         category: legacy.category,
-        tags: legacy.tags,
+        tags: replaceOrderedChildren(legacy.tags),
         excerpt: legacy.shortDescription,
         description: legacy.description,
         challenge,
         solution,
-        results,
+        results: stringifyStringArray(results),
         coverImageUrl: detail?.heroImage?.url ?? legacy.image ?? null,
-        images,
-        techStack: legacy.technologies,
+        images: stringifyStringArray(images),
+        techStack: replaceOrderedChildren(legacy.technologies),
         liveUrl: detail?.demoUrl ?? null,
         isFeatured: legacy.featured,
         order: i,

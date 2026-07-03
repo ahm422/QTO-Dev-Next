@@ -1,6 +1,7 @@
 import { getServerSession } from "@/lib/auth/session"
 import { notFound, redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
+import { fromPrismaJob } from "@/lib/prisma/jsonModelData"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import JobForm from "./JobForm"
 
@@ -24,7 +25,7 @@ export default async function JobFormPage({ params }: { params: Promise<{ id: st
   return (
     <div className="space-y-6">
       <AdminPageHeader title="Edit Job" subtitle={record.title} badges={[{ label: record.isPublished ? "Published" : "Draft", variant: record.isPublished ? "success" : "warning" }]} breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Jobs", href: "/admin/jobs" }, { label: "Edit" }]} />
-      <JobForm defaultValues={record} />
+      <JobForm defaultValues={fromPrismaJob(record)} />
     </div>
   )
 }

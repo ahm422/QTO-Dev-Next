@@ -1,6 +1,5 @@
 import { NextRequest } from "next/server"
 import { jsx } from "react/jsx-runtime"
-import type { Prisma } from "@prisma/client"
 import JobApplicationEmail from "@/emails/JobApplicationEmail"
 import { createJobApplication } from "@/services/jobApplicationService"
 import { jobApplicationSchema } from "@/lib/validators/jobApplication"
@@ -42,7 +41,7 @@ export async function POST(request: NextRequest) {
         referrer,
         userAgent,
         ip,
-        metadata: null as Prisma.InputJsonValue | null,
+        metadata: null,
       })
 
       if (isResendConfigured()) {

@@ -1,12 +1,12 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { getCachedReadPrisma } from "@/lib/prisma/cachedRead";
 import { mapStat } from "./mappers";
 
 export const findPublishedStats = cache(
   unstable_cache(
     async () => {
-      const items = await prisma.stat.findMany({
+      const items = await (await getCachedReadPrisma()).stat.findMany({
         where: { isPublished: true },
         orderBy: { order: "asc" },
       });

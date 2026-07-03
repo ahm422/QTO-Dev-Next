@@ -1,12 +1,12 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { getCachedReadPrisma } from "@/lib/prisma/cachedRead";
 import { mapSiteConfigRows } from "./mappers";
 
 export const findSiteBranding = cache(
   unstable_cache(
     async () => {
-      const rows = await prisma.siteConfig.findMany();
+      const rows = await (await getCachedReadPrisma()).siteConfig.findMany();
       return mapSiteConfigRows(rows);
     },
     ["site-branding"],

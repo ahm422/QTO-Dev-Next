@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
+import { parseMetadata } from "@/lib/metadata"
 import type { PageSection } from "@prisma/client"
 
 export default function PageSectionForm({ defaultValues }: { defaultValues?: PageSection }) {
@@ -17,7 +18,7 @@ export default function PageSectionForm({ defaultValues }: { defaultValues?: Pag
   const [label, setLabel] = useState(defaultValues?.label ?? "")
   const [isPublished, setIsPublished] = useState(defaultValues?.isPublished ?? true)
   const [jsonText, setJsonText] = useState(
-    defaultValues?.data ? JSON.stringify(defaultValues.data, null, 2) : "{}"
+    JSON.stringify(parseMetadata(defaultValues?.data) ?? {}, null, 2)
   )
   const [jsonError, setJsonError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)

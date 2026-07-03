@@ -28,7 +28,7 @@ import {
   FileText, Palette, Image as ImageIcon, Tag, Search,
 } from "lucide-react"
 import { createService, updateService, toggleServicePublished } from "../actions"
-import type { Service } from "@prisma/client"
+import type { ServiceInput } from "@/lib/validators/admin/service"
 
 function slugify(str: string) {
   return str
@@ -45,7 +45,7 @@ const TECH_SUGGESTIONS = [
 ]
 
 interface ServiceFormProps {
-  defaultValues?: Service
+  defaultValues?: ServiceInput & { id?: string }
 }
 
 export default function ServiceForm({ defaultValues }: ServiceFormProps) {
@@ -55,11 +55,17 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
     resolver: formResolver(serviceSchema),
     defaultValues: defaultValues
       ? {
-          ...defaultValues,
+          title: defaultValues.title,
+          slug: defaultValues.slug,
+          shortDescription: defaultValues.shortDescription,
           description: defaultValues.description ?? "",
           icon: defaultValues.icon ?? "",
+          features: defaultValues.features ?? [],
+          technologyTags: defaultValues.technologyTags ?? [],
           imageUrl: defaultValues.imageUrl ?? "",
           imageAlt: defaultValues.imageAlt ?? "",
+          order: defaultValues.order ?? 0,
+          isPublished: defaultValues.isPublished ?? false,
         }
       : {
           title: "",

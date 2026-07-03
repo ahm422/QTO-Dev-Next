@@ -2,6 +2,7 @@ import { getServerSession } from "@/lib/auth/session"
 import { roleCanCreateContent, roleCanDeleteContent, type AdminRole } from "@/lib/auth/roles"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
+import { fromPrismaService, serviceWithTagsInclude } from "@/lib/prisma/serviceData"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import AdminContentContext from "@/components/admin/layout/AdminContentContext"
 import StatCard from "@/components/admin/data/StatCard"
@@ -27,7 +28,7 @@ export default async function ServicesPage({
   }
 
   const [rows, total, published, drafts] = await Promise.all([
-    prisma.service.findMany({ where, orderBy: { order: "asc" } }),
+    prisma.service.findMany({ where, orderBy: { order: "asc" }, include: serviceWithTagsInclude }),
     prisma.service.count(),
     prisma.service.count({ where: { isPublished: true } }),
     prisma.service.count({ where: { isPublished: false } }),
@@ -73,7 +74,7 @@ export default async function ServicesPage({
         ]}
       />
 
-      <ServicesTable rows={rows}
+      <ServicesTable rows={rows.map(fromPrismaService)}
         canDelete={roleCanDeleteContent(role as AdminRole)}
         canCreate={roleCanCreateContent(role as AdminRole)}
       />

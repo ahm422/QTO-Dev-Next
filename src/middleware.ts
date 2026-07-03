@@ -5,6 +5,8 @@ import { applySecurityHeaders } from "@/lib/securityHeaders";
 import { COOKIE_ACCESS_TOKEN, COOKIE_REFRESH_TOKEN } from "@/lib/auth/constants";
 import { sanitizeAdminRedirect } from "@/lib/auth/redirect";
 import { checkAuthGlobalRateLimit, rateLimitExceededResponse } from "@/lib/auth/rate-limit";
+import { D1_BOOKMARK_COOKIE, D1_BOOKMARK_HEADER } from "@/lib/d1/session";
+import { checkWriteFreeze } from "@/lib/freeze-writes";
 
 const LOGIN_PATH = "/admin/login";
 const UNAUTHORIZED_PATH = "/admin/unauthorized";
@@ -31,6 +33,28 @@ function extractCookieValue(setCookieHeaders: string[], name: string): string | 
   return line ? line.split(";")[0].split("=").slice(1).join("=") : null;
 }
 
+function applyD1BookmarkHeader(request: NextRequest, requestHeaders: Headers): void {
+  const bookmark = request.cookies.get(D1_BOOKMARK_COOKIE)?.value;
+  if (bookmark) {
+    requestHeaders.set(D1_BOOKMARK_HEADER, bookmark);
+  }
+}
+
+function forwardWithD1Bookmark(
+  request: NextRequest,
+  init?: { setCookies?: string[] | null }
+): NextResponse {
+  const requestHeaders = new Headers(request.headers);
+  applyD1BookmarkHeader(request, requestHeaders);
+
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
+  if (init?.setCookies) {
+    for (const c of init.setCookies) response.headers.append("Set-Cookie", c);
+  }
+  applySecurityHeaders(response);
+  return response;
+}
+
 function redirectToLogin(request: NextRequest, pathname: string, clearCookies = false): NextResponse {
   const loginUrl = new URL(LOGIN_PATH, request.url);
   loginUrl.searchParams.set("redirectTo", sanitizeAdminRedirect(pathname));
@@ -43,12 +67,20 @@ function redirectToLogin(request: NextRequest, pathname: string, clearCookies = 
 export default async function middleware(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
 
+  const frozen = checkWriteFreeze(request);
+  if (frozen) return frozen;
+
+  // Public CMS / contact API routes — forward D1 bookmark only (no admin auth)
+  if (pathname.startsWith("/api/") && !pathname.startsWith("/api/auth/")) {
+    return forwardWithD1Bookmark(request);
+  }
+
   // Layer 3 — global auth rate limit on all /api/auth/* routes (100 req / 15 min per IP)
   // Note: the internal attemptRefresh() fetch also passes through here, which is intentional.
   if (pathname.startsWith("/api/auth/")) {
     const result = await checkAuthGlobalRateLimit(request);
     if (!result.allowed) return rateLimitExceededResponse(result.retryAfterSeconds);
-    return NextResponse.next();
+    return forwardWithD1Bookmark(request);
   }
 
   // Public admin paths — always allow; just add security headers
@@ -59,8 +91,7 @@ export default async function middleware(request: NextRequest): Promise<NextResp
     pathname === RESET_PASSWORD_PATH ||
     pathname.startsWith("/admin/logout")
   ) {
-    const response = NextResponse.next();
-    applySecurityHeaders(response);
+    const response = forwardWithD1Bookmark(request);
 
     // For login page: if already authenticated, redirect to admin home
     if (pathname === LOGIN_PATH) {
@@ -146,6 +177,7 @@ function forwardAuthenticated(
   }
 
   const requestHeaders = new Headers(request.headers);
+  applyD1BookmarkHeader(request, requestHeaders);
   if (payload) {
     requestHeaders.set("x-user-id", payload.sub);
     requestHeaders.set("x-user-role", payload.role);
@@ -160,5 +192,5 @@ function forwardAuthenticated(
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/auth/:path*"],
+  matcher: ["/admin/:path*", "/api/:path*"],
 };

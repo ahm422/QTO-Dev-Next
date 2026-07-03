@@ -5,10 +5,12 @@ import StatusBadge from "@/components/admin/data/StatusBadge"
 import CategoryBadge from "@/components/admin/data/CategoryBadge"
 import { type AdminTableColumn } from "@/components/admin/AdminTable"
 import { deleteBlogPost, toggleBlogPostPublished } from "./actions"
-import type { BlogPost } from "@prisma/client"
+import type { BlogPostInput } from "@/lib/validators/admin/blogPost"
 import { FileText } from "lucide-react"
 
-const columns: AdminTableColumn<BlogPost>[] = [
+type BlogPostTableRow = BlogPostInput & { id: string }
+
+const columns: AdminTableColumn<BlogPostTableRow>[] = [
   {
     key: "title",
     label: "Post",
@@ -24,7 +26,7 @@ const columns: AdminTableColumn<BlogPost>[] = [
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 
-export default function BlogTable({ rows, canDelete, canCreate }: { rows: BlogPost[] ; canDelete?: boolean; canCreate?: boolean }) {
+export default function BlogTable({ rows, canDelete, canCreate }: { rows: BlogPostTableRow[] ; canDelete?: boolean; canCreate?: boolean }) {
   return (
     <DataTable
       columns={columns}
