@@ -1,4 +1,4 @@
-import { disconnect, initSeedPrisma } from "./seed/helpers";
+import { disconnect, initSeedPrisma, resolveSeedD1Target } from "./seed/helpers";
 import { seedAboutContent } from "./seed/aboutContent";
 import { seedPageSections } from "./seed/pageSections";
 import { seedBlogPosts } from "./seed/blogPosts";
@@ -20,8 +20,9 @@ import { seedWhyChooseUs } from "./seed/whyChooseUs";
 import { seedWorkValues } from "./seed/workValues";
 
 async function main() {
-  await initSeedPrisma();
-  console.log("Seeding CMS content from static data…");
+  const target = resolveSeedD1Target();
+  await initSeedPrisma(target);
+  console.log(`Seeding CMS content into ${target} D1 from static data…`);
 
   await seedServices();
   await seedProcessSteps();

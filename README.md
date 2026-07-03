@@ -92,6 +92,34 @@ npm run deploy
 npm run admin:create-user -- --d1=local --email=you@example.com
 ```
 
+### Staging bootstrap
+
+Populate remote staging D1 (`qtodev-d1-staging`) for end-to-end QA on `qtodev-site-staging`. **Do not run these against production `qtodev-d1`.**
+
+```bash
+# 1. Schema + CMS seed on staging D1 (local file → sync to remote)
+npm run d1:setup:staging
+
+# 2. Verify CMS row counts
+npm run verify:seed-counts:staging
+
+# 3. Create first admin (local staging file), then sync to remote
+npm run admin:create-user -- \
+  --d1=staging \
+  --email=you@example.com \
+  --password='ChooseAStrongPassword123!' \
+  --role=super_admin
+npm run d1:sync:staging
+
+# 4. Confirm staging Worker secrets (JWT required for login)
+npm run secrets:verify:staging
+
+# 5. Deploy if secrets or env changed
+npm run deploy:staging
+```
+
+Staging URL: `https://qtodev-site-staging.your-subdomain.workers.dev/admin/login`
+
 Canonical infrastructure doc: [docs/d1-provisioning.md](docs/d1-provisioning.md).
 
 ## Deploy on Cloudflare Workers

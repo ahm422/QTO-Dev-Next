@@ -1,8 +1,11 @@
 import "dotenv/config";
+import { parseCliD1Target } from "./migration/cli";
 import { disconnect, initSeedPrisma, prisma } from "../prisma/seed/helpers";
 
 async function main() {
-  await initSeedPrisma();
+  const target = parseCliD1Target("local");
+  await initSeedPrisma(target);
+  console.log(`Seed counts for ${target} D1:\n`);
 
   const counts = {
     services: await prisma.service.count(),
