@@ -75,10 +75,18 @@ export function Navbar() {
             >
               <AppIcon name={theme === "dark" ? "sun" : "moon"} size="sm" className="h-5 w-5 lg:h-6 lg:w-6" />
             </Button>
-            <HeaderCTAButton href="/contact" className="lg:px-5 lg:py-2.5 lg:text-base">
+            <HeaderCTAButton
+              href="/contact"
+              isActive={isActive(pathname, "/contact")}
+              className="lg:px-5 lg:py-2.5 lg:text-base"
+            >
               Contact Us
             </HeaderCTAButton>
-            <HeaderCTAButton href="/requirements" className="lg:px-5 lg:py-2.5 lg:text-base">
+            <HeaderCTAButton
+              href="/requirements"
+              isActive={isActive(pathname, "/requirements")}
+              className="lg:px-5 lg:py-2.5 lg:text-base"
+            >
               Requirements
             </HeaderCTAButton>
           </div>
@@ -145,6 +153,7 @@ export function Navbar() {
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <HeaderCTAButton
                   href="/contact"
+                  isActive={isActive(pathname, "/contact")}
                   onClick={() => setIsMenuOpen(false)}
                   className="w-full justify-center"
                 >
@@ -152,6 +161,7 @@ export function Navbar() {
                 </HeaderCTAButton>
                 <HeaderCTAButton
                   href="/requirements"
+                  isActive={isActive(pathname, "/requirements")}
                   onClick={() => setIsMenuOpen(false)}
                   className="w-full justify-center"
                 >

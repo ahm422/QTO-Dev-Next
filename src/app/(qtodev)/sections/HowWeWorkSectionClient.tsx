@@ -32,7 +32,7 @@ export function HowWeWorkSectionClient({ steps }: { steps: WorkProcessStep[] }) 
 
       <Container className="relative">
         <Reveal staggerSelector="[data-reveal]">
-          <div data-reveal className="mb-14 md:mb-16 text-white">
+          <div data-reveal className="mb-14 md:mb-16 text-white [&_h2]:text-white">
             <SectionHeader
               subtitle="HOW WE WORK"
               subtitleClassName="text-primary font-semibold tracking-[0.2em]"
@@ -61,14 +61,6 @@ export function HowWeWorkSectionClient({ steps }: { steps: WorkProcessStep[] }) 
                     "hover:border-primary/35 hover:bg-white/[0.09] hover:shadow-xl hover:shadow-primary/10 hover:ring-1 hover:ring-primary/20"
                   )}
                 >
-                  {/* Step number: large, subtle, top-right */}
-                  <span
-                    className="absolute right-5 top-5 font-heading text-4xl font-bold tabular-nums text-white/5 md:text-5xl"
-                    aria-hidden
-                  >
-                    {stepNumber}
-                  </span>
-
                   <div className="relative flex flex-1 flex-col">
                     <div className="mb-4 flex items-start justify-between gap-4">
                       <span className="inline-flex items-center rounded-lg bg-primary/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
