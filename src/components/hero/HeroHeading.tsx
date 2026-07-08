@@ -25,7 +25,7 @@ export function HeroHeading({ className, heading: headingProp, headingHighlight:
     <h1 className={headingClasses}>
       <span>{heading} </span>
       <span
-        className="text-primary"
+        className="hero-heading-shimmer"
         style={{
           textShadow:
             "0 0 28px rgba(244, 139, 34, 0.5), 0 0 8px rgba(244, 139, 34, 0.3)",

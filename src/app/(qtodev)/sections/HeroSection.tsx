@@ -30,6 +30,9 @@ export function HeroSection({ config }: { config?: HeroConfigType }) {
     terminalLines,
   } = config ?? heroConfig;
 
+  const tiltEnabled = !reducedMotion;
+
+  // Ambient glow only — 3D tilt activates on terminal hover (useHeroTilt).
   const handlePointerMove = useCallback(
     (e: React.PointerEvent<HTMLElement>) => {
       if (reducedMotion || !sectionRef.current) return;
@@ -63,7 +66,7 @@ export function HeroSection({ config }: { config?: HeroConfigType }) {
       />
 
       <Container className="relative z-10 flex min-h-[100dvh] flex-col justify-center py-20 sm:py-24 lg:py-28">
-        <div className="grid grid-cols-1 items-center gap-14 sm:gap-16 lg:grid-cols-2 lg:gap-20 xl:gap-24">
+        <div className="grid grid-cols-1 items-center gap-14 sm:gap-16 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16 xl:gap-20">
           {/* Left column: copy */}
           <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
             {/* Badge */}
@@ -100,7 +103,7 @@ export function HeroSection({ config }: { config?: HeroConfigType }) {
                 className={cn(
                   "mt-7 max-w-xl text-base leading-relaxed text-[#9CA3AF] sm:mt-8 sm:text-lg sm:leading-relaxed",
                   !reducedMotion &&
-                    "animate-hero-content-fade animation-delay-150 animation-fill-backwards"
+                    "animate-hero-content-fade animation-delay-300 animation-fill-backwards"
                 )}
               >
                 {subtext}
@@ -113,7 +116,7 @@ export function HeroSection({ config }: { config?: HeroConfigType }) {
                 "mt-10 flex w-full max-w-sm flex-col gap-3 sm:mt-12 sm:max-w-md sm:gap-4",
                 "mx-auto lg:mx-0 lg:max-w-none lg:flex-row lg:items-center",
                 !reducedMotion &&
-                  "animate-hero-content-fade animation-delay-300 animation-fill-backwards"
+                  "animate-hero-content-fade animation-delay-450 animation-fill-backwards"
               )}
             >
               {ctaPrimaryHref ? (
@@ -123,7 +126,8 @@ export function HeroSection({ config }: { config?: HeroConfigType }) {
                   className={cn(
                     "h-12 w-full rounded-full px-8 text-base font-semibold text-white",
                     "shadow-[0_0_20px_rgba(244,139,34,0.35)] transition-all duration-300",
-                    "hover:shadow-[0_0_32px_rgba(244,139,34,0.55)] active:scale-[0.98]",
+                    "hover:scale-[1.03] hover:-translate-y-0.5 hover:shadow-[0_0_36px_rgba(244,139,34,0.6)]",
+                    "active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1208]",
                     "lg:w-auto lg:min-w-[11rem]"
                   )}
                 >
@@ -144,7 +148,9 @@ export function HeroSection({ config }: { config?: HeroConfigType }) {
                   size="lg"
                   className={cn(
                     "group/cta h-12 w-full rounded-full border-white/25 bg-white/[0.03] px-8 text-base text-white backdrop-blur-sm",
-                    "transition-all duration-300 hover:border-white/40 hover:bg-white/10 hover:text-white",
+                    "transition-all duration-300 hover:scale-[1.03] hover:-translate-y-0.5",
+                    "hover:border-white/40 hover:bg-white/10 hover:text-white hover:shadow-[0_8px_24px_rgba(0,0,0,0.35)]",
+                    "focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1208]",
                     "lg:w-auto lg:min-w-[12rem]"
                   )}
                 >
@@ -174,7 +180,7 @@ export function HeroSection({ config }: { config?: HeroConfigType }) {
               className={cn(
                 "mt-12 w-full sm:mt-14",
                 !reducedMotion &&
-                  "animate-hero-content-fade animation-delay-300 animation-fill-backwards"
+                  "animate-hero-content-fade animation-delay-600 animation-fill-backwards"
               )}
             >
               <p className="mb-5 text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-white/45 sm:text-xs">
@@ -183,9 +189,9 @@ export function HeroSection({ config }: { config?: HeroConfigType }) {
               <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 lg:justify-start">
                 {(
                   [
-                    { Icon: SiReact, label: "React" },
-                    { Icon: SiTypescript, label: "TypeScript" },
-                    { Icon: SiJavascript, label: "JavaScript" },
+                    { Icon: SiReact, label: "React", hideSmall: false },
+                    { Icon: SiTypescript, label: "TypeScript", hideSmall: false },
+                    { Icon: SiJavascript, label: "JavaScript", hideSmall: false },
                     { Icon: SiDocker, label: "Docker", hideSmall: true },
                   ] as const
                 ).map(({ Icon, label, hideSmall }) => (
@@ -202,16 +208,15 @@ export function HeroSection({ config }: { config?: HeroConfigType }) {
             </div>
           </div>
 
-          {/* Right column: terminal mockup */}
+          {/* Right column: terminal mockup — allow chip overflow */}
           <div
             className={cn(
-              "order-last w-full lg:order-none",
-              !reducedMotion &&
-                "animate-hero-content-fade animation-delay-300 animation-fill-backwards"
+              "order-last w-full overflow-visible lg:order-none"
             )}
           >
             <HeroTerminalMockup
               lines={terminalLines}
+              tiltEnabled={tiltEnabled}
               className="lg:translate-x-2 xl:translate-x-4"
             />
           </div>
