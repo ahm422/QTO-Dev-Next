@@ -11,15 +11,15 @@ export const contactMethods = [
   {
     type: "phone",
     label: "Phone",
-    value: "+1 (555) 123-4567",
-    subLabel: "Monday to Friday, 9am–5pm EST",
+    value: "+92 312 1234567",
+    subLabel: "Monday to Friday, 9am–6pm PKT",
     icon: "phone",
     order: 1,
   },
   {
     type: "office",
     label: "Office",
-    value: "123 Tech Street, San Francisco, CA 94105",
+    value: "USA • UK • Saudi Arabia • Pakistan",
     subLabel: "Visit us for a personal meeting",
     icon: "location-dot",
     order: 2,
