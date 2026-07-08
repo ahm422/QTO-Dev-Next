@@ -177,12 +177,11 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
       subtitle: "INSIGHTS",
       title: "Latest from Our Blog",
       description: "Thought leadership, technical deep dives, and industry trends curated by our team.",
-      latestPostsLabel: "Latest Posts",
-      headlinePostsLabel: "Headline Posts",
-      todayLabel: "Today",
       readMoreLabel: "Read More",
+      readMoreCtaLabel: "Read More",
       viewAllPostsLabel: "View All Posts",
       authorLabel: "QTO DEV Team",
+      emptyStateMessage: "No blog posts published yet. Check back soon.",
     },
   },
   {
@@ -335,8 +334,19 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
         titleHighlight: "Insights",
         description: "Browse all our posts on web development, React, performance, and more.",
       },
-      filter: { allLabel: "All" },
-      pagination: { placeholderText: "More articles coming soon." },
+      filter: {
+        allLabel: "All",
+        searchPlaceholder: "Search articles...",
+        activeTagLabel: "Tag",
+        clearFiltersLabel: "Clear filters",
+      },
+      pagination: {
+        pageSize: 9,
+        prevLabel: "Previous",
+        nextLabel: "Next",
+        pageLabel: "Page",
+        ofLabel: "of",
+      },
       cta: {
         title: "Ready to Build Your Next Project?",
         description:

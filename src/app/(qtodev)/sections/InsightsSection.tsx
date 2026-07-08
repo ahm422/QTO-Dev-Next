@@ -1,19 +1,15 @@
 import { InsightsSectionContent } from "./InsightsSectionContent";
-import { getLatestBlogPosts, getHeadlineBlogPosts } from "@/lib/blog";
+import { getHomepageFeaturedBlogPost } from "@/lib/blog";
 import { findPageSection } from "@/lib/cms/pageContent";
-import { formatDate } from "@/lib/format";
 import { cn } from "@/components/theme/cn";
 
 const HEADING_ID = "insights-heading";
 
 export async function InsightsSection() {
-  const [latestPosts, headlinePosts, sectionConfig] = await Promise.all([
-    getLatestBlogPosts(2),
-    getHeadlineBlogPosts(5),
+  const [featuredPost, sectionConfig] = await Promise.all([
+    getHomepageFeaturedBlogPost(),
     findPageSection("homepage.insights"),
   ]);
-
-  const todayFormatted = formatDate(new Date());
 
   return (
     <section
@@ -36,9 +32,7 @@ export async function InsightsSection() {
       />
 
       <InsightsSectionContent
-        latestPosts={latestPosts}
-        headlinePosts={headlinePosts}
-        todayFormatted={todayFormatted}
+        featuredPost={featuredPost}
         config={sectionConfig as any}
       />
     </section>

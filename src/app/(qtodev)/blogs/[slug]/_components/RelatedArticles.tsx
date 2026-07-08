@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { BlogPost } from '@/types/blog';
+import { formatDateShort } from '@/lib/format';
 
 interface RelatedArticlesProps {
   posts: BlogPost[];
@@ -14,57 +15,56 @@ export function RelatedArticles({ posts }: RelatedArticlesProps) {
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {posts.map((post) => (
-          <Link
-            key={post.slug}
-            href={`/blogs/${post.slug}`}
-            className="group flex flex-col bg-surface rounded-lg border border-border overflow-hidden hover:shadow-lg transition-shadow"
-          >
-            {/* Thumbnail */}
-            {post.image && (
+        {posts.map((post) => {
+          const imageUrl = post.coverImage?.url ?? post.image;
+          const imageAlt = post.coverImage?.alt ?? post.title;
+
+          return (
+            <Link
+              key={post.slug}
+              href={`/blogs/${post.slug}`}
+              className="group flex flex-col bg-surface rounded-lg border border-border overflow-hidden hover:shadow-lg transition-shadow"
+            >
               <div className="relative h-48 bg-surface-muted overflow-hidden">
-                <Image
-                  src={post.image}
-                  alt={post.title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform"
-                />
-              </div>
-            )}
-
-            {/* Content */}
-            <div className="flex flex-col flex-1 p-6">
-              {/* Category */}
-              <div className="mb-3">
-                <span className="inline-block px-3 py-1 bg-primary/15 text-primary rounded-full text-xs font-medium">
-                  {post.category}
-                </span>
+                {imageUrl ? (
+                  <Image
+                    src={imageUrl}
+                    alt={imageAlt}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform"
+                  />
+                ) : (
+                  <div
+                    className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5"
+                    aria-hidden
+                  />
+                )}
               </div>
 
-              {/* Title */}
-              <h3 className="font-bold text-lg text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                {post.title}
-              </h3>
+              <div className="flex flex-col flex-1 p-6">
+                <div className="mb-3">
+                  <span className="inline-block px-3 py-1 bg-primary/15 text-primary rounded-full text-xs font-medium">
+                    {post.category}
+                  </span>
+                </div>
 
-              {/* Description */}
-              <p className="text-foreground-muted text-sm mb-4 line-clamp-2 flex-1">
-                {post.description}
-              </p>
+                <h3 className="font-bold text-lg text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                  {post.title}
+                </h3>
 
-              {/* Meta */}
-              <div className="flex items-center justify-between text-xs text-foreground-muted mt-auto">
-                <span>
-                  {new Date(post.publishedAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                  })}
-                </span>
-                <span>{post.readingTime} min read</span>
+                <p className="text-foreground-muted text-sm mb-4 line-clamp-2 flex-1">
+                  {post.excerpt ?? post.description}
+                </p>
+
+                <div className="flex items-center justify-between text-xs text-foreground-muted mt-auto">
+                  <time dateTime={post.publishedAt}>{formatDateShort(post.publishedAt)}</time>
+                  <span>{post.readingTime} min read</span>
+                </div>
               </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          );
+        })}
       </div>
     </section>
   );

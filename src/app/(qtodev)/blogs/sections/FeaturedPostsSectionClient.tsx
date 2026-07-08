@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Reveal } from "@/components/animations/Reveal";
 import { cn } from "@/components/theme/cn";
+import { formatDateShort } from "@/lib/format";
 import { blogsPageConfig } from "@/config/blogsPage";
 type BlogsPageConfigType = typeof blogsPageConfig;
 import type { BlogPost } from "@/types/blog";
@@ -102,11 +103,11 @@ export function FeaturedPostsSectionClient({ posts, config }: { posts: BlogPost[
                           {post.title}
                         </h2>
                         <p className="text-foreground-muted mb-4 flex-1 leading-relaxed">
-                          {post.description}
+                          {post.excerpt ?? post.description}
                         </p>
                         <div className="flex items-center justify-between text-sm text-foreground-muted">
                           <span>{post.author}</span>
-                          <span>{post.publishedAt}</span>
+                          <time dateTime={post.publishedAt}>{formatDateShort(post.publishedAt)}</time>
                         </div>
                       </div>
                     </Card>

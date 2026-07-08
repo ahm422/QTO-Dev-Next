@@ -46,7 +46,18 @@ export async function getLatestBlogPosts(limit: number): Promise<BlogPost[]> {
 }
 
 /**
- * Get headline blog posts (next N after latest, for Insights "Headline Posts")
+ * Get the single post for the homepage insights section.
+ * Prefers the most recent featured post; falls back to the latest published post.
+ */
+export async function getHomepageFeaturedBlogPost(): Promise<BlogPost | null> {
+  const featured = await getFeaturedBlogPosts(1);
+  if (featured.length > 0) return featured[0];
+  const latest = await getLatestBlogPosts(1);
+  return latest[0] ?? null;
+}
+
+/**
+ * @deprecated Homepage no longer uses slice-based headline posts. Prefer getHomepageFeaturedBlogPost().
  */
 export async function getHeadlineBlogPosts(
   limit: number,

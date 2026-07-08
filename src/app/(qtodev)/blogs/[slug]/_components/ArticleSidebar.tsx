@@ -53,7 +53,7 @@ export function ArticleSidebar({ post }: ArticleSidebarProps) {
     // Use a small delay to ensure DOM is ready
     const timer = setTimeout(extractHeadings, 100);
     return () => clearTimeout(timer);
-  }, []);
+  }, [post.slug]);
 
   return (
     <aside className="space-y-6">

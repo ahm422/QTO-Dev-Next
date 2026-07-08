@@ -1,6 +1,6 @@
 /**
- * Insights section copy and labels (issue #34).
- * "Latest from Our Blog" — header, two-column layout (Latest Posts, Headline Posts).
+ * Insights section copy and labels (issue #34, #279).
+ * Single featured blog card on the homepage.
  */
 
 export const insightsConfig = {
@@ -14,21 +14,18 @@ export const insightsConfig = {
   description:
     "Thought leadership, technical deep dives, and industry trends curated by our team.",
 
-  /** Left column heading */
-  latestPostsLabel: "Latest Posts",
-
-  /** Right column heading */
-  headlinePostsLabel: "Headline Posts",
-
-  /** Label for "Today: DD Month YYYY" */
-  todayLabel: "Today",
-
-  /** Read More link text */
+  /** In-card link text for the featured article */
   readMoreLabel: "Read More",
 
-  /** View All Posts button text */
+  /** Browse-all CTA button text (links to /blogs) */
+  readMoreCtaLabel: "Read More",
+
+  /** View All Posts button text (legacy alias; prefer readMoreCtaLabel) */
   viewAllPostsLabel: "View All Posts",
 
   /** Default author when not using post.author (e.g. "QTO DEV Team") */
   authorLabel: "QTO DEV Team",
+
+  /** Empty state when no published posts exist */
+  emptyStateMessage: "No blog posts published yet. Check back soon.",
 } as const;

@@ -8,29 +8,23 @@ interface ArticleBodyProps {
 }
 
 export function ArticleBody({ post }: ArticleBodyProps) {
-  // Extract first 2-3 sentences as hook
-  const hookMatch = post.content.match(/^(?:<p>)?(.+?)(?:<\/p>)?(?:\n|$)/);
-  const hook = hookMatch ? hookMatch[1].replace(/<[^>]*>/g, '') : post.description;
-
-  // Generate key takeaways from content (simple heuristic)
+  const intro = post.excerpt ?? post.description;
   const keyTakeaways = extractKeyTakeaways(post.content, 4);
 
   return (
     <div className="prose prose-slate max-w-none">
-      {/* Hook Paragraph */}
-      <p className="text-lg leading-relaxed text-foreground-muted mb-8 font-medium">
-        {hook}
-      </p>
+      {intro ? (
+        <p className="text-lg leading-relaxed text-foreground-muted mb-8 font-medium">
+          {intro}
+        </p>
+      ) : null}
 
-      {/* Key Takeaways Callout (placed early in the article) */}
       {keyTakeaways.length > 0 && (
         <KeyTakeaways takeaways={keyTakeaways} />
       )}
 
-      {/* MDX Content */}
       <MDXRenderer content={post.content} />
 
-      {/* Tags */}
       {post.tags && post.tags.length > 0 && (
         <div className="mt-12 pt-8 border-t border-border">
           <h3 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wide">
@@ -40,7 +34,7 @@ export function ArticleBody({ post }: ArticleBodyProps) {
             {post.tags.map((tag) => (
               <Link
                 key={tag}
-                href={{ pathname: "/blogs", query: { tag } }}
+                href={`/blogs?tag=${encodeURIComponent(tag)}`}
                 className="px-3 py-1 bg-surface-muted hover:bg-border text-foreground-muted rounded-full text-sm font-medium transition-colors"
               >
                 #{tag}
@@ -54,7 +48,6 @@ export function ArticleBody({ post }: ArticleBodyProps) {
 }
 
 function extractKeyTakeaways(content: string, limit: number): string[] {
-  // Simple extraction: look for bold text or list items
   const listItems = content.match(/<li>([^<]+)<\/li>/g) || [];
   return listItems
     .slice(0, limit)
