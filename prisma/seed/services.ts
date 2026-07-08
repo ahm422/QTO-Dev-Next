@@ -14,6 +14,8 @@ export async function seedServices() {
     let features = s.features;
     let shortDescription = s.shortDescription;
 
+    // Preserve long-form detail fields for web-development (mapped onto overview
+    // in mapContentService). Grid cards still cap features/copy in ServiceCard.
     if (s.slug === webDevelopmentServiceData.slug) {
       description = webDevelopmentServiceData.overviewText;
       features = webDevelopmentServiceData.overviewBenefits;

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
@@ -8,17 +7,19 @@ import { ourServicesConfig } from "@/config/ourServices";
 type OurServicesConfigType = typeof ourServicesConfig;
 import type { Service } from "@/types/service";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
-import type { AppIconName } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
 import { Reveal } from "@/components/animations/Reveal";
+import { ServiceCard } from "@/components/services/ServiceCard";
 
 const HEADING_ID = "our-services-heading";
 
-function getLearnMoreHref(service: Service): string {
-  return service.learnMoreHref ?? `/services/${service.slug}`;
-}
-
-export function OurServicesSectionClient({ services , config}: { services: Service[] ; config?: OurServicesConfigType}) {
+export function OurServicesSectionClient({
+  services,
+  config,
+}: {
+  readonly services: Service[];
+  readonly config?: OurServicesConfigType;
+}) {
   const cfg = config ?? ourServicesConfig;
   if (services.length === 0) {
     return (
@@ -78,61 +79,17 @@ export function OurServicesSectionClient({ services , config}: { services: Servi
               className="grid grid-cols-2 sm:grid-cols-3 gap-4"
             >
               {services.map((service) => (
-                <Link
+                <ServiceCard
                   key={service.id}
-                  href={getLearnMoreHref(service)}
-                  className={cn(
-                    "group relative flex min-h-[130px] flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-border/60 bg-surface p-5 text-center sm:min-h-[150px] sm:p-6",
-                    "shadow-sm shadow-black/[0.03] transition-all duration-300",
-                    "hover:-translate-y-1 hover:border-primary/45 hover:shadow-lg hover:shadow-primary/[0.08]",
-                    "ring-0 ring-transparent hover:ring-1 hover:ring-primary/15",
-                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-muted"
-                  )}
-                >
-                  {service.image && (
-                    <div
-                      className="pointer-events-none absolute inset-0 -z-10"
-                      aria-hidden
-                    >
-                      <Image
-                        src={service.image}
-                        alt={service.imageAlt ?? ""}
-                        fill
-                        sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                        className="object-cover"
-                        priority={false}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-br from-surface/95 via-surface/92 to-surface/90 group-hover:from-surface/90 group-hover:via-surface/85 group-hover:to-surface/85 transition-colors duration-300" />
-                    </div>
-                  )}
-
-                  <div className="relative z-10 flex flex-col items-center">
-                    <span
-                      className={cn(
-                        "mb-3 flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300",
-                        "bg-surface-muted text-foreground-muted shadow-inner",
-                        "group-hover:bg-primary/15 group-hover:text-primary group-hover:shadow-primary/10"
-                      )}
-                    >
-                      <AppIcon
-                        name={service.icon as AppIconName}
-                        size="lg"
-                        className="shrink-0"
-                      />
-                    </span>
-                    <span className="font-semibold text-foreground text-sm sm:text-base leading-tight">
-                      {service.title}
-                    </span>
-                  </div>
-                </Link>
+                  service={service}
+                  variant="compact"
+                  learnMoreLabel="Learn more"
+                />
               ))}
             </div>
           </div>
 
-          <div
-            data-reveal
-            className="mt-10 flex justify-center"
-          >
+          <div data-reveal className="mt-10 flex justify-center">
             <Link
               href="/services"
               className={cn(
