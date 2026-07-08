@@ -7,6 +7,7 @@ export const aboutContentSchema = z.object({
   body: z.string(),
   imageUrl: z.string(),
   order: z.number().int(),
+  metadata: z.string().optional().default(""),
 })
 
 export type AboutContentInput = z.infer<typeof aboutContentSchema>

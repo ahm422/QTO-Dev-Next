@@ -10,10 +10,20 @@ import { revalidatePaths } from "@/lib/revalidate"
 
 const PATHS = ["/", "/about"] as const
 
+async function enforceSingleFounder(excludeId?: string) {
+  await prisma.teamMember.updateMany({
+    where: excludeId ? { id: { not: excludeId }, isFounder: true } : { isFounder: true },
+    data: { isFounder: false },
+  })
+}
 
 export async function createTeamMember(data: TeamMemberInput) {
   await requireCreateAction()
-  await prisma.teamMember.create({ data: teamMemberSchema.parse(data) })
+  const parsed = teamMemberSchema.parse(data)
+  if (parsed.isFounder) {
+    await enforceSingleFounder()
+  }
+  await prisma.teamMember.create({ data: parsed })
   revalidatePaths([...PATHS])
   await persistD1Bookmark()
   redirect("/admin/team")
@@ -21,7 +31,11 @@ export async function createTeamMember(data: TeamMemberInput) {
 
 export async function updateTeamMember(id: string, data: TeamMemberInput) {
   await requireAdminAction()
-  await prisma.teamMember.update({ where: { id }, data: teamMemberSchema.parse(data) })
+  const parsed = teamMemberSchema.parse(data)
+  if (parsed.isFounder) {
+    await enforceSingleFounder(id)
+  }
+  await prisma.teamMember.update({ where: { id }, data: parsed })
   revalidatePaths([...PATHS])
   await persistD1Bookmark()
   redirect("/admin/team")

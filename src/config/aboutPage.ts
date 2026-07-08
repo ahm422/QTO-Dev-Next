@@ -20,6 +20,46 @@ export const aboutPageConfig = {
     description:
       "From our early days as a small engineering-led studio to a trusted technology partner for growing businesses, our journey has been shaped by curiosity, craftsmanship, and long-term relationships.",
   },
+  ceo: {
+    subtitle: "OUR STORY",
+    title: "Message from the CEO",
+    titleHighlight: "CEO",
+    storyHeading: "Built by engineers, led with purpose",
+    message:
+      "QTO Dev was founded on a simple belief: technology should solve real business problems, not create new ones. From our first custom platform to enterprise ERP deployments, we've stayed close to the teams we serve—listening, building, and iterating until the solution fits the way you work.",
+    badgeChips: [
+      { label: "Founder & CEO", value: "Muhammad Ahmad Mustafa" },
+      { label: "Years of experience", value: "10+" },
+    ],
+    stats: [
+      { label: "Team Members", value: 45, suffix: "+" },
+      { label: "Projects Delivered", value: 200, suffix: "+" },
+      { label: "Years Experience", value: 10, suffix: "+" },
+      { label: "Countries Served", value: 15, suffix: "+" },
+    ],
+  },
+  erpSolutions: {
+    title: "ERP Solutions",
+    subtitle: "ENTERPRISE SYSTEMS",
+    body: "QTO's experience implementing and modernizing ERP systems for growing businesses spans finance, HR, inventory, and customer operations—helping teams move from spreadsheets and siloed tools to unified, scalable platforms.",
+    modules: [
+      { name: "Finance", description: "General ledger, AP/AR, financial reporting, and compliance-ready dashboards." },
+      { name: "HR", description: "Payroll, attendance, org structure, and employee self-service workflows." },
+      { name: "Inventory", description: "Warehousing, procurement, stock control, and real-time availability." },
+      { name: "CRM Integration", description: "Customer data sync, sales pipeline hooks, and unified client views." },
+    ],
+    industries: [
+      "Manufacturing",
+      "Retail",
+      "Healthcare",
+      "Professional Services",
+      "Logistics",
+    ],
+    legacyModernization: {
+      title: "Legacy Modernization",
+      body: "We help organizations migrate from older ERP systems, spreadsheets, and disconnected tools to modern, integrated platforms—preserving business logic while improving performance, visibility, and maintainability.",
+    },
+  },
   mission: {
     subtitle: "MISSION & VISION",
     title: "Our Mission & Vision",

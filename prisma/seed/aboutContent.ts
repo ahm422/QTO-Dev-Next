@@ -1,8 +1,10 @@
 import { aboutData } from "@/data/about";
+import { aboutPageConfig } from "@/config/aboutPage";
 import { stringifyMetadata } from "@/lib/metadata";
 import { prisma } from "./helpers";
 
 export async function seedAboutContent() {
+  const erp = aboutPageConfig.erpSolutions;
   const sections = [
     {
       section: "hero",
@@ -35,6 +37,18 @@ export async function seedAboutContent() {
       body: null,
       metadata: { values: aboutData.values },
       order: 3,
+    },
+    {
+      section: "erp-solutions",
+      title: erp.title,
+      subtitle: erp.subtitle,
+      body: erp.body,
+      metadata: {
+        modules: erp.modules,
+        industries: erp.industries,
+        legacyModernization: erp.legacyModernization,
+      },
+      order: 4,
     },
   ];
 

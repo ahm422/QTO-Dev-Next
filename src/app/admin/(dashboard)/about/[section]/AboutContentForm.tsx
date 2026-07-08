@@ -1,19 +1,24 @@
 "use client"
 
 import { useForm } from "react-hook-form"
+import { useState } from "react"
 import { formResolver } from "@/lib/admin/formResolver"
 import { toast } from "sonner"
 import { aboutContentSchema, type AboutContentInput } from "@/lib/validators/admin/aboutContent"
+import { parseMetadata } from "@/lib/metadata"
 import AdminForm from "@/components/admin/AdminForm"
 import FormGrid from "@/components/admin/forms/FormGrid"
 import MediaUpload from "@/components/admin/MediaUpload"
 import RichTextEditor from "@/components/admin/RichTextEditor"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import { upsertAboutContent } from "../actions"
 import type { AboutContent } from "@prisma/client"
 
 function toFormValues(record: AboutContent): AboutContentInput {
+  const meta = parseMetadata(record.metadata)
   return {
     section: record.section,
     title: record.title ?? "",
@@ -21,19 +26,33 @@ function toFormValues(record: AboutContent): AboutContentInput {
     body: record.body ?? "",
     imageUrl: record.imageUrl ?? "",
     order: record.order,
+    metadata: meta ? JSON.stringify(meta, null, 2) : "",
   }
 }
 
 export default function AboutContentForm({ defaultValues, sectionParam }: { defaultValues?: AboutContent; sectionParam: string }) {
+  const sectionKey = defaultValues?.section ?? (sectionParam === "new" ? "" : sectionParam)
+  const showMetadata = sectionKey === "erp-solutions" || sectionKey === "values" || !!defaultValues?.metadata
+
   const form = useForm<AboutContentInput>({
     resolver: formResolver(aboutContentSchema),
     defaultValues: defaultValues
       ? toFormValues(defaultValues)
-      : { section: sectionParam === "new" ? "" : sectionParam, title: "", subtitle: "", body: "", imageUrl: "", order: 0 },
+      : { section: sectionKey, title: "", subtitle: "", body: "", imageUrl: "", order: 0, metadata: "" },
   })
   const { isSubmitting } = form.formState
+  const [jsonError, setJsonError] = useState<string | null>(null)
 
   async function onSubmit(data: AboutContentInput) {
+    if (showMetadata && data.metadata?.trim()) {
+      try {
+        JSON.parse(data.metadata)
+        setJsonError(null)
+      } catch {
+        setJsonError("Invalid JSON — please fix before saving")
+        return
+      }
+    }
     try {
       await upsertAboutContent(data)
     } catch (err) {
@@ -65,6 +84,26 @@ export default function AboutContentForm({ defaultValues, sectionParam }: { defa
           <FormField control={form.control} name="imageUrl" render={({ field }) => (
             <FormItem><FormControl><MediaUpload value={field.value ?? ""} onChange={field.onChange} label="Image" /></FormControl><FormMessage /></FormItem>
           )} />
+          {showMetadata && (
+            <FormField control={form.control} name="metadata" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Metadata (JSON)</FormLabel>
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    rows={14}
+                    className="font-mono text-xs"
+                    placeholder='{"modules": [], "industries": []}'
+                  />
+                </FormControl>
+                {jsonError && <p className="text-sm text-destructive">{jsonError}</p>}
+                <Label className="text-xs text-muted-foreground font-normal">
+                  For erp-solutions: modules, industries, legacyModernization
+                </Label>
+                <FormMessage />
+              </FormItem>
+            )} />
+          )}
         </AdminForm>
       </form>
     </Form>

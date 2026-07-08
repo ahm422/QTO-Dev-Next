@@ -19,7 +19,7 @@ export default function TeamMemberForm({ defaultValues }: { defaultValues?: Team
   const isEdit = !!defaultValues?.id
   const form = useForm<TeamMemberInput>({
     resolver: formResolver(teamMemberSchema),
-    defaultValues: defaultValues ?? { name: "", role: "", bio: "", avatarUrl: "", linkedIn: "", order: 0, isPublished: false },
+    defaultValues: defaultValues ?? { name: "", role: "", bio: "", avatarUrl: "", linkedIn: "", order: 0, isPublished: false, isFounder: false },
   })
   const { isSubmitting } = form.formState
 
@@ -60,6 +60,9 @@ export default function TeamMemberForm({ defaultValues }: { defaultValues?: Team
           </FormGrid>
           <FormField control={form.control} name="isPublished" render={({ field }) => (
             <FormItem><div className="flex items-center gap-3"><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} id="pub" /></FormControl><Label htmlFor="pub">Published</Label></div><FormMessage /></FormItem>
+          )} />
+          <FormField control={form.control} name="isFounder" render={({ field }) => (
+            <FormItem><div className="flex items-center gap-3"><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} id="founder" /></FormControl><Label htmlFor="founder">Feature as Founder on About page</Label></div><FormMessage /></FormItem>
           )} />
         </AdminForm>
       </form>

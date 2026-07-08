@@ -8,6 +8,7 @@ export const teamMemberSchema = z.object({
   linkedIn: z.string().optional().default(""),
   order: z.coerce.number().int().default(0),
   isPublished: z.boolean().default(false),
+  isFounder: z.boolean().default(false),
 })
 
 export type TeamMemberInput = z.infer<typeof teamMemberSchema>

@@ -274,6 +274,24 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
         description:
           "From our early days as a small engineering-led studio to a trusted technology partner for growing businesses, our journey has been shaped by curiosity, craftsmanship, and long-term relationships.",
       },
+      ceo: {
+        subtitle: "OUR STORY",
+        title: "Message from the CEO",
+        titleHighlight: "CEO",
+        storyHeading: "Built by engineers, led with purpose",
+        message:
+          "QTO Dev was founded on a simple belief: technology should solve real business problems, not create new ones. From our first custom platform to enterprise ERP deployments, we've stayed close to the teams we serve—listening, building, and iterating until the solution fits the way you work.",
+        badgeChips: [
+          { label: "Founder & CEO", value: "Muhammad Ahmad Mustafa" },
+          { label: "Years of experience", value: "10+" },
+        ],
+        stats: [
+          { label: "Team Members", value: 45, suffix: "+" },
+          { label: "Projects Delivered", value: 200, suffix: "+" },
+          { label: "Years Experience", value: 10, suffix: "+" },
+          { label: "Countries Served", value: 15, suffix: "+" },
+        ],
+      },
       mission: {
         subtitle: "MISSION & VISION",
         title: "Our Mission & Vision",
