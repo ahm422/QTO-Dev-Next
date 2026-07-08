@@ -30,7 +30,7 @@ export function ArticleHeader({ post }: ArticleHeaderProps) {
           items={[
             { label: 'Home', href: '/' },
             { label: 'Blogs', href: '/blogs' },
-            { label: post.category, href: `/blogs?category=${post.category}` },
+            { label: post.category, href: `/blogs?category=${encodeURIComponent(post.category)}` },
             { label: post.title },
           ]}
         />

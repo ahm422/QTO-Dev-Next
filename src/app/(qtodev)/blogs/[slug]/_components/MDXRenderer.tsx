@@ -3,11 +3,11 @@ interface MDXRendererProps {
 }
 
 export function MDXRenderer({ content }: MDXRendererProps) {
-  // This is a simple HTML renderer. For full MDX support, integrate @next/mdx or next-mdx-remote
+  // Admin-only CMS HTML is trusted; rendered via dangerouslySetInnerHTML without sanitization.
   return (
     <div
       id="article-content"
-      className="prose prose-inherit max-w-none [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-4 [&_h3]:text-2xl [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-3 [&_p]:leading-relaxed [&_p]:mb-6 [&_li]:mb-2 [&_ul]:mb-6 [&_ol]:mb-6 [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-foreground-muted [&_blockquote]:my-6 [&_table]:mb-6 [&_th]:bg-surface-muted [&_th]:p-3 [&_td]:p-3 [&_tr]:border-b [&_tr]:border-border [&_h2]:scroll-mt-28 [&_h3]:scroll-mt-28"
+      className="prose prose-inherit max-w-none [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-4 [&_h3]:text-2xl [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-3 [&_p]:leading-relaxed [&_p]:mb-6 [&_li]:mb-2 [&_ul]:mb-6 [&_ol]:mb-6 [&_ul_ul]:mt-2 [&_ol_ol]:mt-2 [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-foreground-muted [&_blockquote]:my-6 [&_table]:mb-6 [&_th]:bg-surface-muted [&_th]:p-3 [&_td]:p-3 [&_tr]:border-b [&_tr]:border-border [&_h2]:scroll-mt-28 [&_h3]:scroll-mt-28 [&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-lg [&_img]:my-6 [&_a]:text-primary [&_a]:underline hover:[&_a]:text-primary/80 [&_strong]:font-semibold [&_em]:italic [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-surface-muted [&_pre]:p-4 [&_pre]:my-6 [&_code]:rounded [&_code]:bg-surface-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_pre_code]:bg-transparent [&_pre_code]:p-0"
       dangerouslySetInnerHTML={{ __html: content }}
     />
   );

@@ -26,9 +26,16 @@ export const blogsPageConfig = {
   },
   filter: {
     allLabel: "All",
+    searchPlaceholder: "Search articles...",
+    activeTagLabel: "Tag",
+    clearFiltersLabel: "Clear filters",
   },
   pagination: {
-    placeholderText: "More articles coming soon.",
+    pageSize: 9,
+    prevLabel: "Previous",
+    nextLabel: "Next",
+    pageLabel: "Page",
+    ofLabel: "of",
   },
   cta: {
     title: "Ready to Build Your Next Project?",

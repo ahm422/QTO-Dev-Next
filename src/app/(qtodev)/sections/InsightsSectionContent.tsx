@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
-import { LatestPostCard, HeadlinePostItem } from "@/components/insights";
+import { FeaturedBlogCard } from "@/components/insights";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Reveal } from "@/components/animations/Reveal";
 import { insightsConfig } from "@/config/insights";
@@ -15,19 +15,17 @@ type InsightsConfigType = typeof insightsConfig;
 const HEADING_ID = "insights-heading";
 
 interface InsightsSectionContentProps {
-  latestPosts: BlogPost[];
-  headlinePosts: BlogPost[];
-  todayFormatted: string;
+  featuredPost: BlogPost | null;
   config?: InsightsConfigType;
 }
 
 export function InsightsSectionContent({
-  latestPosts,
-  headlinePosts,
-  todayFormatted,
+  featuredPost,
   config,
 }: InsightsSectionContentProps) {
   const cfg = config ?? insightsConfig;
+  const browseAllLabel = cfg.readMoreCtaLabel ?? cfg.viewAllPostsLabel;
+
   return (
     <Container className="relative">
       <Reveal staggerSelector="[data-reveal]">
@@ -52,57 +50,29 @@ export function InsightsSectionContent({
           data-reveal
         >
           <div className="p-6 md:p-10">
-            <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14">
-              {/* Left column — Latest Posts */}
-              <div>
-                <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
-                  <h3 className="font-heading text-xl font-semibold text-foreground">
-                    {cfg.latestPostsLabel}
-                  </h3>
-                  <span className="rounded-full bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary">
-                    {cfg.todayLabel}: {todayFormatted}
-                  </span>
-                </div>
-                <div className="space-y-6">
-                  {latestPosts.map((post) => (
-                    <div key={post.id} data-reveal>
-                      <LatestPostCard
-                        post={post}
-                        authorLabel={cfg.authorLabel}
-                        readMoreLabel={cfg.readMoreLabel}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
+            {featuredPost ? (
+              <FeaturedBlogCard
+                post={featuredPost}
+                readMoreLabel={cfg.readMoreLabel}
+              />
+            ) : (
+              <p className="text-center text-foreground-muted py-12">
+                {cfg.emptyStateMessage}
+              </p>
+            )}
 
-              {/* Right column — Headline Posts */}
-              <div>
-                <h3 className="font-heading mb-8 text-xl font-semibold text-foreground">
-                  {cfg.headlinePostsLabel}
-                </h3>
-                <ul className="space-y-4" role="list">
-                  {headlinePosts.map((post) => (
-                    <li key={post.id} data-reveal>
-                      <HeadlinePostItem post={post} />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div className="mt-12 flex justify-center">
+            <div className="mt-10 flex justify-center">
               <Link
                 href="/blogs"
                 className={cn(
-                  "inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-base font-semibold",
-                  "bg-primary/10 text-primary border border-primary/20",
-                  "hover:bg-primary/15 hover:border-primary/30 hover:shadow-md",
+                  "inline-flex items-center justify-center gap-2 rounded-xl px-8 py-3.5 text-base font-semibold",
+                  "bg-primary text-primary-foreground",
+                  "hover:bg-primary/90 hover:shadow-md",
                   "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                   "transition-all duration-200"
                 )}
               >
-                {cfg.viewAllPostsLabel}
+                {browseAllLabel}
                 <AppIcon name="arrow-right" size="sm" />
               </Link>
             </div>
