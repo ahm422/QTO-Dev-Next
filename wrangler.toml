@@ -1,6 +1,6 @@
 account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
 
-name = "qtodev-site"
+name = "qto-dev-next"
 main = ".open-next/worker.js"
 compatibility_date = "2025-12-30"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
@@ -12,11 +12,11 @@ sqlite = "./scripts/workerd-sqlite-shim.js"
 directory = ".open-next/assets"
 binding = "ASSETS"
 
-# Self-reference service binding; service name must match worker name.
+# Self-reference service binding; service name must match worker `name` above.
 # https://opennext.js.org/cloudflare/caching
 [[services]]
 binding = "WORKER_SELF_REFERENCE"
-service = "qtodev-site"
+service = "qto-dev-next"
 
 # Image optimization: https://opennext.js.org/cloudflare/howtos/image
 [images]

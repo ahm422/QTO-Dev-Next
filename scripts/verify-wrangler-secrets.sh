@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verify required Wrangler secrets are registered for qtodev-site (production) or qtodev-site-staging.
+# Verify required Wrangler secrets for production Worker (qto-dev-next) or qtodev-site-staging.
 # Usage: npm run secrets:verify
 #        npm run secrets:verify:staging
 set -euo pipefail
@@ -8,7 +8,7 @@ cd "$(dirname "$0")/.."
 
 ENV_ARG="${1:-}"
 WRANGLER_ENV_FLAG=()
-WORKER_LABEL="qtodev-site (production)"
+WORKER_LABEL="qto-dev-next (production)"
 
 if [[ "$ENV_ARG" == "staging" ]]; then
   WRANGLER_ENV_FLAG=(--env staging)

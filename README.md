@@ -130,11 +130,14 @@ This app uses [@opennextjs/cloudflare](https://opennext.js.org/cloudflare) and d
 
 | Setting | Value |
 |--------|--------|
-| Build command | `npx opennextjs-cloudflare build` or `npm run cf:build` |
+| Build command | `npm run cf:build` (sets `SKIP_BUILD_TIME_D1=1` so Workers Builds does not need a migrated local D1 during `generateStaticParams`) |
 | Deploy command | `npx wrangler deploy` (or `npm run deploy` in CI after build) |
 | Output directory | `.open-next` |
+| Worker name | Must match `wrangler.toml`: **`qto-dev-next`** |
 
-`opennextjs-cloudflare build` runs `next build` internally. Prisma Client is generated via `postinstall` (`prisma generate`); run `npm install` before the first Cloudflare build if the client is missing.
+`npm run cf:build` runs OpenNext (`opennextjs-cloudflare build` → `next build`) with D1 skipped at build time; CMS routes resolve against the bound remote D1 (`qtodev-d1` / `YOUR_D1_DATABASE_ID`) at runtime. Prisma Client is generated via `postinstall` (`prisma generate`).
+
+**Do not** set `DATABASE_URL` / Postgres for this app — runtime Prisma uses the D1 `DB` binding only.
 
 ### Environment variables
 
@@ -144,7 +147,7 @@ Where to set values:
 |-------------|-----------------|
 | Next.js dev (`npm run dev`) | [`.env`](.env) — copy from [`.env.example`](.env.example) |
 | Wrangler preview (`npm run preview`) | [`.dev.vars`](.dev.vars) — copy from [`.dev.vars.example`](.dev.vars.example) |
-| Production / Preview on Cloudflare | **Workers → Settings → Variables and Secrets** for `qtodev-site` |
+| Production / Preview on Cloudflare | **Workers → Settings → Variables and Secrets** for `qto-dev-next` |
 
 Copy from `.env.example` / `.dev.vars.example` into the Cloudflare dashboard (Production and Preview if used). Never commit real secrets.
 
