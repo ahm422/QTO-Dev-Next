@@ -56,14 +56,14 @@ export function EngagementModelsSectionClient({
           <Reveal staggerSelector="[data-reveal]">
             <div
               data-reveal
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 pt-4 items-stretch sm:[grid-template-columns:repeat(2,minmax(0,1fr))] lg:[grid-template-columns:repeat(4,minmax(0,1fr))]"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-4 items-stretch lg:items-center sm:[grid-template-columns:repeat(2,minmax(0,1fr))] lg:[grid-template-columns:repeat(3,minmax(0,1fr))]"
               role="list"
             >
               {items.map((model) => (
                 <article
                   key={model.optionNumber}
                   role="listitem"
-                  className="flex min-h-0 w-full min-w-0"
+                  className="flex min-h-0 w-full min-w-0 overflow-visible"
                   data-reveal
                 >
                   <EngagementCard

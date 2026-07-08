@@ -7,5 +7,6 @@ export async function PortfolioSection() {
     findPortfolioProjects(6),
     findPageSection("homepage.portfolio"),
   ]);
-  return <PortfolioSectionClient cases={cases} config={sectionConfig as any} />;
+  const displayCases = cases.slice(0, cases.length >= 6 ? 6 : 3);
+  return <PortfolioSectionClient cases={displayCases} config={sectionConfig as any} />;
 }
