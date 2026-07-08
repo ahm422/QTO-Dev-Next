@@ -6,23 +6,14 @@ import { CTA } from "@/components/common/CTA";
 import { projectsPageConfig } from "@/config/projectsPage";
 import { findPageSection } from "@/lib/cms/pageContent";
 
-interface ProjectsPageProps {
-  searchParams?: Promise<{
-    category?: string;
-  }>;
-}
-
-export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
-  const [cmsConfig, sp] = await Promise.all([
-    findPageSection("projects.page") as Promise<typeof projectsPageConfig | null>,
-    searchParams,
-  ]);
+export default async function ProjectsPage() {
+  const cmsConfig = await findPageSection("projects.page") as typeof projectsPageConfig | null;
   const cfg = cmsConfig ?? projectsPageConfig;
   const { cta } = cfg;
   return (
     <>
       <ProjectsHeroSection config={cmsConfig ?? undefined} />
-      <ProjectsFilterAndGrid activeCategory={sp?.category} />
+      <ProjectsFilterAndGrid config={cmsConfig ?? undefined} />
       <ProjectsPaginationSection />
       <ProjectsValueSection config={cmsConfig ?? undefined} />
       <CTA

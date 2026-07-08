@@ -12,12 +12,7 @@ export function ProjectsPageSkeleton() {
       </section>
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-10">
-        <div className="flex flex-wrap gap-3">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="h-10 w-28 rounded-full" />
-          ))}
-        </div>
-        <div className="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="rounded-2xl border border-border overflow-hidden">
               <Skeleton className="h-52 w-full rounded-none" />

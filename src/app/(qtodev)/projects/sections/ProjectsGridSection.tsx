@@ -1,15 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/common/Container";
-import { SectionHeader } from "@/components/common/SectionHeader";
 import { Card } from "@/components/ui/card";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
 import { projectsPageConfig } from "@/config/projectsPage";
 type ProjectsPageConfigType = typeof projectsPageConfig;
 import type { Project } from "@/types/project";
-
-const HEADING_ID = "projects-grid-heading";
 
 interface ProjectsGridSectionProps {
   projects: Project[];
@@ -22,10 +19,10 @@ export function ProjectsGridSection({ projects, config }: ProjectsGridSectionPro
   return (
     <section
       className={cn(
-        "relative py-20 md:py-28 overflow-hidden",
+        "relative py-16 md:py-20 overflow-hidden",
         "bg-surface-muted border-y border-border"
       )}
-      aria-labelledby={HEADING_ID}
+      aria-label="Project listings"
     >
       {/* Soft gradient orbs for depth */}
       <div
@@ -38,18 +35,6 @@ export function ProjectsGridSection({ projects, config }: ProjectsGridSectionPro
       />
 
       <Container className="relative">
-        <div className="mb-14 md:mb-16">
-          <SectionHeader
-            subtitle={grid.subtitle}
-            subtitleClassName="text-primary font-semibold tracking-widest"
-            subtitlePill
-            title={grid.title}
-            titleHighlight={grid.titleHighlight}
-            description={grid.description}
-            headingId={HEADING_ID}
-          />
-        </div>
-
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
           {projects.map((project) => (
             <div key={project.id}>
