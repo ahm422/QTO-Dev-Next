@@ -2,6 +2,7 @@ import type { EngagementModel } from "@/types/engagementModel";
 
 /**
  * Engagement model items for the homepage Engagement Models section (issue #30).
+ * Homepage shows the first 3 published models by order (#275).
  */
 export const engagementModelItems: EngagementModel[] = [
   {
@@ -16,19 +17,6 @@ export const engagementModelItems: EngagementModel[] = [
     ],
     isPopular: false,
     getStartedHref: "/contact?model=fixed-price",
-  },
-  {
-    optionNumber: "OPTION 2",
-    title: "Hourly",
-    description: "Flexible engagement for evolving requirements.",
-    features: [
-      "Pay for hours worked",
-      "Weekly time reports",
-      "Scale up or down anytime",
-      "Ideal for ongoing work",
-    ],
-    isPopular: false,
-    getStartedHref: "/contact?model=hourly",
   },
   {
     optionNumber: "OPTION 3",
@@ -55,5 +43,18 @@ export const engagementModelItems: EngagementModel[] = [
     ],
     isPopular: false,
     getStartedHref: "/contact?model=retainer",
+  },
+  {
+    optionNumber: "OPTION 2",
+    title: "Hourly",
+    description: "Flexible engagement for evolving requirements.",
+    features: [
+      "Pay for hours worked",
+      "Weekly time reports",
+      "Scale up or down anytime",
+      "Ideal for ongoing work",
+    ],
+    isPopular: false,
+    getStartedHref: "/contact?model=hourly",
   },
 ];

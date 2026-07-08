@@ -56,7 +56,7 @@ export function EngagementCard({
         "before:bg-gradient-to-b before:from-white/40 before:to-transparent before:opacity-0 before:group-hover:opacity-100",
         "dark:before:from-white/5 dark:before:to-transparent",
         isPopular &&
-          "border-primary/40 bg-gradient-to-b from-primary/[0.08] via-primary/[0.03] to-transparent dark:from-primary/[0.12] dark:via-primary/[0.05] dark:to-transparent shadow-xl shadow-primary/10 ring-2 ring-primary/25 hover:ring-primary/30"
+          "relative border-primary/40 bg-gradient-to-b from-primary/[0.08] via-primary/[0.03] to-transparent dark:from-primary/[0.12] dark:via-primary/[0.05] dark:to-transparent shadow-xl shadow-primary/10 ring-2 ring-primary/25 hover:ring-primary/30 lg:z-10 lg:scale-[1.03]"
       )}
     >
       {/* Top accent line (visible on popular, appears on hover for others) */}

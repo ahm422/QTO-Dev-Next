@@ -7,5 +7,6 @@ export async function EngagementModelsSection() {
     findPublishedEngagementModels(),
     findPageSection("homepage.engagement-models"),
   ]);
-  return <EngagementModelsSectionClient items={items} config={sectionConfig as any} />;
+  const displayItems = items.slice(0, 3);
+  return <EngagementModelsSectionClient items={displayItems} config={sectionConfig as any} />;
 }

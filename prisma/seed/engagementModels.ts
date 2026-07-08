@@ -2,11 +2,14 @@ import { engagementModelItems } from "@/data/engagementModels";
 import { stringifyStringArray } from "@/lib/prisma/arrayFields";
 import { prisma, upsertBy } from "./helpers";
 
+const HOMEPAGE_UNPUBLISHED_TITLES = new Set(["Hourly"]);
+
 export async function seedEngagementModels() {
   for (let i = 0; i < engagementModelItems.length; i++) {
     const item = engagementModelItems[i];
     const number = i + 1;
     const features = stringifyStringArray(item.features);
+    const isPublished = !HOMEPAGE_UNPUBLISHED_TITLES.has(item.title);
     await upsertBy(
       () => prisma.engagementModel.findFirst({ where: { number } }),
       () =>
@@ -20,7 +23,7 @@ export async function seedEngagementModels() {
             ctaLabel: "Get Started",
             ctaLink: item.getStartedHref,
             order: i,
-            isPublished: true,
+            isPublished,
           },
         }),
       (existing) =>
@@ -33,7 +36,7 @@ export async function seedEngagementModels() {
             isMostPopular: item.isPopular,
             ctaLink: item.getStartedHref,
             order: i,
-            isPublished: true,
+            isPublished,
           },
         })
     );
