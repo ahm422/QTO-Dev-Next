@@ -21,9 +21,9 @@ export default async function FeaturedWorkPage() {
         primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ Add Item", href: "/admin/featured-work/new" } : undefined}
       />
       <AdminContentContext
-        publicPaths={[{ label: "Homepage → Featured Work", href: "/" }]}
-        description="Renders in the Featured Work carousel on the homepage."
-        component="FeaturedWorkSection in src/app/(qtodev)/sections/FeaturedWorkSection.tsx"
+        publicPaths={[{ label: "Homepage", href: "/" }]}
+        description="Admin CRUD for Featured Work records is retained. The full-bleed homepage carousel is no longer mounted on the public site (Phase 1 cleanup #267); homepage discovery uses the Portfolio / Featured Work card grid instead."
+        component="Admin Featured Work (public carousel removed)"
       />
       <FeaturedWorkTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}

@@ -91,7 +91,7 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
       subtitle: "OUR FEATURED WORK",
       title: "Our Featured Work",
       titleHighlight: "Featured",
-      description: "Bringing dreams to life through innovative solutions.",
+      description: "",
       viewAllLabel: "View All -",
       viewAllHref: "/projects",
     },
@@ -235,13 +235,6 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
           "PostgreSQL", "MongoDB", "Docker", "AWS", "Vercel",
           "Prisma", "Redis", "GraphQL", "Stripe",
         ],
-      },
-      process: {
-        subtitle: "HOW WE DELIVER",
-        title: "Our Service Delivery Process",
-        titleHighlight: "Process",
-        description:
-          "A clear, six-step framework—from discovery to long-term support—designed to reduce risk and keep you confident at every stage.",
       },
       whyChooseUs: {
         subtitle: "WHY CHOOSE US",

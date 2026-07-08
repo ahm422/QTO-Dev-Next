@@ -3,12 +3,10 @@ import { AboutCompanySection } from "./sections/AboutCompanySection";
 import { OurServicesSection } from "./sections/OurServicesSection";
 import { HowWeWorkSection } from "./sections/HowWeWorkSection";
 import { PortfolioSection } from "./sections/PortfolioSection";
-import { FeaturedWorkSection } from "./sections/FeaturedWorkSection";
 import { WhyChooseUsSection } from "./sections/WhyChooseUsSection";
 import { EngagementModelsSection } from "./sections/EngagementModelsSection";
 import { FAQsSection } from "./sections/FAQsSection";
 import { InsightsSection } from "./sections/InsightsSection";
-import { PartnerUpSection } from "./sections/PartnerUpSection";
 import { BuildSomethingRealSection } from "./sections/BuildSomethingRealSection";
 import { StatsNumbersSection } from "./sections/StatsNumbersSection";
 import { TestimonialsSection } from "./sections/TestimonialsSection";
@@ -32,7 +30,6 @@ export default async function HomePage() {
       <OurServicesSection />
       <HowWeWorkSection />
       <PortfolioSection />
-      <FeaturedWorkSection />
       <WhyChooseUsSection />
       <StatsNumbersSection />
       <TestimonialsSection />
@@ -40,7 +37,6 @@ export default async function HomePage() {
       <EngagementModelsSection />
       <FAQsSection />
       <InsightsSection />
-      <PartnerUpSection />
       <BuildSomethingRealSection config={buildConfig as any} />
     </main>
   );
