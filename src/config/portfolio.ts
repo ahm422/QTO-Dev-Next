@@ -13,9 +13,8 @@ export const portfolioConfig = {
   /** Word within title to highlight (primary/gold) */
   titleHighlight: "Featured",
 
-  /** Tagline below the main title */
-  description:
-    "Bringing dreams to life through innovative solutions.",
+  /** Tagline below the main title (empty — no secondary description under Featured Work) */
+  description: "",
 
   /** Label for the View All CTA button */
   viewAllLabel: "View All -",

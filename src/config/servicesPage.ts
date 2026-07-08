@@ -1,6 +1,6 @@
 /**
  * Services page copy and section-level strings (issue #40).
- * Single config for hero, grid, process, why choose us, and CTA.
+ * Single config for hero, grid, why choose us, and CTA.
  */
 
 export const servicesPageConfig = {
@@ -40,13 +40,6 @@ export const servicesPageConfig = {
       "GraphQL",
       "Stripe",
     ],
-  },
-  process: {
-    subtitle: "HOW WE DELIVER",
-    title: "Our Service Delivery Process",
-    titleHighlight: "Process",
-    description:
-      "A clear, six-step framework—from discovery to long-term support—designed to reduce risk and keep you confident at every stage.",
   },
   whyChooseUs: {
     subtitle: "WHY CHOOSE US",

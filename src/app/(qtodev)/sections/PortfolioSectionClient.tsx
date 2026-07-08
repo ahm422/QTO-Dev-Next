@@ -130,7 +130,7 @@ export function PortfolioSectionClient({ cases , config}: { cases: PortfolioCase
                 subtitlePill
                 title={cfg.title}
                 titleHighlight={cfg.titleHighlight}
-                description={cfg.description}
+                {...(cfg.description ? { description: cfg.description } : {})}
                 headingId={SECTION_HEADING_ID}
                 centered={true}
               />

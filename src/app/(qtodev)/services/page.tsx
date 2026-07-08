@@ -1,7 +1,6 @@
 import { ServicesHeroSection } from "./sections/ServicesHeroSection";
 import { ServicesGridSection } from "./sections/ServicesGridSection";
 import { ServicesTechnologiesSection } from "./sections/ServicesTechnologiesSection";
-import { ServicesProcessSection } from "./sections/ServicesProcessSection";
 import { ServicesWhyChooseUsSection } from "./sections/ServicesWhyChooseUsSection";
 import { ServicesCTASection } from "./sections/ServicesCTASection";
 import { servicesPageConfig } from "@/config/servicesPage";
@@ -15,7 +14,6 @@ export default async function ServicesPage() {
       <ServicesHeroSection config={cfg} />
       <ServicesGridSection />
       <ServicesTechnologiesSection />
-      <ServicesProcessSection />
       <ServicesWhyChooseUsSection />
       <ServicesCTASection config={cfg} />
     </>
