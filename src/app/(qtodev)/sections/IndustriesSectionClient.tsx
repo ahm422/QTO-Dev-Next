@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
+import { motion, useMotionValue, animate } from "framer-motion";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { AppIcon, type AppIconName } from "@/components/ui/shared/AppIcon";
@@ -13,6 +14,11 @@ import { Reveal } from "@/components/animations/Reveal";
 const HEADING_ID = "industries-heading";
 const CARD_WIDTH = 300;
 const CARD_GAP = 24;
+const DRAG_CLICK_THRESHOLD_PX = 5;
+const VELOCITY_THRESHOLD = 300;
+
+const SPRING = { type: "spring" as const, stiffness: 300, damping: 30 };
+const INSTANT = { duration: 0 };
 
 const industryIconMap: Record<IndustryIconKey, AppIconName> = {
   building: "building",
@@ -25,6 +31,56 @@ const industryIconMap: Record<IndustryIconKey, AppIconName> = {
   chart: "chart-line",
 };
 
+function getTrackWidth(itemCount: number) {
+  return itemCount * CARD_WIDTH + (itemCount - 1) * CARD_GAP;
+}
+
+function translateXForIndex(
+  index: number,
+  containerWidth: number,
+  itemCount: number
+): number {
+  if (containerWidth <= 0 || itemCount === 0) return 0;
+  const trackWidth = getTrackWidth(itemCount);
+  const activeCardCenter = index * (CARD_WIDTH + CARD_GAP) + CARD_WIDTH / 2;
+  const maxTranslateX = containerWidth / 2 - CARD_WIDTH / 2;
+  const minTranslateX = containerWidth - trackWidth;
+  return Math.max(
+    minTranslateX,
+    Math.min(maxTranslateX, containerWidth / 2 - activeCardCenter)
+  );
+}
+
+function indexFromOffset(
+  currentX: number,
+  velocityX: number,
+  containerWidth: number,
+  itemCount: number
+): number {
+  if (itemCount <= 1) return 0;
+
+  let nearest = 0;
+  let minDist = Infinity;
+
+  for (let i = 0; i < itemCount; i++) {
+    const target = translateXForIndex(i, containerWidth, itemCount);
+    const dist = Math.abs(currentX - target);
+    if (dist < minDist) {
+      minDist = dist;
+      nearest = i;
+    }
+  }
+
+  if (Math.abs(velocityX) > VELOCITY_THRESHOLD) {
+    if (velocityX < 0) {
+      return Math.min(itemCount - 1, nearest + 1);
+    }
+    return Math.max(0, nearest - 1);
+  }
+
+  return nearest;
+}
+
 function IndustryCard({
   item,
   isFocused,
@@ -35,62 +91,53 @@ function IndustryCard({
   return (
     <div
       data-focused={isFocused ? "true" : undefined}
-      className={cn(
-        "flex-shrink-0 transition-all duration-500 ease-out",
-        isFocused ? "z-10 scale-[1.02]" : "scale-[0.96]"
-      )}
+      className="flex-shrink-0 h-full"
       style={{ width: CARD_WIDTH }}
     >
-      {/* Blur wrapper: only unfocused cards get blurred so the focused one is always sharp */}
       <div
-        className="h-full min-h-[240px] rounded-2xl transition-all duration-500 ease-out"
-        style={!isFocused ? { filter: "blur(6px)" } : undefined}
+        className={cn(
+          "group relative flex h-full min-h-[240px] flex-col rounded-2xl p-6 text-white",
+          "bg-gradient-to-br from-black/90 via-[#0c0c0c] to-black/80 dark:from-white/[0.12] dark:via-white/[0.08] dark:to-white/[0.05]",
+          "border shadow-lg",
+          isFocused
+            ? "border-primary/50 shadow-xl shadow-primary/20 ring-1 ring-primary/30"
+            : "border-white/10 shadow-lg"
+        )}
       >
-        <div
-          className={cn(
-            "group relative flex h-full min-h-[240px] flex-col rounded-2xl p-6 text-white",
-            "bg-gradient-to-br from-black/90 via-[#0c0c0c] to-black/80 dark:from-white/[0.12] dark:via-white/[0.08] dark:to-white/[0.05]",
-            "border shadow-lg transition-all duration-500 ease-out",
-            isFocused
-              ? "border-primary/50 shadow-xl shadow-primary/15 opacity-100"
-              : "border-white/10 opacity-50 hover:opacity-60"
-          )}
-        >
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-transparent via-transparent to-black/20 dark:to-black/40 pointer-events-none" />
-          <div className="relative flex flex-col flex-1 min-w-0 z-0">
-            <div className="flex justify-between items-start gap-3 mb-4">
-              <span className="font-heading font-bold text-white text-xl tracking-tight">
-                {item.title}
-              </span>
-              <span className="text-white/50 text-sm font-medium tabular-nums shrink-0">
-                {item.number}
-              </span>
-            </div>
-            <div className="flex-1 flex flex-col items-center justify-center my-3">
-              <div
-                className={cn(
-                  "flex items-center justify-center w-14 h-14 rounded-2xl transition-colors duration-300",
-                  isFocused
-                    ? "bg-primary/25 text-primary"
-                    : "bg-white/10 text-primary/90"
-                )}
-              >
-                <AppIcon
-                  name={industryIconMap[item.icon]}
-                  size="lg"
-                  className="text-primary"
-                />
-              </div>
-            </div>
-            <p
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-transparent via-transparent to-black/20 dark:to-black/40 pointer-events-none" />
+        <div className="relative flex flex-col flex-1 min-w-0 z-0">
+          <div className="flex justify-between items-start gap-3 mb-4">
+            <span className="font-heading font-bold text-white text-xl tracking-tight">
+              {item.title}
+            </span>
+            <span className="text-white/50 text-sm font-medium tabular-nums shrink-0">
+              {item.number}
+            </span>
+          </div>
+          <div className="flex-1 flex flex-col items-center justify-center my-3">
+            <div
               className={cn(
-                "text-sm mt-auto leading-relaxed transition-colors duration-300",
-                isFocused ? "text-white/90" : "text-white/70"
+                "flex items-center justify-center w-14 h-14 rounded-2xl transition-colors duration-300",
+                isFocused
+                  ? "bg-primary/25 text-primary"
+                  : "bg-white/10 text-primary/90"
               )}
             >
-              — {item.description}
-            </p>
+              <AppIcon
+                name={industryIconMap[item.icon]}
+                size="lg"
+                className="text-primary"
+              />
+            </div>
           </div>
+          <p
+            className={cn(
+              "text-sm mt-auto leading-relaxed transition-colors duration-300",
+              isFocused ? "text-white/90" : "text-white/70"
+            )}
+          >
+            — {item.description}
+          </p>
         </div>
       </div>
     </div>
@@ -105,25 +152,42 @@ function goPrev(index: number, total: number) {
   return index <= 0 ? total - 1 : index - 1;
 }
 
-export function IndustriesSectionClient({ items , config}: { items: IndustryItem[] ; config?: IndustriesConfigType}) {
+export function IndustriesSectionClient({
+  items,
+  config,
+}: {
+  items: IndustryItem[];
+  config?: IndustriesConfigType;
+}) {
   const cfg = config ?? industriesConfig;
-  if (items.length === 0) return null;
   const [activeIndex, setActiveIndex] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const regionRef = useRef<HTMLDivElement>(null);
+  const dragMovedRef = useRef(false);
+  const x = useMotionValue(0);
+
+  const itemCount = items.length;
+  const trackWidth = getTrackWidth(itemCount);
+  const maxTranslateX = containerWidth / 2 - CARD_WIDTH / 2;
+  const minTranslateX = containerWidth - trackWidth;
+  const canDrag = itemCount > 1 && containerWidth > 0;
+  const cardTransition = reducedMotion ? INSTANT : SPRING;
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReducedMotion(mq.matches);
     const handler = () => setReducedMotion(mq.matches);
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
 
-  // Measure viewport width for centering the focused card (use carousel region)
   useEffect(() => {
     const el = regionRef.current;
     if (!el) return;
@@ -134,22 +198,37 @@ export function IndustriesSectionClient({ items , config}: { items: IndustryItem
     return () => ro.disconnect();
   }, []);
 
-  // Auto-advance: focus stays on current card for a few seconds, then next
   useEffect(() => {
-    if (reducedMotion || isPaused || items.length <= 1) return;
+    if (containerWidth <= 0 || itemCount === 0) return;
+    const target = translateXForIndex(activeIndex, containerWidth, itemCount);
+    if (reducedMotion) {
+      x.set(target);
+    } else {
+      animate(x, target, SPRING);
+    }
+  }, [activeIndex, containerWidth, itemCount, reducedMotion, x]);
+
+  useEffect(() => {
+    if (reducedMotion || isPaused || isDragging || itemCount <= 1) return;
     const id = setInterval(() => {
-      setActiveIndex((i) => goNext(i, items.length));
+      setActiveIndex((i) => goNext(i, itemCount));
     }, cfg.autoScrollIntervalMs);
     return () => clearInterval(id);
-  }, [reducedMotion, isPaused, items.length]);
+  }, [
+    reducedMotion,
+    isPaused,
+    isDragging,
+    itemCount,
+    cfg.autoScrollIntervalMs,
+  ]);
 
   const handlePrev = useCallback(() => {
-    setActiveIndex((i) => goPrev(i, items.length));
-  }, [items.length]);
+    setActiveIndex((i) => goPrev(i, itemCount));
+  }, [itemCount]);
 
   const handleNext = useCallback(() => {
-    setActiveIndex((i) => goNext(i, items.length));
-  }, [items.length]);
+    setActiveIndex((i) => goNext(i, itemCount));
+  }, [itemCount]);
 
   useEffect(() => {
     const el = regionRef.current;
@@ -168,21 +247,45 @@ export function IndustriesSectionClient({ items , config}: { items: IndustryItem
     return () => el.removeEventListener("keydown", onKeyDown);
   }, [handlePrev, handleNext]);
 
-  if (items.length === 0) return null;
+  const handleDragStart = useCallback(() => {
+    dragMovedRef.current = false;
+    setIsDragging(true);
+    setIsPaused(true);
+  }, []);
 
-  const trackWidth = items.length * CARD_WIDTH + (items.length - 1) * CARD_GAP;
-  const activeCardCenter =
-    activeIndex * (CARD_WIDTH + CARD_GAP) + CARD_WIDTH / 2;
-  // Center the active card: allow positive translateX so first card can be centered
-  const maxTranslateX = containerWidth / 2 - CARD_WIDTH / 2;
-  const minTranslateX = containerWidth - trackWidth;
-  const translateX =
-    containerWidth > 0
-      ? Math.max(
-          minTranslateX,
-          Math.min(maxTranslateX, containerWidth / 2 - activeCardCenter)
-        )
-      : 0;
+  const handleDrag = useCallback(
+    (_: unknown, info: { offset: { x: number } }) => {
+      if (Math.abs(info.offset.x) > DRAG_CLICK_THRESHOLD_PX) {
+        dragMovedRef.current = true;
+      }
+    },
+    []
+  );
+
+  const handleDragEnd = useCallback(
+    (_: unknown, info: { velocity: { x: number } }) => {
+      setIsDragging(false);
+      if (containerWidth <= 0) return;
+      const nearest = indexFromOffset(
+        x.get(),
+        info.velocity.x,
+        containerWidth,
+        itemCount
+      );
+      setActiveIndex(nearest);
+    },
+    [containerWidth, itemCount, x]
+  );
+
+  const handleCardClick = useCallback(
+    (index: number) => {
+      if (dragMovedRef.current) return;
+      if (index !== activeIndex) setActiveIndex(index);
+    },
+    [activeIndex]
+  );
+
+  if (itemCount === 0) return null;
 
   return (
     <section
@@ -218,10 +321,9 @@ export function IndustriesSectionClient({ items , config}: { items: IndustryItem
         </Reveal>
       </Container>
 
-      {/* Full-width carousel */}
       <div
         ref={regionRef}
-        className="w-full overflow-hidden"
+        className="w-full overflow-hidden touch-pan-y"
         role="region"
         aria-roledescription="carousel"
         aria-label={cfg.carouselAriaLabel}
@@ -232,101 +334,126 @@ export function IndustriesSectionClient({ items , config}: { items: IndustryItem
         onBlurCapture={() => setIsPaused(false)}
       >
         <div ref={containerRef} className="w-full overflow-hidden">
-          <div
-            className="flex py-4 transition-transform duration-500 ease-out"
-            style={{
-              gap: CARD_GAP,
-              transform: `translateX(${translateX}px)`,
-            }}
+          <motion.div
+            className={cn(
+              "flex py-4 select-none",
+              canDrag && "cursor-grab active:cursor-grabbing"
+            )}
+            style={{ x, gap: CARD_GAP }}
+            drag={canDrag ? "x" : false}
+            dragConstraints={
+              canDrag
+                ? { left: minTranslateX, right: maxTranslateX }
+                : undefined
+            }
+            dragElastic={0.1}
+            onDragStart={handleDragStart}
+            onDrag={handleDrag}
+            onDragEnd={handleDragEnd}
           >
-            {items.map((item, i) => (
-              <IndustryCard
-                key={item.id}
-                item={item}
-                isFocused={i === activeIndex}
-              />
-            ))}
-          </div>
+            {items.map((item, i) => {
+              const isFocused = i === activeIndex;
+              return (
+                <motion.div
+                  key={item.id}
+                  className={cn(
+                    "flex-shrink-0",
+                    isFocused ? "z-10" : "z-0"
+                  )}
+                  style={{ width: CARD_WIDTH }}
+                  animate={{
+                    scale: isFocused ? 1.05 : 0.9,
+                    opacity: isFocused ? 1 : 0.5,
+                    filter: isFocused ? "blur(0px)" : "blur(5px)",
+                  }}
+                  transition={cardTransition}
+                  onClick={() => handleCardClick(i)}
+                >
+                  <IndustryCard item={item} isFocused={isFocused} />
+                </motion.div>
+              );
+            })}
+          </motion.div>
         </div>
 
         <Container className="relative">
           <div
-            className="flex items-center justify-between mt-8 px-2"
+            className="flex items-center justify-center gap-4 mt-8 px-2"
             role="group"
             aria-label="Carousel navigation"
           >
-              <button
-                type="button"
-                onClick={handlePrev}
-                className={cn(
-                  "flex h-11 w-11 shrink-0 items-center justify-center rounded-full",
-                  "text-foreground-muted hover:text-foreground hover:bg-background",
-                  "border border-border shadow-sm transition-all duration-200",
-                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                )}
-                aria-label="Previous industry"
+            <button
+              type="button"
+              onClick={handlePrev}
+              className={cn(
+                "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
+                "text-foreground-muted/80 hover:text-foreground hover:bg-background",
+                "border border-border/70 shadow-sm transition-all duration-200",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              )}
+              aria-label={cfg.prevLabel}
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
 
-              <div className="flex items-center gap-2">
-                {items.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => setActiveIndex(i)}
-                    className={cn(
-                      "h-2.5 rounded-full transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
-                      i === activeIndex
-                        ? "w-8 bg-primary"
-                        : "w-2.5 bg-foreground-muted/35 hover:bg-foreground-muted/55"
-                    )}
-                    aria-label={`Go to industry ${i + 1}`}
-                    aria-current={i === activeIndex ? "true" : undefined}
-                  />
-                ))}
-              </div>
-
-              <button
-                type="button"
-                onClick={handleNext}
-                className={cn(
-                  "flex h-11 w-11 shrink-0 items-center justify-center rounded-full",
-                  "text-foreground-muted hover:text-foreground hover:bg-background",
-                  "border border-border shadow-sm transition-all duration-200",
-                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                )}
-                aria-label="Next industry"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
+            <div className="flex items-center gap-2">
+              {items.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setActiveIndex(i)}
+                  className={cn(
+                    "h-2.5 rounded-full transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+                    i === activeIndex
+                      ? "w-8 bg-primary"
+                      : "w-2.5 bg-foreground-muted/35 hover:bg-foreground-muted/55"
+                  )}
+                  aria-label={`Go to industry ${i + 1}`}
+                  aria-current={i === activeIndex ? "true" : undefined}
+                />
+              ))}
             </div>
+
+            <button
+              type="button"
+              onClick={handleNext}
+              className={cn(
+                "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
+                "text-foreground-muted/80 hover:text-foreground hover:bg-background",
+                "border border-border/70 shadow-sm transition-all duration-200",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              )}
+              aria-label={cfg.nextLabel}
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          </div>
         </Container>
 
         <div aria-live="polite" aria-atomic className="sr-only">
