@@ -411,6 +411,7 @@ model TeamMember {
   linkedIn    String?  @map("linked_in")
   order       Int      @default(0)
   isPublished Boolean  @default(true) @map("is_published")
+  isFounder   Boolean  @default(false) @map("is_founder")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 

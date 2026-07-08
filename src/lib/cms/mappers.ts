@@ -330,6 +330,45 @@ export function buildAboutPageContent(
   };
 }
 
+export interface ErpModule {
+  name: string;
+  description: string;
+}
+
+export interface ErpSolutionsContent {
+  title: string;
+  subtitle: string;
+  body: string;
+  modules: ErpModule[];
+  industries: string[];
+  legacyModernization: {
+    title: string;
+    body: string;
+  };
+}
+
+export function mapErpSolutionsContent(
+  row: AboutContent | undefined,
+  fallback: ErpSolutionsContent
+): ErpSolutionsContent {
+  if (!row) return fallback;
+
+  const meta = parseMetadata<{
+    modules?: ErpModule[];
+    industries?: string[];
+    legacyModernization?: { title: string; body: string };
+  }>(row.metadata);
+
+  return {
+    title: row.title ?? fallback.title,
+    subtitle: row.subtitle ?? fallback.subtitle,
+    body: row.body ?? fallback.body,
+    modules: meta?.modules?.length ? meta.modules : fallback.modules,
+    industries: meta?.industries?.length ? meta.industries : fallback.industries,
+    legacyModernization: meta?.legacyModernization ?? fallback.legacyModernization,
+  };
+}
+
 export function mapSiteConfigRows(rows: SiteConfig[]) {
   const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
   return {

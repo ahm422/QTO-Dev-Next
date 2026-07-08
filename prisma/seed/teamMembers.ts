@@ -4,6 +4,7 @@ import { prisma, upsertBy } from "./helpers";
 export async function seedTeamMembers() {
   for (let i = 0; i < leadershipTeam.length; i++) {
     const member = leadershipTeam[i];
+    const isFounder = member.id === "ceo";
     await upsertBy(
       () => prisma.teamMember.findFirst({ where: { name: member.name } }),
       () =>
@@ -15,6 +16,7 @@ export async function seedTeamMembers() {
             avatarUrl: member.imageUrl ?? null,
             order: i,
             isPublished: true,
+            isFounder,
           },
         }),
       (existing) =>
@@ -26,6 +28,7 @@ export async function seedTeamMembers() {
             avatarUrl: member.imageUrl ?? null,
             order: i,
             isPublished: true,
+            isFounder,
           },
         })
     );

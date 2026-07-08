@@ -11,7 +11,7 @@ export const leadershipTeam: LeadershipMember[] = [
     id: "ceo",
     name: "Muhammad Ahmad Mustafa",
     designation: "Chief Executive Officer",
-    imageUrl: "/images/CEO1.JPG",
+    imageUrl: "/images/optimized/ceo-portrait-800.webp",
     bio: "Provides strategic direction for QTO Development and builds long-term partnerships with key clients.",
   },
   {
