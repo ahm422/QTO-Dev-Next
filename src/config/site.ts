@@ -1,5 +1,12 @@
 /** Static site chrome (nav/footer structure). Dynamic copy comes from CMS site_config. */
 
+import {
+  CONTACT_EMAIL,
+  CONTACT_PHONE,
+  OFFICE_ADDRESS,
+  SOCIAL_LINKS,
+} from "@/lib/constants";
+
 export interface NavItem {
   label: string;
   href: string;
@@ -29,15 +36,16 @@ export const footerSections: FooterSection[] = [
       { label: "Projects", href: "/projects" },
       { label: "Blog", href: "/blogs" },
       { label: "Requirements", href: "/requirements" },
+      { label: "Contact", href: "/contact" },
+      { label: "Careers", href: "/careers" },
     ],
   },
   {
     title: "Resources",
     links: [
-      { label: "FAQs", href: "#faqs" },
-      { label: "Insights", href: "#insights" },
-      { label: "Let's Build Something Real", href: "#build-something-real" },
-      { label: "Support", href: "#support" },
+      { label: "FAQs", href: "/faqs" },
+      { label: "Insights", href: "/blogs" },
+      { label: "Let's Build Something Real", href: "/contact" },
     ],
   },
   {
@@ -51,10 +59,11 @@ export const footerSections: FooterSection[] = [
 ];
 
 export const socialLinks = [
-  { label: "Twitter", href: "https://twitter.com" },
-  { label: "LinkedIn", href: "https://linkedin.com" },
-  { label: "GitHub", href: "https://github.com" },
-  { label: "Facebook", href: "https://facebook.com" },
+  { label: "Twitter", href: SOCIAL_LINKS.twitter },
+  { label: "LinkedIn", href: SOCIAL_LINKS.linkedin },
+  { label: "GitHub", href: SOCIAL_LINKS.github },
+  { label: "Facebook", href: SOCIAL_LINKS.facebook },
+  { label: "Instagram", href: SOCIAL_LINKS.instagram },
 ];
 
 export const defaultSiteBranding = {
@@ -63,8 +72,8 @@ export const defaultSiteBranding = {
   url: "https://qtodev.com",
   ogImage: "https://qtodev.com/og/default.png",
   contact: {
-    email: "hello@qtodev.com",
-    phone: "+1 (555) 010-1000",
-    office: "USA • UK • Saudi Arabia • Pakistan",
+    email: CONTACT_EMAIL,
+    phone: CONTACT_PHONE,
+    office: OFFICE_ADDRESS,
   },
 } as const;

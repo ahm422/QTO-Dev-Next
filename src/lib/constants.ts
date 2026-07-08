@@ -22,5 +22,5 @@ export const SOCIAL_LINKS = {
 };
 
 export const CONTACT_EMAIL = 'hello@qtodev.com';
-export const CONTACT_PHONE = '+1 (555) 123-4567';
-export const OFFICE_ADDRESS = '123 Tech Street, San Francisco, CA 94105';
+export const CONTACT_PHONE = '+92 312 1234567';
+export const OFFICE_ADDRESS = 'USA • UK • Saudi Arabia • Pakistan';
