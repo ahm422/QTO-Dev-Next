@@ -20,6 +20,9 @@ export const projectsPageConfig = {
   },
   filter: {
     allLabel: "All",
+    emptyStateTitle: "No projects match this filter",
+    emptyStateDescription: "Try another category or view all work.",
+    clearFiltersLabel: "View all projects",
   },
   valueSection: {
     subtitle: "WHY OUR WORK MATTERS",
@@ -28,9 +31,21 @@ export const projectsPageConfig = {
     description:
       "We deliver real impact with modern technology and a client-focused approach.",
     items: [
-      { title: "Real impact", description: "Solutions that drive measurable business outcomes." },
-      { title: "Modern stack", description: "Current technologies and best practices." },
-      { title: "Client-focused", description: "Partnership from discovery through launch and beyond." },
+      {
+        title: "Real impact",
+        icon: "chart-line",
+        description: "Solutions that drive measurable business outcomes.",
+      },
+      {
+        title: "Modern stack",
+        icon: "laptop-code",
+        description: "Current technologies and best practices.",
+      },
+      {
+        title: "Client-focused",
+        icon: "handshake",
+        description: "Partnership from discovery through launch and beyond.",
+      },
     ],
   },
   cta: {

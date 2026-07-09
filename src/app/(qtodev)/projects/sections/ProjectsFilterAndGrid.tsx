@@ -1,13 +1,26 @@
+import { Suspense } from "react";
 import { findPublishedProjects } from "@/lib/cms/projects";
 import { projectsPageConfig } from "@/config/projectsPage";
 type ProjectsPageConfigType = typeof projectsPageConfig;
-import { ProjectsGridSection } from "./ProjectsGridSection";
+import { ProjectsFilterAndGridClient } from "./ProjectsFilterAndGridClient";
+
+interface ProjectsFilterAndGridProps {
+  config?: ProjectsPageConfigType;
+  initialCategory?: string;
+}
 
 export async function ProjectsFilterAndGrid({
   config,
-}: {
-  config?: ProjectsPageConfigType;
-}) {
+  initialCategory,
+}: ProjectsFilterAndGridProps) {
   const projects = await findPublishedProjects();
-  return <ProjectsGridSection projects={projects} config={config} />;
+  return (
+    <Suspense fallback={null}>
+      <ProjectsFilterAndGridClient
+        projects={projects}
+        config={config}
+        initialCategory={initialCategory}
+      />
+    </Suspense>
+  );
 }
