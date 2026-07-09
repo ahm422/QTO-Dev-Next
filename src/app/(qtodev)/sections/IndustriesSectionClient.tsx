@@ -10,6 +10,7 @@ type IndustriesConfigType = typeof industriesConfig;
 import type { IndustryItem, IndustryIconKey } from "@/types/industry";
 import { cn } from "@/components/theme/cn";
 import { Reveal } from "@/components/animations/Reveal";
+import { useMotionEnabled } from "@/hooks/useReducedMotion";
 
 const HEADING_ID = "industries-heading";
 const CARD_WIDTH = 300;
@@ -84,9 +85,11 @@ function indexFromOffset(
 function IndustryCard({
   item,
   isFocused,
+  motionEnabled,
 }: {
   item: IndustryItem;
   isFocused: boolean;
+  motionEnabled: boolean;
 }) {
   return (
     <div
@@ -115,20 +118,26 @@ function IndustryCard({
             </span>
           </div>
           <div className="flex-1 flex flex-col items-center justify-center my-3">
-            <div
+            <motion.div
               className={cn(
-                "flex items-center justify-center w-14 h-14 rounded-2xl transition-colors duration-300",
+                "flex items-center justify-center w-14 h-14 rounded-2xl transition-all duration-300",
                 isFocused
-                  ? "bg-primary/25 text-primary"
-                  : "bg-white/10 text-primary/90"
+                  ? "bg-primary/25 text-primary shadow-lg shadow-primary/20"
+                  : "bg-white/10 text-primary/90 opacity-80"
               )}
+              animate={
+                motionEnabled && isFocused
+                  ? { scale: 1.1 }
+                  : { scale: isFocused ? 1.05 : 1 }
+              }
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
               <AppIcon
                 name={industryIconMap[item.icon]}
                 size="lg"
                 className="text-primary"
               />
-            </div>
+            </motion.div>
           </div>
           <p
             className={cn(
@@ -160,6 +169,7 @@ export function IndustriesSectionClient({
   config?: IndustriesConfigType;
 }) {
   const cfg = config ?? industriesConfig;
+  const motionEnabled = useMotionEnabled();
   const [activeIndex, setActiveIndex] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -273,8 +283,14 @@ export function IndustriesSectionClient({
         itemCount
       );
       setActiveIndex(nearest);
+      const target = translateXForIndex(nearest, containerWidth, itemCount);
+      if (reducedMotion) {
+        x.set(target);
+      } else {
+        animate(x, target, SPRING);
+      }
     },
-    [containerWidth, itemCount, x]
+    [containerWidth, itemCount, reducedMotion, x]
   );
 
   const handleCardClick = useCallback(
@@ -333,7 +349,15 @@ export function IndustriesSectionClient({
         onFocusCapture={() => setIsPaused(true)}
         onBlurCapture={() => setIsPaused(false)}
       >
-        <div ref={containerRef} className="w-full overflow-hidden">
+        <div ref={containerRef} className="relative w-full overflow-hidden">
+          <div
+            className="pointer-events-none absolute inset-y-0 left-0 z-20 w-16 md:w-24 bg-gradient-to-r from-background to-transparent"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute inset-y-0 right-0 z-20 w-16 md:w-24 bg-gradient-to-l from-background to-transparent"
+            aria-hidden
+          />
           <motion.div
             className={cn(
               "flex py-4 select-none",
@@ -369,7 +393,7 @@ export function IndustriesSectionClient({
                   transition={cardTransition}
                   onClick={() => handleCardClick(i)}
                 >
-                  <IndustryCard item={item} isFocused={isFocused} />
+                  <IndustryCard item={item} isFocused={isFocused} motionEnabled={motionEnabled} />
                 </motion.div>
               );
             })}

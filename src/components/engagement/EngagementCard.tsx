@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
+import { TiltCard } from "@/components/animations/TiltCard";
+import { useMotionEnabled } from "@/hooks/useReducedMotion";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/components/theme/cn";
 
 export interface EngagementCardProps {
@@ -35,7 +38,7 @@ function ArrowUpRightIcon({ className }: { className?: string }) {
   );
 }
 
-export function EngagementCard({
+function EngagementCardInner({
   optionNumber,
   title,
   description,
@@ -59,7 +62,6 @@ export function EngagementCard({
           "relative border-primary/40 bg-gradient-to-b from-primary/[0.08] via-primary/[0.03] to-transparent dark:from-primary/[0.12] dark:via-primary/[0.05] dark:to-transparent shadow-xl shadow-primary/10 ring-2 ring-primary/25 hover:ring-primary/30 lg:z-10 lg:scale-[1.03]"
       )}
     >
-      {/* Top accent line (visible on popular, appears on hover for others) */}
       <span
         className={cn(
           "absolute top-0 left-0 right-0 h-1 rounded-t-2xl bg-gradient-to-r from-primary to-primary/70 transition-opacity duration-300",
@@ -151,4 +153,22 @@ export function EngagementCard({
       </div>
     </Card>
   );
+}
+
+export function EngagementCard(props: EngagementCardProps) {
+  const motionEnabled = useMotionEnabled();
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const useTilt = motionEnabled && isDesktop;
+
+  const inner = <EngagementCardInner {...props} />;
+
+  if (useTilt) {
+    return (
+      <TiltCard className="h-full" maxTilt={6}>
+        {inner}
+      </TiltCard>
+    );
+  }
+
+  return inner;
 }
