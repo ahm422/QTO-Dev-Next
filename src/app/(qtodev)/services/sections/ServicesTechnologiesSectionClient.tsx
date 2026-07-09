@@ -3,14 +3,85 @@
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
-import { TechIcon, resolveSimpleIconColor } from "@/components/technologies/TechIcon";
+import { TechIcon, resolveTechColor } from "@/components/technologies/TechIcon";
 import { servicesPageConfig } from "@/config/servicesPage";
-type ServicesPageConfigType = typeof servicesPageConfig;
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/components/theme/cn";
+
+type ServicesPageConfigType = typeof servicesPageConfig;
 
 const HEADING_ID = "services-technologies-heading";
 
-type TechEntry = { name: string; iconKey: string }
+type TechEntry = { name: string; iconKey: string };
+
+function TechTile({ tech }: { tech: TechEntry }) {
+  const brandColor = resolveTechColor(tech.name, tech.iconKey);
+
+  return (
+    <div
+      className={cn(
+        "group flex w-[140px] shrink-0 flex-col items-center rounded-2xl border border-border/80 bg-surface/80 p-5 text-center sm:w-[160px] sm:p-6",
+        "shadow-md shadow-black/[0.03] ring-1 ring-black/[0.02]",
+        "transition-all duration-300 ease-out",
+        "hover:-translate-y-2 hover:border-primary/20 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.12),0_0_0_1px_var(--tech-glow),0_0_32px_-8px_var(--tech-glow)]",
+        "dark:shadow-black/20 dark:ring-white/[0.04] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4),0_0_0_1px_var(--tech-glow),0_0_32px_-8px_var(--tech-glow)]",
+        "focus-within:ring-2 focus-within:ring-primary/40 focus-within:ring-offset-2 focus-within:ring-offset-background"
+      )}
+      style={
+        {
+          "--tech-color": brandColor,
+          "--tech-glow": "color-mix(in srgb, var(--tech-color) 18%, transparent)",
+        } as React.CSSProperties
+      }
+    >
+      <div className="mb-4 flex items-center justify-center">
+        <TechIcon tech={tech.name} iconKey={tech.iconKey} />
+      </div>
+      <p className="text-sm font-medium text-foreground-muted transition-all duration-300 group-hover:text-foreground group-hover:tracking-wide">
+        {tech.name}
+      </p>
+    </div>
+  );
+}
+
+function TechGrid({ technologies }: { technologies: TechEntry[] }) {
+  return (
+    <div
+      className={cn(
+        "grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5",
+        "sm:gap-6"
+      )}
+    >
+      {technologies.map((tech) => (
+        <div key={tech.iconKey || tech.name} data-reveal>
+          <TechTile tech={tech} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TechMarquee({ technologies }: { technologies: TechEntry[] }) {
+  const renderTrack = (suffix: string) => (
+    <div className="technologies-marquee-track flex w-max items-stretch gap-5 sm:gap-6">
+      {technologies.map((tech) => (
+        <TechTile key={`${tech.iconKey || tech.name}-${suffix}`} tech={tech} />
+      ))}
+    </div>
+  );
+
+  return (
+    <div
+      className="technologies-marquee relative -mx-4 overflow-hidden sm:-mx-6 lg:-mx-8"
+      aria-label="Technologies we master"
+    >
+      <div className="flex w-max">
+        {renderTrack("a")}
+        {renderTrack("b")}
+      </div>
+    </div>
+  );
+}
 
 export function ServicesTechnologiesSectionClient({
   technologies,
@@ -19,6 +90,8 @@ export function ServicesTechnologiesSectionClient({
   technologies: TechEntry[];
   config?: ServicesPageConfigType;
 }) {
+  const reducedMotion = useReducedMotion();
+
   if (technologies.length === 0) return null;
   const cfg = config ?? servicesPageConfig;
   const { technologiesWeMaster } = cfg;
@@ -31,7 +104,6 @@ export function ServicesTechnologiesSectionClient({
       )}
       aria-labelledby={HEADING_ID}
     >
-      {/* Gradient orbs for depth */}
       <div
         className="pointer-events-none absolute left-1/2 top-0 h-48 w-96 -translate-x-1/2 rounded-full bg-primary/[0.06] blur-3xl"
         aria-hidden
@@ -59,41 +131,13 @@ export function ServicesTechnologiesSectionClient({
             />
           </div>
 
-          <div
-            className={cn(
-              "grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5",
-              "sm:gap-6"
-            )}
-          >
-            {technologies.map((tech) => (
-              <div
-                key={tech.iconKey || tech.name}
-                data-reveal
-                className={cn(
-                  "group flex flex-col items-center rounded-2xl border border-border/80 bg-surface/80 p-5 sm:p-6 text-center",
-                  "shadow-md shadow-black/[0.03] ring-1 ring-black/[0.02]",
-                  "transition-all duration-300 ease-out",
-                  "hover:-translate-y-2 hover:border-primary/20 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.12),0_0_0_1px_var(--tech-glow),0_0_32px_-8px_var(--tech-glow)]",
-                  "dark:shadow-black/20 dark:ring-white/[0.04] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4),0_0_0_1px_var(--tech-glow),0_0_32px_-8px_var(--tech-glow)]",
-                  "focus-within:ring-2 focus-within:ring-primary/40 focus-within:ring-offset-2 focus-within:ring-offset-background"
-                )}
-                style={
-                  {
-                    "--tech-color": resolveSimpleIconColor(tech.iconKey) ?? "currentColor",
-                    "--tech-glow":
-                      "color-mix(in srgb, var(--tech-color) 18%, transparent)",
-                  } as React.CSSProperties
-                }
-              >
-                <div className="mb-4 flex items-center justify-center">
-                  <TechIcon tech={tech.name} iconKey={tech.iconKey} />
-                </div>
-                <p className="text-sm font-medium text-foreground-muted transition-all duration-300 group-hover:text-foreground group-hover:tracking-wide">
-                  {tech.name}
-                </p>
-              </div>
-            ))}
-          </div>
+          {reducedMotion ? (
+            <TechGrid technologies={technologies} />
+          ) : (
+            <div data-reveal>
+              <TechMarquee technologies={technologies} />
+            </div>
+          )}
         </Reveal>
       </Container>
     </section>

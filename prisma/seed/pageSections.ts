@@ -233,6 +233,7 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
           "Next.js", "React", "TypeScript", "Node.js", "Tailwind CSS",
           "PostgreSQL", "MongoDB", "Docker", "AWS", "Vercel",
           "Prisma", "Redis", "GraphQL", "Stripe",
+          "Django", "Cloudflare", "D1", "R2", "Jenkins", "Zod", "Garage", "Coolify",
         ],
       },
       whyChooseUs: {
@@ -243,6 +244,13 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
         ctaLabel: "See our work",
         ctaHref: "/portfolio",
         cardLabel: "WHY QTO DEV",
+        checklist: [
+          "Agile delivery with transparent milestones",
+          "Senior engineers on every project",
+          "Post-launch support and maintenance",
+          "Security-first architecture",
+          "Dedicated single point of contact",
+        ],
       },
       cta: {
         title: "Ready to Get Started?",

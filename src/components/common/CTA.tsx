@@ -4,7 +4,12 @@ import Link from "next/link";
 import { Heading } from "@/components/ui/shared/Heading";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Container } from "@/components/common/Container";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/components/theme/cn";
+
+/** Subtle noise tile — inline SVG data URI, no extra network request. */
+const NOISE_TEXTURE =
+  "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E\")";
 
 interface CTAProps {
   title: string;
@@ -15,6 +20,8 @@ interface CTAProps {
   secondaryButtonHref?: string;
   onPrimaryClick?: () => void;
   onSecondaryClick?: () => void;
+  variant?: "default" | "mesh";
+  showNoise?: boolean;
 }
 
 export function CTA({
@@ -26,19 +33,50 @@ export function CTA({
   secondaryButtonHref,
   onPrimaryClick,
   onSecondaryClick,
+  variant = "mesh",
+  showNoise = true,
 }: CTAProps) {
+  const reducedMotion = useReducedMotion();
+  const useMesh = variant === "mesh";
+
   return (
     <section className="relative bg-primary py-20 md:py-24 lg:py-28 overflow-hidden">
-      {/* Gradient overlay for depth */}
+      {/* Gradient mesh overlay */}
       <div
         className="pointer-events-none absolute inset-0"
         aria-hidden
         style={{
-          background:
-            "radial-gradient(ellipse 80% 50% at 50% 20%, rgba(255,255,255,0.12) 0%, transparent 50%), radial-gradient(ellipse 60% 40% at 80% 80%, rgba(255,255,255,0.06) 0%, transparent 50%), radial-gradient(ellipse 50% 30% at 20% 70%, rgba(255,255,255,0.04) 0%, transparent 50%)",
+          background: useMesh
+            ? [
+                "radial-gradient(ellipse 90% 60% at 15% 20%, rgba(255,255,255,0.18) 0%, transparent 55%)",
+                "radial-gradient(ellipse 70% 50% at 85% 15%, rgba(255,200,120,0.14) 0%, transparent 50%)",
+                "radial-gradient(ellipse 60% 45% at 75% 85%, rgba(255,255,255,0.1) 0%, transparent 55%)",
+                "radial-gradient(ellipse 50% 40% at 25% 75%, rgba(0,0,0,0.12) 0%, transparent 50%)",
+                "conic-gradient(from 200deg at 50% 50%, rgba(255,255,255,0.06) 0deg, transparent 120deg, rgba(255,255,255,0.04) 240deg, transparent 360deg)",
+              ].join(", ")
+            : "radial-gradient(ellipse 80% 50% at 50% 20%, rgba(255,255,255,0.12) 0%, transparent 50%), radial-gradient(ellipse 60% 40% at 80% 80%, rgba(255,255,255,0.06) 0%, transparent 50%), radial-gradient(ellipse 50% 30% at 20% 70%, rgba(255,255,255,0.04) 0%, transparent 50%)",
         }}
       />
-      {/* Soft orbs */}
+
+      {/* Mesh blobs */}
+      {useMesh && (
+        <>
+          <div
+            className="pointer-events-none absolute -top-24 left-[10%] h-[420px] w-[420px] rounded-full bg-white/[0.08] blur-3xl"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute bottom-0 right-[5%] h-[380px] w-[380px] rounded-full bg-cta-gold/[0.12] blur-3xl translate-y-1/3"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute top-1/2 left-1/2 h-[300px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/[0.08] blur-3xl"
+            aria-hidden
+          />
+        </>
+      )}
+
+      {/* Soft orbs (always) */}
       <div
         className="pointer-events-none absolute top-1/2 left-1/4 w-[420px] h-[320px] rounded-full bg-white/[0.07] blur-3xl -translate-x-1/2 -translate-y-1/2"
         aria-hidden
@@ -47,6 +85,15 @@ export function CTA({
         className="pointer-events-none absolute top-1/2 right-1/4 w-[380px] h-[300px] rounded-full bg-white/[0.05] blur-3xl translate-x-1/2 -translate-y-1/2"
         aria-hidden
       />
+
+      {/* Noise texture */}
+      {showNoise && (
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.03] mix-blend-overlay"
+          aria-hidden
+          style={{ backgroundImage: NOISE_TEXTURE, backgroundSize: "128px 128px" }}
+        />
+      )}
 
       <Container className="relative">
         <div className="max-w-3xl mx-auto text-center">
@@ -61,7 +108,6 @@ export function CTA({
               {description}
             </p>
           )}
-          {/* Decorative line */}
           <div
             className="mx-auto mb-10 h-px w-20 bg-gradient-to-r from-transparent via-primary-foreground/40 to-transparent"
             aria-hidden
@@ -74,7 +120,8 @@ export function CTA({
                 "group inline-flex items-center justify-center gap-2.5 font-semibold rounded-xl transition-all duration-300",
                 "px-7 py-3.5 text-lg",
                 "bg-primary-foreground text-primary hover:bg-primary-foreground/95",
-                "shadow-xl shadow-black/20 hover:shadow-2xl hover:shadow-black/25 hover:-translate-y-0.5",
+                "shadow-xl shadow-black/20 hover:shadow-2xl hover:shadow-black/25",
+                !reducedMotion && "hover:-translate-y-0.5",
                 "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
               )}
             >
@@ -82,7 +129,10 @@ export function CTA({
               <AppIcon
                 name="arrow-right"
                 size="sm"
-                className="shrink-0 transition-transform duration-300 group-hover:translate-x-1"
+                className={cn(
+                  "shrink-0 transition-transform duration-300 group-hover:translate-x-1",
+                  !reducedMotion && "group-hover:animate-cta-arrow-nudge"
+                )}
               />
             </Link>
             {secondaryButtonText && (

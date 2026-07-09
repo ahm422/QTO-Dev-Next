@@ -15,7 +15,15 @@ const TECH_ICON_KEYS: Record<string, string> = {
   Redis: "redis",
   GraphQL: "graphql",
   Stripe: "stripe",
-  AWS: "aws",
+  AWS: "amazonaws",
+  Django: "django",
+  Cloudflare: "cloudflare",
+  D1: "cloudflare-d1",
+  R2: "cloudflare-r2",
+  Jenkins: "jenkins",
+  Zod: "zod",
+  Garage: "garage",
+  Coolify: "coolify",
 };
 
 export function getTechIconKey(name: string): string {

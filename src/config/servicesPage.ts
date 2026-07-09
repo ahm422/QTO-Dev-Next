@@ -39,6 +39,14 @@ export const servicesPageConfig = {
       "Redis",
       "GraphQL",
       "Stripe",
+      "Django",
+      "Cloudflare",
+      "D1",
+      "R2",
+      "Jenkins",
+      "Zod",
+      "Garage",
+      "Coolify",
     ],
   },
   whyChooseUs: {
@@ -49,6 +57,13 @@ export const servicesPageConfig = {
     ctaLabel: "See our work",
     ctaHref: "/portfolio",
     cardLabel: "WHY QTO DEV",
+    checklist: [
+      "Agile delivery with transparent milestones",
+      "Senior engineers on every project",
+      "Post-launch support and maintenance",
+      "Security-first architecture",
+      "Dedicated single point of contact",
+    ],
   },
   cta: {
     title: "Ready to Get Started?",
