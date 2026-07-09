@@ -19,6 +19,7 @@ import {
   faGear,
   faGlobe,
   faHammer,
+  faHandshake,
   faHeadphones,
   faHeart,
   faLaptopCode,
@@ -75,6 +76,7 @@ export type AppIconName =
   | "bullseye"
   | "compass"
   | "hammer"
+  | "handshake"
   | "flask-vial"
   | "rocket"
   | "check"
@@ -125,6 +127,7 @@ const iconMap: Record<AppIconName, IconDefinition> = {
   bullseye: faBullseye,
   compass: faCompass,
   hammer: faHammer,
+  handshake: faHandshake,
   "flask-vial": faFlaskVial,
   rocket: faRocket,
   heart: faHeart,
