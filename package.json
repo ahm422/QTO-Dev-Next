@@ -27,6 +27,7 @@
     "d1:sync:staging": "npm run migrate:sync-staging-remote",
     "db:seed:local": "prisma db seed",
     "db:seed:staging": "tsx prisma/seed.ts -- --d1=staging",
+    "db:seed:erp-solutions:remote": "tsx scripts/seed-erp-solutions-remote.ts -- --d1=remote --confirm-production",
     "verify:seed-counts": "tsx scripts/verify-seed-counts.ts",
     "verify:seed-counts:staging": "tsx scripts/verify-seed-counts.ts -- --d1=staging",
     "admin:create-user": "tsx scripts/create-admin-user.ts",
