@@ -1,14 +1,14 @@
 /**
  * About page copy and section-level strings (issue #44).
- * Single config for hero, company snapshot, mission/vision, values, what we do, trust, and CTA.
+ * CMS: about.page — edit in admin → Pages
  */
 
 export const aboutPageConfig = {
   hero: {
-    pageHeading: "About QTO Dev",
-    heading: "Empowering Businesses Through Intelligent Technology",
+    badge: "About QTO Dev",
+    heading: "Engineering-led. Outcome-driven.",
     subhead:
-      "At QTO Dev, we build secure, scalable, performance-driven software—from custom web platforms and ERP systems to workflow automation tools—so organizations can operate smarter and grow faster.",
+      "We build secure, scalable systems that help teams move faster.",
     ctaText: "Get In Touch",
     ctaHref: "/contact",
     breadcrumbLabel: "About",

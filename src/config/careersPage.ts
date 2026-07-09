@@ -1,10 +1,11 @@
 import { careerPortalHomeUrl } from "@/config/careersPortal";
 
+/** CMS: careers.page — edit in admin → Pages */
 export const careersPageConfig = {
   hero: {
-    heading: "Build Your Career With QTO DEV.",
+    heading: "Build with a team that ships",
     subhead:
-      "We are always looking for passionate developers, designers, and problem-solvers to join our growing team. If you’re driven by innovation and excellence, we’d love to hear from you.",
+      "Join engineers and designers solving real client problems.",
     primaryCtaText: "View Open Roles",
     primaryCtaHref: "#open-roles",
     secondaryCtaText: "Open Career Portal",

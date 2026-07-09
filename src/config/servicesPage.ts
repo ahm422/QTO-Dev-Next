@@ -1,13 +1,12 @@
 /**
  * Services page copy and section-level strings (issue #40).
- * Single config for hero, grid, why choose us, and CTA.
+ * CMS: services.page — edit in admin → Pages
  */
 
 export const servicesPageConfig = {
   hero: {
-    heading: "Our Services",
-    subhead:
-      "We deliver end-to-end digital solutions tailored to your business needs. From custom development to enterprise-grade systems, we build scalable, secure, and future-ready software.",
+    heading: "Custom software, built to scale",
+    subhead: "Web, mobile, cloud, and AI — end to end.",
     breadcrumbLabel: "Services",
   },
   grid: {

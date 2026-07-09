@@ -7,6 +7,16 @@ export interface HeroPointerNorm {
   readonly y: number;
 }
 
+export const HERO_TILT_DEFAULTS = {
+  maxDelta: 12,
+  maxShift: 10,
+} as const;
+
+export interface HeroTiltConfig {
+  maxDelta?: number;
+  maxShift?: number;
+}
+
 interface HeroTiltAngles {
   rotateX: number;
   rotateY: number;
@@ -29,8 +39,6 @@ const IDLE: HeroTiltAngles = {
   translateY: 0,
 };
 
-const MAX_DELTA = 12;
-const MAX_SHIFT = 10;
 /** Follow feel — snappy but still smooth (~2–3 frames at 60fps). */
 const FOLLOW_TAU = 0.055;
 /** Slightly softer return to flat on leave. */
@@ -40,22 +48,31 @@ const LG_QUERY = "(min-width: 1024px)";
 const SETTLE_ROT = 0.03;
 const SETTLE_SHIFT = 0.08;
 
-function mapPointerToTarget(nx: number, ny: number): HeroTiltAngles {
+export function mapPointerToTarget(
+  nx: number,
+  ny: number,
+  config: HeroTiltConfig = {}
+): HeroTiltAngles {
+  const maxDelta = config.maxDelta ?? HERO_TILT_DEFAULTS.maxDelta;
+  const maxShift = config.maxShift ?? HERO_TILT_DEFAULTS.maxShift;
   const x = Math.max(-1, Math.min(1, nx));
   const y = Math.max(-1, Math.min(1, ny));
   return {
-    rotateX: -y * MAX_DELTA,
-    rotateY: x * MAX_DELTA,
-    translateX: x * MAX_SHIFT,
-    translateY: y * MAX_SHIFT,
+    rotateX: -y * maxDelta,
+    rotateY: x * maxDelta,
+    translateX: x * maxShift,
+    translateY: y * maxShift,
   };
 }
 
-function applyTransform(el: HTMLElement, a: HeroTiltAngles) {
-  // Single composite style write — keep values short for less GC churn
+function applyTransform(
+  el: HTMLElement,
+  a: HeroTiltAngles,
+  maxDelta: number
+) {
   el.style.transform = `translate3d(${a.translateX.toFixed(2)}px,${a.translateY.toFixed(2)}px,0) rotateX(${a.rotateX.toFixed(2)}deg) rotateY(${a.rotateY.toFixed(2)}deg)`;
-  el.style.setProperty("--hero-parallax-x", (a.rotateY / MAX_DELTA).toFixed(3));
-  el.style.setProperty("--hero-parallax-y", (-a.rotateX / MAX_DELTA).toFixed(3));
+  el.style.setProperty("--hero-parallax-x", (a.rotateY / maxDelta).toFixed(3));
+  el.style.setProperty("--hero-parallax-y", (-a.rotateX / maxDelta).toFixed(3));
 }
 
 function nearlyEqual(a: HeroTiltAngles, b: HeroTiltAngles): boolean {
@@ -80,8 +97,13 @@ function cacheRect(el: HTMLElement): RectCache {
 export function useHeroTilt(
   hitRef: RefObject<HTMLElement | null>,
   tiltRef: RefObject<HTMLElement | null>,
-  enabled: boolean
+  enabled: boolean,
+  config: HeroTiltConfig = {}
 ): void {
+  const maxDelta = config.maxDelta ?? HERO_TILT_DEFAULTS.maxDelta;
+  const configRef = useRef(config);
+  configRef.current = config;
+
   const currentRef = useRef<HeroTiltAngles>({ ...IDLE });
   const targetRef = useRef<HeroTiltAngles>({ ...IDLE });
   const enabledRef = useRef(enabled);
@@ -111,7 +133,7 @@ export function useHeroTilt(
       targetRef.current = { ...IDLE };
       stopLoop();
       if (tiltEl) {
-        applyTransform(tiltEl, IDLE);
+        applyTransform(tiltEl, IDLE, maxDelta);
         tiltEl.style.willChange = "";
       }
     };
@@ -123,7 +145,7 @@ export function useHeroTilt(
 
     lgMqRef.current = window.matchMedia(LG_QUERY);
     tiltEl.style.transformStyle = "preserve-3d";
-    applyTransform(tiltEl, IDLE);
+    applyTransform(tiltEl, IDLE, maxDelta);
 
     const isLg = () => lgMqRef.current?.matches ?? false;
 
@@ -161,9 +183,8 @@ export function useHeroTilt(
       const settled = nearlyEqual(next, tgt);
       const applied = settled ? tgt : next;
       currentRef.current = applied;
-      applyTransform(tiltEl, applied);
+      applyTransform(tiltEl, applied, maxDelta);
 
-      // Keep looping while hovering or still returning to idle
       if (hoveringRef.current || !settled) {
         rafRef.current = requestAnimationFrame(tick);
         return;
@@ -183,7 +204,7 @@ export function useHeroTilt(
 
       const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
       const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-      targetRef.current = mapPointerToTarget(nx, ny);
+      targetRef.current = mapPointerToTarget(nx, ny, configRef.current);
     };
 
     const onPointerEnter = (e: PointerEvent) => {
@@ -231,5 +252,5 @@ export function useHeroTilt(
       window.removeEventListener("scroll", onViewportChange, true);
       resetIdle();
     };
-  }, [enabled, hitRef, tiltRef]);
+  }, [enabled, hitRef, tiltRef, maxDelta]);
 }
