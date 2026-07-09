@@ -3,8 +3,45 @@ import { aboutPageConfig } from "@/config/aboutPage";
 import { stringifyMetadata } from "@/lib/metadata";
 import { prisma } from "./helpers";
 
-export async function seedAboutContent() {
+function erpSolutionsSection() {
   const erp = aboutPageConfig.erpSolutions;
+  return {
+    section: "erp-solutions",
+    title: erp.title,
+    subtitle: erp.subtitle,
+    body: erp.body,
+    metadata: {
+      modules: erp.modules,
+      industries: erp.industries,
+      legacyModernization: erp.legacyModernization,
+    },
+    order: 4,
+  };
+}
+
+export async function seedErpSolutionsContent() {
+  const row = erpSolutionsSection();
+  await prisma.aboutContent.upsert({
+    where: { section: row.section },
+    create: {
+      section: row.section,
+      title: row.title ?? null,
+      subtitle: row.subtitle ?? null,
+      body: row.body ?? null,
+      metadata: stringifyMetadata(row.metadata),
+      order: row.order,
+    },
+    update: {
+      title: row.title ?? null,
+      subtitle: row.subtitle ?? null,
+      body: row.body ?? null,
+      metadata: stringifyMetadata(row.metadata),
+      order: row.order,
+    },
+  });
+}
+
+export async function seedAboutContent() {
   const sections = [
     {
       section: "hero",
@@ -38,18 +75,7 @@ export async function seedAboutContent() {
       metadata: { values: aboutData.values },
       order: 3,
     },
-    {
-      section: "erp-solutions",
-      title: erp.title,
-      subtitle: erp.subtitle,
-      body: erp.body,
-      metadata: {
-        modules: erp.modules,
-        industries: erp.industries,
-        legacyModernization: erp.legacyModernization,
-      },
-      order: 4,
-    },
+    erpSolutionsSection(),
   ];
 
   for (const row of sections) {
