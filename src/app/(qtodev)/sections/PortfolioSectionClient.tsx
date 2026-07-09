@@ -9,7 +9,11 @@ type PortfolioConfigType = typeof portfolioConfig;
 import type { PortfolioCase, PortfolioGradientKey } from "@/types/portfolio";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Reveal } from "@/components/animations/Reveal";
+import { MagneticButton } from "@/components/animations/MagneticButton";
+import { TiltCard } from "@/components/animations/TiltCard";
 import { cn } from "@/components/theme/cn";
+import { useMotionEnabled } from "@/hooks/useReducedMotion";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const SECTION_HEADING_ID = "featured-work-heading";
 
@@ -22,24 +26,43 @@ const gradientClasses: Record<PortfolioGradientKey, string> = {
   red: "from-cta-gold to-black",
 };
 
+function getBentoClass(index: number, total: number): string {
+  if (index === 0) return "lg:col-span-2";
+  if (total >= 4 && index === 3) return "lg:col-span-2";
+  return "";
+}
+
+function getAspectClass(index: number): string {
+  if (index === 0 || index === 3) return "aspect-[21/10]";
+  return "aspect-[16/10]";
+}
+
 function PortfolioCard({
   item,
   isLink,
+  index,
+  useTilt,
 }: {
-  item: PortfolioCase;
-  isLink: boolean;
+  readonly item: PortfolioCase;
+  readonly isLink: boolean;
+  readonly index: number;
+  readonly useTilt: boolean;
 }) {
   const cardContent = (
     <>
-      {/* Image or gradient placeholder — aspect 16/10 */}
-      <div className="relative w-full aspect-[16/10] overflow-hidden bg-muted">
+      <div
+        className={cn(
+          "relative w-full overflow-hidden bg-muted",
+          getAspectClass(index)
+        )}
+      >
         {item.image ? (
           <Image
             src={item.image}
             alt={item.imageAlt ?? ""}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
           <div
@@ -54,10 +77,15 @@ function PortfolioCard({
         )}
         <div className="absolute right-4 top-4 z-10">
           <span
-            className="inline-flex rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary"
+            className="inline-flex rounded-lg bg-black/50 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-sm"
             aria-hidden
           >
             Case {item.caseNumber}
+          </span>
+        </div>
+        <div className="absolute bottom-4 left-4 z-10">
+          <span className="inline-flex rounded-full bg-primary/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-md">
+            {item.industry}
           </span>
         </div>
       </div>
@@ -65,47 +93,63 @@ function PortfolioCard({
         <h3 className="font-heading text-xl font-semibold text-foreground">
           {item.companyName}
         </h3>
-        <span className="mt-2 inline-flex rounded-full bg-surface-muted px-3 py-1 text-xs font-medium uppercase tracking-wide text-foreground-muted">
-          {item.industry}
-        </span>
-        {isLink && (
+        {isLink ? (
           <div className="mt-4 flex justify-center border-t border-border pt-4 opacity-0 transition-opacity group-hover:opacity-100">
             <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
               View case
               <AppIcon name="arrow-right" size="sm" className="shrink-0" />
             </span>
           </div>
-        )}
+        ) : null}
       </div>
     </>
   );
 
   const href = item.slug ? `/projects/${item.slug}` : undefined;
   const cardClassName = cn(
-    "group relative block overflow-hidden rounded-3xl border border-border bg-surface text-left",
+    "group relative block h-full overflow-hidden rounded-3xl border border-border bg-surface text-left",
     "shadow-md shadow-black/[0.04] transition-all duration-300",
     "hover:-translate-y-1 hover:border-primary/25 hover:shadow-xl hover:shadow-primary/[0.08]",
     "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
   );
 
-  if (href) {
+  const inner = href ? (
+    <Link
+      href={href}
+      className={cardClassName}
+      aria-label={`View project: ${item.companyName}`}
+    >
+      {cardContent}
+    </Link>
+  ) : (
+    <div className={cardClassName}>{cardContent}</div>
+  );
+
+  if (useTilt) {
     return (
-      <Link
-        href={href}
-        className={cardClassName}
-        aria-label={`View project: ${item.companyName}`}
-      >
-        {cardContent}
-      </Link>
+      <TiltCard className="h-full" maxTilt={5}>
+        {inner}
+      </TiltCard>
     );
   }
 
-  return <div className={cardClassName}>{cardContent}</div>;
+  return inner;
 }
 
-export function PortfolioSectionClient({ cases , config}: { cases: PortfolioCase[] ; config?: PortfolioConfigType}) {
+export function PortfolioSectionClient({
+  cases,
+  config,
+}: {
+  readonly cases: PortfolioCase[];
+  readonly config?: PortfolioConfigType;
+}) {
   const cfg = config ?? portfolioConfig;
+  const motionEnabled = useMotionEnabled();
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const useTilt = motionEnabled && isDesktop;
+
   if (cases.length === 0) return null;
+
   return (
     <section
       className={cn(
@@ -114,7 +158,6 @@ export function PortfolioSectionClient({ cases , config}: { cases: PortfolioCase
       )}
       aria-labelledby={SECTION_HEADING_ID}
     >
-      {/* Soft gradient for depth */}
       <div
         className="pointer-events-none absolute top-0 right-0 w-[400px] h-[300px] rounded-full bg-primary/[0.04] blur-3xl -translate-y-1/2"
         aria-hidden
@@ -135,28 +178,36 @@ export function PortfolioSectionClient({ cases , config}: { cases: PortfolioCase
                 centered={true}
               />
             </div>
-            <Link
-              data-reveal
-              href={cfg.viewAllHref}
-              className={cn(
-                "mt-8 inline-flex items-center gap-2 rounded-full border-2 border-primary bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground",
-                "shadow-md shadow-primary/25 transition-all duration-300",
-                "hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-lg hover:shadow-primary/35",
-                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              )}
-              aria-label="View all featured work"
-            >
-              {cfg.viewAllLabel}
-              <AppIcon name="arrow-right" size="sm" className="shrink-0" />
-            </Link>
+            <MagneticButton asChild strength={0.3}>
+              <Link
+                data-reveal
+                href={cfg.viewAllHref}
+                className={cn(
+                  "mt-8 inline-flex items-center gap-2 rounded-full border-2 border-primary bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground",
+                  "shadow-md shadow-primary/25 transition-all duration-300",
+                  "hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-lg hover:shadow-primary/35",
+                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                )}
+                aria-label="View all featured work"
+              >
+                {cfg.viewAllLabel}
+                <AppIcon name="arrow-right" size="sm" className="shrink-0" />
+              </Link>
+            </MagneticButton>
           </div>
 
           <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-8">
-            {cases.map((item) => (
-              <div key={item.caseNumber} data-reveal>
+            {cases.map((item, index) => (
+              <div
+                key={item.caseNumber}
+                data-reveal
+                className={getBentoClass(index, cases.length)}
+              >
                 <PortfolioCard
                   item={item}
                   isLink={Boolean(item.slug)}
+                  index={index}
+                  useTilt={useTilt}
                 />
               </div>
             ))}

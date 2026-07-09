@@ -11,11 +11,13 @@ import { Button } from "@/components/ui/button";
 import { heroConfig } from "@/config/hero";
 type HeroConfigType = typeof heroConfig;
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/components/theme/cn";
 
 export function HeroSection({ config }: { config?: HeroConfigType }) {
   const sectionRef = useRef<HTMLElement>(null);
   const reducedMotion = useReducedMotion();
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   const {
     badge,
@@ -35,14 +37,14 @@ export function HeroSection({ config }: { config?: HeroConfigType }) {
   // Ambient glow only — 3D tilt activates on terminal hover (useHeroTilt).
   const handlePointerMove = useCallback(
     (e: React.PointerEvent<HTMLElement>) => {
-      if (reducedMotion || !sectionRef.current) return;
+      if (reducedMotion || !isDesktop || !sectionRef.current) return;
       const rect = sectionRef.current.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width) * 100;
       const y = ((e.clientY - rect.top) / rect.height) * 100;
       sectionRef.current.style.setProperty("--hero-pointer-x", `${x}%`);
       sectionRef.current.style.setProperty("--hero-pointer-y", `${y}%`);
     },
-    [reducedMotion]
+    [reducedMotion, isDesktop]
   );
 
   return (
@@ -101,7 +103,7 @@ export function HeroSection({ config }: { config?: HeroConfigType }) {
             {subtext ? (
               <p
                 className={cn(
-                  "mt-7 max-w-xl text-base leading-relaxed text-[#9CA3AF] sm:mt-8 sm:text-lg sm:leading-relaxed",
+                  "mt-7 max-w-xl text-base leading-relaxed tracking-tight text-[#9CA3AF] sm:mt-8 sm:text-lg sm:leading-relaxed",
                   !reducedMotion &&
                     "animate-hero-content-fade animation-delay-300 animation-fill-backwards"
                 )}

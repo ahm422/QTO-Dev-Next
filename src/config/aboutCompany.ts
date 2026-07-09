@@ -11,6 +11,9 @@ export const aboutCompanyConfig = {
   /** Main section heading */
   title: "Navigating Tech Horizons Together",
 
+  /** Word within title to highlight (gradient) */
+  titleHighlight: "Together",
+
   /** Short paragraph below the title */
   description:
     "We partner with businesses to build scalable technology solutions. From back-end systems to product design, we bring clarity and execution to every project.",
