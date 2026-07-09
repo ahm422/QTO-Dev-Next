@@ -19,4 +19,13 @@ export const whyChooseUsConfig = {
 
   /** Small uppercase label on the benefit card */
   cardLabel: "WHY QTO DEV?",
+
+  /** Checklist bullets shown below the CTA */
+  checklist: [
+    "Agile delivery with transparent milestones",
+    "Senior engineers on every project",
+    "Post-launch support and maintenance",
+    "Security-first architecture",
+    "Dedicated single point of contact",
+  ],
 } as const;

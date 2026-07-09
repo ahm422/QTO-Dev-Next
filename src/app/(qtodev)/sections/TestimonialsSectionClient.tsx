@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { testimonialsConfig } from "@/config/testimonials";
@@ -9,8 +10,12 @@ type TestimonialsConfigType = typeof testimonialsConfig;
 import type { TestimonialItem } from "@/types/testimonials";
 import { cn } from "@/components/theme/cn";
 import { Reveal } from "@/components/animations/Reveal";
+import { TiltCard } from "@/components/animations/TiltCard";
+import { useMotionEnabled } from "@/hooks/useReducedMotion";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const HEADING_ID = "testimonials-heading";
+const STAR_COUNT = 5;
 
 function goPrev(index: number, total: number) {
   return index <= 0 ? total - 1 : index - 1;
@@ -79,10 +84,10 @@ function TestimonialMedia({ item }: { item: TestimonialItem }) {
   );
 }
 
-function QuoteIcon() {
+function QuoteAccent() {
   return (
     <svg
-      className="w-12 h-12 md:w-14 md:h-14 text-primary/30 shrink-0"
+      className="pointer-events-none absolute -top-2 left-4 w-24 h-24 md:w-28 md:h-28 text-primary opacity-10"
       fill="currentColor"
       viewBox="0 0 24 24"
       aria-hidden
@@ -92,9 +97,130 @@ function QuoteIcon() {
   );
 }
 
-export function TestimonialsSectionClient({ items , config}: { items: TestimonialItem[] ; config?: TestimonialsConfigType}) {
+function StarRating({ animate: shouldAnimate }: { animate: boolean }) {
+  return (
+    <div className="flex items-center gap-1 mb-4" aria-label="5 out of 5 stars">
+      {Array.from({ length: STAR_COUNT }, (_, i) => (
+        <motion.span
+          key={i}
+          initial={shouldAnimate ? { scale: 0.6, opacity: 0 } : false}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={
+            shouldAnimate
+              ? { delay: i * 0.06, duration: 0.25, ease: [0.22, 1, 0.36, 1] }
+              : { duration: 0 }
+          }
+          className="text-primary"
+          aria-hidden
+        >
+          <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+        </motion.span>
+      ))}
+    </div>
+  );
+}
+
+function TestimonialQuoteCard({
+  item,
+  useTilt,
+  motionAnimate,
+}: {
+  item: TestimonialItem;
+  useTilt: boolean;
+  motionAnimate: boolean;
+}) {
+  const inner = (
+    <div
+      className={cn(
+        "relative flex-1 rounded-2xl border border-border bg-background p-6 md:p-8",
+        "shadow-sm transition-shadow duration-300 hover:shadow-md",
+        "flex flex-col overflow-hidden"
+      )}
+    >
+      <QuoteAccent />
+      <div
+        className="absolute left-0 top-8 bottom-8 w-1 rounded-full bg-primary/70"
+        aria-hidden
+      />
+      <div className="relative pl-5 flex flex-col flex-1">
+        <StarRating animate={motionAnimate} />
+        <blockquote className="text-lg md:text-xl text-foreground leading-relaxed flex-1">
+          {item.quote}
+        </blockquote>
+        <div className="flex items-center gap-4 pt-6 mt-4 border-t border-border">
+          {item.avatar ? (
+            <div className="relative shrink-0">
+              <div
+                className={cn(
+                  "absolute -inset-1 rounded-full bg-[conic-gradient(from_0deg,var(--theme-primary,#f48b22),var(--cta-gold,#d4a017),var(--theme-primary,#f48b22))]",
+                  motionAnimate && "animate-spin [animation-duration:4s]"
+                )}
+                aria-hidden
+              />
+              <div className="relative w-14 h-14 rounded-full overflow-hidden ring-2 ring-background">
+                <Image
+                  src={item.avatar}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  sizes="56px"
+                />
+              </div>
+            </div>
+          ) : (
+            <div
+              className="relative shrink-0"
+              aria-hidden
+            >
+              <div
+                className={cn(
+                  "absolute -inset-1 rounded-full bg-[conic-gradient(from_0deg,var(--theme-primary,#f48b22),var(--cta-gold,#d4a017),var(--theme-primary,#f48b22))]",
+                  motionAnimate && "animate-spin [animation-duration:4s]"
+                )}
+              />
+              <div className="relative w-14 h-14 rounded-full bg-primary/15 flex items-center justify-center ring-2 ring-background">
+                <span className="text-primary font-bold text-xl">
+                  {item.authorName?.charAt(0) ?? "?"}
+                </span>
+              </div>
+            </div>
+          )}
+          <div className="min-w-0">
+            <p className="font-semibold text-foreground truncate">{item.authorName}</p>
+            <p className="text-sm text-foreground-muted truncate">
+              {item.authorTitle} · {item.company}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (useTilt) {
+    return (
+      <TiltCard className="h-full" maxTilt={5}>
+        {inner}
+      </TiltCard>
+    );
+  }
+
+  return inner;
+}
+
+export function TestimonialsSectionClient({
+  items,
+  config,
+}: {
+  items: TestimonialItem[];
+  config?: TestimonialsConfigType;
+}) {
   const cfg = config ?? testimonialsConfig;
-  if (items.length === 0) return null;
+  const motionEnabled = useMotionEnabled();
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const useTilt = motionEnabled && isDesktop;
+
   const [activeIndex, setActiveIndex] = useState(0);
   const activeItem: TestimonialItem | undefined = items[activeIndex];
 
@@ -130,7 +256,6 @@ export function TestimonialsSectionClient({ items , config}: { items: Testimonia
       )}
       aria-labelledby={HEADING_ID}
     >
-      {/* Soft gradient orbs */}
       <div
         className="pointer-events-none absolute top-0 right-0 w-[420px] h-[320px] rounded-full bg-primary/[0.05] dark:bg-primary/[0.07] blur-3xl -translate-y-1/2"
         aria-hidden
@@ -160,66 +285,50 @@ export function TestimonialsSectionClient({ items , config}: { items: Testimonia
             aria-label="Testimonials"
             className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14 items-stretch"
           >
-            {/* Left: quote card + author + controls */}
             <div className="flex flex-col lg:min-h-[360px]">
-              <div
-                className={cn(
-                  "relative flex-1 rounded-2xl border border-border bg-background p-6 md:p-8",
-                  "shadow-sm transition-shadow duration-300 hover:shadow-md",
-                  "flex flex-col"
-                )}
-              >
-                {/* Accent bar */}
-                <div
-                  className="absolute left-0 top-8 bottom-8 w-1 rounded-full bg-primary/70"
-                  aria-hidden
-                />
-                <div className="pl-5 flex flex-col flex-1">
-                  <div className="flex gap-4 mb-5">
-                    <QuoteIcon />
-                    <blockquote
-                      key={activeIndex}
-                      className="text-lg md:text-xl text-foreground leading-relaxed flex-1"
-                      aria-live="polite"
-                      aria-atomic="true"
-                    >
-                      {activeItem?.quote}
-                    </blockquote>
-                  </div>
-                  <div className="flex items-center gap-4 pt-4 border-t border-border">
-                    {activeItem?.avatar ? (
-                      <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
-                        <Image
-                          src={activeItem.avatar}
-                          alt=""
-                          fill
-                          className="object-cover"
-                          sizes="56px"
-                        />
-                      </div>
-                    ) : (
+              <div className="relative flex-1 min-h-[280px]">
+                {items.length > 1 &&
+                  items.map((item, i) => {
+                    if (i === activeIndex) return null;
+                    const offset = ((i - activeIndex + items.length) % items.length) - 1;
+                    return (
                       <div
-                        className="w-14 h-14 rounded-full bg-primary/15 flex items-center justify-center shrink-0 ring-2 ring-primary/20 ring-offset-2 ring-offset-background"
+                        key={`stack-${item.id}`}
+                        className="absolute inset-0 pointer-events-none"
+                        style={{
+                          transform: `translateY(${Math.abs(offset) * 8}px) scale(${0.96 - Math.abs(offset) * 0.02})`,
+                          opacity: 0.35,
+                          zIndex: 0,
+                        }}
                         aria-hidden
                       >
-                        <span className="text-primary font-bold text-xl">
-                          {activeItem?.authorName?.charAt(0) ?? "?"}
-                        </span>
+                        <div className="h-full rounded-2xl border border-border/60 bg-background/60 blur-[1px]" />
                       </div>
+                    );
+                  })}
+
+                <div className="relative z-10 h-full" aria-live="polite" aria-atomic="true">
+                  <AnimatePresence mode="wait">
+                    {activeItem && (
+                      <motion.div
+                        key={activeIndex}
+                        initial={motionEnabled ? { opacity: 0, y: 12 } : false}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={motionEnabled ? { opacity: 0, y: -8 } : undefined}
+                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        className="h-full flex flex-col"
+                      >
+                        <TestimonialQuoteCard
+                          item={activeItem}
+                          useTilt={useTilt}
+                          motionAnimate={motionEnabled}
+                        />
+                      </motion.div>
                     )}
-                    <div className="min-w-0">
-                      <p className="font-semibold text-foreground truncate">
-                        {activeItem?.authorName}
-                      </p>
-                      <p className="text-sm text-foreground-muted truncate">
-                        {activeItem?.authorTitle} · {activeItem?.company}
-                      </p>
-                    </div>
-                  </div>
+                  </AnimatePresence>
                 </div>
               </div>
 
-              {/* Carousel controls */}
               <div
                 className="flex items-center justify-between gap-4 mt-6"
                 role="group"
@@ -236,19 +345,8 @@ export function TestimonialsSectionClient({ items , config}: { items: Testimonia
                   )}
                   aria-label="Previous testimonial"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
                 <div className="flex items-center gap-2">
@@ -279,25 +377,13 @@ export function TestimonialsSectionClient({ items , config}: { items: Testimonia
                   )}
                   aria-label="Next testimonial"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
               </div>
             </div>
 
-            {/* Right: testimonial media */}
             <div
               className={cn(
                 "relative rounded-2xl overflow-hidden aspect-[4/3] min-h-[260px]",
@@ -305,16 +391,28 @@ export function TestimonialsSectionClient({ items , config}: { items: Testimonia
                 "shadow-md hover:shadow-lg transition-shadow duration-300"
               )}
             >
-              {activeItem && <TestimonialMedia item={activeItem} />}
-              {activeItem &&
-                (activeItem.mediaType === "image" || activeItem.mediaType === "video") &&
-                activeItem.mediaUrl && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/75 via-black/40 to-transparent px-5 py-4 pointer-events-none">
-                    <p className="text-sm font-medium text-white/95">
-                      {activeItem.authorName} — {activeItem.company}
-                    </p>
-                  </div>
+              <AnimatePresence mode="wait">
+                {activeItem && (
+                  <motion.div
+                    key={`media-${activeIndex}`}
+                    initial={motionEnabled ? { opacity: 0 } : false}
+                    animate={{ opacity: 1 }}
+                    exit={motionEnabled ? { opacity: 0 } : undefined}
+                    transition={{ duration: 0.35 }}
+                    className="absolute inset-0"
+                  >
+                    <TestimonialMedia item={activeItem} />
+                    {(activeItem.mediaType === "image" || activeItem.mediaType === "video") &&
+                      activeItem.mediaUrl && (
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/75 via-black/40 to-transparent px-5 py-4 pointer-events-none">
+                          <p className="text-sm font-medium text-white/95">
+                            {activeItem.authorName} — {activeItem.company}
+                          </p>
+                        </div>
+                      )}
+                  </motion.div>
                 )}
+              </AnimatePresence>
             </div>
           </div>
         </Reveal>

@@ -17,7 +17,7 @@ export const portfolioConfig = {
   description: "",
 
   /** Label for the View All CTA button */
-  viewAllLabel: "View All -",
+  viewAllLabel: "View All",
 
   /** href for the View All CTA (projects listing) */
   viewAllHref: "/projects",

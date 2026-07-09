@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { motion, useReducedMotion as useFramerReducedMotion } from "framer-motion";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { portfolioConfig } from "@/config/portfolio";
@@ -26,14 +27,24 @@ const gradientClasses: Record<PortfolioGradientKey, string> = {
   red: "from-cta-gold to-black",
 };
 
-function getBentoClass(index: number, total: number): string {
+function getGridClass(index: number, total: number): string {
+  if (total === 1) return "lg:col-span-12";
+  if (total === 2) {
+    return index === 0 ? "md:col-span-2 lg:col-span-7" : "md:col-span-2 lg:col-span-5";
+  }
+  if (total === 3) {
+    if (index === 0) return "md:col-span-2 lg:col-span-8 lg:row-span-2";
+    if (index === 1) return "lg:col-span-4 lg:col-start-9 lg:row-start-1";
+    return "lg:col-span-4 lg:col-start-9 lg:row-start-2";
+  }
   if (index === 0) return "lg:col-span-2";
   if (total >= 4 && index === 3) return "lg:col-span-2";
   return "";
 }
 
-function getAspectClass(index: number): string {
-  if (index === 0 || index === 3) return "aspect-[21/10]";
+function getImageClass(index: number, total: number): string {
+  if (total === 3 && index === 0) return "min-h-[240px] lg:min-h-full lg:h-full aspect-[16/10] lg:aspect-auto";
+  if (index === 0 || (total >= 4 && index === 3)) return "aspect-[21/10]";
   return "aspect-[16/10]";
 }
 
@@ -41,33 +52,56 @@ function PortfolioCard({
   item,
   isLink,
   index,
+  total,
   useTilt,
+  motionAnimate,
 }: {
   readonly item: PortfolioCase;
   readonly isLink: boolean;
   readonly index: number;
+  readonly total: number;
   readonly useTilt: boolean;
+  readonly motionAnimate: boolean;
 }) {
-  const cardContent = (
-    <>
-      <div
+  const isFeatured = index === 0;
+  const href = item.slug ? `/projects/${item.slug}` : undefined;
+
+  const cardInner = (
+    <div
+      className={cn(
+        "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/80 bg-surface text-left",
+        "shadow-lg shadow-black/[0.06] dark:shadow-black/25",
+        "transition-all duration-300 ease-out",
+        "hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/[0.1]",
+        isFeatured && "ring-1 ring-primary/10 hover:ring-primary/25"
+      )}
+    >
+      <span
         className={cn(
-          "relative w-full overflow-hidden bg-muted",
-          getAspectClass(index)
+          "absolute top-0 left-0 right-0 z-20 h-1 rounded-t-2xl bg-gradient-to-r from-primary via-cta-gold to-primary opacity-0 transition-opacity duration-300",
+          "group-hover:opacity-100",
+          isFeatured && "opacity-60 group-hover:opacity-100"
         )}
-      >
+        aria-hidden
+      />
+
+      <div className={cn("relative w-full overflow-hidden bg-muted", getImageClass(index, total))}>
         {item.image ? (
           <Image
             src={item.image}
             alt={item.imageAlt ?? ""}
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            sizes={
+              isFeatured
+                ? "(max-width: 1024px) 100vw, 66vw"
+                : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            }
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           />
         ) : (
           <div
             className={cn(
-              "absolute inset-0 flex items-center justify-center bg-gradient-to-br text-2xl font-bold text-white ring-2 ring-white/10",
+              "absolute inset-0 flex items-center justify-center bg-gradient-to-br text-3xl font-bold text-white",
               gradientClasses[item.gradient]
             )}
             aria-hidden
@@ -75,65 +109,98 @@ function PortfolioCard({
             <span>{item.initial}</span>
           </div>
         )}
-        <div className="absolute right-4 top-4 z-10">
-          <span
-            className="inline-flex rounded-lg bg-black/50 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-sm"
-            aria-hidden
-          >
+
+        <div
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/5 opacity-80 transition-opacity duration-300 group-hover:opacity-95"
+          aria-hidden
+        />
+
+        <div className="absolute right-3 top-3 z-10 sm:right-4 sm:top-4">
+          <span className="inline-flex rounded-lg border border-white/15 bg-black/45 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md sm:px-3 sm:py-1.5 sm:text-xs">
             Case {item.caseNumber}
           </span>
         </div>
-        <div className="absolute bottom-4 left-4 z-10">
-          <span className="inline-flex rounded-full bg-primary/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-md">
+
+        <div className="absolute bottom-3 left-3 z-10 sm:bottom-4 sm:left-4">
+          <span className="inline-flex rounded-full border border-primary/30 bg-primary/90 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/25 sm:text-xs">
             {item.industry}
           </span>
         </div>
       </div>
-      <div className="flex flex-col items-center p-6 text-center">
-        <h3 className="font-heading text-xl font-semibold text-foreground">
+
+      <div
+        className={cn(
+          "relative flex flex-1 flex-col border-t border-border/60 bg-gradient-to-b from-surface to-surface-muted/50",
+          isFeatured ? "p-5 sm:p-6 md:p-7" : "p-4 sm:p-5"
+        )}
+      >
+        <h3
+          className={cn(
+            "font-heading font-bold text-foreground transition-colors duration-300 group-hover:text-primary",
+            isFeatured ? "text-xl sm:text-2xl" : "text-lg sm:text-xl"
+          )}
+        >
           {item.companyName}
         </h3>
+
         {isLink ? (
-          <div className="mt-4 flex justify-center border-t border-border pt-4 opacity-0 transition-opacity group-hover:opacity-100">
-            <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
-              View case
-              <AppIcon name="arrow-right" size="sm" className="shrink-0" />
-            </span>
-          </div>
-        ) : null}
+          <span
+            className={cn(
+              "mt-auto inline-flex items-center gap-2 pt-4 text-sm font-semibold text-primary",
+              "transition-all duration-300 group-hover:gap-3"
+            )}
+          >
+            View case
+            <AppIcon
+              name="arrow-right"
+              size="sm"
+              className="shrink-0 transition-transform duration-300 group-hover:translate-x-0.5"
+            />
+          </span>
+        ) : (
+          <span className="mt-auto pt-4 text-sm text-foreground-muted">Case study</span>
+        )}
       </div>
-    </>
+    </div>
   );
 
-  const href = item.slug ? `/projects/${item.slug}` : undefined;
-  const cardClassName = cn(
-    "group relative block h-full overflow-hidden rounded-3xl border border-border bg-surface text-left",
-    "shadow-md shadow-black/[0.04] transition-all duration-300",
-    "hover:-translate-y-1 hover:border-primary/25 hover:shadow-xl hover:shadow-primary/[0.08]",
-    "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+  const linkClassName = cn(
+    "block h-full rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
   );
 
-  const inner = href ? (
-    <Link
-      href={href}
-      className={cardClassName}
-      aria-label={`View project: ${item.companyName}`}
-    >
-      {cardContent}
+  const wrapped = href ? (
+    <Link href={href} className={linkClassName} aria-label={`View project: ${item.companyName}`}>
+      {cardInner}
     </Link>
   ) : (
-    <div className={cardClassName}>{cardContent}</div>
+    <div className="h-full">{cardInner}</div>
   );
 
-  if (useTilt) {
-    return (
-      <TiltCard className="h-full" maxTilt={5}>
-        {inner}
-      </TiltCard>
-    );
-  }
+  const withMotion = motionAnimate ? (
+    <motion.div
+      className="h-full"
+      initial={{ scale: 1 }}
+      whileInView={{ scale: isFeatured ? 1.01 : 1.02 }}
+      viewport={{ once: true, margin: "-8%" }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {useTilt ? (
+        <TiltCard className="h-full" maxTilt={isFeatured ? 4 : 5}>
+          {wrapped}
+        </TiltCard>
+      ) : (
+        wrapped
+      )}
+    </motion.div>
+  ) : useTilt ? (
+    <TiltCard className="h-full" maxTilt={isFeatured ? 4 : 5}>
+      {wrapped}
+    </TiltCard>
+  ) : (
+    wrapped
+  );
 
-  return inner;
+  return withMotion;
 }
 
 export function PortfolioSectionClient({
@@ -145,8 +212,10 @@ export function PortfolioSectionClient({
 }) {
   const cfg = config ?? portfolioConfig;
   const motionEnabled = useMotionEnabled();
+  const framerReduced = useFramerReducedMotion();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const useTilt = motionEnabled && isDesktop;
+  const motionAnimate = motionEnabled && !framerReduced;
 
   if (cases.length === 0) return null;
 
@@ -154,13 +223,26 @@ export function PortfolioSectionClient({
     <section
       className={cn(
         "relative overflow-hidden border-y border-border py-24 md:py-32",
-        "bg-gradient-to-b from-background via-surface-muted/40 to-background"
+        "bg-gradient-to-b from-background via-surface-muted/50 to-background"
       )}
       aria-labelledby={SECTION_HEADING_ID}
     >
       <div
-        className="pointer-events-none absolute top-0 right-0 w-[400px] h-[300px] rounded-full bg-primary/[0.04] blur-3xl -translate-y-1/2"
+        className="pointer-events-none absolute top-0 left-1/4 w-[480px] h-[340px] rounded-full bg-primary/[0.06] blur-3xl -translate-y-1/2"
         aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute bottom-0 right-1/4 w-[420px] h-[300px] rounded-full bg-primary/[0.05] blur-3xl translate-y-1/2"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.04]"
+        aria-hidden
+        style={{
+          backgroundImage: `linear-gradient(to right, currentColor 1px, transparent 1px),
+            linear-gradient(to bottom, currentColor 1px, transparent 1px)`,
+          backgroundSize: "56px 56px",
+        }}
       />
 
       <Container className="relative">
@@ -169,7 +251,7 @@ export function PortfolioSectionClient({
             <div data-reveal className="max-w-2xl">
               <SectionHeader
                 subtitle={cfg.subtitle}
-                subtitleClassName="text-primary font-semibold tracking-widest"
+                subtitleClassName="text-primary font-semibold tracking-[0.2em]"
                 subtitlePill
                 title={cfg.title}
                 titleHighlight={cfg.titleHighlight}
@@ -183,31 +265,39 @@ export function PortfolioSectionClient({
                 data-reveal
                 href={cfg.viewAllHref}
                 className={cn(
-                  "mt-8 inline-flex items-center gap-2 rounded-full border-2 border-primary bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground",
-                  "shadow-md shadow-primary/25 transition-all duration-300",
-                  "hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-lg hover:shadow-primary/35",
+                  "mt-8 inline-flex items-center gap-2.5 rounded-full px-7 py-3.5 text-sm font-semibold",
+                  "bg-primary text-primary-foreground shadow-lg shadow-primary/25",
+                  "transition-all duration-300",
+                  "hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-xl hover:shadow-primary/35",
                   "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 )}
                 aria-label="View all featured work"
               >
-                {cfg.viewAllLabel}
+                {cfg.viewAllLabel.replace(/\s*-\s*$/, "")}
                 <AppIcon name="arrow-right" size="sm" className="shrink-0" />
               </Link>
             </MagneticButton>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-8">
+          <div
+            className={cn(
+              "mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:mt-16",
+              cases.length === 3 ? "lg:grid-cols-12 lg:grid-rows-2 lg:gap-6" : "lg:grid-cols-3 lg:gap-8"
+            )}
+          >
             {cases.map((item, index) => (
               <div
                 key={item.caseNumber}
                 data-reveal
-                className={getBentoClass(index, cases.length)}
+                className={cn("min-h-0", getGridClass(index, cases.length))}
               >
                 <PortfolioCard
                   item={item}
                   isLink={Boolean(item.slug)}
                   index={index}
+                  total={cases.length}
                   useTilt={useTilt}
+                  motionAnimate={motionAnimate}
                 />
               </div>
             ))}
