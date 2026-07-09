@@ -12,9 +12,9 @@ export default async function ServicesPage() {
   return (
     <>
       <ServicesHeroSection config={cfg} />
-      <ServicesGridSection />
-      <ServicesTechnologiesSection />
-      <ServicesWhyChooseUsSection />
+      <ServicesGridSection config={cfg} />
+      <ServicesTechnologiesSection config={cfg} />
+      <ServicesWhyChooseUsSection config={cfg} />
       <ServicesCTASection config={cfg} />
     </>
   );

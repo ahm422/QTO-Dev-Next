@@ -1,7 +1,14 @@
 import { findPublishedServices } from "@/lib/cms/services";
+import { servicesPageConfig } from "@/config/servicesPage";
 import { ServicesGridSectionClient } from "./ServicesGridSectionClient";
 
-export async function ServicesGridSection() {
+type ServicesPageConfigType = typeof servicesPageConfig;
+
+export async function ServicesGridSection({
+  config,
+}: {
+  config?: ServicesPageConfigType;
+}) {
   const services = await findPublishedServices();
-  return <ServicesGridSectionClient services={services} />;
+  return <ServicesGridSectionClient services={services} config={config} />;
 }

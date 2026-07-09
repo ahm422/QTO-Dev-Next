@@ -3,6 +3,7 @@
 import * as SimpleIcons from "@icons-pack/react-simple-icons";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { catalogByKey, catalogByName } from "@/lib/technologies/techCatalog";
+import { CUSTOM_TECH_ICONS } from "@/components/technologies/CustomTechIcons";
 
 type SiIcon = React.ComponentType<{ size?: number; color?: string; title?: string }>;
 
@@ -15,6 +16,18 @@ export function resolveSimpleIconColor(iconKey: string): string | undefined {
   const exportName = "Si" + iconKey.charAt(0).toUpperCase() + iconKey.slice(1) + "Hex";
   const hex = (SimpleIcons as Record<string, unknown>)[exportName];
   return typeof hex === "string" ? hex : undefined;
+}
+
+/** Brand color from techCatalog first, then simple-icons hex. */
+export function resolveTechColor(tech: string, iconKey?: string): string {
+  const entry = iconKey ? catalogByKey[iconKey] : catalogByName[tech];
+  if (entry?.brandColor) return entry.brandColor;
+  const resolvedKey = entry?.iconKey ?? iconKey;
+  if (resolvedKey) {
+    const hex = resolveSimpleIconColor(resolvedKey);
+    if (hex) return hex;
+  }
+  return "currentColor";
 }
 
 export const techBrandColors: Record<string, string> = Object.fromEntries(
@@ -36,6 +49,15 @@ export function TechIcon({ tech, iconKey }: { tech: string; iconKey?: string }) 
     return (
       <div className={iconWrapperBase} aria-hidden>
         <AppIcon name="cloud" size="lg" />
+      </div>
+    );
+  }
+
+  if (resolvedKey && CUSTOM_TECH_ICONS[resolvedKey]) {
+    const CustomIcon = CUSTOM_TECH_ICONS[resolvedKey]!;
+    return (
+      <div className={iconWrapperBase} aria-hidden>
+        <CustomIcon title={tech} />
       </div>
     );
   }

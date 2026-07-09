@@ -785,6 +785,16 @@ h6 {
   animation: collaborations-marquee var(--industries-marquee-duration, 50s) linear infinite;
 }
 
+/* Technologies: infinite horizontal marquee on /services */
+.technologies-marquee-track {
+  animation: collaborations-marquee var(--technologies-marquee-duration, 45s) linear infinite;
+}
+
+.technologies-marquee:hover .technologies-marquee-track,
+.technologies-marquee:focus-within .technologies-marquee-track {
+  animation-play-state: paused;
+}
+
 /* Reusable scroll-reveal / section entrance (use with animation utilities; respect reduced motion in JS) */
 @keyframes fade-in-up {
   from {
@@ -808,9 +818,24 @@ h6 {
   }
 }
 
+@keyframes cta-arrow-nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+.animate-cta-arrow-nudge {
+  animation: cta-arrow-nudge 0.8s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .collaborations-marquee-track,
   .industries-marquee-track,
+  .technologies-marquee-track,
   .animate-fade-in-up,
   .animate-glow-primary,
   .hero-mockup-float,
@@ -824,7 +849,8 @@ h6 {
   .hero-terminal-entrance,
   .hero-chip-bob,
   .hero-chip-entrance,
-  .hero-heading-shimmer {
+  .hero-heading-shimmer,
+  .animate-cta-arrow-nudge {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
