@@ -24,6 +24,7 @@ export function ServicesGridSectionClient({
 
   return (
     <section
+      id="services-grid"
       className={cn(
         "relative py-20 md:py-28 overflow-hidden",
         "bg-surface-muted border-y border-border"

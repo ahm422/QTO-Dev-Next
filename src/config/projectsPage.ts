@@ -5,6 +5,7 @@
 
 export const projectsPageConfig = {
   hero: {
+    badge: "Our Work",
     heading: "Software that ships and lasts",
     subhead: "Selected work across industries and stacks.",
     breadcrumbLabel: "Projects",

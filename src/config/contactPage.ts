@@ -4,6 +4,7 @@
  */
 export const contactPageConfig = {
   hero: {
+    badge: "Contact",
     heading: "Let's talk about your project",
     subhead:
       "Tell us what you're building — we'll reply within one business day.",

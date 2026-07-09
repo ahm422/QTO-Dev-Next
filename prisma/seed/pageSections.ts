@@ -210,9 +210,9 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
     label: "Services Page — All Sections",
     data: {
       hero: {
-        heading: "Our Services",
-        subhead:
-          "We deliver end-to-end digital solutions tailored to your business needs. From custom development to enterprise-grade systems, we build scalable, secure, and future-ready software.",
+        badge: "Services",
+        heading: "Custom software, built to scale",
+        subhead: "Web, mobile, cloud, and AI — end to end.",
         breadcrumbLabel: "Services",
       },
       grid: {
@@ -259,10 +259,10 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
     label: "About Page — All Sections",
     data: {
       hero: {
-        pageHeading: "About QTO Dev",
-        heading: "Empowering Businesses Through Intelligent Technology",
+        badge: "About QTO Dev",
+        heading: "Engineering-led. Outcome-driven.",
         subhead:
-          "At QTO Dev, we build secure, scalable, performance-driven software—from custom web platforms and ERP systems to workflow automation tools—so organizations can operate smarter and grow faster.",
+          "We build secure, scalable systems that help teams move faster.",
         ctaText: "Get In Touch",
         ctaHref: "/contact",
         breadcrumbLabel: "About",
@@ -335,9 +335,10 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
     label: "Blog Page — All Sections",
     data: {
       hero: {
-        heading: "Insights & Articles",
+        badge: "Blog",
+        heading: "Ideas from the build floor",
         subhead:
-          "Stay updated with industry trends, technology insights, business automation strategies, and expert development guides from our team.",
+          "Practical notes on development, performance, and product.",
         breadcrumbLabel: "Blog",
       },
       featured: {
@@ -381,13 +382,15 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
     label: "Careers Page — All Sections",
     data: {
       hero: {
-        heading: "Build Your Career With QTO DEV.",
+        badge: "Careers",
+        heading: "Build with a team that ships",
         subhead:
-          "We are always looking for passionate developers, designers, and problem-solvers to join our growing team. If you're driven by innovation and excellence, we'd love to hear from you.",
+          "Join engineers and designers solving real client problems.",
         primaryCtaText: "View Open Roles",
         primaryCtaHref: "#open-roles",
         secondaryCtaText: "Open Career Portal",
-        secondaryCtaHref: "/careers#open-roles",
+        secondaryCtaHref:
+          "https://career.qtohouse.com.pk/?utm_source=qto_dev_website&utm_medium=careers",
         breadcrumbLabel: "Careers",
       },
       whyWork: {
@@ -463,9 +466,9 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
     label: "Projects Page — All Sections",
     data: {
       hero: {
-        heading: "Our Projects",
-        subhead:
-          "Explore our portfolio of successful digital solutions delivered to startups, enterprises, and growing businesses across various industries.",
+        badge: "Our Work",
+        heading: "Software that ships and lasts",
+        subhead: "Selected work across industries and stacks.",
         breadcrumbLabel: "Projects",
       },
       grid: {
@@ -503,8 +506,10 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
     label: "Contact Page — Hero & Headings",
     data: {
       hero: {
-        heading: "Get In Touch",
-        subhead: "Have a project in mind? We'd love to hear about it. Send us a message and we'll get back to you as soon as possible.",
+        badge: "Contact",
+        heading: "Let's talk about your project",
+        subhead:
+          "Tell us what you're building — we'll reply within one business day.",
         breadcrumbLabel: "Contact",
       },
       form: {

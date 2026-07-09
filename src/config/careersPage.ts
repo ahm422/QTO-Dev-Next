@@ -3,6 +3,7 @@ import { careerPortalHomeUrl } from "@/config/careersPortal";
 /** CMS: careers.page — edit in admin → Pages */
 export const careersPageConfig = {
   hero: {
+    badge: "Careers",
     heading: "Build with a team that ships",
     subhead:
       "Join engineers and designers solving real client problems.",

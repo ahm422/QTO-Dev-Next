@@ -92,6 +92,7 @@ export function ContactFormSection() {
 
   return (
     <ContactLayout
+      id="contact-form"
       eyebrow="Contact"
       title="Send us a message"
       subtitle="Share a bit about what you’re building and where you need help. We’ll reply with practical next steps."
