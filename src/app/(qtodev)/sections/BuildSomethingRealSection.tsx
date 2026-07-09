@@ -1,3 +1,4 @@
+/** @deprecated Removed from homepage in #291; retained for optional reuse on other routes. */
 "use client";
 
 import Link from "next/link";

@@ -279,34 +279,35 @@ h6 {
 /* Homepage hero: orange radial glow behind mockup / headline */
 .hero-glow-mobile {
   background: radial-gradient(
-    ellipse 85% 65% at 50% 28%,
-    color-mix(in srgb, var(--theme-primary) 35%, transparent),
-    color-mix(in srgb, var(--theme-primary) 12%, transparent) 45%,
-    transparent 72%
+    ellipse 90% 70% at 50% 28%,
+    color-mix(in srgb, var(--theme-primary) 40%, transparent),
+    color-mix(in srgb, var(--theme-primary) 15%, transparent) 50%,
+    transparent 78%
   );
 }
 
 .hero-glow-desktop {
   background: radial-gradient(
-    ellipse 80% 75% at 72% 48%,
-    color-mix(in srgb, var(--theme-primary) 38%, transparent),
-    color-mix(in srgb, var(--theme-primary) 14%, transparent) 50%,
-    transparent 75%
+    ellipse 85% 80% at 72% 48%,
+    color-mix(in srgb, var(--theme-primary) 42%, transparent),
+    color-mix(in srgb, var(--theme-primary) 16%, transparent) 55%,
+    transparent 80%
   );
 }
 
 /* Pointer-reactive glow layer (desktop) */
 .hero-glow-interactive {
-  transition: background 0.4s ease-out;
+  transition: background 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (min-width: 1024px) {
   .hero-glow-interactive.hero-glow-desktop {
     background: radial-gradient(
-      ellipse 55% 55% at var(--hero-pointer-x, 70%) var(--hero-pointer-y, 50%),
-      color-mix(in srgb, var(--theme-primary) 35%, transparent),
-      color-mix(in srgb, var(--theme-primary) 12%, transparent) 45%,
-      transparent 70%
+      ellipse 65% 60% at var(--hero-pointer-x, 70%) var(--hero-pointer-y, 50%),
+      color-mix(in srgb, var(--theme-primary) 45%, transparent),
+      color-mix(in srgb, var(--theme-primary) 18%, transparent) 40%,
+      color-mix(in srgb, var(--theme-primary) 6%, transparent) 65%,
+      transparent 82%
     );
   }
 }
@@ -468,6 +469,31 @@ h6 {
   }
 }
 
+@keyframes hero-chip-entrance {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.hero-terminal-glare {
+  background: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.04) 28%,
+    transparent 52%,
+    rgba(244, 139, 34, 0.06) 100%
+  );
+}
+
+.hero-heading-highlight {
+  text-shadow: 0 0 32px rgba(244, 139, 34, 0.35);
+}
+
 @keyframes hero-heading-shimmer {
   0% {
     background-position: 0% 50%;
@@ -509,6 +535,32 @@ h6 {
 }
 
 /* Chip bob only on desktop so mobile stays static */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-chip-entrance {
+    animation: hero-chip-entrance 0.65s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+
+  .hero-chip-entrance-delay-0 {
+    animation-delay: 0.35s;
+  }
+
+  .hero-chip-entrance-delay-1 {
+    animation-delay: 0.5s;
+  }
+
+  .hero-chip-entrance-delay-2 {
+    animation-delay: 0.65s;
+  }
+
+  .hero-chip-entrance-delay-3 {
+    animation-delay: 0.8s;
+  }
+
+  .hero-chip-entrance-delay-4 {
+    animation-delay: 0.95s;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
   .hero-chip-bob {
     animation: hero-chip-bob 4.2s ease-in-out infinite;
@@ -538,12 +590,66 @@ h6 {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-heading-shimmer {
+  .hero-heading-shimmer,
+  .hero-heading-highlight {
     background-image: none;
     background-clip: unset;
     -webkit-background-clip: unset;
     -webkit-text-fill-color: unset;
     color: var(--primary, #f48b22);
+    text-shadow: none;
+  }
+
+  .hero-chip-inner {
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+/* How We Work: process timeline */
+.process-timeline-line {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--theme-primary) 55%, transparent) 12%,
+    color-mix(in srgb, var(--theme-primary) 75%, transparent) 50%,
+    color-mix(in srgb, var(--theme-primary) 55%, transparent) 88%,
+    transparent 100%
+  );
+  box-shadow: 0 0 18px color-mix(in srgb, var(--theme-primary) 35%, transparent);
+}
+
+.process-timeline-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+.process-timeline-fade-edges {
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    black 6%,
+    black 94%,
+    transparent 100%
+  );
+}
+
+.process-timeline-node {
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .process-timeline-node::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -2.25rem;
+    z-index: 20;
+    height: 0.625rem;
+    width: 0.625rem;
+    transform: translateX(-50%);
+    border-radius: 9999px;
+    background: var(--primary);
+    box-shadow: 0 0 12px rgba(244, 139, 34, 0.65);
   }
 }
 
@@ -717,6 +823,7 @@ h6 {
   .hero-terminal-cursor,
   .hero-terminal-entrance,
   .hero-chip-bob,
+  .hero-chip-entrance,
   .hero-heading-shimmer {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
