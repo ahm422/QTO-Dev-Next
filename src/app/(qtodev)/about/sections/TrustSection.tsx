@@ -5,12 +5,12 @@ import { SectionHeader } from "@/components/common/SectionHeader";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Reveal } from "@/components/animations/Reveal";
 import { aboutPageConfig } from "@/config/aboutPage";
+
 type AboutPageConfigType = typeof aboutPageConfig;
-import { cn } from "@/components/theme/cn";
 
 const HEADING_ID = "about-trust-heading";
 
-export function TrustSection({ config }: { config?: AboutPageConfigType }) {
+export function TrustSection({ config }: { readonly config?: AboutPageConfigType }) {
   const cfg = config ?? aboutPageConfig;
   const { trust } = cfg;
 
@@ -19,7 +19,6 @@ export function TrustSection({ config }: { config?: AboutPageConfigType }) {
       className="relative py-20 md:py-28 overflow-hidden bg-surface-muted border-y border-border"
       aria-labelledby={HEADING_ID}
     >
-      {/* Soft gradient orbs for depth */}
       <div
         className="pointer-events-none absolute top-0 right-0 w-[520px] h-[360px] rounded-full bg-primary/[0.05] blur-3xl -translate-y-1/2"
         aria-hidden
@@ -43,31 +42,23 @@ export function TrustSection({ config }: { config?: AboutPageConfigType }) {
             />
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-            {trust.reasons.map((reason, i) => (
-              <div
-                key={i}
+          <ul
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-3"
+            aria-label="Why clients trust us"
+          >
+            {trust.reasons.map((reason) => (
+              <li
+                key={reason}
                 data-reveal
-                className={cn(
-                  "flex items-start gap-4 p-6 md:p-7 rounded-2xl",
-                  "bg-surface border border-border",
-                  "shadow-sm hover:shadow-md hover:shadow-primary/5",
-                  "transition-all duration-300 hover:-translate-y-0.5",
-                  "focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-surface-muted focus-within:outline-none"
-                )}
+                className="flex items-start gap-3 text-sm text-foreground-muted"
               >
-                <span
-                  className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center"
-                  aria-hidden
-                >
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
                   <AppIcon name="check" size="sm" />
                 </span>
-                <span className="text-foreground-muted text-base leading-relaxed pt-1.5">
-                  {reason}
-                </span>
-              </div>
+                <span>{reason}</span>
+              </li>
             ))}
-          </div>
+          </ul>
         </Reveal>
       </Container>
     </section>

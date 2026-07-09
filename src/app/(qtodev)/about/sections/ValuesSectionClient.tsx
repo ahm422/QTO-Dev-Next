@@ -3,15 +3,22 @@
 import type { AboutPageContent } from "@/lib/cms/mappers";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
-import { Card } from "@/components/ui/card";
+import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Reveal } from "@/components/animations/Reveal";
 import { aboutPageConfig } from "@/config/aboutPage";
-type AboutPageConfigType = typeof aboutPageConfig;
 import { cn } from "@/components/theme/cn";
+
+type AboutPageConfigType = typeof aboutPageConfig;
 
 const HEADING_ID = "about-values-heading";
 
-export function ValuesSectionClient({ content, config }: { content: AboutPageContent; config?: AboutPageConfigType }) {
+export function ValuesSectionClient({
+  content,
+  config,
+}: {
+  readonly content: AboutPageContent;
+  readonly config?: AboutPageConfigType;
+}) {
   const cfg = config ?? aboutPageConfig;
   const { values: valuesConfig } = cfg;
 
@@ -20,7 +27,6 @@ export function ValuesSectionClient({ content, config }: { content: AboutPageCon
       className="relative py-20 md:py-28 overflow-hidden bg-surface-muted border-y border-border"
       aria-labelledby={HEADING_ID}
     >
-      {/* Soft gradient orbs for depth */}
       <div
         className="pointer-events-none absolute top-0 right-0 w-[520px] h-[360px] rounded-full bg-primary/[0.05] blur-3xl -translate-y-1/2"
         aria-hidden
@@ -44,34 +50,41 @@ export function ValuesSectionClient({ content, config }: { content: AboutPageCon
             />
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
-            {content.values.map((value, i) => (
-              <div key={value.title} data-reveal>
-                <Card
-                  className={cn(
-                    "group relative p-6 md:p-7 h-full flex flex-col rounded-2xl overflow-hidden",
-                    "border-t-4 border-t-primary bg-surface",
-                    "shadow-lg shadow-black/5 hover:shadow-xl hover:shadow-primary/10",
-                    "transition-all duration-300 hover:-translate-y-1",
-                    "focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-surface-muted focus-within:outline-none"
-                  )}
-                >
-                  <span
-                    className={cn(
-                      "inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-5 font-heading font-bold text-lg",
-                      "transition-transform duration-300 group-hover:scale-105 group-hover:bg-primary/15"
-                    )}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7 lg:gap-8">
+            {content.values.map((value, index) => (
+              <article
+                key={value.title}
+                data-reveal
+                className={cn(
+                  "flex h-full flex-col rounded-2xl border border-border/80 bg-surface-muted/60",
+                  "shadow-sm shadow-black/5 hover:shadow-md hover:shadow-black/10",
+                  "transition-all duration-200 hover:-translate-y-0.5",
+                  "p-6 sm:p-7"
+                )}
+              >
+                <div className="flex items-start gap-4">
+                  <div
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"
+                    aria-hidden
                   >
-                    {value.title.charAt(0)}
-                  </span>
-                  <h3 className="text-xl font-heading font-bold text-foreground mb-2">
-                    {value.title}
-                  </h3>
-                  <p className="text-foreground-muted text-sm md:text-base leading-relaxed flex-1">
-                    {value.description}
-                  </p>
-                </Card>
-              </div>
+                    <AppIcon name="sparkles" size="sm" className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-heading text-lg sm:text-xl font-semibold text-foreground">
+                      {value.title}
+                    </h3>
+                    <p className="mt-3 text-sm sm:text-base text-foreground-muted leading-relaxed">
+                      {value.description}
+                    </p>
+                  </div>
+                </div>
+                <span
+                  className="mt-5 text-xs font-medium uppercase tracking-wide text-foreground-muted/80"
+                  aria-hidden
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+              </article>
             ))}
           </div>
         </Reveal>

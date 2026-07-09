@@ -5,18 +5,28 @@ import Image from "next/image";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
+import { InteractiveImage } from "@/components/animations/InteractiveImage";
+import { TiltCard } from "@/components/animations/TiltCard";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { cn } from "@/components/theme/cn";
 import type { LeadershipMember } from "@/types/leadership";
 
 const HEADING_ID = "about-leadership-heading";
+const IT_TEAM_IMAGE = "/images/it-team-2.JPG";
+const IT_TEAM_ALT = "QTO DEV IT team at QTO House";
 
 export function LeadershipSectionClient({
   team,
 }: {
-  team: LeadershipMember[];
+  readonly team: LeadershipMember[];
 }) {
   if (team.length === 0) return null;
+
+  const itTeam = team.find((member) => member.id === "it-team");
+  const gridTeam = team.filter((member) => member.id !== "it-team");
+  const heroImage = itTeam?.imageUrl ?? IT_TEAM_IMAGE;
+  const heroAlt = itTeam?.name ? `${itTeam.name} at QTO House` : IT_TEAM_ALT;
+
   return (
     <section
       className="relative py-20 md:py-28 overflow-hidden bg-gradient-to-b from-primary/5 via-surface to-surface-muted border-y border-border"
@@ -45,16 +55,42 @@ export function LeadershipSectionClient({
             />
           </div>
 
-          <div
-            className={cn(
-              "grid gap-10 md:gap-12",
-              "sm:grid-cols-2 lg:grid-cols-3"
-            )}
-          >
-            {team.map((member) => {
-              const isTeamImage = member.id === "it-team";
+          <div data-reveal className="mb-14 md:mb-16 -mx-4 sm:-mx-6 lg:-mx-8">
+            <TiltCard className="relative w-full overflow-hidden rounded-2xl border border-border/70 shadow-xl" maxTilt={8}>
+              <div className="relative aspect-[21/9] min-h-[220px] sm:min-h-[280px] md:min-h-[340px] bg-black/40">
+                <div className="absolute inset-0 overflow-hidden">
+                  <InteractiveImage
+                    src={heroImage}
+                    alt={heroAlt}
+                    sizes="(max-width: 1024px) 100vw, 1200px"
+                    className="h-full object-cover"
+                    tilt={false}
+                  />
+                </div>
+                <div
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"
+                  aria-hidden
+                />
+                {itTeam && (
+                  <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                    <p className="text-lg font-heading font-semibold text-white md:text-xl">
+                      {itTeam.name}
+                    </p>
+                    <p className="mt-1 text-sm text-white/80">{itTeam.designation}</p>
+                  </div>
+                )}
+              </div>
+            </TiltCard>
+          </div>
 
-              return (
+          {gridTeam.length > 0 && (
+            <div
+              className={cn(
+                "grid gap-10 md:gap-12",
+                "sm:grid-cols-2 lg:grid-cols-3"
+              )}
+            >
+              {gridTeam.map((member) => (
                 <div key={member.id} data-reveal>
                   <Card
                     className={cn(
@@ -67,30 +103,14 @@ export function LeadershipSectionClient({
                     <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/0 via-primary/60 to-primary/0 opacity-80" />
                     <CardHeader className="flex flex-col items-center gap-5 px-7 pt-8 pb-2">
                       <div className="flex flex-col items-center gap-5 w-full">
-                        <div
-                          className={cn(
-                            "relative shrink-0",
-                            isTeamImage
-                              ? "w-full h-44 md:h-52"
-                              : "h-40 w-40 md:h-44 md:w-44"
-                          )}
-                        >
+                        <div className="relative h-40 w-40 md:h-44 md:w-44 shrink-0">
                           {member.imageUrl ? (
                             <Image
                               src={member.imageUrl}
                               alt={member.name}
                               fill
-                              className={cn(
-                                "border border-border/60 bg-background/80 ring-2 ring-primary/20 group-hover:ring-primary/60 group-hover:scale-[1.03] transition-all duration-300",
-                                isTeamImage
-                                  ? "rounded-3xl object-contain bg-black/40"
-                                  : "rounded-3xl object-cover"
-                              )}
-                              sizes={
-                                isTeamImage
-                                  ? "(min-width: 1024px) 420px, (min-width: 640px) 360px, 300px"
-                                  : "(min-width: 1024px) 260px, (min-width: 640px) 220px, 200px"
-                              }
+                              className="rounded-3xl object-cover border border-border/60 bg-background/80 ring-2 ring-primary/20 group-hover:ring-primary/60 group-hover:scale-[1.03] transition-all duration-300"
+                              sizes="(min-width: 1024px) 260px, (min-width: 640px) 220px, 200px"
                               quality={95}
                             />
                           ) : (
@@ -124,12 +144,11 @@ export function LeadershipSectionClient({
                     </CardContent>
                   </Card>
                 </div>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          )}
         </Reveal>
       </Container>
     </section>
   );
 }
-

@@ -32,7 +32,7 @@ export const leadershipTeam: LeadershipMember[] = [
     id: "it-team",
     name: "QTO Dev IT Team",
     designation: "Core Engineering Team",
-    imageUrl: "/images/ITTeam.JPG",
+    imageUrl: "/images/it-team-2.JPG",
     bio: "The broader IT team collaborating across frontend, backend, and operations to deliver reliable digital solutions.",
   },
 ];

@@ -19,6 +19,39 @@ export const aboutPageConfig = {
     titleHighlight: "Journey",
     description:
       "From our early days as a small engineering-led studio to a trusted technology partner for growing businesses, our journey has been shaped by curiosity, craftsmanship, and long-term relationships.",
+    stats: [
+      { label: "Founded", value: "2015" },
+      { label: "Team Size", value: "45+" },
+      { label: "Projects Delivered", value: "200+" },
+    ],
+    timeline: [
+      {
+        year: "2015",
+        title: "Founded",
+        description:
+          "Started as a small engineering-led studio focused on solving hard problems the right way.",
+      },
+      {
+        year: "2018",
+        title: "Enterprise ERP",
+        description:
+          "Expanded into ERP implementations and legacy modernization for growing businesses.",
+      },
+      {
+        year: "2022",
+        title: "Global Clients",
+        description:
+          "Partnered with organizations across multiple industries and regions worldwide.",
+      },
+      {
+        year: "Today",
+        title: "Trusted Partner",
+        description:
+          "A mature delivery practice combining builder mindset with long-term client relationships.",
+      },
+    ],
+    journeyNarrative:
+      "Our journey began with a small team of engineers obsessed with solving hard problems the right way. Today, we combine that same builder mindset with mature delivery practices to help organizations modernize systems, launch new products, and create digital experiences that stand the test of time.",
   },
   ceo: {
     subtitle: "OUR STORY",

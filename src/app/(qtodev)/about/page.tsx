@@ -17,7 +17,7 @@ export default async function AboutPage() {
   return (
     <>
       <AboutHeroSection config={cmsConfig ?? undefined} />
-      <CompanySnapshotSection />
+      <CompanySnapshotSection config={cmsConfig ?? undefined} />
       <ErpSolutionsSection />
       <CeoSection config={cmsConfig ?? undefined} />
       <MissionVisionSection config={cmsConfig ?? undefined} />
