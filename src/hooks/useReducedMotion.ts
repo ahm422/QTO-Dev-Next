@@ -22,3 +22,8 @@ function getServerSnapshot() {
 export function useReducedMotion(): boolean {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
+
+/** Inverse of `useReducedMotion` — use to gate motion primitives. */
+export function useMotionEnabled(): boolean {
+  return !useReducedMotion();
+}

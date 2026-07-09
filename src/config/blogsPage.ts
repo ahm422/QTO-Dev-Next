@@ -1,13 +1,13 @@
 /**
  * Blog listing page copy and section-level strings (issue #46).
- * Single config for hero, featured, grid, filter, pagination, and CTA.
+ * CMS: blogs.page — edit in admin → Pages
  */
 
 export const blogsPageConfig = {
   hero: {
-    heading: "Insights & Articles",
+    heading: "Ideas from the build floor",
     subhead:
-      "Stay updated with industry trends, technology insights, business automation strategies, and expert development guides from our team.",
+      "Practical notes on development, performance, and product.",
     breadcrumbLabel: "Blog",
   },
   featured: {

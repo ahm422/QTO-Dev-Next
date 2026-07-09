@@ -1,13 +1,12 @@
 /**
  * Projects page copy and section-level strings (issue #42).
- * Single config for hero, grid, filter, value section, and CTA.
+ * CMS: projects.page — edit in admin → Pages
  */
 
 export const projectsPageConfig = {
   hero: {
-    heading: "Our Projects",
-    subhead:
-      "Explore our portfolio of successful digital solutions delivered to startups, enterprises, and growing businesses across various industries.",
+    heading: "Software that ships and lasts",
+    subhead: "Selected work across industries and stacks.",
     breadcrumbLabel: "Projects",
   },
   grid: {

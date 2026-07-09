@@ -18,10 +18,13 @@ export function Reveal({
   children,
   /** Animate child elements matching selector with a stagger. */
   staggerSelector,
+  /** Delay between staggered children in ms (default 80). */
+  staggerDelay = 80,
 }: {
   className?: string;
   children: ReactNode;
   staggerSelector?: string;
+  staggerDelay?: number;
 }) {
   const reducedMotion = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
@@ -86,9 +89,10 @@ export function Reveal({
         const shouldStagger = childrenEls.length > 0;
 
         if (shouldStagger) {
+          const delaySec = staggerDelay / 1000;
           childrenEls.forEach((c, i) => {
             const h = c as HTMLElement;
-            const d = `${i * 0.08}s`;
+            const d = `${i * delaySec}s`;
             h.style.transition = `opacity 0.7s ease ${d}, transform 0.7s ease ${d}`;
             h.style.opacity = "1";
             h.style.transform = "translateY(0)";
@@ -104,7 +108,7 @@ export function Reveal({
 
     io.observe(el);
     return () => io.disconnect();
-  }, [reducedMotion, staggerSelector]);
+  }, [reducedMotion, staggerSelector, staggerDelay]);
 
   return (
     <div ref={ref} className={cn(className)}>
