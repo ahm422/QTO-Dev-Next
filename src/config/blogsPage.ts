@@ -5,6 +5,7 @@
 
 export const blogsPageConfig = {
   hero: {
+    badge: "Blog",
     heading: "Ideas from the build floor",
     subhead:
       "Practical notes on development, performance, and product.",

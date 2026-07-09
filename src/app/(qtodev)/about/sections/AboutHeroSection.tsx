@@ -20,6 +20,7 @@ export function AboutHeroSection({ config }: { config?: AboutPageConfigType }) {
       description={hero.subhead}
       headingId={HEADING_ID}
       minHeight="min-h-[70vh] flex items-center"
+      showScrollIndicator
     >
       <Link
         href={hero.ctaHref}
@@ -27,8 +28,7 @@ export function AboutHeroSection({ config }: { config?: AboutPageConfigType }) {
           "group mt-8 inline-flex items-center gap-3 rounded-xl px-7 py-3.5 text-lg font-semibold transition-all duration-300",
           "bg-white text-black hover:bg-white/95",
           "shadow-xl shadow-black/15 hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-black/20",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-hero-bg",
-          "animation-delay-300 animate-hero-content-fade animation-fill-backwards"
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-hero-bg"
         )}
       >
         {hero.ctaText}

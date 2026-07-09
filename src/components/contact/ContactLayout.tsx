@@ -4,6 +4,7 @@ import { Text } from "@/components/ui/shared/Text";
 import { cn } from "@/components/theme/cn";
 
 interface ContactLayoutProps {
+  id?: string;
   eyebrow?: string;
   title: string;
   subtitle?: string;
@@ -14,6 +15,7 @@ interface ContactLayoutProps {
 }
 
 export function ContactLayout({
+  id,
   eyebrow,
   title,
   subtitle,
@@ -22,7 +24,10 @@ export function ContactLayout({
   size = "lg",
 }: ContactLayoutProps) {
   return (
-    <section className="relative overflow-hidden border-b border-border bg-background py-16 md:py-20 lg:py-24">
+    <section
+      id={id}
+      className="relative overflow-hidden border-b border-border bg-background py-16 md:py-20 lg:py-24"
+    >
       <div
         className="pointer-events-none absolute -top-40 left-1/2 h-80 w-[560px] -translate-x-1/2 rounded-full bg-primary/[0.04] blur-[120px]"
         aria-hidden

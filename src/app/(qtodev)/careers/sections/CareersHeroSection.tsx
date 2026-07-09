@@ -21,7 +21,7 @@ export function CareersHeroSection({ config }: { config?: CareersPageConfigType 
       description={hero.subhead}
       headingId={HEADING_ID}
     >
-      <div className="mt-10 flex flex-col gap-4 sm:flex-row animation-delay-300 animate-hero-content-fade animation-fill-backwards">
+      <div className="mt-10 flex flex-col gap-4 sm:flex-row">
         <Link
           href={hero.primaryCtaHref}
           className={cn(
@@ -49,7 +49,7 @@ export function CareersHeroSection({ config }: { config?: CareersPageConfigType 
           {hero.secondaryCtaText}
         </Link>
       </div>
-      <p className="mt-9 max-w-lg text-sm leading-relaxed text-white/80 animation-delay-300 animate-hero-content-fade animation-fill-backwards">
+      <p className="mt-9 max-w-lg text-sm leading-relaxed text-white/80">
         Official applications and job listings are hosted on the{" "}
         <a
           href={careerPortalHomeUrl()}

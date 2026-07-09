@@ -5,6 +5,7 @@
 
 export const servicesPageConfig = {
   hero: {
+    badge: "Services",
     heading: "Custom software, built to scale",
     subhead: "Web, mobile, cloud, and AI — end to end.",
     breadcrumbLabel: "Services",

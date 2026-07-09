@@ -18,6 +18,7 @@ export function ProjectsGridSection({ projects, config }: ProjectsGridSectionPro
 
   return (
     <section
+      id="projects-grid"
       className={cn(
         "relative py-16 md:py-20 overflow-hidden",
         "bg-surface-muted border-y border-border"

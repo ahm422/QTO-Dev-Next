@@ -9,6 +9,24 @@ import {
 import { cn } from "@/components/theme/cn";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
+function getStaggerTargets(
+  el: HTMLElement,
+  staggerSelector?: string
+): HTMLElement[] {
+  if (!staggerSelector) return [];
+
+  // `> *` is not valid for querySelectorAll — use direct children instead.
+  if (staggerSelector === "> *") {
+    return Array.from(el.children) as HTMLElement[];
+  }
+
+  try {
+    return Array.from(el.querySelectorAll(staggerSelector)) as HTMLElement[];
+  } catch {
+    return Array.from(el.children) as HTMLElement[];
+  }
+}
+
 /**
  * Scroll-in reveal via IntersectionObserver (issue #170).
  * Replaces per-instance GSAP ScrollTrigger for lower main-thread cost.
@@ -39,11 +57,10 @@ export function Reveal({
       el.style.transform = "";
       el.style.transition = "";
       if (staggerSelector) {
-        el.querySelectorAll(staggerSelector).forEach((c) => {
-          const h = c as HTMLElement;
-          h.style.opacity = "";
-          h.style.transform = "";
-          h.style.transition = "";
+        getStaggerTargets(el, staggerSelector).forEach((c) => {
+          c.style.opacity = "";
+          c.style.transform = "";
+          c.style.transition = "";
         });
       }
       return;
@@ -51,16 +68,13 @@ export function Reveal({
 
     if (visibleRef.current) return;
 
-    const childrenEls = staggerSelector
-      ? Array.from(el.querySelectorAll(staggerSelector))
-      : [];
+    const childrenEls = getStaggerTargets(el, staggerSelector);
     const shouldStagger = childrenEls.length > 0;
 
     if (shouldStagger) {
       childrenEls.forEach((c) => {
-        const h = c as HTMLElement;
-        h.style.opacity = "0";
-        h.style.transform = "translateY(18px)";
+        c.style.opacity = "0";
+        c.style.transform = "translateY(18px)";
       });
     } else {
       el.style.opacity = "0";
@@ -83,19 +97,16 @@ export function Reveal({
         visibleRef.current = true;
         io.disconnect();
 
-        const childrenEls = staggerSelector
-          ? Array.from(el.querySelectorAll(staggerSelector))
-          : [];
+        const childrenEls = getStaggerTargets(el, staggerSelector);
         const shouldStagger = childrenEls.length > 0;
 
         if (shouldStagger) {
           const delaySec = staggerDelay / 1000;
           childrenEls.forEach((c, i) => {
-            const h = c as HTMLElement;
             const d = `${i * delaySec}s`;
-            h.style.transition = `opacity 0.7s ease ${d}, transform 0.7s ease ${d}`;
-            h.style.opacity = "1";
-            h.style.transform = "translateY(0)";
+            c.style.transition = `opacity 0.7s ease ${d}, transform 0.7s ease ${d}`;
+            c.style.opacity = "1";
+            c.style.transform = "translateY(0)";
           });
         } else {
           el.style.transition = "opacity 0.8s ease, transform 0.8s ease";

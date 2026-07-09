@@ -7,7 +7,7 @@ export function StaggerReveal({
   className,
   children,
   staggerDelay = 80,
-  childSelector = "> *",
+  childSelector = ":scope > *",
 }: {
   className?: string;
   children: ReactNode;
