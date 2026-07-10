@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { apiSuccess, apiError } from "@/lib/apiResponses";
 import { formatZodFieldErrors } from "@/lib/validators/http";
@@ -7,6 +6,7 @@ import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { statSchema } from "@/lib/validators/admin/stat";
+import { revalidateStatPages } from "@/lib/admin/revalidateStatPages";
 
 export async function GET() {
   const { error } = await requireAdminSession();
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
     const item = await prisma.stat.create({ data: parsed.data });
-    revalidatePath("/");
+    revalidateStatPages();
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/stats", e);

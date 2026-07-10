@@ -6,7 +6,7 @@ import { AnimatedCounter } from "@/components/animations/AnimatedCounter";
 import { parseStatValue } from "@/lib/parseStatValue";
 import { cn } from "@/components/theme/cn";
 
-interface MetricItem {
+export interface MetricItem {
   icon?: React.ComponentProps<typeof AppIcon>["name"];
   label: string;
   value: string;

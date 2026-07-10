@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { RequirementsHero } from "@/components/requirements/RequirementsHero";
 import { RequirementsIntakePage } from "@/components/requirements/RequirementsIntakePage";
+import { getTrustMetrics } from "@/lib/cms/stats";
 
 export const metadata: Metadata = {
   title: "Project Requirements | QTO Dev",
@@ -8,7 +9,9 @@ export const metadata: Metadata = {
     "Share your project requirements and goals. We'll follow up with clear next steps within 1–2 business days.",
 };
 
-export default function RequirementsPage() {
+export default async function RequirementsPage() {
+  const metrics = await getTrustMetrics();
+
   return (
     <>
       <RequirementsHero
@@ -22,6 +25,7 @@ export default function RequirementsPage() {
         eyebrow="Requirements"
         title="Tell us what you're building"
         subtitle="Share your goals, constraints, and must-haves. We'll reply with practical next steps and a clear plan."
+        metrics={metrics}
       />
     </>
   );

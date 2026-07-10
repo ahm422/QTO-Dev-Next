@@ -23,6 +23,7 @@ import { requirementSubmissionSchema } from "@/lib/validators/requirement";
 import { firstApiFieldError, formatZodFieldErrors } from "@/lib/validators/http";
 import { postRequirementSubmission } from "@/lib/requirementApiClient";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
+import type { MetricItem } from "@/components/marketing/TrustStripAnimated";
 
 type BudgetRange = "<25k" | "25k-75k" | "75k-150k" | ">150k" | "";
 
@@ -145,6 +146,7 @@ export interface RequirementsIntakePageProps {
   title: string;
   subtitle: string;
   movedNotice?: { label: string; href: string };
+  metrics?: MetricItem[];
 }
 
 export function RequirementsIntakePage({
@@ -154,6 +156,7 @@ export function RequirementsIntakePage({
   title,
   subtitle,
   movedNotice,
+  metrics,
 }: RequirementsIntakePageProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<RequirementsFormData>(initialState);
@@ -751,7 +754,7 @@ export function RequirementsIntakePage({
         hideHeader
         sideContent={
           <>
-            <TrustStripAnimated orientation="column" />
+            <TrustStripAnimated metrics={metrics} orientation="column" />
             <div className="mt-6 rounded-2xl border border-border bg-surface-muted/80 p-4 sm:p-5">
               <p className="text-sm font-semibold text-foreground">
                 What happens next

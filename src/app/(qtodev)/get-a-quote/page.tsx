@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { RequirementsHero } from "@/components/requirements/RequirementsHero";
 import { RequirementsIntakePage } from "@/components/requirements/RequirementsIntakePage";
+import { getTrustMetrics } from "@/lib/cms/stats";
 
 export const metadata: Metadata = {
   title: "Get a Quote (Moved) | QTO Dev",
@@ -8,7 +9,9 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-export default function GetAQuotePage() {
+export default async function GetAQuotePage() {
+  const metrics = await getTrustMetrics();
+
   return (
     <>
       <RequirementsHero
@@ -23,6 +26,7 @@ export default function GetAQuotePage() {
         title="Share your requirements (moved)"
         subtitle="This page is now called Requirements. Use the canonical URL for sharing and bookmarking."
         movedNotice={{ label: "Looking for the canonical page?", href: "/requirements" }}
+        metrics={metrics}
       />
     </>
   );
