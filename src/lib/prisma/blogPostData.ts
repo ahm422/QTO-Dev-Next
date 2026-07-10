@@ -16,7 +16,7 @@ export type BlogPostWithTags = Prisma.BlogPostGetPayload<{
   include: typeof blogPostWithTagsInclude;
 }>;
 
-type BlogPostScalars = Omit<BlogPostInput, "tags">;
+type BlogPostScalars = Omit<BlogPostInput, "tags" | "publishedAt">;
 
 function toBlogPostScalars(input: BlogPostInput): BlogPostScalars {
   const { tags: _t, ...scalars } = input;
@@ -34,7 +34,7 @@ export function toPrismaBlogPostCreateData(
     category: scalars.category || "",
     imageUrl: scalars.imageUrl || null,
     imageAlt: scalars.imageAlt || null,
-    readTime: scalars.readTime ?? null,
+    readTime: Number.isFinite(scalars.readTime) ? scalars.readTime : null,
     tags: createOrderedChildren(input.tags),
   };
 }
@@ -50,7 +50,7 @@ export function toPrismaBlogPostUpdateData(
     category: scalars.category || "",
     imageUrl: scalars.imageUrl || null,
     imageAlt: scalars.imageAlt || null,
-    readTime: scalars.readTime ?? null,
+    readTime: Number.isFinite(scalars.readTime) ? scalars.readTime : null,
     tags: replaceOrderedChildren(input.tags),
   };
 }
@@ -67,7 +67,9 @@ export function toPrismaBlogPostPartialUpdateData(
   if (input.author !== undefined) data.author = input.author;
   if (input.imageUrl !== undefined) data.imageUrl = input.imageUrl || null;
   if (input.imageAlt !== undefined) data.imageAlt = input.imageAlt || null;
-  if (input.readTime !== undefined) data.readTime = input.readTime ?? null;
+  if (input.readTime !== undefined) {
+    data.readTime = Number.isFinite(input.readTime) ? input.readTime : null;
+  }
   if (input.isFeatured !== undefined) data.isFeatured = input.isFeatured;
   if (input.isHeadline !== undefined) data.isHeadline = input.isHeadline;
   if (input.isPublished !== undefined) data.isPublished = input.isPublished;
@@ -76,12 +78,13 @@ export function toPrismaBlogPostPartialUpdateData(
 }
 
 export function fromPrismaBlogPost(row: BlogPostWithTags) {
-  const { tags: tagRows, imageUrl, imageAlt, readTime, ...rest } = row;
+  const { tags: tagRows, imageUrl, imageAlt, readTime, publishedAt, ...rest } = row;
   return {
     ...rest,
     imageUrl: imageUrl ?? "",
     imageAlt: imageAlt ?? "",
     readTime: readTime ?? undefined,
+    publishedAt: publishedAt?.toISOString().slice(0, 10) ?? undefined,
     tags: orderedTagValues(tagRows),
   };
 }

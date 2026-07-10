@@ -2,7 +2,7 @@ import { BlogsHeroSection } from "./sections/BlogsHeroSection";
 import { FeaturedPostsSection } from "./sections/FeaturedPostsSection";
 import { BlogsFilterAndGrid } from "./sections/BlogsFilterAndGrid";
 import { CTA } from "@/components/common/CTA";
-import { blogsPageConfig } from "@/config/blogsPage";
+import { mergeBlogsPageConfig } from "@/config/blogsPage";
 import { findPageSection } from "@/lib/cms/pageContent";
 
 interface BlogsPageProps {
@@ -10,13 +10,14 @@ interface BlogsPageProps {
     category?: string;
     tag?: string;
     page?: string;
+    q?: string;
   }>;
 }
 
 export default async function BlogsPage({ searchParams }: BlogsPageProps) {
   const params = await searchParams;
-  const cmsConfig = (await findPageSection("blogs.page")) as typeof blogsPageConfig | null;
-  const cfg = cmsConfig ?? blogsPageConfig;
+  const cmsConfig = await findPageSection("blogs.page");
+  const cfg = mergeBlogsPageConfig(cmsConfig);
   const { cta } = cfg;
 
   const initialPage = params.page ? Math.max(1, parseInt(params.page, 10) || 1) : 1;
@@ -26,10 +27,11 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
       <BlogsHeroSection config={cmsConfig ?? undefined} />
       <FeaturedPostsSection config={cmsConfig ?? undefined} />
       <BlogsFilterAndGrid
-        config={cmsConfig ?? undefined}
+        config={cfg}
         initialCategory={params.category}
         initialTag={params.tag}
         initialPage={initialPage}
+        initialSearch={params.q}
       />
       <CTA
         title={cta.title}

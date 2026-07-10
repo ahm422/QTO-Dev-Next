@@ -9,6 +9,7 @@ interface BlogsFilterAndGridProps {
   initialCategory?: string;
   initialTag?: string;
   initialPage?: number;
+  initialSearch?: string;
 }
 
 export async function BlogsFilterAndGrid({
@@ -16,8 +17,10 @@ export async function BlogsFilterAndGrid({
   initialCategory,
   initialTag,
   initialPage,
+  initialSearch,
 }: BlogsFilterAndGridProps) {
   const posts = await findAllPublishedBlogPosts();
+  if (posts.length === 0) return null;
   return (
     <Suspense fallback={null}>
       <BlogsFilterAndGridClient
@@ -26,6 +29,7 @@ export async function BlogsFilterAndGrid({
         initialCategory={initialCategory}
         initialTag={initialTag}
         initialPage={initialPage}
+        initialSearch={initialSearch}
       />
     </Suspense>
   );

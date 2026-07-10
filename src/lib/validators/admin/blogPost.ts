@@ -10,7 +10,14 @@ export const blogPostSchema = z.object({
   author: z.string().default("QTO DEV Team"),
   imageUrl: z.string().optional().default(""),
   imageAlt: z.string().optional().default(""),
-  readTime: z.coerce.number().int().optional(),
+  readTime: z.preprocess(
+    (val) => (val === "" || val === null || val === undefined ? undefined : val),
+    z.coerce.number().int().positive().optional()
+  ).transform((val) => (Number.isFinite(val) ? val : undefined)),
+  publishedAt: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be YYYY-MM-DD")
+    .optional(),
   isFeatured: z.boolean().default(false),
   isHeadline: z.boolean().default(false),
   isPublished: z.boolean().default(false),

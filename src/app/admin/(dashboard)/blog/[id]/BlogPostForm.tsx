@@ -28,6 +28,7 @@ const emptyDefaults: BlogPostInput = {
   imageUrl: "",
   imageAlt: "",
   readTime: undefined,
+  publishedAt: undefined,
   isFeatured: false,
   isHeadline: false,
   isPublished: false,
@@ -81,7 +82,22 @@ export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPo
               <FormItem><FormLabel>Author</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
             <FormField control={form.control} name="readTime" render={({ field }) => (
-              <FormItem><FormLabel>Read time</FormLabel><FormControl><Input {...field} placeholder="5 min read" /></FormControl><FormMessage /></FormItem>
+              <FormItem>
+                <FormLabel>Read time (minutes)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={1}
+                    placeholder="5"
+                    value={field.value ?? ""}
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      field.onChange(raw === "" ? undefined : Number(raw));
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )} />
           </FormGrid>
           <FormField control={form.control} name="tags" render={({ field }) => (
@@ -93,6 +109,21 @@ export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPo
           <FormField control={form.control} name="imageAlt" render={({ field }) => (
             <FormItem><FormLabel>Image alt</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
           )} />
+          <FormGrid cols={2}>
+            <FormField control={form.control} name="publishedAt" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Published date</FormLabel>
+                <FormControl>
+                  <Input
+                    type="date"
+                    value={field.value ?? ""}
+                    onChange={(e) => field.onChange(e.target.value || undefined)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+          </FormGrid>
           <div className="flex gap-6 flex-wrap">
             <FormField control={form.control} name="isFeatured" render={({ field }) => (
               <FormItem><div className="flex items-center gap-3"><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} id="featured" /></FormControl><Label htmlFor="featured">Featured</Label></div><FormMessage /></FormItem>

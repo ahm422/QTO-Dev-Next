@@ -51,7 +51,7 @@ export function BlogFilterBarSection({
             onChange={(e) => onSearchChange(e.target.value)}
             aria-label={filter.searchPlaceholder}
             className={cn(
-              "rounded-full pl-11",
+              "rounded-full pl-11 text-foreground",
               "focus-visible:ring-2 focus-visible:ring-primary focus-visible:shadow-[0_0_0_4px_hsl(var(--primary)/0.15)]"
             )}
           />

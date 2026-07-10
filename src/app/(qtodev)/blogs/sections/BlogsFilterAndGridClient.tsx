@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { blogsPageConfig } from "@/config/blogsPage";
 type BlogsPageConfigType = typeof blogsPageConfig;
@@ -28,6 +28,7 @@ interface BlogsFilterAndGridClientProps {
   initialCategory?: string;
   initialTag?: string;
   initialPage?: number;
+  initialSearch?: string;
 }
 
 export function BlogsFilterAndGridClient({
@@ -36,9 +37,14 @@ export function BlogsFilterAndGridClient({
   initialCategory,
   initialTag,
   initialPage = 1,
+  initialSearch,
 }: BlogsFilterAndGridClientProps) {
   const cfg = config ?? blogsPageConfig;
-  const pageSize = cfg.pagination.pageSize;
+  const rawPageSize = cfg.pagination?.pageSize;
+  const pageSize =
+    Number.isFinite(Number(rawPageSize)) && Number(rawPageSize) > 0
+      ? Number(rawPageSize)
+      : 9;
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -47,7 +53,8 @@ export function BlogsFilterAndGridClient({
   );
   const [activeTag, setActiveTag] = useState<string | null>(initialTag ?? null);
   const [currentPage, setCurrentPage] = useState<number>(Math.max(1, initialPage));
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialSearch ?? "");
+  const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const categories = useMemo(() => getCategories(posts), [posts]);
 
@@ -117,12 +124,13 @@ export function BlogsFilterAndGridClient({
   }, [filteredPosts, pageSize, safePage]);
 
   const updateUrl = useCallback(
-    (next: { category?: string; tag?: string | null; page?: number }) => {
+    (next: { category?: string; tag?: string | null; page?: number; q?: string }) => {
       const params = new URLSearchParams(searchParams.toString());
 
       const category = next.category ?? activeCategory;
       const tag = next.tag !== undefined ? next.tag : activeTag;
       const page = next.page ?? safePage;
+      const q = (next.q !== undefined ? next.q : searchQuery).trim();
 
       if (category && category !== allLabel) {
         params.set("category", category);
@@ -136,6 +144,12 @@ export function BlogsFilterAndGridClient({
         params.delete("tag");
       }
 
+      if (q) {
+        params.set("q", q);
+      } else {
+        params.delete("q");
+      }
+
       if (page > 1) {
         params.set("page", String(page));
       } else {
@@ -145,7 +159,7 @@ export function BlogsFilterAndGridClient({
       const query = params.toString();
       router.replace(query ? `/blogs?${query}` : "/blogs", { scroll: false });
     },
-    [activeCategory, activeTag, allLabel, router, safePage, searchParams]
+    [activeCategory, activeTag, allLabel, router, safePage, searchParams, searchQuery]
   );
 
   const handleCategoryChange = (category: string) => {
@@ -163,6 +177,10 @@ export function BlogsFilterAndGridClient({
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
+    if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    searchDebounceRef.current = setTimeout(() => {
+      updateUrl({ page: 1, q: query });
+    }, 300);
   };
 
   const handlePageChange = (page: number) => {
@@ -170,6 +188,8 @@ export function BlogsFilterAndGridClient({
     setCurrentPage(nextPage);
     updateUrl({ page: nextPage });
   };
+
+  if (posts.length === 0) return null;
 
   return (
     <>

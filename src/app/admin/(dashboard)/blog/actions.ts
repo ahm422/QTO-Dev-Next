@@ -16,10 +16,15 @@ import {
 export async function createBlogPost(data: BlogPostInput) {
   await requireCreateAction()
   const parsed = blogPostSchema.parse(data)
+  const publishedAt = parsed.publishedAt
+    ? new Date(parsed.publishedAt)
+    : parsed.isPublished
+      ? new Date()
+      : null
   await prisma.blogPost.create({
     data: {
       ...toPrismaBlogPostCreateData(parsed),
-      publishedAt: parsed.isPublished ? new Date() : null,
+      publishedAt,
     },
   })
   revalidatePaths([...blogPaths(parsed.slug)])
@@ -31,7 +36,11 @@ export async function updateBlogPost(id: string, data: BlogPostInput) {
   await requireAdminAction()
   const parsed = blogPostSchema.parse(data)
   const existing = await prisma.blogPost.findUnique({ where: { id }, select: { isPublished: true, publishedAt: true } })
-  const publishedAt = parsed.isPublished && !existing?.publishedAt ? new Date() : existing?.publishedAt ?? null
+  const publishedAt = parsed.publishedAt
+    ? new Date(parsed.publishedAt)
+    : parsed.isPublished && !existing?.publishedAt
+      ? new Date()
+      : existing?.publishedAt ?? null
   await prisma.blogPost.update({
     where: { id },
     data: {

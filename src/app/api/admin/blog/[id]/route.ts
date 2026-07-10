@@ -41,8 +41,9 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
     const existing = await prisma.blogPost.findUnique({ where: { id }, select: { publishedAt: true } });
-    const publishedAt =
-      parsed.data.isPublished && !existing?.publishedAt
+    const publishedAt = parsed.data.publishedAt
+      ? new Date(parsed.data.publishedAt)
+      : parsed.data.isPublished && !existing?.publishedAt
         ? new Date()
         : existing?.publishedAt ?? null;
     const updateData =
@@ -51,7 +52,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         : toPrismaBlogPostPartialUpdateData(parsed.data);
     const item = await prisma.blogPost.update({
       where: { id },
-      data: { ...updateData, ...(parsed.data.isPublished !== undefined ? { publishedAt } : {}) },
+      data: {
+        ...updateData,
+        ...(parsed.data.isPublished !== undefined || parsed.data.publishedAt !== undefined
+          ? { publishedAt }
+          : {}),
+      },
       include: blogPostWithTagsInclude,
     });
     revalidatePath("/");
