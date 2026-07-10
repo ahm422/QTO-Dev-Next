@@ -16,7 +16,7 @@ export type BlogPostWithTags = Prisma.BlogPostGetPayload<{
   include: typeof blogPostWithTagsInclude;
 }>;
 
-type BlogPostScalars = Omit<BlogPostInput, "tags">;
+type BlogPostScalars = Omit<BlogPostInput, "tags" | "publishedAt">;
 
 function toBlogPostScalars(input: BlogPostInput): BlogPostScalars {
   const { tags: _t, ...scalars } = input;
@@ -78,12 +78,13 @@ export function toPrismaBlogPostPartialUpdateData(
 }
 
 export function fromPrismaBlogPost(row: BlogPostWithTags) {
-  const { tags: tagRows, imageUrl, imageAlt, readTime, ...rest } = row;
+  const { tags: tagRows, imageUrl, imageAlt, readTime, publishedAt, ...rest } = row;
   return {
     ...rest,
     imageUrl: imageUrl ?? "",
     imageAlt: imageAlt ?? "",
     readTime: readTime ?? undefined,
+    publishedAt: publishedAt?.toISOString().slice(0, 10) ?? undefined,
     tags: orderedTagValues(tagRows),
   };
 }

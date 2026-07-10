@@ -44,10 +44,15 @@ export async function POST(request: NextRequest) {
   if (!parsed.success)
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
+    const publishedAt = parsed.data.publishedAt
+      ? new Date(parsed.data.publishedAt)
+      : parsed.data.isPublished
+        ? new Date()
+        : null;
     const item = await prisma.blogPost.create({
       data: {
         ...toPrismaBlogPostCreateData(parsed.data),
-        publishedAt: parsed.data.isPublished ? new Date() : null,
+        publishedAt,
       },
       include: blogPostWithTagsInclude,
     });
