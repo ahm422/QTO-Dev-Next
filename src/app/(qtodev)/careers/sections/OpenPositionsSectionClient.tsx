@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
@@ -8,7 +9,6 @@ import type { Job } from "@/types/job";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import type { AppIconName } from "@/components/ui/shared/AppIcon";
 import { getDepartmentAccent } from "@/lib/careers/departmentAccent";
-import { careerPortalHomeUrl } from "@/config/careersPortal";
 import { JobApplyDialog } from "@/components/careers/JobApplyDialog";
 
 const HEADING_ID = "open-roles-heading";
@@ -162,7 +162,7 @@ function JobCard({ job }: { job: Job }) {
               </ul>
               {moreReq > 0 ? (
                 <p className="mt-2 text-xs text-foreground-muted/90">
-                  +{moreReq} more on the full listing in the career portal.
+                  +{moreReq} more requirements listed in the full role description.
                 </p>
               ) : null}
             </div>
@@ -191,7 +191,6 @@ function JobCard({ job }: { job: Job }) {
                 department: job.department,
                 location: job.location,
                 employmentType: job.employmentType,
-                applyUrl: job.applyUrl,
               }}
             />
           </div>
@@ -230,8 +229,8 @@ export function OpenPositionsSectionClient({ jobs }: { jobs: Job[] }) {
               titleHighlight="Hiring"
               description={
                 hasJobs
-                  ? "Live openings below are kept in sync with our hiring plan. When you’re ready, you’ll continue on the QTO House career portal to view the full description and apply securely."
-                  : "We don’t have active openings right now, but we’re always happy to hear from great people."
+                  ? "Live openings below. Click Apply now on any role to submit your application directly."
+                  : "We're not actively hiring right now, but we'd love to hear from you."
               }
               headingId={HEADING_ID}
             />
@@ -241,7 +240,7 @@ export function OpenPositionsSectionClient({ jobs }: { jobs: Job[] }) {
             <>
               <div
                 data-reveal
-                className="mx-auto mb-10 max-w-4xl rounded-2xl border border-primary/15 bg-gradient-to-r from-primary/[0.06] via-background to-primary/[0.04] p-5 shadow-sm md:flex md:items-center md:justify-between md:gap-6 md:p-6"
+                className="mx-auto mb-10 max-w-4xl rounded-2xl border border-primary/15 bg-gradient-to-r from-primary/[0.06] via-background to-primary/[0.04] p-5 shadow-sm md:flex md:items-center md:gap-6 md:p-6"
               >
                 <div className="flex min-w-0 items-start gap-3">
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -249,24 +248,13 @@ export function OpenPositionsSectionClient({ jobs }: { jobs: Job[] }) {
                   </span>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-foreground sm:text-base">
-                      Applications run on the QTO House career portal
+                      Apply on this page
                     </p>
                     <p className="mt-1 text-sm text-foreground-muted leading-snug">
-                      Sign in to complete your profile and apply for any role.
+                      Use the Apply now button on each role — takes about 2 minutes.
                     </p>
                   </div>
                 </div>
-                <a
-                  href={careerPortalHomeUrl()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(
-                    "mt-4 inline-flex min-h-[40px] w-full shrink-0 items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground",
-                    "transition-colors hover:bg-primary-hover md:mt-0 md:w-auto"
-                  )}
-                >
-                  Open portal home
-                </a>
               </div>
 
               <ul
@@ -291,21 +279,18 @@ export function OpenPositionsSectionClient({ jobs }: { jobs: Job[] }) {
                 No Open Roles Right Now
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-foreground-muted sm:text-base">
-                We’re not actively hiring for specific roles at the moment, but we’d still love to hear from you.
-                You can also register on the QTO House portal so you’re on file when new roles open.
+                We&apos;re not actively hiring for specific roles at the moment, but we&apos;d still love to hear from you.
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                <a
-                  href={careerPortalHomeUrl()}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/contact"
                   className={cn(
                     "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-border bg-background px-5 py-2.5 text-sm font-semibold",
                     "hover:border-primary/25 hover:bg-surface-muted"
                   )}
                 >
-                  Go to career portal
-                </a>
+                  Get in touch
+                </Link>
               </div>
             </div>
           )}

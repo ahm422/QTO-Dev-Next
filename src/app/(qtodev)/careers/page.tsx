@@ -5,7 +5,7 @@ import { CultureSection } from "./sections/CultureSection";
 import { WhyWorkWithUsSection } from "./sections/WhyWorkWithUsSection";
 import { OpenPositionsSection } from "./sections/OpenPositionsSection";
 import { CareersCTASection } from "./sections/CareersCTASection";
-import { careersPageConfig } from "@/config/careersPage";
+import { careersPageConfig, resolveCareersPageConfig } from "@/config/careersPage";
 import { findPageSection } from "@/lib/cms/pageContent";
 
 export const metadata = generateSEOMetadata({
@@ -16,8 +16,8 @@ export const metadata = generateSEOMetadata({
 });
 
 export default async function CareersPage() {
-  const cmsConfig = await findPageSection("careers.page") as typeof careersPageConfig | null;
-  const cfg = cmsConfig ?? undefined;
+  const cmsConfig = (await findPageSection("careers.page")) as typeof careersPageConfig | null;
+  const cfg = resolveCareersPageConfig(cmsConfig);
   return (
     <>
       <CareersHeroSection config={cfg} />

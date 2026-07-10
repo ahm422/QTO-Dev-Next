@@ -232,7 +232,7 @@ export function mapJob(row: PrismaJob): Job {
     department: row.department,
     location: row.location,
     employmentType: row.type,
-    applyUrl: row.applyUrl ?? "#",
+    applyUrl: row.applyUrl ?? undefined,
     description: row.description,
     requirements: parseStringArray(row.requirements),
     tags: niceToHave.length > 0 ? niceToHave : undefined,

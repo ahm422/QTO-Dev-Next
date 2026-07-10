@@ -1,5 +1,3 @@
-import { careerPortalHomeUrl } from "@/config/careersPortal";
-
 /** CMS: careers.page — edit in admin → Pages */
 export const careersPageConfig = {
   hero: {
@@ -9,8 +7,6 @@ export const careersPageConfig = {
       "Join engineers and designers solving real client problems.",
     primaryCtaText: "View Open Roles",
     primaryCtaHref: "#open-roles",
-    secondaryCtaText: "Open Career Portal",
-    secondaryCtaHref: careerPortalHomeUrl(),
     breadcrumbLabel: "Careers",
   },
   whyWork: {
@@ -105,11 +101,50 @@ export const careersPageConfig = {
   cta: {
     title: "Ready to Apply?",
     description:
-      "All applications are handled through the QTO House career portal. Create an account (or sign in) to apply for open roles and keep your profile up to date.",
-    primaryButtonText: "Go to Career Portal",
-    primaryButtonHref: careerPortalHomeUrl(),
+      "Browse open roles below and apply directly on this site. We review every application and will be in touch if there's a fit.",
+    primaryButtonText: "Browse Open Roles",
+    primaryButtonHref: "#open-roles",
     secondaryButtonText: "Learn About Our Work",
     secondaryButtonHref: "/projects",
   },
 } as const;
+
+export type CareersPageConfig = typeof careersPageConfig;
+
+const PORTAL_HOST = "career.qtohouse.com.pk";
+
+function isPortalHref(href?: string | null): boolean {
+  if (!href) return false;
+  return href.includes(PORTAL_HOST);
+}
+
+/** Merge CMS careers.page with code defaults; strip stale portal CTAs from saved CMS rows. */
+export function resolveCareersPageConfig(
+  cms: CareersPageConfig | null | undefined
+): CareersPageConfig {
+  if (!cms) return careersPageConfig;
+
+  const heroMerged = { ...careersPageConfig.hero, ...cms.hero } as Record<string, unknown>;
+  delete heroMerged.secondaryCtaText;
+  delete heroMerged.secondaryCtaHref;
+  const heroBase = heroMerged as CareersPageConfig["hero"];
+
+  const ctaFromCms = cms.cta ?? careersPageConfig.cta;
+  const cta = {
+    ...careersPageConfig.cta,
+    ...ctaFromCms,
+    description: careersPageConfig.cta.description,
+    primaryButtonText: careersPageConfig.cta.primaryButtonText,
+    primaryButtonHref: isPortalHref(ctaFromCms.primaryButtonHref)
+      ? careersPageConfig.cta.primaryButtonHref
+      : (ctaFromCms.primaryButtonHref ?? careersPageConfig.cta.primaryButtonHref),
+  };
+
+  return {
+    ...careersPageConfig,
+    ...cms,
+    hero: heroBase,
+    cta,
+  };
+}
 
