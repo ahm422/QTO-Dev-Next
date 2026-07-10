@@ -189,6 +189,8 @@ export function BlogsFilterAndGridClient({
     updateUrl({ page: nextPage });
   };
 
+  if (posts.length === 0) return null;
+
   return (
     <>
       <BlogFilterBarSection

@@ -20,6 +20,7 @@ export async function BlogsFilterAndGrid({
   initialSearch,
 }: BlogsFilterAndGridProps) {
   const posts = await findAllPublishedBlogPosts();
+  if (posts.length === 0) return null;
   return (
     <Suspense fallback={null}>
       <BlogsFilterAndGridClient
