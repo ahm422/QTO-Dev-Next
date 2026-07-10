@@ -10,6 +10,7 @@ interface BlogsPageProps {
     category?: string;
     tag?: string;
     page?: string;
+    q?: string;
   }>;
 }
 
@@ -30,6 +31,7 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
         initialCategory={params.category}
         initialTag={params.tag}
         initialPage={initialPage}
+        initialSearch={params.q}
       />
       <CTA
         title={cta.title}
