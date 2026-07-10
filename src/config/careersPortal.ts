@@ -1,3 +1,7 @@
+/**
+ * @deprecated Retained for potential future HRMS integration only.
+ * Public careers pages no longer link to the external portal.
+ */
 /** Official QTO House HRMS — role applications and onboarding */
 export const CAREER_PORTAL_ORIGIN = "https://career.qtohouse.com.pk";
 

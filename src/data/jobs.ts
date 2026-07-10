@@ -1,5 +1,4 @@
 import type { Job } from "@/types/job";
-import { careerPortalRegisterUrl } from "@/config/careersPortal";
 
 export const jobs: Job[] = [
   {
@@ -9,7 +8,6 @@ export const jobs: Job[] = [
     workMode: "Remote-friendly",
     location: "Pakistan — core overlap GMT+5 (±3h OK)",
     employmentType: "Full-time",
-    applyUrl: careerPortalRegisterUrl("senior-frontend-engineer"),
     postedLabel: "Posted 18 Mar 2026",
     experience: "5+ years shipping production web products",
     compensationNote: "Competitive salary + annual review; hardware stipend",
@@ -39,7 +37,6 @@ export const jobs: Job[] = [
     workMode: "Hybrid",
     location: "Lahore, Pakistan — 2 days / week on-site",
     employmentType: "Full-time",
-    applyUrl: careerPortalRegisterUrl("product-designer"),
     postedLabel: "Posted 12 Mar 2026",
     experience: "4+ years product / UX across web (mobile-responsive a plus)",
     compensationNote: "Competitive package; learning budget included",
@@ -69,7 +66,6 @@ export const jobs: Job[] = [
     workMode: "Remote",
     location: "Pakistan — overlap with EU / GCC client hours as needed",
     employmentType: "Full-time",
-    applyUrl: careerPortalRegisterUrl("delivery-lead"),
     postedLabel: "Posted 05 Mar 2026",
     experience: "5+ years leading cross-functional software delivery",
     compensationNote: "Competitive salary; performance-based bonus eligible",

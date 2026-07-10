@@ -429,9 +429,6 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
           "Join engineers and designers solving real client problems.",
         primaryCtaText: "View Open Roles",
         primaryCtaHref: "#open-roles",
-        secondaryCtaText: "Open Career Portal",
-        secondaryCtaHref:
-          "https://career.qtohouse.com.pk/?utm_source=qto_dev_website&utm_medium=careers",
         breadcrumbLabel: "Careers",
       },
       whyWork: {
@@ -493,8 +490,9 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
       cta: {
         title: "Ready to Apply?",
         description:
-          "All applications are handled through the QTO House career portal. Create an account (or sign in) to apply for open roles and keep your profile up to date.",
-        primaryButtonText: "Go to Career Portal",
+          "Browse open roles below and apply directly on this site. We review every application and will be in touch if there's a fit.",
+        primaryButtonText: "Browse Open Roles",
+        primaryButtonHref: "#open-roles",
         secondaryButtonText: "Learn About Our Work",
         secondaryButtonHref: "/projects",
       },

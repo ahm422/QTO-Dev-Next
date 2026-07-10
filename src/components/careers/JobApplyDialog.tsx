@@ -28,7 +28,6 @@ interface JobForApply {
   department: string
   location: string
   employmentType?: string
-  applyUrl?: string | null
 }
 
 interface JobApplyDialogProps {
@@ -275,24 +274,11 @@ export function JobApplyDialog({ job, triggerClassName }: JobApplyDialogProps) {
               )}
 
               {/* Actions */}
-              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between sm:items-center pt-2">
-                {job.applyUrl && (
-                  <a
-                    href={job.applyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() =>
-                      analytics.trackEvent("careers_portal_fallback", { jobId: job.id })
-                    }
-                    className="text-xs text-muted-foreground underline-offset-4 hover:underline text-center sm:text-left"
-                  >
-                    Apply on portal instead
-                  </a>
-                )}
+              <div className="flex justify-end pt-2">
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="gap-2 bg-primary text-primary-foreground hover:bg-primary-hover sm:ml-auto"
+                  className="gap-2 bg-primary text-primary-foreground hover:bg-primary-hover"
                 >
                   {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
                   {isSubmitting ? "Submitting…" : "Submit application"}

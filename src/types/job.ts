@@ -4,8 +4,8 @@ export interface Job {
   department: string;
   location: string;
   employmentType: string;
-  /** Full URL — typically QTO House career portal (register/apply). */
-  applyUrl: string;
+  /** Optional external apply URL (admin-only; public apply uses on-site dialog). */
+  applyUrl?: string;
   workMode?: string;
   /** Short teaser shown on listing cards */
   description?: string;
