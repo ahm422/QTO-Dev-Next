@@ -242,7 +242,7 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
         titleHighlight: "Partner",
         body: "We combine technical excellence with a partnership mindset. From discovery to launch and beyond, our team delivers custom software that scales with you—without compromise.",
         ctaLabel: "See our work",
-        ctaHref: "/portfolio",
+        ctaHref: "/projects",
         cardLabel: "WHY QTO DEV",
         checklist: [
           "Agile delivery with transparent milestones",

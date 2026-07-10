@@ -11,12 +11,17 @@ import { Text } from "@/components/ui/shared/Text";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { contactSubmissionSchema } from "@/lib/validators/contact";
 import { formatZodFieldErrors } from "@/lib/validators/http";
+import type { MetricItem } from "@/components/marketing/TrustStripAnimated";
 import {
   firstContactFieldError,
   postContactSubmission,
 } from "@/lib/contactApiClient";
 
-export function ContactFormSection() {
+interface ContactFormSectionProps {
+  metrics?: MetricItem[];
+}
+
+export function ContactFormSection({ metrics }: ContactFormSectionProps) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -99,7 +104,7 @@ export function ContactFormSection() {
       size="xl"
       sideContent={
         <div className="space-y-6">
-          <TrustStripAnimated orientation="column" />
+          <TrustStripAnimated metrics={metrics} orientation="column" />
           <div className="rounded-2xl border border-border bg-surface-muted/70 p-4 sm:p-5">
             <p className="text-sm font-semibold text-foreground">
               What happens next
