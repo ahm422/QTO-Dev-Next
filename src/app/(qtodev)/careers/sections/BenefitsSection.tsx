@@ -3,6 +3,8 @@
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
+import { AppIcon } from "@/components/ui/shared/AppIcon";
+import type { AppIconName } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
 import { careersPageConfig } from "@/config/careersPage";
 type CareersPageConfigType = typeof careersPageConfig;
@@ -49,11 +51,18 @@ export function BenefitsSection({ config }: { config?: CareersPageConfigType }) 
                 key={item.title}
                 className={cn(
                   "h-full rounded-2xl border border-border/80 bg-background/80",
-                  "shadow-sm shadow-black/5 hover:shadow-md hover:shadow-black/10",
-                  "transition-all duration-200 hover:-translate-y-0.5",
+                  "shadow-sm shadow-black/5 hover:shadow-lg hover:shadow-primary/5",
+                  "transition-all duration-300 hover:-translate-y-1",
                   "p-6 sm:p-7"
                 )}
               >
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary mb-4">
+                  <AppIcon
+                    name={(item.icon as AppIconName) || "sparkles"}
+                    size="sm"
+                    className="h-5 w-5"
+                  />
+                </div>
                 <h3 className="font-heading text-base sm:text-lg font-semibold text-foreground">
                   {item.title}
                 </h3>
@@ -68,4 +77,3 @@ export function BenefitsSection({ config }: { config?: CareersPageConfigType }) 
     </section>
   );
 }
-

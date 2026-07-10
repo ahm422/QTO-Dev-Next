@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ContactLayout } from "@/components/contact/ContactLayout";
-import { TrustStrip } from "@/components/marketing/TrustStrip";
+import { TrustStripAnimated } from "@/components/marketing/TrustStripAnimated";
 import { FormInput } from "@/components/ui/input";
 import { FormTextarea } from "@/components/ui/textarea";
 import {
@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Text } from "@/components/ui/shared/Text";
-import { FormStepper } from "@/components/contact/FormStepper";
+import { FormStepper, MobileFormStepBar } from "@/components/contact/FormStepper";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { analytics } from "@/lib/analytics";
 import { requirementSubmissionSchema } from "@/lib/validators/requirement";
@@ -743,13 +743,15 @@ export function RequirementsIntakePage({
   return (
     <main>
       <ContactLayout
+        id="requirements-form"
         eyebrow={eyebrow}
         title={title}
         subtitle={subtitle}
         size="xl"
+        hideHeader
         sideContent={
           <>
-            <TrustStrip orientation="column" />
+            <TrustStripAnimated orientation="column" />
             <div className="mt-6 rounded-2xl border border-border bg-surface-muted/80 p-4 sm:p-5">
               <p className="text-sm font-semibold text-foreground">
                 What happens next
@@ -801,7 +803,8 @@ export function RequirementsIntakePage({
               <AlertDescription className="m-0">{formError}</AlertDescription>
             </Alert>
           ) : null}
-          <FormStepper steps={[...steps]} currentStepIndex={currentStep} />
+          <MobileFormStepBar steps={[...steps]} currentStepIndex={currentStep} />
+          <FormStepper steps={[...steps]} currentStepIndex={currentStep} className="hidden md:block" />
           {renderStep()}
           {!submitted && (
             <div

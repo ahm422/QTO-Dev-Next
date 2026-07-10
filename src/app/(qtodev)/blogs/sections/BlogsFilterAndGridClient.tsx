@@ -51,6 +51,39 @@ export function BlogsFilterAndGridClient({
 
   const categories = useMemo(() => getCategories(posts), [posts]);
 
+  const postsForCategoryCounts = useMemo(() => {
+    let results = posts;
+
+    if (activeTag) {
+      results = results.filter((p) => p.tags.includes(activeTag));
+    }
+
+    const query = searchQuery.trim().toLowerCase();
+    if (query) {
+      results = results.filter(
+        (p) =>
+          p.title.toLowerCase().includes(query) ||
+          (p.excerpt ?? p.description).toLowerCase().includes(query) ||
+          p.tags.some((tag) => tag.toLowerCase().includes(query))
+      );
+    }
+
+    return results;
+  }, [activeTag, posts, searchQuery]);
+
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      [allLabel]: postsForCategoryCounts.length,
+    };
+
+    for (const category of categories) {
+      if (category === allLabel) continue;
+      counts[category] = postsForCategoryCounts.filter((p) => p.category === category).length;
+    }
+
+    return counts;
+  }, [categories, postsForCategoryCounts]);
+
   const filteredPosts = useMemo(() => {
     let results = posts;
 
@@ -142,6 +175,7 @@ export function BlogsFilterAndGridClient({
     <>
       <BlogFilterBarSection
         categories={categories}
+        categoryCounts={categoryCounts}
         activeCategory={activeCategory}
         onCategoryChange={handleCategoryChange}
         activeTag={activeTag}

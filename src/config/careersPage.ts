@@ -52,26 +52,32 @@ export const careersPageConfig = {
       {
         title: "Competitive Compensation",
         body: "Market-aligned salaries with regular reviews based on impact, not just tenure.",
+        icon: "star",
       },
       {
         title: "Health Coverage",
         body: "Comprehensive medical coverage options for you and your family (location-dependent).",
+        icon: "heart",
       },
       {
         title: "Time Off That Actually Works",
         body: "Paid time off, local holidays, and end-of-year slowdown so you can properly recharge.",
+        icon: "calendar",
       },
       {
         title: "Learning Budget",
         body: "Annual budget for courses, books, conferences, or tooling that furthers your craft.",
+        icon: "lightbulb",
       },
       {
         title: "Home Office Setup",
         body: "Stipend for hardware and workspace so you can do your best work comfortably.",
+        icon: "laptop-code",
       },
       {
         title: "Flexible Hours",
         body: "Core collaboration windows with flexibility around how you structure the rest of your day.",
+        icon: "clock",
       },
     ],
   },

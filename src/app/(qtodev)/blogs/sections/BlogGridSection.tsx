@@ -1,12 +1,8 @@
-import Link from "next/link";
-import Image from "next/image";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Reveal } from "@/components/animations/Reveal";
+import { LatestPostCard } from "@/components/insights/LatestPostCard";
 import { cn } from "@/components/theme/cn";
-import { formatDateShort } from "@/lib/format";
 import { blogsPageConfig } from "@/config/blogsPage";
 type BlogsPageConfigType = typeof blogsPageConfig;
 import type { BlogPost } from "@/types/blog";
@@ -17,7 +13,10 @@ interface BlogGridSectionProps {
   posts: BlogPost[];
 }
 
-export function BlogGridSection({ posts, config }: BlogGridSectionProps & { config?: BlogsPageConfigType }) {
+export function BlogGridSection({
+  posts,
+  config,
+}: BlogGridSectionProps & { config?: BlogsPageConfigType }) {
   const cfg = config ?? blogsPageConfig;
   const { grid } = cfg;
 
@@ -29,7 +28,6 @@ export function BlogGridSection({ posts, config }: BlogGridSectionProps & { conf
       )}
       aria-labelledby={HEADING_ID}
     >
-      {/* Soft gradient orbs for depth */}
       <div
         className="pointer-events-none absolute top-0 right-0 w-[520px] h-[360px] rounded-full bg-primary/[0.05] blur-3xl -translate-y-1/2"
         aria-hidden
@@ -53,74 +51,27 @@ export function BlogGridSection({ posts, config }: BlogGridSectionProps & { conf
             />
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-            {posts.map((post) => {
-              const imageUrl = post.coverImage?.url ?? post.image;
-              const imageAlt = post.coverImage?.alt ?? post.title;
-              return (
+          {posts.length === 0 ? (
+            <p
+              data-reveal
+              className="text-center text-foreground-muted py-12"
+            >
+              No articles match your filters. Try adjusting your search or category.
+            </p>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+              {posts.map((post) => (
                 <div key={post.id} data-reveal>
-                  <Link
-                    href={`/blogs/${post.slug}`}
-                    className={cn(
-                      "group block h-full rounded-2xl overflow-hidden",
-                      "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-muted"
-                    )}
-                    aria-label={`Read article: ${post.title}`}
-                  >
-                    <Card
-                      className={cn(
-                        "relative h-full flex flex-col rounded-2xl overflow-hidden",
-                        "border-t-4 border-t-primary",
-                        "shadow-lg shadow-black/5 hover:shadow-xl hover:shadow-primary/10",
-                        "transition-all duration-300 hover:-translate-y-1",
-                        "focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-surface-muted focus-within:outline-none"
-                      )}
-                    >
-                      {/* Subtle corner gradient on hover */}
-                      <div
-                        className="pointer-events-none absolute top-0 right-0 z-10 w-32 h-32 bg-gradient-to-bl from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        aria-hidden
-                      />
-                      <div className="relative w-full aspect-[16/10] overflow-hidden bg-muted">
-                        {imageUrl ? (
-                          <Image
-                            src={imageUrl}
-                            alt={imageAlt}
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            className="object-cover transition-transform duration-300 group-hover:scale-105"
-                          />
-                        ) : (
-                          <div
-                            className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5"
-                            aria-hidden
-                          />
-                        )}
-                      </div>
-                      <div className="relative p-6 md:p-7 flex flex-col flex-1">
-                        <div className="flex items-center justify-between mb-2">
-                          <Badge variant="secondary" className="text-xs">
-                            {post.category}
-                          </Badge>
-                          <span className="text-xs text-foreground-muted">{post.readingTime} min read</span>
-                        </div>
-                        <h2 className="font-heading font-bold tracking-tight text-foreground mb-2 line-clamp-2">
-                          {post.title}
-                        </h2>
-                        <p className="text-foreground-muted text-sm mb-4 line-clamp-2 flex-1">
-                          {post.excerpt ?? post.description}
-                        </p>
-                        <div className="flex items-center justify-between text-xs text-foreground-muted">
-                          <span>{post.author}</span>
-                          <time dateTime={post.publishedAt}>{formatDateShort(post.publishedAt)}</time>
-                        </div>
-                      </div>
-                    </Card>
-                  </Link>
+                  <LatestPostCard
+                    post={post}
+                    authorLabel={cfg.authorLabel}
+                    readMoreLabel={cfg.readMoreLabel}
+                    layout="vertical"
+                  />
                 </div>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          )}
         </Reveal>
       </Container>
     </section>

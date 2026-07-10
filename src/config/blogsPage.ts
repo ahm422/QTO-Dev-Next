@@ -38,6 +38,8 @@ export const blogsPageConfig = {
     pageLabel: "Page",
     ofLabel: "of",
   },
+  readMoreLabel: "Read More",
+  authorLabel: "QTO DEV Team",
   cta: {
     title: "Ready to Build Your Next Project?",
     description: "Turn ideas from our articles into real-world solutions with a team that ships high-performance software.",

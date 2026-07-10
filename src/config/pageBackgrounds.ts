@@ -5,6 +5,7 @@ export const pageBackgrounds = {
   "/blogs": "/images/blog-bg.jpg",
   "/careers": "/images/career-bg.jpg",
   "/contact": "/images/contact-bg.jpg",
+  "/requirements": "/images/contact-bg.jpg",
 } as const;
 
 export type PageBackgroundKey = keyof typeof pageBackgrounds;

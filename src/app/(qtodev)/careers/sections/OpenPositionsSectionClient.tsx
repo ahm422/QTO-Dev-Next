@@ -5,14 +5,10 @@ import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
 import { cn } from "@/components/theme/cn";
 import type { Job } from "@/types/job";
-import { analytics } from "@/lib/analytics";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import type { AppIconName } from "@/components/ui/shared/AppIcon";
-import {
-  CAREER_PORTAL_ORIGIN,
-  careerPortalHomeUrl,
-  careerPortalLoginUrl,
-} from "@/config/careersPortal";
+import { getDepartmentAccent } from "@/lib/careers/departmentAccent";
+import { careerPortalHomeUrl } from "@/config/careersPortal";
 import { JobApplyDialog } from "@/components/careers/JobApplyDialog";
 
 const HEADING_ID = "open-roles-heading";
@@ -39,6 +35,7 @@ function jobIcon(job: Job): AppIconName {
 
 function JobCard({ job }: { job: Job }) {
   const icon = jobIcon(job);
+  const accent = getDepartmentAccent(job.department);
   const responsibilities = job.responsibilities?.slice(0, 3) ?? [];
   const requirementsPreview = job.requirements?.slice(0, 2) ?? [];
   const moreReq =
@@ -50,7 +47,8 @@ function JobCard({ job }: { job: Job }) {
     <li className="h-full">
       <article
         className={cn(
-          "group flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-gradient-to-b from-background via-background to-surface-muted/40",
+          "group flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 border-t-4 bg-gradient-to-b from-background via-background to-surface-muted/40",
+          accent.border,
           "shadow-md shadow-black/[0.04] ring-1 ring-black/[0.03] transition-all duration-300",
           "hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/5 dark:ring-white/[0.05]"
         )}
@@ -63,7 +61,10 @@ function JobCard({ job }: { job: Job }) {
           <div className="relative flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex min-w-0 gap-4">
               <span
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary shadow-inner ring-1 ring-primary/10"
+                className={cn(
+                  "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl shadow-inner ring-1",
+                  accent.iconBg
+                )}
                 aria-hidden
               >
                 <AppIcon name={icon} size="base" className="!text-[20px]" />
@@ -72,7 +73,14 @@ function JobCard({ job }: { job: Job }) {
                 <h3 className="font-heading text-lg font-semibold tracking-tight text-foreground sm:text-xl">
                   {job.title}
                 </h3>
-                <p className="text-sm font-medium text-primary">{job.department}</p>
+                <p
+                  className={cn(
+                    "inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-sm font-medium ring-1",
+                    accent.badge
+                  )}
+                >
+                  {job.department}
+                </p>
               </div>
             </div>
             {job.postedLabel ? (
@@ -233,18 +241,18 @@ export function OpenPositionsSectionClient({ jobs }: { jobs: Job[] }) {
             <>
               <div
                 data-reveal
-                className="mx-auto mb-10 max-w-4xl rounded-2xl border border-primary/15 bg-gradient-to-r from-primary/[0.08] via-surface-muted/60 to-primary/[0.06] p-4 shadow-sm ring-1 ring-primary/10 sm:p-5 md:flex md:items-center md:justify-between md:gap-6"
+                className="mx-auto mb-10 max-w-4xl rounded-2xl border border-primary/15 bg-gradient-to-r from-primary/[0.06] via-background to-primary/[0.04] p-5 shadow-sm md:flex md:items-center md:justify-between md:gap-6 md:p-6"
               >
-                <div className="flex gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-background/80 text-primary shadow-sm ring-1 ring-border/60">
+                <div className="flex min-w-0 items-start gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                     <AppIcon name="globe" size="sm" />
                   </span>
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-foreground sm:text-base">
                       Applications run on the QTO House career portal
                     </p>
-                    <p className="mt-1 text-sm text-foreground-muted">
-                      Create an account or sign in to complete your profile and submit an application for any role.
+                    <p className="mt-1 text-sm text-foreground-muted leading-snug">
+                      Sign in to complete your profile and apply for any role.
                     </p>
                   </div>
                 </div>
@@ -253,8 +261,8 @@ export function OpenPositionsSectionClient({ jobs }: { jobs: Job[] }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={cn(
-                    "mt-4 inline-flex min-h-[40px] w-full shrink-0 items-center justify-center rounded-xl border border-border bg-background/90 px-4 py-2 text-sm font-semibold text-foreground",
-                    "transition-colors hover:border-primary/30 hover:bg-surface-muted md:mt-0 md:w-auto"
+                    "mt-4 inline-flex min-h-[40px] w-full shrink-0 items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground",
+                    "transition-colors hover:bg-primary-hover md:mt-0 md:w-auto"
                   )}
                 >
                   Open portal home

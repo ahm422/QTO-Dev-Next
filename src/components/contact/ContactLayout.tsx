@@ -12,6 +12,8 @@ interface ContactLayoutProps {
   sideContent?: React.ReactNode;
   /** Optional container width override for different page layouts */
   size?: "sm" | "md" | "lg" | "xl" | "full";
+  /** When true, title/eyebrow/subtitle header is omitted (e.g. when PageHero shows them) */
+  hideHeader?: boolean;
 }
 
 export function ContactLayout({
@@ -22,6 +24,7 @@ export function ContactLayout({
   children,
   sideContent,
   size = "lg",
+  hideHeader = false,
 }: ContactLayoutProps) {
   return (
     <section
@@ -43,27 +46,29 @@ export function ContactLayout({
             "lg:grid-cols-[minmax(0,2.1fr)_minmax(0,1.1fr)] lg:grid-rows-[auto_1fr] lg:items-stretch"
           )}
         >
-          <header className="space-y-4 lg:row-start-1 lg:col-start-1">
-            {eyebrow ? (
-              <p className="inline-flex items-center rounded-full border border-border bg-surface-muted px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-foreground-muted">
-                {eyebrow}
-              </p>
-            ) : null}
-            <div className="space-y-3">
-              <Heading level={1} className="text-3xl sm:text-4xl md:text-5xl">
-                {title}
-              </Heading>
-              {subtitle ? (
-                <Text
-                  size="lg"
-                  color="muted"
-                  className="max-w-2xl leading-relaxed"
-                >
-                  {subtitle}
-                </Text>
+          {!hideHeader ? (
+            <header className="space-y-4 lg:row-start-1 lg:col-start-1">
+              {eyebrow ? (
+                <p className="inline-flex items-center rounded-full border border-border bg-surface-muted px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-foreground-muted">
+                  {eyebrow}
+                </p>
               ) : null}
-            </div>
-          </header>
+              <div className="space-y-3">
+                <Heading level={1} className="text-3xl sm:text-4xl md:text-5xl">
+                  {title}
+                </Heading>
+                {subtitle ? (
+                  <Text
+                    size="lg"
+                    color="muted"
+                    className="max-w-2xl leading-relaxed"
+                  >
+                    {subtitle}
+                  </Text>
+                ) : null}
+              </div>
+            </header>
+          ) : null}
 
           <div
             className={cn(
