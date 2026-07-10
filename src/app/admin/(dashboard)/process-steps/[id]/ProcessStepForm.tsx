@@ -17,21 +17,27 @@ import { Textarea } from "@/components/ui/textarea"
 import { GitBranch, Info } from "lucide-react"
 import { createProcessStep, updateProcessStep, toggleProcessStepPublished } from "../actions"
 import type { ProcessStep } from "@prisma/client"
+import { normalizeStoredIcon } from "@/lib/icons/iconMap"
 
 export default function ProcessStepForm({ defaultValues }: { defaultValues?: ProcessStep }) {
   const isEdit = !!defaultValues?.id
 
   const form = useForm<ProcessStepInput>({
     resolver: formResolver(processStepSchema),
-    defaultValues: defaultValues ?? {
-      context: "how-we-work",
-      stepNumber: 1,
-      title: "",
-      description: "",
-      icon: "",
-      order: 0,
-      isPublished: false,
-    },
+    defaultValues: defaultValues
+      ? {
+          ...defaultValues,
+          icon: normalizeStoredIcon(defaultValues.icon ?? ""),
+        }
+      : {
+          context: "how-we-work",
+          stepNumber: 1,
+          title: "",
+          description: "",
+          icon: "",
+          order: 0,
+          isPublished: false,
+        },
   })
 
   const { isSubmitting } = form.formState

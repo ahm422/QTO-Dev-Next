@@ -29,6 +29,7 @@ import {
 } from "lucide-react"
 import { createService, updateService, toggleServicePublished } from "../actions"
 import type { ServiceInput } from "@/lib/validators/admin/service"
+import { normalizeStoredIcon } from "@/lib/icons/iconMap"
 
 function slugify(str: string) {
   return str
@@ -59,7 +60,7 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
           slug: defaultValues.slug,
           shortDescription: defaultValues.shortDescription,
           description: defaultValues.description ?? "",
-          icon: defaultValues.icon ?? "",
+          icon: normalizeStoredIcon(defaultValues.icon ?? ""),
           features: defaultValues.features ?? [],
           technologyTags: defaultValues.technologyTags ?? [],
           imageUrl: defaultValues.imageUrl ?? "",

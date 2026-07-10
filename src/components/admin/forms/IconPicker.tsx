@@ -5,23 +5,11 @@ import * as Icons from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
 import { cn } from "@/lib/utils"
-
-// Curated set of business-relevant icons
-const ICON_NAMES = [
-  "Briefcase", "Code", "Globe", "Layers", "Cpu", "Database",
-  "Shield", "Zap", "Star", "Heart", "Target", "Rocket",
-  "Users", "Building2", "Award", "CheckCircle", "TrendingUp",
-  "BarChart2", "PieChart", "LineChart", "Settings", "Wrench",
-  "Cloud", "Lock", "Key", "Mail", "Phone", "MessageSquare",
-  "FileText", "Folder", "Image", "Video", "Music", "Camera",
-  "Map", "Navigation", "Compass", "Search", "Eye", "ThumbsUp",
-  "Package", "Truck", "ShoppingCart", "CreditCard", "DollarSign",
-  "Headphones", "Mic", "Monitor", "Smartphone", "Tablet", "Watch",
-  "Pen", "Edit", "Scissors", "Palette", "Brush", "Sparkles",
-  "Sun", "Moon", "Leaf", "Flower", "Mountain", "Waves",
-] as const
-
-type IconName = (typeof ICON_NAMES)[number]
+import {
+  isLucideIconSelected,
+  lucideToAppIcon,
+  MAPPED_LUCIDE_ICON_NAMES,
+} from "@/lib/icons/iconMap"
 
 interface IconPickerProps {
   value: string
@@ -32,7 +20,7 @@ interface IconPickerProps {
 export default function IconPicker({ value, onChange, className }: IconPickerProps) {
   const [search, setSearch] = useState("")
 
-  const filtered = ICON_NAMES.filter((name) =>
+  const filtered = MAPPED_LUCIDE_ICON_NAMES.filter((name) =>
     name.toLowerCase().includes(search.toLowerCase())
   )
 
@@ -51,13 +39,16 @@ export default function IconPicker({ value, onChange, className }: IconPickerPro
         {filtered.map((name) => {
           const LucideIcon = (Icons as Record<string, Icons.LucideIcon>)[name]
           if (!LucideIcon) return null
-          const isSelected = value === name
+          const isSelected = isLucideIconSelected(name, value)
           return (
             <button
               key={name}
               type="button"
               title={name}
-              onClick={() => onChange(name)}
+              onClick={() => {
+                const appIcon = lucideToAppIcon(name)
+                if (appIcon) onChange(appIcon)
+              }}
               className={cn(
                 "flex items-center justify-center h-8 w-8 rounded-lg transition-colors",
                 isSelected
@@ -71,7 +62,9 @@ export default function IconPicker({ value, onChange, className }: IconPickerPro
         })}
       </div>
       {value && (
-        <p className="text-xs text-muted-foreground">Selected: <span className="text-foreground font-medium">{value}</span></p>
+        <p className="text-xs text-muted-foreground">
+          Selected: <span className="text-foreground font-medium">{value}</span>
+        </p>
       )}
     </div>
   )
