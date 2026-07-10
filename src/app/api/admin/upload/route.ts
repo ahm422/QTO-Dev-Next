@@ -3,9 +3,9 @@ import { apiSuccess, apiError, logApiError } from "@/lib/apiResponses"
 import {
   buildMediaKey,
   extensionMatchesMime,
-  getPresignedUploadUrl,
   isAllowedMimeType,
   maxBytesForMime,
+  uploadMediaObject,
 } from "@/lib/garage"
 
 const MAGIC: Record<string, number[][]> = {
@@ -68,24 +68,13 @@ export async function POST(request: Request) {
   const key = buildMediaKey(filename)
 
   try {
-    // Generate presigned URL then PUT from server — avoids browser CORS entirely
-    const { presignedUrl, publicUrl } = await getPresignedUploadUrl(key, contentType)
     const fileBytes = await file.arrayBuffer()
 
     // Magic-byte validation: verify declared MIME matches actual file signature
     const magicError = validateMagicBytes(fileBytes, contentType)
     if (magicError) return apiError(400, magicError)
 
-    const putRes = await fetch(presignedUrl, {
-      method: "PUT",
-      headers: { "Content-Type": contentType },
-      body: fileBytes,
-    })
-
-    if (!putRes.ok) {
-      throw new Error(`Storage PUT failed with status ${putRes.status}`)
-    }
-
+    const { publicUrl } = await uploadMediaObject(key, contentType, fileBytes)
     return apiSuccess({ url: publicUrl })
   } catch (err) {
     logApiError("[upload]", err)

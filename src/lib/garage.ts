@@ -1,3 +1,5 @@
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+
 // Presigned S3 PUT URL generator using Web Crypto (SubtleCrypto).
 // Avoids @aws-sdk which imports the Node.js 'crypto' module — incompatible with
 // Next.js edge / Cloudflare Workers runtime.
@@ -176,4 +178,34 @@ export async function getPresignedUploadUrl(
   const publicUrl = getPublicUrl(key)
 
   return { presignedUrl, publicUrl }
+}
+
+/** Upload via Workers MEDIA binding when available; otherwise S3 presigned PUT. */
+export async function uploadMediaObject(
+  key: string,
+  contentType: string,
+  body: ArrayBuffer,
+): Promise<{ publicUrl: string }> {
+  try {
+    const { env } = await getCloudflareContext({ async: true })
+    if (env.MEDIA) {
+      await env.MEDIA.put(key, body, {
+        httpMetadata: { contentType },
+      })
+      return { publicUrl: getPublicUrl(key) }
+    }
+  } catch {
+    // Not in Workers runtime — fall through to S3 presign
+  }
+
+  const { presignedUrl, publicUrl } = await getPresignedUploadUrl(key, contentType)
+  const putRes = await fetch(presignedUrl, {
+    method: "PUT",
+    headers: { "Content-Type": contentType },
+    body,
+  })
+  if (!putRes.ok) {
+    throw new Error(`Storage PUT failed with status ${putRes.status}`)
+  }
+  return { publicUrl }
 }
