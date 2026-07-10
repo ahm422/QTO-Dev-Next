@@ -16,7 +16,7 @@ function Input({ className, type, value, ...props }: React.ComponentProps<"input
         className
       )}
       {...props}
-      value={value ?? ""}
+      {...(value !== undefined ? { value } : {})}
     />
   )
 }

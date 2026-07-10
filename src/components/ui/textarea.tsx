@@ -13,7 +13,7 @@ function Textarea({ className, value, ...props }: React.ComponentProps<"textarea
         className
       )}
       {...props}
-      value={value ?? ""}
+      {...(value !== undefined ? { value } : {})}
     />
   )
 }
