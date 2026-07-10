@@ -26,10 +26,65 @@ interface FormInputProps extends React.ComponentProps<"input"> {
   error?: string
   description?: string
   required?: boolean
+  floatingLabel?: boolean
 }
 
-function FormInput({ label, error, description, required, className, id, ...props }: FormInputProps) {
+function FormInput({
+  label,
+  error,
+  description,
+  required,
+  floatingLabel = false,
+  className,
+  id,
+  value,
+  placeholder,
+  ...props
+}: FormInputProps) {
   const inputId = id ?? (label ? label.replace(/\s+/g, "-").toLowerCase() : undefined)
+  const hasValue = value !== undefined && value !== null && String(value).length > 0
+
+  if (floatingLabel && label) {
+    return (
+      <div className="w-full">
+        {description && <p className="text-xs text-muted-foreground mb-1.5">{description}</p>}
+        <div className="relative">
+          <Input
+            id={inputId}
+            value={value}
+            placeholder=" "
+            className={cn(
+              "peer h-12 md:h-[3.25rem] pt-5 pb-2 px-3",
+              "focus-visible:ring-primary/30 focus-visible:shadow-[0_0_0_4px_hsl(var(--primary)/0.12)]",
+              error && "border-destructive focus-visible:ring-destructive/20",
+              className
+            )}
+            aria-invalid={!!error}
+            aria-label={label}
+            {...props}
+          />
+          <Label
+            htmlFor={inputId}
+            className={cn(
+              "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground transition-all duration-200",
+              "peer-focus:top-2.5 peer-focus:translate-y-0 peer-focus:text-[11px] peer-focus:font-medium peer-focus:text-primary",
+              (hasValue || props.defaultValue) && "top-2.5 translate-y-0 text-[11px] font-medium"
+            )}
+          >
+            {label}
+            {required && <span className="text-destructive ml-0.5">*</span>}
+          </Label>
+        </div>
+        {error && (
+          <p className="mt-1 text-xs text-destructive flex items-center gap-1">
+            <AlertCircle className="h-3 w-3 shrink-0" />
+            {error}
+          </p>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="w-full">
       {label && (
@@ -41,6 +96,8 @@ function FormInput({ label, error, description, required, className, id, ...prop
       {description && <p className="text-xs text-muted-foreground mb-1.5">{description}</p>}
       <Input
         id={inputId}
+        value={value}
+        placeholder={placeholder}
         className={cn(error && "border-destructive focus-visible:ring-destructive/20", className)}
         aria-invalid={!!error}
         {...props}

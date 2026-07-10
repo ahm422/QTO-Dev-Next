@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { RequirementsHero } from "@/components/requirements/RequirementsHero";
 import { RequirementsIntakePage } from "@/components/requirements/RequirementsIntakePage";
 
 export const metadata: Metadata = {
@@ -9,14 +10,20 @@ export const metadata: Metadata = {
 
 export default function GetAQuotePage() {
   return (
-    <RequirementsIntakePage
-      analyticsPath="/get-a-quote"
-      source="get-a-quote"
-      eyebrow="Get a quote"
-      title="Share your requirements (moved)"
-      subtitle="This page is now called Requirements. Use the canonical URL for sharing and bookmarking."
-      movedNotice={{ label: "Looking for the canonical page?", href: "/requirements" }}
-    />
+    <>
+      <RequirementsHero
+        badge="Get a quote"
+        title="Share your requirements (moved)"
+        description="This page is now called Requirements. Use the canonical URL for sharing and bookmarking."
+      />
+      <RequirementsIntakePage
+        analyticsPath="/get-a-quote"
+        source="get-a-quote"
+        eyebrow="Get a quote"
+        title="Share your requirements (moved)"
+        subtitle="This page is now called Requirements. Use the canonical URL for sharing and bookmarking."
+        movedNotice={{ label: "Looking for the canonical page?", href: "/requirements" }}
+      />
+    </>
   );
 }
-

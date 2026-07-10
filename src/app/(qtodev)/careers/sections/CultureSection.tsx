@@ -46,8 +46,8 @@ export function CultureSection({ config }: { config?: CareersPageConfigType }) {
                 key={item.title}
                 className={cn(
                   "h-full rounded-2xl border border-border/80 bg-surface-muted/80",
-                  "shadow-sm shadow-black/5 hover:shadow-md hover:shadow-black/10",
-                  "transition-all duration-200 hover:-translate-y-0.5",
+                  "shadow-sm shadow-black/5 hover:shadow-lg hover:shadow-primary/5",
+                  "transition-all duration-300 hover:-translate-y-1",
                   "p-6 sm:p-7"
                 )}
               >

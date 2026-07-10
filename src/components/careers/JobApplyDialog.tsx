@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/components/theme/cn"
 import { jobApplicationSchema, type JobApplicationInput } from "@/lib/validators/jobApplication"
 import { analytics } from "@/lib/analytics"
+import { useMotionEnabled } from "@/hooks/useReducedMotion"
 import type { AppIconName } from "@/components/ui/shared/AppIcon"
 import { AppIcon } from "@/components/ui/shared/AppIcon"
 
@@ -41,6 +42,7 @@ function FieldError({ message }: { message?: string }) {
 }
 
 export function JobApplyDialog({ job, triggerClassName }: JobApplyDialogProps) {
+  const motionEnabled = useMotionEnabled()
   const [open, setOpen] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [submittedName, setSubmittedName] = useState("")
@@ -118,15 +120,20 @@ export function JobApplyDialog({ job, triggerClassName }: JobApplyDialogProps) {
         type="button"
         onClick={() => handleOpenChange(true)}
         className={cn(
-          "inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold sm:w-auto",
+          "group inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold sm:w-auto",
           "bg-primary text-primary-foreground shadow-md shadow-primary/20 transition-all duration-300",
           "hover:bg-primary-hover hover:shadow-lg hover:shadow-primary/25",
+          motionEnabled && "active:scale-[0.98]",
           "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
           triggerClassName
         )}
       >
         Apply now
-        <AppIcon name={"arrow-right" as AppIconName} size="sm" className="!text-xs" />
+        <AppIcon
+          name={"arrow-right" as AppIconName}
+          size="sm"
+          className={cn("!text-xs transition-transform", motionEnabled && "group-hover:translate-x-0.5")}
+        />
       </button>
 
       <DialogContent showCloseButton className="sm:max-w-lg max-h-[90vh] overflow-y-auto">

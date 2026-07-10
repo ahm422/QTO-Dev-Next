@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ContactLayout } from "@/components/contact/ContactLayout";
-import { TrustStrip } from "@/components/marketing/TrustStrip";
+import { TrustStripAnimated } from "@/components/marketing/TrustStripAnimated";
 import { FormInput } from "@/components/ui/input";
 import { FormTextarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -99,7 +99,7 @@ export function ContactFormSection() {
       size="xl"
       sideContent={
         <div className="space-y-6">
-          <TrustStrip orientation="column" />
+          <TrustStripAnimated orientation="column" />
           <div className="rounded-2xl border border-border bg-surface-muted/70 p-4 sm:p-5">
             <p className="text-sm font-semibold text-foreground">
               What happens next
@@ -175,11 +175,10 @@ export function ContactFormSection() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Your name"
               autoComplete="name"
               required
+              floatingLabel
               error={fieldErrors.name}
-              className="h-10 md:h-11"
             />
             <FormInput
               label="Email"
@@ -187,11 +186,10 @@ export function ContactFormSection() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="you@company.com"
               autoComplete="email"
               required
+              floatingLabel
               error={fieldErrors.email}
-              className="h-10 md:h-11"
             />
           </div>
 
@@ -201,9 +199,8 @@ export function ContactFormSection() {
             name="subject"
             value={formData.subject}
             onChange={handleChange}
-            placeholder="What is this about?"
+            floatingLabel
             error={fieldErrors.subject}
-            className="h-10 md:h-11"
           />
 
           <FormTextarea
@@ -211,9 +208,9 @@ export function ContactFormSection() {
             name="message"
             value={formData.message}
             onChange={handleChange}
-            placeholder="Tell us a bit about your project, goals, and constraints…"
             rows={6}
             required
+            floatingLabel
             error={fieldErrors.message}
             className="min-h-[140px] resize-y"
           />
