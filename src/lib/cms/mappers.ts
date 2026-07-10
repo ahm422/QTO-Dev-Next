@@ -167,7 +167,11 @@ export function mapFaq(row: PrismaFaq): Faq {
 }
 
 export function mapBlogPost(row: BlogPostWithTags): BlogPost {
-  const publishedAt = row.publishedAt?.toISOString().slice(0, 10) ?? row.createdAt.toISOString().slice(0, 10);
+  const rawDate = row.publishedAt ?? row.createdAt;
+  const iso = rawDate.toISOString().slice(0, 10);
+  const publishedAt = Number.isNaN(new Date(iso).getTime())
+    ? row.createdAt.toISOString().slice(0, 10)
+    : iso;
   return {
     id: row.id,
     slug: row.slug,
@@ -185,7 +189,7 @@ export function mapBlogPost(row: BlogPostWithTags): BlogPost {
     coverImage: row.imageUrl
       ? { url: row.imageUrl, alt: row.imageAlt ?? row.title }
       : undefined,
-    readingTime: row.readTime ?? 5,
+    readingTime: Number.isFinite(row.readTime) ? row.readTime! : 5,
   };
 }
 

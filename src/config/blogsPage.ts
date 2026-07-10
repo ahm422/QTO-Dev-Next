@@ -47,3 +47,30 @@ export const blogsPageConfig = {
     primaryButtonHref: "/contact",
   },
 } as const;
+
+export type BlogsPageConfigType = typeof blogsPageConfig;
+
+function resolvePageSize(rawPageSize: unknown): number {
+  const n = Number(rawPageSize);
+  return Number.isFinite(n) && n > 0 ? n : blogsPageConfig.pagination.pageSize;
+}
+
+/** Deep-merge CMS JSON over defaults; guards invalid pagination.pageSize. */
+export function mergeBlogsPageConfig(
+  cms: Partial<BlogsPageConfigType> | null | undefined
+): BlogsPageConfigType {
+  if (!cms) return blogsPageConfig;
+
+  const pageSize = resolvePageSize(cms.pagination?.pageSize);
+
+  return {
+    ...blogsPageConfig,
+    ...cms,
+    hero: { ...blogsPageConfig.hero, ...cms.hero },
+    featured: { ...blogsPageConfig.featured, ...cms.featured },
+    grid: { ...blogsPageConfig.grid, ...cms.grid },
+    filter: { ...blogsPageConfig.filter, ...cms.filter },
+    pagination: { ...blogsPageConfig.pagination, ...cms.pagination, pageSize },
+    cta: { ...blogsPageConfig.cta, ...cms.cta },
+  };
+}

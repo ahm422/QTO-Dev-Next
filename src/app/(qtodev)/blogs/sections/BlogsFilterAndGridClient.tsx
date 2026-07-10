@@ -38,7 +38,11 @@ export function BlogsFilterAndGridClient({
   initialPage = 1,
 }: BlogsFilterAndGridClientProps) {
   const cfg = config ?? blogsPageConfig;
-  const pageSize = cfg.pagination.pageSize;
+  const rawPageSize = cfg.pagination?.pageSize;
+  const pageSize =
+    Number.isFinite(Number(rawPageSize)) && Number(rawPageSize) > 0
+      ? Number(rawPageSize)
+      : 9;
   const router = useRouter();
   const searchParams = useSearchParams();
 
