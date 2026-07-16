@@ -11,11 +11,12 @@ import { useTheme } from "@/components/theme/ThemeProvider";
 
 const navItems = [
   { label: "Home", href: "/" },
+  { label: "Products", href: "/products" },
   { label: "Services", href: "/services" },
   { label: "Projects", href: "/projects" },
-  { label: "About", href: "/about" },
   { label: "Blog", href: "/blogs" },
   { label: "Careers", href: "/careers" },
+  { label: "About", href: "/about" },
 ];
 
 function isActive(pathname: string, href: string): boolean {
@@ -76,18 +77,11 @@ export function Navbar() {
               <AppIcon name={theme === "dark" ? "sun" : "moon"} size="sm" className="h-5 w-5 lg:h-6 lg:w-6" />
             </Button>
             <HeaderCTAButton
-              href="/contact"
-              isActive={isActive(pathname, "/contact")}
-              className="lg:px-5 lg:py-2.5 lg:text-base"
-            >
-              Contact Us
-            </HeaderCTAButton>
-            <HeaderCTAButton
               href="/requirements"
               isActive={isActive(pathname, "/requirements")}
               className="lg:px-5 lg:py-2.5 lg:text-base"
             >
-              Requirements
+              Get a Quote
             </HeaderCTAButton>
           </div>
 
@@ -150,22 +144,14 @@ export function Navbar() {
                   <AppIcon name={theme === "dark" ? "sun" : "moon"} size="sm" className="h-5 w-5" />
                 </Button>
               </div>
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                <HeaderCTAButton
-                  href="/contact"
-                  isActive={isActive(pathname, "/contact")}
-                  onClick={() => setIsMenuOpen(false)}
-                  className="w-full justify-center"
-                >
-                  Contact Us
-                </HeaderCTAButton>
+              <div className="mt-4">
                 <HeaderCTAButton
                   href="/requirements"
                   isActive={isActive(pathname, "/requirements")}
                   onClick={() => setIsMenuOpen(false)}
                   className="w-full justify-center"
                 >
-                  Requirements
+                  Get a Quote
                 </HeaderCTAButton>
               </div>
             </div>
