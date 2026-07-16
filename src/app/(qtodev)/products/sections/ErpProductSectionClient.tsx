@@ -8,7 +8,7 @@ import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
 import type { ErpSolutionsContent } from "@/lib/cms/mappers";
 
-const HEADING_ID = "about-erp-heading";
+const HEADING_ID = "products-erp-heading";
 
 const MODULE_ICONS = ["chart-line", "users", "cart-shopping", "link"] as const;
 
@@ -16,7 +16,7 @@ function isHtmlBody(body: string): boolean {
   return /<[a-z][\s\S]*>/i.test(body);
 }
 
-export function ErpSolutionsSectionClient({
+export function ErpProductSectionClient({
   content,
 }: {
   content: ErpSolutionsContent;
