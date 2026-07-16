@@ -20,11 +20,12 @@ export interface FooterSection {
 
 export const navItems: NavItem[] = [
   { label: "Home", href: "/" },
+  { label: "Products", href: "/products" },
   { label: "Services", href: "/services" },
   { label: "Projects", href: "/projects" },
-  { label: "About", href: "/about" },
   { label: "Blog", href: "/blogs" },
-  { label: "Contact", href: "/contact" },
+  { label: "Careers", href: "/careers" },
+  { label: "About", href: "/about" },
 ];
 
 export const footerSections: FooterSection[] = [
