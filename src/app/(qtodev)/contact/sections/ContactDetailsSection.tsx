@@ -7,9 +7,9 @@ export async function ContactDetailsSection() {
   if (contactMethods.length === 0) return null;
 
   return (
-    <section className="border-t border-border bg-muted/25 py-20 dark:bg-muted/10">
+    <section className="border-t border-border bg-muted/25 py-12 md:py-14 dark:bg-muted/10">
       <Container>
-        <div className="mx-auto mb-14 max-w-2xl text-center">
+        <div className="mx-auto mb-8 max-w-2xl text-center">
           <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground md:text-4xl">
             Other Ways to Reach Us
           </h2>
@@ -19,7 +19,7 @@ export async function ContactDetailsSection() {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3 md:gap-8">
+        <div className="grid items-stretch gap-4 md:grid-cols-3 md:gap-5">
           {contactMethods.map((method) => (
             <ContactMethodCard
               key={method.title}

@@ -64,6 +64,9 @@ export function ContactMethodCard({
     </>
   );
 
+  const ctaClass =
+    "mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-semibold text-primary";
+
   if (kind === "office" && href) {
     return (
       <a
@@ -72,50 +75,39 @@ export function ContactMethodCard({
         rel="noopener noreferrer"
         className={cn(cardClass, "group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary")}
       >
-        <Card className="h-full border-0 bg-transparent p-0 shadow-none">
-          {body}
-          <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
-            Open in Maps
-            <AppIcon name="arrow-right" size="sm" className="transition-transform group-hover:translate-x-0.5" />
-          </span>
-        </Card>
+        {body}
+        <span className={ctaClass}>
+          Open in Maps
+          <AppIcon
+            name="arrow-right"
+            size="sm"
+            className="transition-transform group-hover:translate-x-0.5"
+          />
+        </span>
       </a>
     );
   }
 
   if (copyValue) {
+    const copyLabel = kind === "email" ? "Copy email" : "Copy number";
+
     return (
-      <Card className={cn(cardClass, "relative")}>
-        <button
-          type="button"
-          onClick={handleCopy}
-          className={cn(
-            "w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg -m-1 p-1",
-            copied && "text-success"
-          )}
-          aria-label={copied ? `${title} copied to clipboard` : `Copy ${title}: ${copyValue}`}
-        >
-          {body}
-          <p className="mt-3 text-xs font-medium text-primary">
-            {copied ? "Copied!" : "Click to copy"}
-          </p>
-        </button>
-        {href ? (
-          <a
-            href={href}
-            className={cn(
-              "absolute top-5 right-5 inline-flex h-9 w-9 items-center justify-center rounded-lg",
-              "border border-border bg-background text-foreground-muted",
-              "transition-colors hover:border-primary/30 hover:text-primary",
-              "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            )}
-            aria-label={kind === "email" ? `Send email to ${copyValue}` : `Call ${copyValue}`}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <AppIcon name={kind === "email" ? "envelope" : "phone"} size="sm" />
-          </a>
-        ) : null}
-      </Card>
+      <button
+        type="button"
+        onClick={handleCopy}
+        className={cn(
+          cardClass,
+          "w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+          copied && "border-success/40"
+        )}
+        aria-label={copied ? `${title} copied to clipboard` : `${copyLabel}: ${copyValue}`}
+      >
+        {body}
+        <span className={cn(ctaClass, copied && "text-success")}>
+          {copied ? "Copied" : copyLabel}
+          <AppIcon name={copied ? "circle-check" : "arrow-right"} size="sm" />
+        </span>
+      </button>
     );
   }
 
@@ -127,7 +119,7 @@ export function ContactMethodCard({
         rel={external ? "noopener noreferrer" : undefined}
         className={cn(cardClass, "group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary")}
       >
-        <Card className="h-full border-0 bg-transparent p-0 shadow-none">{body}</Card>
+        {body}
       </a>
     );
   }
