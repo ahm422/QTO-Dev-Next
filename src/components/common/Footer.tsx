@@ -15,18 +15,18 @@ export async function Footer() {
         "border-t border-border/80"
       )}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-16">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-12">
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-5 md:py-6">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
           {/* Brand column */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center mb-5">
-              <SiteLogo width={140} height={36} className="h-9 w-auto object-contain" />
+          <div className="max-w-sm shrink-0">
+            <div className="flex items-center mb-2">
+              <SiteLogo width={140} height={36} className="h-8 w-auto object-contain" />
             </div>
-            <p className="text-foreground-muted text-sm leading-relaxed max-w-sm">
+            <p className="text-foreground-muted text-sm leading-snug">
               {branding.description}
             </p>
             {/* Social links */}
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-2.5 flex flex-wrap gap-2">
               {socialLinks.map(({ label, href }) => (
                 <a
                   key={label}
@@ -34,7 +34,7 @@ export async function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={cn(
-                    "flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background/80",
+                    "flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-background/80",
                     "text-foreground-muted hover:text-primary hover:border-primary/30 hover:bg-primary/5",
                     "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                     "transition-colors"
@@ -46,7 +46,7 @@ export async function Footer() {
               ))}
             </div>
             {/* Contact snippet */}
-            <div className="mt-8 space-y-2 text-sm text-foreground-muted">
+            <div className="mt-3 space-y-1 text-sm text-foreground-muted">
               <p>
                 <a href={`mailto:${contact.email}`} className="hover:text-primary transition-colors">
                   {contact.email}
@@ -61,38 +61,40 @@ export async function Footer() {
             </div>
           </div>
 
-          {/* Link columns from footerSections */}
-          {footerSections.map((section) => (
-            <div key={section.title}>
-              <h3 className="font-heading font-semibold text-foreground mb-5 text-sm uppercase tracking-wider">
-                {section.title}
-              </h3>
-              <ul className="space-y-3">
-                {section.links.map((link) => (
-                  <li key={link.href + link.label}>
-                    <Link
-                      href={link.href}
-                      className={cn(
-                        "text-sm text-foreground-muted hover:text-primary transition-colors",
-                        link.href.startsWith("#") && "scroll-smooth"
-                      )}
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {/* Link columns clustered so they don’t stretch sparse on wide screens */}
+          <div className="grid grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-3 sm:gap-x-10">
+            {footerSections.map((section) => (
+              <div key={section.title}>
+                <h3 className="font-heading font-semibold text-foreground mb-2.5 text-sm uppercase tracking-wider">
+                  {section.title}
+                </h3>
+                <ul className="space-y-1.5">
+                  {section.links.map((link) => (
+                    <li key={link.href + link.label}>
+                      <Link
+                        href={link.href}
+                        className={cn(
+                          "text-sm text-foreground-muted hover:text-primary transition-colors",
+                          link.href.startsWith("#") && "scroll-smooth"
+                        )}
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 pt-8 border-t border-border/80">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-5 pt-3 border-t border-border/80">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-foreground-muted text-sm order-2 sm:order-1">
               &copy; {new Date().getFullYear()} {branding.name}. All rights reserved.
             </p>
-            <nav className="flex flex-wrap gap-6 text-sm order-1 sm:order-2" aria-label="Legal">
+            <nav className="flex flex-wrap gap-5 text-sm order-1 sm:order-2" aria-label="Legal">
               <Link href="/privacy" className="text-foreground-muted hover:text-primary transition-colors">
                 Privacy
               </Link>
