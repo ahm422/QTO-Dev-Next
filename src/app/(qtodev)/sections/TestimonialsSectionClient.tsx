@@ -251,7 +251,7 @@ export function TestimonialsSectionClient({
   return (
     <section
       className={cn(
-        "relative overflow-hidden py-24 md:py-32",
+        "relative overflow-hidden py-12 md:py-16",
         "bg-surface-muted border-y border-border"
       )}
       aria-labelledby={HEADING_ID}
@@ -267,7 +267,7 @@ export function TestimonialsSectionClient({
 
       <Container className="relative">
         <Reveal staggerSelector="[data-reveal]">
-          <div data-reveal className="text-center max-w-2xl mx-auto mb-14 md:mb-16">
+          <div data-reveal className="text-center max-w-2xl mx-auto mb-8 md:mb-10">
             <SectionHeader
               subtitle={cfg.subtitle}
               subtitleClassName="text-primary font-semibold tracking-[0.2em]"
@@ -283,10 +283,10 @@ export function TestimonialsSectionClient({
             role="region"
             aria-roledescription="carousel"
             aria-label="Testimonials"
-            className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14 items-stretch"
+            className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8 items-stretch"
           >
-            <div className="flex flex-col lg:min-h-[360px]">
-              <div className="relative flex-1 min-h-[280px]">
+            <div className="flex flex-col lg:min-h-[200px]">
+              <div className="relative flex-1 min-h-[160px]">
                 {items.length > 1 &&
                   items.map((item, i) => {
                     if (i === activeIndex) return null;
@@ -386,7 +386,7 @@ export function TestimonialsSectionClient({
 
             <div
               className={cn(
-                "relative rounded-2xl overflow-hidden aspect-[4/3] min-h-[260px]",
+                "relative rounded-2xl overflow-hidden aspect-[4/3] min-h-[180px]",
                 "bg-surface-muted dark:bg-white/5 border border-border",
                 "shadow-md hover:shadow-lg transition-shadow duration-300"
               )}

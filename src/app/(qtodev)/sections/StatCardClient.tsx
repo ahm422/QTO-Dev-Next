@@ -38,22 +38,30 @@ const variantStyles: Record<
   },
 };
 
-export function StatCardClient({ item }: { item: StatsNumbersItem }) {
+export function StatCardClient({
+  item,
+  compact = false,
+}: {
+  item: StatsNumbersItem;
+  compact?: boolean;
+}) {
   const styles = variantStyles[item.variant];
   const parsed = parseStatValue(item.value);
 
   return (
     <div
       className={cn(
-        "group relative rounded-2xl p-6 md:p-8 flex flex-col min-h-[200px] border",
+        "group relative flex flex-col rounded-2xl border",
         "transition-all duration-300 ease-out hover:-translate-y-0.5",
+        compact ? "min-h-[120px] p-4 md:p-5" : "min-h-[200px] p-6 md:p-8",
         styles.card
       )}
     >
       <div
         className={cn(
-          "absolute left-0 top-6 bottom-6 w-1 rounded-full opacity-90",
+          "absolute left-0 w-1 rounded-full opacity-90",
           "group-hover:opacity-100 transition-opacity",
+          compact ? "top-4 bottom-4" : "top-6 bottom-6",
           styles.accent
         )}
         aria-hidden
@@ -61,7 +69,8 @@ export function StatCardClient({ item }: { item: StatsNumbersItem }) {
       <div className="pl-4">
         <h3
           className={cn(
-            "text-xs font-semibold uppercase tracking-[0.2em] mb-3",
+            "text-xs font-semibold uppercase tracking-[0.2em]",
+            compact ? "mb-2" : "mb-3",
             styles.label
           )}
         >
@@ -69,7 +78,10 @@ export function StatCardClient({ item }: { item: StatsNumbersItem }) {
         </h3>
         <p
           className={cn(
-            "font-heading text-4xl md:text-5xl lg:text-6xl font-bold tabular-nums tracking-tight mb-3",
+            "font-heading font-bold tabular-nums tracking-tight",
+            compact
+              ? "mb-2 text-2xl md:text-3xl"
+              : "mb-3 text-4xl md:text-5xl lg:text-6xl",
             styles.value
           )}
         >
@@ -84,7 +96,13 @@ export function StatCardClient({ item }: { item: StatsNumbersItem }) {
             item.value
           )}
         </p>
-        <p className={cn("text-sm leading-relaxed flex-1 max-w-md", styles.description)}>
+        <p
+          className={cn(
+            "flex-1 leading-relaxed",
+            compact ? "text-xs max-w-none" : "text-sm max-w-md",
+            styles.description
+          )}
+        >
           {item.description}
         </p>
       </div>

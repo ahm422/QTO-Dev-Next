@@ -16,7 +16,7 @@ export interface PortfolioCase {
   industry: string;
   initial: string;
   gradient: PortfolioGradientKey;
-  slug?: string;
+  slug: string;
   /** Image URL for card (e.g. from PEXELS_TECH_IMAGES). When set, card shows image instead of gradient+initial. */
   image?: string;
   /** Alt text for the card image (accessibility). */

@@ -27,7 +27,13 @@ function resolveCeoStats(
   ];
 }
 
-export async function CeoSection({ config }: { config?: AboutPageConfigType }) {
+export async function CeoSection({
+  config,
+  compact = false,
+}: {
+  config?: AboutPageConfigType;
+  compact?: boolean;
+}) {
   const founder = await findFounderTeamMember();
   if (!founder) return null;
 
@@ -40,6 +46,7 @@ export async function CeoSection({ config }: { config?: AboutPageConfigType }) {
     <CeoSectionClient
       founder={founder}
       ceo={{ ...ceo, stats }}
+      compact={compact}
     />
   );
 }

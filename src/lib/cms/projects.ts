@@ -33,7 +33,9 @@ export const findPortfolioProjects = cache(
         take,
         include: projectWithRelationsInclude,
       });
-      return items.map((row, i) => mapProjectToPortfolioCase(row, i));
+      return items
+        .filter((row) => row.slug)
+        .map((row, i) => mapProjectToPortfolioCase(row, i));
     },
     ["portfolio-projects"],
     { revalidate: 3600, tags: ["projects"] }

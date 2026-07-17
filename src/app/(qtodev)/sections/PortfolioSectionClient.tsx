@@ -27,44 +27,16 @@ const gradientClasses: Record<PortfolioGradientKey, string> = {
   red: "from-cta-gold to-black",
 };
 
-function getGridClass(index: number, total: number): string {
-  if (total === 1) return "lg:col-span-12";
-  if (total === 2) {
-    return index === 0 ? "md:col-span-2 lg:col-span-7" : "md:col-span-2 lg:col-span-5";
-  }
-  if (total === 3) {
-    if (index === 0) return "md:col-span-2 lg:col-span-8 lg:row-span-2";
-    if (index === 1) return "lg:col-span-4 lg:col-start-9 lg:row-start-1";
-    return "lg:col-span-4 lg:col-start-9 lg:row-start-2";
-  }
-  if (index === 0) return "lg:col-span-2";
-  if (total >= 4 && index === 3) return "lg:col-span-2";
-  return "";
-}
-
-function getImageClass(index: number, total: number): string {
-  if (total === 3 && index === 0) return "min-h-[240px] lg:min-h-full lg:h-full aspect-[16/10] lg:aspect-auto";
-  if (index === 0 || (total >= 4 && index === 3)) return "aspect-[21/10]";
-  return "aspect-[16/10]";
-}
-
 function PortfolioCard({
   item,
-  isLink,
-  index,
-  total,
   useTilt,
   motionAnimate,
 }: {
   readonly item: PortfolioCase;
-  readonly isLink: boolean;
-  readonly index: number;
-  readonly total: number;
   readonly useTilt: boolean;
   readonly motionAnimate: boolean;
 }) {
-  const isFeatured = index === 0;
-  const href = item.slug ? `/projects/${item.slug}` : undefined;
+  const href = `/projects/${item.slug}`;
 
   const cardInner = (
     <div
@@ -72,30 +44,24 @@ function PortfolioCard({
         "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/80 bg-surface text-left",
         "shadow-lg shadow-black/[0.06] dark:shadow-black/25",
         "transition-all duration-300 ease-out",
-        "hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/[0.1]",
-        isFeatured && "ring-1 ring-primary/10 hover:ring-primary/25"
+        "hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/[0.1]"
       )}
     >
       <span
         className={cn(
           "absolute top-0 left-0 right-0 z-20 h-1 rounded-t-2xl bg-gradient-to-r from-primary via-cta-gold to-primary opacity-0 transition-opacity duration-300",
-          "group-hover:opacity-100",
-          isFeatured && "opacity-60 group-hover:opacity-100"
+          "group-hover:opacity-100"
         )}
         aria-hidden
       />
 
-      <div className={cn("relative w-full overflow-hidden bg-muted", getImageClass(index, total))}>
+      <div className="relative w-full overflow-hidden bg-muted aspect-[16/10]">
         {item.image ? (
           <Image
             src={item.image}
             alt={item.imageAlt ?? ""}
             fill
-            sizes={
-              isFeatured
-                ? "(max-width: 1024px) 100vw, 66vw"
-                : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            }
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           />
         ) : (
@@ -128,38 +94,24 @@ function PortfolioCard({
         </div>
       </div>
 
-      <div
-        className={cn(
-          "relative flex flex-1 flex-col border-t border-border/60 bg-gradient-to-b from-surface to-surface-muted/50",
-          isFeatured ? "p-5 sm:p-6 md:p-7" : "p-4 sm:p-5"
-        )}
-      >
-        <h3
-          className={cn(
-            "font-heading font-bold text-foreground transition-colors duration-300 group-hover:text-primary",
-            isFeatured ? "text-xl sm:text-2xl" : "text-lg sm:text-xl"
-          )}
-        >
+      <div className="relative flex flex-1 flex-col border-t border-border/60 bg-gradient-to-b from-surface to-surface-muted/50 p-4 sm:p-5">
+        <h3 className="font-heading text-lg font-bold text-foreground transition-colors duration-300 group-hover:text-primary sm:text-xl">
           {item.companyName}
         </h3>
 
-        {isLink ? (
-          <span
-            className={cn(
-              "mt-auto inline-flex items-center gap-2 pt-4 text-sm font-semibold text-primary",
-              "transition-all duration-300 group-hover:gap-3"
-            )}
-          >
-            View case
-            <AppIcon
-              name="arrow-right"
-              size="sm"
-              className="shrink-0 transition-transform duration-300 group-hover:translate-x-0.5"
-            />
-          </span>
-        ) : (
-          <span className="mt-auto pt-4 text-sm text-foreground-muted">Case study</span>
-        )}
+        <span
+          className={cn(
+            "mt-auto inline-flex items-center gap-2 pt-4 text-sm font-semibold text-primary",
+            "transition-all duration-300 group-hover:gap-3"
+          )}
+        >
+          View case
+          <AppIcon
+            name="arrow-right"
+            size="sm"
+            className="shrink-0 transition-transform duration-300 group-hover:translate-x-0.5"
+          />
+        </span>
       </div>
     </div>
   );
@@ -168,24 +120,22 @@ function PortfolioCard({
     "block h-full rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
   );
 
-  const wrapped = href ? (
+  const wrapped = (
     <Link href={href} className={linkClassName} aria-label={`View project: ${item.companyName}`}>
       {cardInner}
     </Link>
-  ) : (
-    <div className="h-full">{cardInner}</div>
   );
 
   const withMotion = motionAnimate ? (
     <motion.div
       className="h-full"
       initial={{ scale: 1 }}
-      whileInView={{ scale: isFeatured ? 1.01 : 1.02 }}
+      whileInView={{ scale: 1.02 }}
       viewport={{ once: true, margin: "-8%" }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
     >
       {useTilt ? (
-        <TiltCard className="h-full" maxTilt={isFeatured ? 4 : 5}>
+        <TiltCard className="h-full" maxTilt={5}>
           {wrapped}
         </TiltCard>
       ) : (
@@ -193,7 +143,7 @@ function PortfolioCard({
       )}
     </motion.div>
   ) : useTilt ? (
-    <TiltCard className="h-full" maxTilt={isFeatured ? 4 : 5}>
+    <TiltCard className="h-full" maxTilt={5}>
       {wrapped}
     </TiltCard>
   ) : (
@@ -279,26 +229,10 @@ export function PortfolioSectionClient({
             </MagneticButton>
           </div>
 
-          <div
-            className={cn(
-              "mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:mt-16",
-              cases.length === 3 ? "lg:grid-cols-12 lg:grid-rows-2 lg:gap-6" : "lg:grid-cols-3 lg:gap-8"
-            )}
-          >
-            {cases.map((item, index) => (
-              <div
-                key={item.caseNumber}
-                data-reveal
-                className={cn("min-h-0", getGridClass(index, cases.length))}
-              >
-                <PortfolioCard
-                  item={item}
-                  isLink={Boolean(item.slug)}
-                  index={index}
-                  total={cases.length}
-                  useTilt={useTilt}
-                  motionAnimate={motionAnimate}
-                />
+          <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:mt-16 lg:grid-cols-3 lg:gap-8">
+            {cases.map((item) => (
+              <div key={item.caseNumber} data-reveal className="min-h-0">
+                <PortfolioCard item={item} useTilt={useTilt} motionAnimate={motionAnimate} />
               </div>
             ))}
           </div>

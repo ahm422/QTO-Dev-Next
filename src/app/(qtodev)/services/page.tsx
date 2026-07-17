@@ -1,3 +1,4 @@
+import { HowWeWorkSection } from "../sections/HowWeWorkSection";
 import { ServicesHeroSection } from "./sections/ServicesHeroSection";
 import { ServicesGridSection } from "./sections/ServicesGridSection";
 import { ServicesTechnologiesSection } from "./sections/ServicesTechnologiesSection";
@@ -12,6 +13,7 @@ export default async function ServicesPage() {
   return (
     <>
       <ServicesHeroSection config={cfg} />
+      <HowWeWorkSection />
       <ServicesGridSection config={cfg} />
       <ServicesTechnologiesSection config={cfg} />
       <ServicesWhyChooseUsSection config={cfg} />

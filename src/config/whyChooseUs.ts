@@ -5,7 +5,7 @@
 
 export const whyChooseUsConfig = {
   /** Main section heading */
-  heading: "Why Choose Us?",
+  heading: "What Sets Us Apart",
 
   /** Body paragraph below the heading */
   body:

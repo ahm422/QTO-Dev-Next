@@ -1,5 +1,6 @@
 import { AboutHeroSection } from "./sections/AboutHeroSection";
 import { CompanySnapshotSection } from "./sections/CompanySnapshotSection";
+import { ImpactStatsSection } from "./sections/ImpactStatsSection";
 import { CeoSection } from "./sections/CeoSection";
 import { MissionVisionSection } from "./sections/MissionVisionSection";
 import { ValuesSection } from "./sections/ValuesSection";
@@ -17,6 +18,7 @@ export default async function AboutPage() {
     <>
       <AboutHeroSection config={cmsConfig ?? undefined} />
       <CompanySnapshotSection config={cmsConfig ?? undefined} />
+      <ImpactStatsSection />
       <CeoSection config={cmsConfig ?? undefined} />
       <MissionVisionSection config={cmsConfig ?? undefined} />
       <ValuesSection config={cmsConfig ?? undefined} />
