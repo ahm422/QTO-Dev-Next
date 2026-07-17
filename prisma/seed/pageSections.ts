@@ -407,6 +407,12 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
         pageLabel: "Page",
         ofLabel: "of",
       },
+      sidebar: {
+        categoriesTitle: "Categories",
+        postsTitle: "Popular Posts",
+        postsLimit: 5,
+        newsletterTitle: "Stay Updated",
+      },
       cta: {
         title: "Ready to Build Your Next Project?",
         description:
