@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/common/Navbar";
 import { Footer } from "@/components/common/Footer";
+import { FloatingContactButton } from "@/components/common/FloatingContactButton";
 import MaintenanceBanner from "@/components/common/MaintenanceBanner";
 import { isWriteFrozen } from "@/lib/freeze-writes";
 
@@ -19,6 +20,7 @@ export default function QTODevLayout({
       <Navbar />
       <main className="flex-grow">{children}</main>
       <Footer />
+      <FloatingContactButton />
     </div>
   );
 }
