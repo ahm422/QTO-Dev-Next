@@ -29,6 +29,7 @@ interface BlogsFilterAndGridClientProps {
   initialTag?: string;
   initialPage?: number;
   initialSearch?: string;
+  embedded?: boolean;
 }
 
 export function BlogsFilterAndGridClient({
@@ -38,6 +39,7 @@ export function BlogsFilterAndGridClient({
   initialTag,
   initialPage = 1,
   initialSearch,
+  embedded = false,
 }: BlogsFilterAndGridClientProps) {
   const cfg = config ?? blogsPageConfig;
   const rawPageSize = cfg.pagination?.pageSize;
@@ -203,13 +205,15 @@ export function BlogsFilterAndGridClient({
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
         config={cfg}
+        embedded={embedded}
       />
-      <BlogGridSection posts={paginatedPosts} config={cfg} />
+      <BlogGridSection posts={paginatedPosts} config={cfg} embedded={embedded} />
       <BlogPaginationSection
         config={cfg}
         currentPage={safePage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
+        embedded={embedded}
       />
     </>
   );

@@ -38,6 +38,12 @@ export const blogsPageConfig = {
     pageLabel: "Page",
     ofLabel: "of",
   },
+  sidebar: {
+    categoriesTitle: "Categories",
+    postsTitle: "Popular Posts",
+    postsLimit: 5,
+    newsletterTitle: "Stay Updated",
+  },
   readMoreLabel: "Read More",
   authorLabel: "QTO DEV Team",
   cta: {
@@ -55,6 +61,11 @@ function resolvePageSize(rawPageSize: unknown): number {
   return Number.isFinite(n) && n > 0 ? n : blogsPageConfig.pagination.pageSize;
 }
 
+function resolvePostsLimit(rawLimit: unknown): number {
+  const n = Number(rawLimit);
+  return Number.isFinite(n) && n > 0 ? n : blogsPageConfig.sidebar.postsLimit;
+}
+
 /** Deep-merge CMS JSON over defaults; guards invalid pagination.pageSize. */
 export function mergeBlogsPageConfig(
   cms: Partial<BlogsPageConfigType> | null | undefined
@@ -62,6 +73,7 @@ export function mergeBlogsPageConfig(
   if (!cms) return blogsPageConfig;
 
   const pageSize = resolvePageSize(cms.pagination?.pageSize);
+  const postsLimit = resolvePostsLimit(cms.sidebar?.postsLimit);
 
   return {
     ...blogsPageConfig,
@@ -71,6 +83,7 @@ export function mergeBlogsPageConfig(
     grid: { ...blogsPageConfig.grid, ...cms.grid },
     filter: { ...blogsPageConfig.filter, ...cms.filter },
     pagination: { ...blogsPageConfig.pagination, ...cms.pagination, pageSize },
+    sidebar: { ...blogsPageConfig.sidebar, ...cms.sidebar, postsLimit },
     cta: { ...blogsPageConfig.cta, ...cms.cta },
   };
 }

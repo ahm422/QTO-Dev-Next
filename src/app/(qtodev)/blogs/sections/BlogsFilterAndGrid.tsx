@@ -10,6 +10,7 @@ interface BlogsFilterAndGridProps {
   initialTag?: string;
   initialPage?: number;
   initialSearch?: string;
+  embedded?: boolean;
 }
 
 export async function BlogsFilterAndGrid({
@@ -18,6 +19,7 @@ export async function BlogsFilterAndGrid({
   initialTag,
   initialPage,
   initialSearch,
+  embedded = false,
 }: BlogsFilterAndGridProps) {
   const posts = await findAllPublishedBlogPosts();
   if (posts.length === 0) return null;
@@ -30,6 +32,7 @@ export async function BlogsFilterAndGrid({
         initialTag={initialTag}
         initialPage={initialPage}
         initialSearch={initialSearch}
+        embedded={embedded}
       />
     </Suspense>
   );
