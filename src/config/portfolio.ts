@@ -5,7 +5,7 @@
 
 export const portfolioConfig = {
   /** Small uppercase label above the main title */
-  subtitle: "OUR FEATURED WORK",
+  subtitle: "PORTFOLIO",
 
   /** Main section title; titleHighlight is wrapped in primary/gold */
   title: "Our Featured Work",

@@ -48,7 +48,7 @@ export function WhyChooseUsSectionClient({
                 subtitleClassName="text-primary font-semibold tracking-widest"
                 subtitlePill
                 title={cfg.heading}
-                titleHighlight="Choose"
+                titleHighlight="Apart"
                 description={cfg.body}
                 headingId={HEADING_ID}
                 centered={false}

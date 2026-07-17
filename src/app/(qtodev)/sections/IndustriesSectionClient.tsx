@@ -351,11 +351,11 @@ export function IndustriesSectionClient({
       >
         <div ref={containerRef} className="relative w-full overflow-hidden">
           <div
-            className="pointer-events-none absolute inset-y-0 left-0 z-20 w-16 md:w-24 bg-gradient-to-r from-background to-transparent"
+            className="pointer-events-none absolute inset-y-0 left-0 z-20 w-6 md:w-10 bg-gradient-to-r from-background to-transparent"
             aria-hidden
           />
           <div
-            className="pointer-events-none absolute inset-y-0 right-0 z-20 w-16 md:w-24 bg-gradient-to-l from-background to-transparent"
+            className="pointer-events-none absolute inset-y-0 right-0 z-20 w-6 md:w-10 bg-gradient-to-l from-background to-transparent"
             aria-hidden
           />
           <motion.div
@@ -386,9 +386,9 @@ export function IndustriesSectionClient({
                   )}
                   style={{ width: CARD_WIDTH }}
                   animate={{
-                    scale: isFocused ? 1.05 : 0.9,
-                    opacity: isFocused ? 1 : 0.5,
-                    filter: isFocused ? "blur(0px)" : "blur(5px)",
+                    scale: isFocused ? 1.05 : 0.94,
+                    opacity: isFocused ? 1 : 0.75,
+                    filter: isFocused ? "blur(0px)" : "blur(1px)",
                   }}
                   transition={cardTransition}
                   onClick={() => handleCardClick(i)}
