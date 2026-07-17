@@ -1,10 +1,8 @@
 import { generateSEOMetadata } from "@/lib/seo";
 import { CareersHeroSection } from "./sections/CareersHeroSection";
 import { BenefitsSection } from "./sections/BenefitsSection";
-import { CultureSection } from "./sections/CultureSection";
 import { WhyWorkWithUsSection } from "./sections/WhyWorkWithUsSection";
 import { OpenPositionsSection } from "./sections/OpenPositionsSection";
-import { CareersCTASection } from "./sections/CareersCTASection";
 import { careersPageConfig, resolveCareersPageConfig } from "@/config/careersPage";
 import { findPageSection } from "@/lib/cms/pageContent";
 
@@ -21,11 +19,9 @@ export default async function CareersPage() {
   return (
     <>
       <CareersHeroSection config={cfg} />
+      <OpenPositionsSection />
       <WhyWorkWithUsSection config={cfg} />
       <BenefitsSection config={cfg} />
-      <CultureSection config={cfg} />
-      <OpenPositionsSection />
-      <CareersCTASection config={cfg} />
     </>
   );
 }
