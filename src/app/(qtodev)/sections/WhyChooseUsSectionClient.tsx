@@ -25,6 +25,13 @@ export function WhyChooseUsSectionClient({
   if (items.length === 0) return null;
 
   const checklist = cfg.checklist ?? whyChooseUsConfig.checklist;
+  const SUBTITLE = "WHY CHOOSE US";
+  // Avoid duplicating the pill when CMS heading is "Why Choose Us?" / similar
+  const normalizeLabel = (s: string) => s.replace(/[^a-z]/gi, "").toLowerCase();
+  const heading =
+    cfg.heading && normalizeLabel(cfg.heading) !== normalizeLabel(SUBTITLE)
+      ? cfg.heading
+      : whyChooseUsConfig.heading;
 
   return (
     <section
@@ -44,10 +51,10 @@ export function WhyChooseUsSectionClient({
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16 lg:items-start">
             <div className="flex flex-col gap-6" data-reveal>
               <SectionHeader
-                subtitle="WHY CHOOSE US"
+                subtitle={SUBTITLE}
                 subtitleClassName="text-primary font-semibold tracking-widest"
                 subtitlePill
-                title={cfg.heading}
+                title={heading}
                 titleHighlight="Apart"
                 description={cfg.body}
                 headingId={HEADING_ID}
