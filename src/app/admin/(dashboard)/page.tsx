@@ -8,12 +8,12 @@ import StatCardGrid from "@/components/admin/data/StatCardGrid"
 import AdminPageSection from "@/components/admin/layout/AdminPageSection"
 import ActivityFeed, { type ActivityItem } from "@/components/admin/data/ActivityFeed"
 import ContentActivityChart, { type ActivityDataPoint } from "@/components/admin/charts/ContentActivityChart"
-import ContentStatusDonut from "@/components/admin/charts/ContentStatusDonut"
+import ContentStatusDonut, { type DonutDataPoint } from "@/components/admin/charts/ContentStatusDonut"
 import WidgetCard from "@/components/admin/widgets/WidgetCard"
+import { getDashboardStats, type DashboardSectionStat } from "@/lib/admin/dashboardStats"
 import {
   Briefcase, GitBranch, BookOpen, FolderKanban, Cpu,
-  Users, MessageSquare, HelpCircle, Layers, BarChart2,
-  Activity, FileText, LayoutGrid,
+  Users, Activity, FileText, LayoutGrid, BarChart2,
 } from "lucide-react"
 
 async function getActivityFeedItems(): Promise<ActivityItem[]> {
@@ -34,21 +34,6 @@ async function getActivityFeedItems(): Promise<ActivityItem[]> {
   return items.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()).slice(0, 10)
 }
 
-function buildActivityChartData(): ActivityDataPoint[] {
-  // Static representative data for visual purposes (no real time-series in current schema)
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-  const now = new Date()
-  return Array.from({ length: 12 }, (_, i) => {
-    const monthIdx = (now.getMonth() - 11 + i + 12) % 12
-    return {
-      month: months[monthIdx],
-      services: Math.floor(Math.random() * 4) + 1,
-      blog: Math.floor(Math.random() * 6) + 1,
-      projects: Math.floor(Math.random() * 3) + 1,
-    }
-  })
-}
-
 const QUICK_ACTIONS = [
   { label: "New Service",      href: "/admin/services/new",          icon: Briefcase },
   { label: "New Blog Post",    href: "/admin/blog/new",               icon: BookOpen },
@@ -62,58 +47,40 @@ export default async function AdminDashboardPage() {
   const session = await getServerSession()
   if (!["super_admin", "admin", "editor"].includes(session?.user?.role ?? "")) redirect("/admin/unauthorized")
 
-  const [
-    servicesTotal, servicesPublished,
-    processStepsTotal, processStepsPublished,
-    blogTotal, blogPublished,
-    projectsTotal, projectsPublished,
-    teamTotal,
-    testimonialTotal,
-    techTotal,
-    faqTotal,
-    industryTotal,
-    engagementTotal,
-    activityItems,
-    currentUser,
-  ] = await Promise.all([
-    prisma.service.count(),
-    prisma.service.count({ where: { isPublished: true } }),
-    prisma.processStep.count(),
-    prisma.processStep.count({ where: { isPublished: true } }),
-    prisma.blogPost.count(),
-    prisma.blogPost.count({ where: { isPublished: true } }),
-    prisma.project.count(),
-    prisma.project.count({ where: { isPublished: true } }),
-    prisma.teamMember.count(),
-    prisma.testimonial.count(),
-    prisma.technology.count(),
-    prisma.faq.count(),
-    prisma.industry.count(),
-    prisma.engagementModel.count(),
+  const [stats, activityItems, currentUser] = await Promise.all([
+    getDashboardStats(),
     getActivityFeedItems(),
     prisma.adminUser.findUnique({ where: { id: session!.user.id }, select: { email: true, displayName: true } }),
   ])
 
-  const totalContent = servicesTotal + processStepsTotal + blogTotal + projectsTotal + teamTotal + testimonialTotal + techTotal + faqTotal + industryTotal + engagementTotal
-  const totalPublished = servicesPublished + processStepsPublished + blogPublished + projectsPublished
-  const healthPct = totalContent > 0 ? Math.round((totalPublished / totalContent) * 100) : 0
+  const sectionByKey = new Map(stats.sections.map((s) => [s.key, s]))
+  const getSection = (key: string): DashboardSectionStat | undefined => sectionByKey.get(key)
+  const countOf = (key: string) => getSection(key)?.count ?? 0
+  const publishedOf = (key: string) => getSection(key)?.published ?? 0
 
-  const donutData = [
-    { label: "Services",      value: servicesTotal,      color: "#F97316" },
-    { label: "Blog",          value: blogTotal,          color: "#3B82F6" },
-    { label: "Projects",      value: projectsTotal,      color: "#A855F7" },
-    { label: "Process Steps", value: processStepsTotal,  color: "#06B6D4" },
-    { label: "Team",          value: teamTotal,          color: "#22C55E" },
-  ]
+  const servicesTotal = countOf("services")
+  const servicesPublished = publishedOf("services")
+  const processStepsTotal = countOf("process-steps")
+  const processStepsPublished = publishedOf("process-steps")
+  const blogTotal = countOf("blog")
+  const blogPublished = publishedOf("blog")
+  const projectsTotal = countOf("projects")
+  const projectsPublished = publishedOf("projects")
+  const healthPct = stats.totals.healthPct
 
-  const chartData = buildActivityChartData()
+  const donutData: DonutDataPoint[] = stats.sections
+    .filter((s) => s.color)
+    .map((s) => ({ label: s.label, value: s.count ?? 0, color: s.color as string }))
+
+  const chartData: ActivityDataPoint[] = stats.activityChart.points
+
+  const welcomeName = currentUser ? (currentUser.displayName ?? currentUser.email.split("@")[0]) : ""
+  const greeting = welcomeName ? `Welcome back, ${welcomeName}` : "Welcome back"
+  const subtitle = `${greeting}. Here's what's happening with your content.`
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader
-        title="Dashboard Overview"
-        subtitle={`Welcome back${currentUser ? `, ${currentUser.displayName ?? currentUser.email.split("@")[0]}` : ""}. Here's what's happening with your content.`}
-      />
+      <AdminPageHeader title="Dashboard Overview" subtitle={subtitle} />
 
       {/* Top stat cards */}
       <StatCardGrid cols={5}>
@@ -162,36 +129,16 @@ export default async function AdminDashboardPage() {
       {/* All sections grid */}
       <AdminPageSection title="All Content Sections">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2">
-          {[
-            { label: "Services",          href: "/admin/services",          count: servicesTotal },
-            { label: "Process Steps",     href: "/admin/process-steps",     count: processStepsTotal },
-            { label: "Blog",              href: "/admin/blog",              count: blogTotal },
-            { label: "Projects",          href: "/admin/projects",          count: projectsTotal },
-            { label: "Team",              href: "/admin/team",              count: teamTotal },
-            { label: "Testimonials",      href: "/admin/testimonials",      count: testimonialTotal },
-            { label: "Technologies",      href: "/admin/technologies",      count: techTotal },
-            { label: "FAQs",              href: "/admin/faqs",              count: faqTotal },
-            { label: "Industries",        href: "/admin/industries",        count: industryTotal },
-            { label: "Eng. Models",       href: "/admin/engagement-models", count: engagementTotal },
-            { label: "Featured Work",     href: "/admin/featured-work",     count: 0 },
-            { label: "Why Choose Us",     href: "/admin/why-choose-us",     count: 0 },
-            { label: "Stats",             href: "/admin/stats",             count: 0 },
-            { label: "Work Values",       href: "/admin/work-values",       count: 0 },
-            { label: "Jobs",              href: "/admin/jobs",              count: 0 },
-            { label: "Contact Info",      href: "/admin/contact-info",      count: 0 },
-            { label: "About",             href: "/admin/about",             count: null },
-            { label: "Site Config",       href: "/admin/site-config",       count: null },
-          ].map((s) => (
+          {stats.sections.map((s) => (
             <Link
-              key={s.href}
+              key={s.key}
               href={s.href}
               className="flex flex-col items-start gap-1 rounded-lg border border-border bg-muted/30 hover:bg-accent hover:border-border/80 px-3 py-3 transition-colors group"
             >
               <span className="text-xs font-medium text-foreground group-hover:text-primary truncate w-full">{s.label}</span>
-              {s.count !== null && (
+              {s.count !== null ? (
                 <span className="text-lg font-bold text-muted-foreground tabular-nums">{s.count}</span>
-              )}
-              {s.count === null && (
+              ) : (
                 <span className="text-xs text-muted-foreground/60">Settings</span>
               )}
             </Link>
