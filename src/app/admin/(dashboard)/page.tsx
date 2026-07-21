@@ -6,7 +6,7 @@ import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import DashboardStatsCards from "@/components/admin/data/DashboardStatsCards"
 import AdminPageSection from "@/components/admin/layout/AdminPageSection"
 import ActivityFeed, { type ActivityItem } from "@/components/admin/data/ActivityFeed"
-import ContentActivityChart, { type ActivityDataPoint } from "@/components/admin/charts/ContentActivityChart"
+import ContentActivityChart from "@/components/admin/charts/ContentActivityChart"
 import ContentStatusDonut, { type DonutDataPoint } from "@/components/admin/charts/ContentStatusDonut"
 import WidgetCard from "@/components/admin/widgets/WidgetCard"
 import { getDashboardStats } from "@/lib/admin/dashboardStats"
@@ -56,8 +56,6 @@ export default async function AdminDashboardPage() {
     .filter((s) => s.color)
     .map((s) => ({ label: s.label, value: s.count ?? 0, color: s.color as string }))
 
-  const chartData: ActivityDataPoint[] = stats.activityChart.points
-
   const welcomeName = currentUser ? (currentUser.displayName ?? currentUser.email.split("@")[0]) : ""
   const greeting = welcomeName ? `Welcome back, ${welcomeName}` : "Welcome back"
   const subtitle = `${greeting}. Here's what's happening with your content.`
@@ -72,7 +70,7 @@ export default async function AdminDashboardPage() {
       {/* Second row: chart + quick actions */}
       <div className="grid lg:grid-cols-3 gap-6">
         <AdminPageSection title="Content Activity" icon={BarChart2} className="lg:col-span-2">
-          <ContentActivityChart data={chartData} />
+          <ContentActivityChart />
         </AdminPageSection>
 
         <WidgetCard title="Quick Actions">
