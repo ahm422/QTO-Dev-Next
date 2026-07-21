@@ -11,13 +11,6 @@ export type DashboardSectionStat = {
   color: string | null
 }
 
-export type DashboardActivityPoint = {
-  month: string
-  services: number
-  blog: number
-  projects: number
-}
-
 /**
  * Per-signal breakdown of the Content Health composite so the card/tooltip can
  * explain the number instead of surfacing an opaque percentage.
@@ -50,10 +43,6 @@ export type DashboardStatsResponse = {
   }
   health: DashboardHealth
   sections: DashboardSectionStat[]
-  activityChart: {
-    mock: boolean
-    points: DashboardActivityPoint[]
-  }
 }
 
 /**
@@ -73,24 +62,6 @@ const HEALTH_WEIGHTS = { publish: 0.4, sections: 0.3, fields: 0.3 } as const
 
 const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n))
 const toPct = (ratio: number) => clamp(Math.round(ratio * 100), 0, 100)
-
-/**
- * Static representative activity data. There is no real time-series in the
- * current schema, so this is flagged `mock: true` in the response contract.
- */
-function buildActivityChartPoints(): DashboardActivityPoint[] {
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-  const now = new Date()
-  return Array.from({ length: 12 }, (_, i) => {
-    const monthIdx = (now.getMonth() - 11 + i + 12) % 12
-    return {
-      month: months[monthIdx],
-      services: Math.floor(Math.random() * 4) + 1,
-      blog: Math.floor(Math.random() * 6) + 1,
-      projects: Math.floor(Math.random() * 3) + 1,
-    }
-  })
-}
 
 /**
  * Computes all dashboard numbers by iterating the content-sections registry.
@@ -197,9 +168,5 @@ export async function getDashboardStats(): Promise<DashboardStatsResponse> {
     totals: { content, published, healthPct: score },
     health,
     sections,
-    activityChart: {
-      mock: true,
-      points: buildActivityChartPoints(),
-    },
   }
 }

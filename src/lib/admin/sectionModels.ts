@@ -34,3 +34,38 @@ export const modelDelegates: Record<PrismaModelName, CountableDelegate> = {
   PageSection: prisma.pageSection,
   SiteConfig: prisma.siteConfig,
 }
+
+/**
+ * Minimal shape for activity-chart aggregation: pull just `createdAt` for
+ * records inside a time window, then bucket by month in JS. Only models with
+ * `hasTimestamps: true` (i.e. a `createdAt` column) belong in the map below.
+ */
+type TimeSeriesDelegate = {
+  findMany(args: {
+    where?: { createdAt?: { gte?: Date; lt?: Date } }
+    select: { createdAt: true }
+  }): Promise<{ createdAt: Date }[]>
+}
+
+/**
+ * Time-series-capable delegates, keyed by model name. Partial because
+ * timestamp-less settings/singleton models (AboutContent, ContactInfo,
+ * PageSection, SiteConfig) are intentionally excluded — they aren't chartable.
+ */
+export const timeSeriesDelegates: Partial<Record<PrismaModelName, TimeSeriesDelegate>> = {
+  Service: prisma.service,
+  ProcessStep: prisma.processStep,
+  FeaturedWork: prisma.featuredWork,
+  WhyChooseUs: prisma.whyChooseUs,
+  Stat: prisma.stat,
+  Testimonial: prisma.testimonial,
+  Industry: prisma.industry,
+  EngagementModel: prisma.engagementModel,
+  Faq: prisma.faq,
+  BlogPost: prisma.blogPost,
+  Technology: prisma.technology,
+  Project: prisma.project,
+  WorkValue: prisma.workValue,
+  TeamMember: prisma.teamMember,
+  Job: prisma.job,
+}
