@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FormInput } from "@/components/ui/input";
+import { motion, useReducedMotion } from "framer-motion";
+import { CheckCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Text } from "@/components/ui/shared/Text";
+import { PasswordField } from "../_components/PasswordField";
 
 interface ResetPasswordFormProps {
   token: string;
@@ -13,11 +15,18 @@ interface ResetPasswordFormProps {
 
 export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const router = useRouter();
+  const prefersReducedMotion = useReducedMotion();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    if (!success) return;
+    const timer = setTimeout(() => router.push("/admin/login"), 2000);
+    return () => clearTimeout(timer);
+  }, [success, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +65,6 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
       }
 
       setSuccess(true);
-      setTimeout(() => router.push("/admin/login"), 2000);
     } catch {
       setFormError("Something went wrong. Please try again.");
     } finally {
@@ -64,52 +72,90 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
     }
   };
 
+  const cardMotion = prefersReducedMotion
+    ? {}
+    : {
+        initial: { opacity: 0, y: 8 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as const },
+      };
+
   if (success) {
     return (
-      <div className="rounded-lg border border-border bg-card p-8 shadow-sm">
-        <h1 className="mb-2 text-center text-2xl font-semibold tracking-tight text-foreground">
+      <motion.div
+        {...cardMotion}
+        className="rounded-[var(--admin-radius)] border border-border bg-card p-8 shadow-[var(--admin-shadow-md)]"
+      >
+        <h1 className="mb-2 text-2xl font-semibold tracking-tight text-foreground">
           Password updated
         </h1>
-        <Text size="sm" color="muted" className="text-center">
-          Your password has been changed. Redirecting you to sign in…
+        <Text size="sm" color="muted" className="mb-6">
+          Your password has been changed successfully.
         </Text>
-      </div>
+
+        <Alert variant="success" className="mb-6">
+          <CheckCircle aria-hidden="true" />
+          <AlertDescription>
+            You can now sign in with your new password.
+          </AlertDescription>
+        </Alert>
+
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+          <span aria-live="polite">Redirecting you to sign in…</span>
+        </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="rounded-lg border border-border bg-card p-8 shadow-sm">
-      <h1 className="mb-2 text-center text-2xl font-semibold tracking-tight text-foreground">
+    <motion.div
+      {...cardMotion}
+      className="rounded-[var(--admin-radius)] border border-border bg-card p-8 shadow-[var(--admin-shadow-md)]"
+    >
+      <h1 className="mb-2 text-2xl font-semibold tracking-tight text-foreground">
         Set a new password
       </h1>
-      <Text size="sm" color="muted" className="mb-6 text-center">
+      <Text size="sm" color="muted" className="mb-6">
         Choose a strong password for your admin account.
       </Text>
 
-      {formError && (
-        <Alert variant="destructive" className="mb-4">
-          <AlertDescription>{formError}</AlertDescription>
-        </Alert>
-      )}
+      <div aria-live="polite" role="alert">
+        {formError && (
+          <motion.div
+            initial={prefersReducedMotion ? false : { opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Alert variant="destructive" className="mb-4">
+              <AlertDescription>{formError}</AlertDescription>
+            </Alert>
+          </motion.div>
+        )}
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <FormInput
+      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+        <PasswordField
           label="New password"
           name="password"
-          type="password"
           autoComplete="new-password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            if (formError) setFormError(null);
+          }}
           disabled={isSubmitting}
           required
         />
-        <FormInput
+        <PasswordField
           label="Confirm new password"
           name="confirmPassword"
-          type="password"
           autoComplete="new-password"
           value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          onChange={(e) => {
+            setConfirmPassword(e.target.value);
+            if (formError) setFormError(null);
+          }}
           disabled={isSubmitting}
           required
         />
@@ -126,9 +172,16 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
         </div>
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Updating…" : "Update password"}
+          {isSubmitting ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+              Updating…
+            </>
+          ) : (
+            "Update password"
+          )}
         </Button>
       </form>
-    </div>
+    </motion.div>
   );
 }

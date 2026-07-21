@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Text } from "@/components/ui/shared/Text";
 import { sanitizeAdminRedirect } from "@/lib/auth/redirect";
-import { PasswordField } from "./_components/PasswordField";
+import { PasswordField } from "../_components/PasswordField";
 
 function AdminLoginForm() {
   const router = useRouter();
