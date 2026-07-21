@@ -1,5 +1,11 @@
 import { cn } from "@/lib/utils"
-import type { LucideIcon } from "lucide-react"
+import { ArrowUp, ArrowDown, Minus, type LucideIcon } from "lucide-react"
+
+export type StatCardTrend = {
+  direction: "up" | "down" | "flat"
+  /** Formatted delta vs. the previous period, e.g. "+12%" or "-3". */
+  value: string
+}
 
 interface StatCardProps {
   label: string
@@ -9,6 +15,13 @@ interface StatCardProps {
   badgeVariant?: "success" | "warning" | "info" | "primary"
   progress?: number
   iconColor?: "primary" | "blue" | "purple" | "teal" | "success" | "warning"
+  /**
+   * Optional period-over-period trend. Requires real time-series data
+   * (Phase 4); omit entirely rather than fabricating values.
+   */
+  trend?: StatCardTrend
+  /** Explanatory text surfaced via the native title tooltip (e.g. a breakdown). */
+  tooltip?: string
   className?: string
 }
 
@@ -37,6 +50,12 @@ const progressColorStyles: Record<NonNullable<StatCardProps["iconColor"]>, strin
   warning: "bg-[var(--admin-warning)]",
 }
 
+const trendStyles: Record<StatCardTrend["direction"], { className: string; icon: LucideIcon }> = {
+  up:   { className: "text-[var(--admin-success)]", icon: ArrowUp },
+  down: { className: "text-destructive",            icon: ArrowDown },
+  flat: { className: "text-muted-foreground",       icon: Minus },
+}
+
 export default function StatCard({
   label,
   value,
@@ -45,10 +64,16 @@ export default function StatCard({
   badgeVariant = "primary",
   progress,
   iconColor = "primary",
+  trend,
+  tooltip,
   className,
 }: StatCardProps) {
+  const TrendIcon = trend ? trendStyles[trend.direction].icon : null
   return (
-    <div className={cn("rounded-xl border border-border bg-card p-3 md:p-5 flex flex-col gap-3 shadow-[var(--admin-shadow-sm)] hover:shadow-[var(--admin-shadow-md)] transition-shadow duration-200", className)}>
+    <div
+      title={tooltip}
+      className={cn("rounded-xl border border-border bg-card p-3 md:p-5 flex flex-col gap-3 shadow-[var(--admin-shadow-sm)] hover:shadow-[var(--admin-shadow-md)] transition-shadow duration-200", className)}
+    >
       <div className="flex items-start justify-between gap-2">
         {Icon && (
           <div className={cn("h-9 w-9 rounded-lg flex items-center justify-center shrink-0", iconColorStyles[iconColor])}>
@@ -62,7 +87,15 @@ export default function StatCard({
         )}
       </div>
       <div>
-        <p className="text-xl md:text-2xl font-bold text-foreground tabular-nums">{value}</p>
+        <div className="flex items-baseline gap-2">
+          <p className="text-xl md:text-2xl font-bold text-foreground tabular-nums">{value}</p>
+          {trend && TrendIcon && (
+            <span className={cn("inline-flex items-center gap-0.5 text-xs font-medium tabular-nums", trendStyles[trend.direction].className)}>
+              <TrendIcon className="h-3.5 w-3.5" />
+              {trend.value}
+            </span>
+          )}
+        </div>
         <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
       </div>
       {typeof progress === "number" && (

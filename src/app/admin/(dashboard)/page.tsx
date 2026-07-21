@@ -3,17 +3,16 @@ import { getServerSession } from "@/lib/auth/session"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
-import StatCard from "@/components/admin/data/StatCard"
-import StatCardGrid from "@/components/admin/data/StatCardGrid"
+import DashboardStatsCards from "@/components/admin/data/DashboardStatsCards"
 import AdminPageSection from "@/components/admin/layout/AdminPageSection"
 import ActivityFeed, { type ActivityItem } from "@/components/admin/data/ActivityFeed"
 import ContentActivityChart, { type ActivityDataPoint } from "@/components/admin/charts/ContentActivityChart"
 import ContentStatusDonut, { type DonutDataPoint } from "@/components/admin/charts/ContentStatusDonut"
 import WidgetCard from "@/components/admin/widgets/WidgetCard"
-import { getDashboardStats, type DashboardSectionStat } from "@/lib/admin/dashboardStats"
+import { getDashboardStats } from "@/lib/admin/dashboardStats"
 import {
   Briefcase, GitBranch, BookOpen, FolderKanban, Cpu,
-  Users, Activity, FileText, LayoutGrid, BarChart2,
+  Users, FileText, LayoutGrid, BarChart2,
 } from "lucide-react"
 
 async function getActivityFeedItems(): Promise<ActivityItem[]> {
@@ -53,21 +52,6 @@ export default async function AdminDashboardPage() {
     prisma.adminUser.findUnique({ where: { id: session!.user.id }, select: { email: true, displayName: true } }),
   ])
 
-  const sectionByKey = new Map(stats.sections.map((s) => [s.key, s]))
-  const getSection = (key: string): DashboardSectionStat | undefined => sectionByKey.get(key)
-  const countOf = (key: string) => getSection(key)?.count ?? 0
-  const publishedOf = (key: string) => getSection(key)?.published ?? 0
-
-  const servicesTotal = countOf("services")
-  const servicesPublished = publishedOf("services")
-  const processStepsTotal = countOf("process-steps")
-  const processStepsPublished = publishedOf("process-steps")
-  const blogTotal = countOf("blog")
-  const blogPublished = publishedOf("blog")
-  const projectsTotal = countOf("projects")
-  const projectsPublished = publishedOf("projects")
-  const healthPct = stats.totals.healthPct
-
   const donutData: DonutDataPoint[] = stats.sections
     .filter((s) => s.color)
     .map((s) => ({ label: s.label, value: s.count ?? 0, color: s.color as string }))
@@ -82,14 +66,8 @@ export default async function AdminDashboardPage() {
     <div className="space-y-6">
       <AdminPageHeader title="Dashboard Overview" subtitle={subtitle} />
 
-      {/* Top stat cards */}
-      <StatCardGrid cols={5}>
-        <StatCard label="Total Services" value={servicesTotal} icon={Briefcase} badge={`${servicesPublished} live`} badgeVariant="success" progress={(servicesPublished / Math.max(1, servicesTotal)) * 100} iconColor="primary" />
-        <StatCard label="Process Steps" value={processStepsTotal} icon={GitBranch} badge={`${processStepsPublished} live`} badgeVariant="success" iconColor="blue" />
-        <StatCard label="Blog Posts" value={blogTotal} icon={BookOpen} badge={`${blogPublished} live`} badgeVariant="info" progress={(blogPublished / Math.max(1, blogTotal)) * 100} iconColor="purple" />
-        <StatCard label="Projects" value={projectsTotal} icon={FolderKanban} badge={`${projectsPublished} live`} badgeVariant="info" iconColor="teal" />
-        <StatCard label="Content Health" value={`${healthPct}%`} icon={Activity} badge={healthPct >= 70 ? "Good" : "Needs attention"} badgeVariant={healthPct >= 70 ? "success" : "warning"} progress={healthPct} iconColor="success" />
-      </StatCardGrid>
+      {/* Top stat cards (client-fetched from /api/admin/dashboard/stats) */}
+      <DashboardStatsCards />
 
       {/* Second row: chart + quick actions */}
       <div className="grid lg:grid-cols-3 gap-6">
