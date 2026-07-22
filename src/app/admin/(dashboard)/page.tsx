@@ -4,6 +4,7 @@ import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import DashboardStatsCards from "@/components/admin/data/DashboardStatsCards"
+import AllContentSectionsGrid from "@/components/admin/data/AllContentSectionsGrid"
 import AdminPageSection from "@/components/admin/layout/AdminPageSection"
 import RecentActivityCard from "@/components/admin/data/RecentActivityCard"
 import ContentActivityChart from "@/components/admin/charts/ContentActivityChart"
@@ -83,24 +84,9 @@ export default async function AdminDashboardPage() {
         </AdminPageSection>
       </div>
 
-      {/* All sections grid */}
-      <AdminPageSection title="All Content Sections">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2">
-          {stats.sections.map((s) => (
-            <Link
-              key={s.key}
-              href={s.href}
-              className="flex flex-col items-start gap-1 rounded-lg border border-border bg-muted/30 hover:bg-accent hover:border-border/80 px-3 py-3 transition-colors group"
-            >
-              <span className="text-xs font-medium text-foreground group-hover:text-primary truncate w-full">{s.label}</span>
-              {s.count !== null ? (
-                <span className="text-lg font-bold text-muted-foreground tabular-nums">{s.count}</span>
-              ) : (
-                <span className="text-xs text-muted-foreground/60">Settings</span>
-              )}
-            </Link>
-          ))}
-        </div>
+      {/* All sections grid (client-fetched from /api/admin/dashboard/stats) */}
+      <AdminPageSection title="All Content Sections" icon={LayoutGrid}>
+        <AllContentSectionsGrid />
       </AdminPageSection>
     </div>
   )
