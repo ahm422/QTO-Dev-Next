@@ -16,6 +16,18 @@ export const AUDIT_ACTIONS = {
   SESSIONS_REVOKED_OTHERS: "sessions_revoked_others",
   REFRESH_REUSE_DETECTED: "refresh_reuse_detected",
   IP_BLOCKED_BRUTE_FORCE: "ip_blocked_brute_force",
+  CONTENT_CREATED: "content_created",
+  CONTENT_UPDATED: "content_updated",
+  CONTENT_DELETED: "content_deleted",
+  CONTENT_PUBLISHED: "content_published",
 } as const;
+
+/** Audit actions that represent content mutations (used by the recent-activity feed). */
+export const CONTENT_AUDIT_ACTIONS = [
+  AUDIT_ACTIONS.CONTENT_CREATED,
+  AUDIT_ACTIONS.CONTENT_UPDATED,
+  AUDIT_ACTIONS.CONTENT_DELETED,
+  AUDIT_ACTIONS.CONTENT_PUBLISHED,
+] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[keyof typeof AUDIT_ACTIONS];

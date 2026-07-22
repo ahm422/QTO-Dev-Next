@@ -6,6 +6,8 @@ import { formatZodFieldErrors } from "@/lib/validators/http";
 import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
+import { writeContentAudit } from "@/lib/auth/audit";
+import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { blogPostSchema } from "@/lib/validators/admin/blogPost";
 import {
   blogPostWithTagsInclude,
@@ -36,7 +38,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const { error } = await requireAdminSession({ allowedRoles: ["super_admin", "admin"] });
+  const { session, error } = await requireAdminSession({ allowedRoles: ["super_admin", "admin"] });
   if (error) return error;
   const { body, error: bodyError } = await parseJsonBody(request);
   if (bodyError) return bodyError;
@@ -59,6 +61,13 @@ export async function POST(request: NextRequest) {
     revalidatePath("/");
     revalidatePath("/blogs");
     revalidatePath("/sitemap.xml");
+    await writeContentAudit({
+      session,
+      action: item.isPublished ? AUDIT_ACTIONS.CONTENT_PUBLISHED : AUDIT_ACTIONS.CONTENT_CREATED,
+      section: "blog",
+      entityId: item.id,
+      label: item.title,
+    });
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/blog", e);
