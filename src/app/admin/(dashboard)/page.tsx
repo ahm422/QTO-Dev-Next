@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import DashboardStatsCards from "@/components/admin/data/DashboardStatsCards"
 import AdminPageSection from "@/components/admin/layout/AdminPageSection"
-import ActivityFeed, { type ActivityItem } from "@/components/admin/data/ActivityFeed"
+import RecentActivityCard from "@/components/admin/data/RecentActivityCard"
 import ContentActivityChart from "@/components/admin/charts/ContentActivityChart"
 import ContentStatusDonut, { type DonutDataPoint } from "@/components/admin/charts/ContentStatusDonut"
 import WidgetCard from "@/components/admin/widgets/WidgetCard"
@@ -14,24 +14,6 @@ import {
   Briefcase, GitBranch, BookOpen, FolderKanban, Cpu,
   Users, FileText, LayoutGrid, BarChart2,
 } from "lucide-react"
-
-async function getActivityFeedItems(): Promise<ActivityItem[]> {
-  const [services, blog, projects, team] = await Promise.all([
-    prisma.service.findMany({ orderBy: { updatedAt: "desc" }, take: 4, select: { id: true, title: true, updatedAt: true } }),
-    prisma.blogPost.findMany({ orderBy: { updatedAt: "desc" }, take: 4, select: { id: true, title: true, updatedAt: true } }),
-    prisma.project.findMany({ orderBy: { updatedAt: "desc" }, take: 3, select: { id: true, title: true, updatedAt: true } }),
-    prisma.teamMember.findMany({ orderBy: { updatedAt: "desc" }, take: 3, select: { id: true, name: true, updatedAt: true } }),
-  ])
-
-  const items: ActivityItem[] = [
-    ...services.map((r) => ({ id: `svc-${r.id}`, label: r.title, section: "Services", action: "updated" as const, updatedAt: r.updatedAt })),
-    ...blog.map((r) => ({ id: `blog-${r.id}`, label: r.title, section: "Blog", action: "updated" as const, updatedAt: r.updatedAt })),
-    ...projects.map((r) => ({ id: `proj-${r.id}`, label: r.title, section: "Projects", action: "updated" as const, updatedAt: r.updatedAt })),
-    ...team.map((r) => ({ id: `team-${r.id}`, label: r.name, section: "Team", action: "updated" as const, updatedAt: r.updatedAt })),
-  ]
-
-  return items.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()).slice(0, 10)
-}
 
 const QUICK_ACTIONS = [
   { label: "New Service",      href: "/admin/services/new",          icon: Briefcase },
@@ -46,9 +28,8 @@ export default async function AdminDashboardPage() {
   const session = await getServerSession()
   if (!["super_admin", "admin", "editor"].includes(session?.user?.role ?? "")) redirect("/admin/unauthorized")
 
-  const [stats, activityItems, currentUser] = await Promise.all([
+  const [stats, currentUser] = await Promise.all([
     getDashboardStats(),
-    getActivityFeedItems(),
     prisma.adminUser.findUnique({ where: { id: session!.user.id }, select: { email: true, displayName: true } }),
   ])
 
@@ -94,7 +75,7 @@ export default async function AdminDashboardPage() {
       {/* Third row: activity feed + donut chart */}
       <div className="grid lg:grid-cols-3 gap-6">
         <AdminPageSection title="Recent Activity" icon={FileText} className="lg:col-span-2">
-          <ActivityFeed items={activityItems} />
+          <RecentActivityCard limit={10} />
         </AdminPageSection>
 
         <AdminPageSection title="Content Breakdown" icon={LayoutGrid}>

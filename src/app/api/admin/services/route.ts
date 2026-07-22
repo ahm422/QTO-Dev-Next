@@ -6,6 +6,8 @@ import { formatZodFieldErrors } from "@/lib/validators/http";
 import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
+import { writeContentAudit } from "@/lib/auth/audit";
+import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { serviceSchema } from "@/lib/validators/admin/service";
 import {
   fromPrismaService,
@@ -28,7 +30,7 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const { error } = await requireAdminSession({ allowedRoles: ["super_admin", "admin"] });
+  const { session, error } = await requireAdminSession({ allowedRoles: ["super_admin", "admin"] });
   if (error) return error;
   const { body, error: bodyError } = await parseJsonBody(request);
   if (bodyError) return bodyError;
@@ -43,6 +45,13 @@ export async function POST(request: NextRequest) {
     revalidatePath("/");
     revalidatePath("/services");
     revalidatePath("/sitemap.xml");
+    await writeContentAudit({
+      session,
+      action: AUDIT_ACTIONS.CONTENT_CREATED,
+      section: "services",
+      entityId: item.id,
+      label: item.title,
+    });
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/services", e);
