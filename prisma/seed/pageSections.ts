@@ -14,8 +14,6 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
         "We build robust, scalable software systems that power modern businesses—from cloud-native platforms to intelligent automation that drives measurable growth.",
       ctaPrimary: "Start Your Project",
       ctaPrimaryHref: "/contact",
-      ctaSecondary: "Explore Capabilities",
-      ctaSecondaryHref: "/services",
       trustedByLabel: "TRUSTED BY",
       terminalLines: [
         "> Initializing core systems...",

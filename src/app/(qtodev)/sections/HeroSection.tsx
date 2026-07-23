@@ -6,15 +6,13 @@ import { SiDocker, SiJavascript, SiReact, SiTypescript } from "@icons-pack/react
 import { Container } from "@/components/common/Container";
 import { HeroTerminalMockup } from "@/components/hero/HeroTerminalMockup";
 import { HeroHeading } from "@/components/hero/HeroHeading";
-import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Button } from "@/components/ui/button";
-import { heroConfig } from "@/config/hero";
-type HeroConfigType = typeof heroConfig;
+import { type HeroConfig, resolveHeroConfig } from "@/config/hero";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/components/theme/cn";
 
-export function HeroSection({ config }: { config?: HeroConfigType }) {
+export function HeroSection({ config }: Readonly<{ config?: HeroConfig }>) {
   const sectionRef = useRef<HTMLElement>(null);
   const reducedMotion = useReducedMotion();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -26,11 +24,9 @@ export function HeroSection({ config }: { config?: HeroConfigType }) {
     subtext,
     ctaPrimary,
     ctaPrimaryHref,
-    ctaSecondary,
-    ctaSecondaryHref,
     trustedByLabel,
     terminalLines,
-  } = config ?? heroConfig;
+  } = resolveHeroConfig(config);
 
   const tiltEnabled = !reducedMotion;
 
@@ -112,69 +108,28 @@ export function HeroSection({ config }: { config?: HeroConfigType }) {
               </p>
             ) : null}
 
-            {/* CTAs */}
+            {/* Primary CTA */}
             <div
               className={cn(
-                "mt-10 flex w-full max-w-sm flex-col gap-3 sm:mt-12 sm:max-w-md sm:gap-4",
-                "mx-auto lg:mx-0 lg:max-w-none lg:flex-row lg:items-center",
+                "mt-10 w-full max-w-sm sm:mt-12 sm:max-w-none",
+                "mx-auto lg:mx-0",
                 !reducedMotion &&
                   "animate-hero-content-fade animation-delay-450 animation-fill-backwards"
               )}
             >
-              {ctaPrimaryHref ? (
-                <Button
-                  asChild
-                  size="lg"
-                  className={cn(
-                    "h-12 w-full rounded-full px-8 text-base font-semibold text-white",
-                    "shadow-[0_0_20px_rgba(244,139,34,0.35)] transition-all duration-300",
-                    "hover:scale-[1.03] hover:-translate-y-0.5 hover:shadow-[0_0_36px_rgba(244,139,34,0.6)]",
-                    "active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1208]",
-                    "lg:w-auto lg:min-w-[11rem]"
-                  )}
-                >
-                  <Link href={ctaPrimaryHref}>{ctaPrimary}</Link>
-                </Button>
-              ) : (
-                <Button
-                  size="lg"
-                  className="h-12 w-full rounded-full px-8 text-base font-semibold text-white lg:w-auto"
-                >
-                  {ctaPrimary}
-                </Button>
-              )}
-              {ctaSecondaryHref ? (
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className={cn(
-                    "group/cta h-12 w-full rounded-full border-white/25 bg-white/[0.03] px-8 text-base text-white backdrop-blur-sm",
-                    "transition-all duration-300 hover:scale-[1.03] hover:-translate-y-0.5",
-                    "hover:border-white/40 hover:bg-white/10 hover:text-white hover:shadow-[0_8px_24px_rgba(0,0,0,0.35)]",
-                    "focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1208]",
-                    "lg:w-auto lg:min-w-[12rem]"
-                  )}
-                >
-                  <Link href={ctaSecondaryHref}>
-                    {ctaSecondary}
-                    <AppIcon
-                      name="arrow-right"
-                      size="sm"
-                      className="shrink-0 transition-transform duration-300 group-hover/cta:translate-x-1"
-                    />
-                  </Link>
-                </Button>
-              ) : (
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="h-12 w-full rounded-full border-white/25 px-8 text-white lg:w-auto"
-                >
-                  {ctaSecondary}
-                  <AppIcon name="arrow-right" size="sm" className="shrink-0" />
-                </Button>
-              )}
+              <Button
+                asChild
+                size="lg"
+                className={cn(
+                  "h-12 w-full rounded-full px-8 text-base font-semibold text-white",
+                  "shadow-[0_0_20px_rgba(244,139,34,0.35)] transition-all duration-300",
+                  "hover:scale-[1.03] hover:-translate-y-0.5 hover:shadow-[0_0_36px_rgba(244,139,34,0.6)]",
+                  "active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1208]",
+                  "lg:w-auto lg:min-w-[11rem]"
+                )}
+              >
+                <Link href={ctaPrimaryHref}>{ctaPrimary}</Link>
+              </Button>
             </div>
 
             {/* Trusted by */}
