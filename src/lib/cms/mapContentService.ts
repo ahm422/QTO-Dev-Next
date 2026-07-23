@@ -42,9 +42,9 @@ export function mapPrismaToContentService(row: ServiceWithTags): WebDevelopmentS
         : webDevelopmentServiceData.technologies,
     relatedProjects: [
       {
-        slug: "saas-dashboard",
-        name: "SaaS Analytics Dashboard",
-        outcome: "Built actionable dashboards for faster decisions.",
+        slug: "finflow-inc",
+        name: "FinFlow Inc.",
+        outcome: "Built payment analytics for faster finance decisions.",
         thumbnail: fallbackProject,
       },
     ],

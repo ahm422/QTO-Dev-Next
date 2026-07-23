@@ -8,6 +8,7 @@ import AdminForm from "@/components/admin/AdminForm"
 import FormGrid from "@/components/admin/forms/FormGrid"
 import MediaUpload from "@/components/admin/MediaUpload"
 import RichTextEditor from "@/components/admin/RichTextEditor"
+import LineListTextarea from "@/components/admin/forms/LineListTextarea"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -101,7 +102,7 @@ export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPo
             )} />
           </FormGrid>
           <FormField control={form.control} name="tags" render={({ field }) => (
-            <FormItem><FormLabel>Tags (one per line)</FormLabel><FormControl><Textarea value={field.value.join("\n")} onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))} rows={3} /></FormControl><FormMessage /></FormItem>
+            <FormItem><FormLabel>Tags (one per line)</FormLabel><FormControl><LineListTextarea value={field.value} onChange={field.onChange} rows={3} /></FormControl><FormMessage /></FormItem>
           )} />
           <FormField control={form.control} name="imageUrl" render={({ field }) => (
             <FormItem><FormControl><MediaUpload value={field.value ?? ""} onChange={field.onChange} label="Cover image" /></FormControl><FormMessage /></FormItem>

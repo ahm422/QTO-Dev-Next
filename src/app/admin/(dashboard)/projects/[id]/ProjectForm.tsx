@@ -7,6 +7,7 @@ import { projectSchema, type ProjectInput } from "@/lib/validators/admin/project
 import AdminForm from "@/components/admin/AdminForm"
 import FormGrid from "@/components/admin/forms/FormGrid"
 import MediaUpload from "@/components/admin/MediaUpload"
+import LineListTextarea from "@/components/admin/forms/LineListTextarea"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -77,13 +78,13 @@ export default function ProjectForm({ defaultValues }: { defaultValues?: Project
             <FormItem><FormLabel>Solution</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>
           )} />
           <FormField control={form.control} name="results" render={({ field }) => (
-            <FormItem><FormLabel>Results (one per line)</FormLabel><FormControl><Textarea value={field.value.join("\n")} onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))} rows={3} /></FormControl><FormMessage /></FormItem>
+            <FormItem><FormLabel>Results (one per line)</FormLabel><FormControl><LineListTextarea value={field.value} onChange={field.onChange} rows={3} /></FormControl><FormMessage /></FormItem>
           )} />
           <FormField control={form.control} name="techStack" render={({ field }) => (
-            <FormItem><FormLabel>Tech stack (one per line)</FormLabel><FormControl><Textarea value={field.value.join("\n")} onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))} rows={3} /></FormControl><FormMessage /></FormItem>
+            <FormItem><FormLabel>Tech stack (one per line)</FormLabel><FormControl><LineListTextarea value={field.value} onChange={field.onChange} rows={3} /></FormControl><FormMessage /></FormItem>
           )} />
           <FormField control={form.control} name="tags" render={({ field }) => (
-            <FormItem><FormLabel>Tags (one per line)</FormLabel><FormControl><Textarea value={field.value.join("\n")} onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))} rows={3} /></FormControl><FormMessage /></FormItem>
+            <FormItem><FormLabel>Tags (one per line)</FormLabel><FormControl><LineListTextarea value={field.value} onChange={field.onChange} rows={3} /></FormControl><FormMessage /></FormItem>
           )} />
           <FormField control={form.control} name="coverImageUrl" render={({ field }) => (
             <FormItem><FormControl><MediaUpload value={field.value ?? ""} onChange={field.onChange} label="Cover image" /></FormControl><FormMessage /></FormItem>

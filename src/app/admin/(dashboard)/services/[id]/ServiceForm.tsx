@@ -11,6 +11,7 @@ import IconPicker from "@/components/admin/forms/IconPicker"
 import MediaGallery from "@/components/admin/forms/MediaGallery"
 import SeoPreview from "@/components/admin/forms/SeoPreview"
 import TagInput from "@/components/admin/forms/TagInput"
+import LineListTextarea from "@/components/admin/forms/LineListTextarea"
 import AdminWidgetPanel from "@/components/admin/layout/AdminWidgetPanel"
 import PublishWidget from "@/components/admin/widgets/PublishWidget"
 import WidgetCard from "@/components/admin/widgets/WidgetCard"
@@ -264,9 +265,9 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
                   <FormItem>
                     <FormLabel>Features (one per line)</FormLabel>
                     <FormControl>
-                      <Textarea
-                        value={field.value.join("\n")}
-                        onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))}
+                      <LineListTextarea
+                        value={field.value}
+                        onChange={field.onChange}
                         rows={5}
                         placeholder={"Feature 1\nFeature 2\nFeature 3"}
                       />

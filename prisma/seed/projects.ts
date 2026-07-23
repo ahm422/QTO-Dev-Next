@@ -10,6 +10,20 @@ import { prisma } from "./helpers";
 export async function seedProjects() {
   const bySlug = new Map(getSeedDetailProjects().map((p) => [p.slug, p]));
 
+  // Remove outdated stub projects replaced by brand-aligned case studies (#317)
+  await prisma.project.deleteMany({
+    where: {
+      slug: {
+        in: [
+          "ecommerce-platform",
+          "saas-dashboard",
+          "mobile-fitness-app",
+          "startup-website",
+        ],
+      },
+    },
+  });
+
   for (let i = 0; i < legacyProjects.length; i++) {
     const legacy = legacyProjects[i];
     const detail = bySlug.get(legacy.slug);
