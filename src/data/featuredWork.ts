@@ -23,7 +23,7 @@ export const featuredWorkItems: FeaturedWorkItem[] = [
     category: "FINTECH",
     description:
       "Payment infrastructure and analytics platform for modern finance teams. Streamlined reconciliation and real-time reporting.",
-    slug: "ecommerce-platform",
+    slug: "finflow-inc",
     image: SECTION_IMAGES[0],
     order: 1,
   },
@@ -34,7 +34,7 @@ export const featuredWorkItems: FeaturedWorkItem[] = [
     category: "HEALTHCARE",
     description:
       "Patient and wellness tracking app with secure records and care coordination. Built for clinics and telehealth.",
-    slug: "saas-dashboard",
+    slug: "meditrack-health",
     image: SECTION_IMAGES[1],
     order: 2,
   },
@@ -45,7 +45,7 @@ export const featuredWorkItems: FeaturedWorkItem[] = [
     category: "E-COMMERCE",
     description:
       "Headless commerce and storefront for brands scaling online. Custom checkout, inventory, and multi-channel sales.",
-    slug: "ecommerce-platform",
+    slug: "shopverse",
     image: SECTION_IMAGES[2],
     order: 3,
   },
@@ -56,7 +56,7 @@ export const featuredWorkItems: FeaturedWorkItem[] = [
     category: "LOGISTICS",
     description:
       "End-to-end supply chain visibility and route optimization. Reduces emissions and delivery times for fleet operators.",
-    slug: "saas-dashboard",
+    slug: "greenchain-logistics",
     image: SECTION_IMAGES[3],
     order: 4,
   },
@@ -67,7 +67,7 @@ export const featuredWorkItems: FeaturedWorkItem[] = [
     category: "REAL ESTATE",
     description:
       "Property listings, virtual tours, and deal management for agents and developers. From search to closing.",
-    slug: "startup-website",
+    slug: "propwise-realty",
     image: SECTION_IMAGES[4],
     order: 5,
   },
@@ -78,7 +78,7 @@ export const featuredWorkItems: FeaturedWorkItem[] = [
     category: "EDUCATION",
     description:
       "Learning management and course platform for schools and training providers. Assessments, progress tracking, and certifications.",
-    slug: "mobile-fitness-app",
+    slug: "learnhub-education",
     image: SECTION_IMAGES[5],
     order: 6,
   },

@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import { engagementModelSchema, type EngagementModelInput } from "@/lib/validators/admin/engagementModel"
 import AdminForm from "@/components/admin/AdminForm"
 import FormGrid from "@/components/admin/forms/FormGrid"
+import LineListTextarea from "@/components/admin/forms/LineListTextarea"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -50,7 +51,7 @@ export default function EngagementModelForm({ defaultValues }: { defaultValues?:
             <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>
           )} />
           <FormField control={form.control} name="features" render={({ field }) => (
-            <FormItem><FormLabel>Features (one per line)</FormLabel><FormControl><Textarea value={field.value.join("\n")} onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))} rows={4} /></FormControl><FormMessage /></FormItem>
+            <FormItem><FormLabel>Features (one per line)</FormLabel><FormControl><LineListTextarea value={field.value} onChange={field.onChange} rows={4} /></FormControl><FormMessage /></FormItem>
           )} />
           <FormGrid cols={2}>
             <FormField control={form.control} name="ctaLabel" render={({ field }) => (

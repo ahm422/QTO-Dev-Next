@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import { industrySchema, type IndustryInput } from "@/lib/validators/admin/industry"
 import AdminForm from "@/components/admin/AdminForm"
 import FormGrid from "@/components/admin/forms/FormGrid"
+import LineListTextarea from "@/components/admin/forms/LineListTextarea"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -57,7 +58,7 @@ export default function IndustryForm({ defaultValues }: { defaultValues?: Indust
             )} />
           </FormGrid>
           <FormField control={form.control} name="bulletPoints" render={({ field }) => (
-            <FormItem><FormLabel>Bullet points (one per line)</FormLabel><FormControl><Textarea value={field.value.join("\n")} onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))} rows={4} /></FormControl><FormMessage /></FormItem>
+            <FormItem><FormLabel>Bullet points (one per line)</FormLabel><FormControl><LineListTextarea value={field.value} onChange={field.onChange} rows={4} /></FormControl><FormMessage /></FormItem>
           )} />
           <FormField control={form.control} name="isPublished" render={({ field }) => (
             <FormItem><div className="flex items-center gap-3"><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} id="pub" /></FormControl><Label htmlFor="pub">Published</Label></div><FormMessage /></FormItem>
