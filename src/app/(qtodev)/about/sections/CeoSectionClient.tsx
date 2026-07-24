@@ -11,6 +11,7 @@ import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { useHeroTilt } from "@/hooks/useHeroTilt";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/components/theme/cn";
+import { homepageSectionPadding } from "@/components/theme/sectionClasses";
 import type { LeadershipMember } from "@/types/leadership";
 import { aboutPageConfig } from "@/config/aboutPage";
 
@@ -60,7 +61,7 @@ export function CeoSectionClient({
     <section
       className={cn(
         "relative overflow-hidden bg-gradient-to-b from-surface via-primary/5 to-surface border-y border-border",
-        compact ? "py-12 md:py-16" : "py-20 md:py-28 lg:py-32"
+        compact ? homepageSectionPadding : "py-20 md:py-28 lg:py-32"
       )}
       aria-labelledby={HEADING_ID}
     >

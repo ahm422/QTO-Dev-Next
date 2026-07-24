@@ -10,6 +10,7 @@ import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Reveal } from "@/components/animations/Reveal";
 import { BenefitCard } from "@/components/why-choose-us/BenefitCard";
 import { cn } from "@/components/theme/cn";
+import { homepageSectionPadding } from "@/components/theme/sectionClasses";
 
 const HEADING_ID = "why-choose-us-heading";
 
@@ -36,7 +37,8 @@ export function WhyChooseUsSectionClient({
   return (
     <section
       className={cn(
-        "relative overflow-hidden py-24 md:py-32",
+        "relative overflow-hidden",
+        homepageSectionPadding,
         "bg-surface-muted border-y border-border"
       )}
       aria-labelledby={HEADING_ID}

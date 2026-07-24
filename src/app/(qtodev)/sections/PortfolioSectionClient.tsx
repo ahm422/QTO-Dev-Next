@@ -13,6 +13,7 @@ import { Reveal } from "@/components/animations/Reveal";
 import { MagneticButton } from "@/components/animations/MagneticButton";
 import { TiltCard } from "@/components/animations/TiltCard";
 import { cn } from "@/components/theme/cn";
+import { homepageSectionPadding } from "@/components/theme/sectionClasses";
 import { useMotionEnabled } from "@/hooks/useReducedMotion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
@@ -172,7 +173,8 @@ export function PortfolioSectionClient({
   return (
     <section
       className={cn(
-        "relative overflow-hidden border-y border-border py-24 md:py-32",
+        "relative overflow-hidden border-y border-border",
+        homepageSectionPadding,
         "bg-gradient-to-b from-background via-surface-muted/50 to-background"
       )}
       aria-labelledby={SECTION_HEADING_ID}

@@ -7,6 +7,8 @@ import { engagementModelsConfig } from "@/config/engagementModels";
 type EngagementModelsConfigType = typeof engagementModelsConfig;
 import type { EngagementModel } from "@/types/engagementModel";
 import { Reveal } from "@/components/animations/Reveal";
+import { cn } from "@/components/theme/cn";
+import { homepageSectionPadding } from "@/components/theme/sectionClasses";
 
 const HEADING_ID = "engagement-models-heading";
 
@@ -21,7 +23,10 @@ export function EngagementModelsSectionClient({
   if (items.length === 0) return null;
   return (
     <section
-      className="relative py-24 md:py-32 overflow-hidden bg-surface border-y border-border"
+      className={cn(
+        "relative overflow-hidden bg-surface border-y border-border",
+        homepageSectionPadding
+      )}
       aria-labelledby={HEADING_ID}
     >
       {/* Soft gradient orbs for depth */}
@@ -36,7 +41,7 @@ export function EngagementModelsSectionClient({
 
       <Container className="relative">
         <Reveal staggerSelector="[data-reveal]">
-          <div data-reveal className="mb-16 md:mb-20">
+          <div data-reveal className="mb-8 md:mb-10">
             <SectionHeader
               subtitle={cfg.subtitle}
               subtitleClassName="text-primary font-semibold tracking-[0.2em]"
