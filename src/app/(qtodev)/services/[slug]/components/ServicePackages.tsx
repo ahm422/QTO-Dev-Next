@@ -1,12 +1,10 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import { WebDevelopmentServiceData } from "@/content/services/web-development";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
+import { cn } from "@/components/theme/cn";
 
 interface ServicePackagesProps {
   service: WebDevelopmentServiceData;
@@ -24,7 +22,7 @@ const serviceAreas = [
 const areaIcons = ["bolt", "cloud", "cart-shopping", "building", "bullseye", "chart-line"] as const;
 
 export function ServicePackages({ service }: ServicePackagesProps) {
-  const [activeTab, setActiveTab] = useState(0);
+  const popularIndex = service.packages.findIndex((pkg) => pkg.isPopular);
 
   return (
     <section className="relative overflow-hidden py-16 md:py-20 lg:py-24 bg-background" aria-labelledby="service-packages-heading">
@@ -61,55 +59,83 @@ export function ServicePackages({ service }: ServicePackagesProps) {
             ))}
           </div>
 
-          <div className="mt-10 rounded-2xl border border-border bg-surface p-6 shadow-lg shadow-black/5 ring-1 ring-black/[0.03] md:p-8" data-reveal>
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-              {service.packages.map((pkg, idx) => (
-                <button
+          <div
+            className="mx-auto mt-10 grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3 md:items-stretch md:gap-2 md:pt-4"
+            data-reveal
+          >
+            {service.packages.map((pkg, idx) => {
+              const popular = popularIndex === idx;
+
+              return (
+                <article
                   key={pkg.name}
-                  type="button"
-                  onClick={() => setActiveTab(idx)}
-                  className={`rounded-xl border px-4 py-3.5 text-left text-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface ${
-                    activeTab === idx
-                      ? "border-primary bg-primary/15 text-primary ring-2 ring-primary/30"
-                      : "border-border bg-background text-foreground-muted hover:border-primary/20 hover:bg-surface-muted"
-                  }`}
-                  aria-label={`${pkg.name} package details`}
+                  className={cn(
+                    "group relative flex h-full min-w-0 flex-col rounded-2xl border bg-surface p-6 transition-all duration-300 md:p-7",
+                    popular
+                      ? "z-10 border-primary/40 bg-gradient-to-b from-primary/[0.08] via-primary/[0.03] to-transparent shadow-xl shadow-primary/10 ring-2 ring-primary/25 lg:-mt-2 lg:scale-[1.03]"
+                      : "border-border/80 shadow-md shadow-black/[0.04] ring-1 ring-black/[0.02]"
+                  )}
                 >
-                  <p className="font-semibold">{pkg.name}</p>
-                  <p className="mt-0.5 text-xs text-foreground-muted">{pkg.timeline}</p>
-                </button>
-              ))}
-            </div>
+                  {popular && (
+                    <div
+                      className="absolute -top-3 left-1/2 z-10 flex -translate-x-1/2 justify-center"
+                      aria-hidden
+                    >
+                      <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary-foreground shadow-lg shadow-primary/30 ring-2 ring-background">
+                        Most Popular
+                      </span>
+                    </div>
+                  )}
 
-            <div className="mt-6 rounded-xl border border-primary/20 bg-surface-muted/80 p-6 shadow-inner ring-1 ring-primary/10 md:p-7">
-              <p className="text-sm font-semibold text-foreground">
-                {service.packages[activeTab].name}
-              </p>
-              <p className="mt-2 text-2xl font-bold tracking-tight text-foreground">
-                {service.packages[activeTab].price}
-              </p>
-              <p className="text-sm text-foreground-muted">
-                Timeline: {service.packages[activeTab].timeline}
-              </p>
+                  <div className={cn(popular && "pt-3")}>
+                    <h3 className="font-heading text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                      {pkg.name}
+                    </h3>
+                    <p className="mt-2 text-2xl font-bold tracking-tight text-foreground">
+                      {pkg.price}
+                    </p>
+                    <p className="mt-1 text-sm text-foreground-muted">
+                      Timeline: {pkg.timeline}
+                    </p>
+                  </div>
 
-              <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-relaxed text-foreground-muted">
-                {service.packages[activeTab].features.map((feature) => (
-                  <li key={feature}>{feature}</li>
-                ))}
-              </ul>
+                  <ul className="mt-6 flex-1 space-y-3">
+                    {pkg.features.map((feature) => (
+                      <li
+                        key={feature}
+                        className="flex items-start gap-3 text-sm leading-snug text-foreground-muted"
+                      >
+                        <span
+                          className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary"
+                          aria-hidden
+                        >
+                          <AppIcon name="check" size="sm" className="h-3 w-3" />
+                        </span>
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
 
-              <p className="mt-5 text-sm text-foreground-muted">
-                <span className="font-semibold text-foreground">Ideal for:</span>{" "}
-                {service.packages[activeTab].idealFor}
-              </p>
+                  <p className="mt-6 text-sm text-foreground-muted">
+                    <span className="font-semibold text-foreground">Ideal for:</span>{" "}
+                    {pkg.idealFor}
+                  </p>
 
-              <Link
-                href="/contact?intent=detailed-proposal"
-                className="mt-6 inline-flex min-h-[44px] w-full items-center justify-center rounded-xl bg-primary px-5 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-muted"
-              >
-                Get detailed proposal
-              </Link>
-            </div>
+                  <Link
+                    href="/contact?intent=detailed-proposal"
+                    className={cn(
+                      "mt-6 inline-flex min-h-[44px] w-full items-center justify-center rounded-xl px-5 py-3.5 text-sm font-semibold transition-all duration-300",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
+                      popular
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-xl"
+                        : "border border-border bg-background text-foreground hover:border-primary/25 hover:bg-primary/5"
+                    )}
+                  >
+                    Get detailed proposal
+                  </Link>
+                </article>
+              );
+            })}
           </div>
         </Reveal>
       </Container>
