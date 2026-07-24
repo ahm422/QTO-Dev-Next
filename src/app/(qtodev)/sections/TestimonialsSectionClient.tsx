@@ -9,6 +9,7 @@ import { testimonialsConfig } from "@/config/testimonials";
 type TestimonialsConfigType = typeof testimonialsConfig;
 import type { TestimonialItem } from "@/types/testimonials";
 import { cn } from "@/components/theme/cn";
+import { homepageSectionPadding } from "@/components/theme/sectionClasses";
 import { Reveal } from "@/components/animations/Reveal";
 import { TiltCard } from "@/components/animations/TiltCard";
 import { useMotionEnabled } from "@/hooks/useReducedMotion";
@@ -251,7 +252,8 @@ export function TestimonialsSectionClient({
   return (
     <section
       className={cn(
-        "relative overflow-hidden py-12 md:py-16",
+        "relative overflow-hidden",
+        homepageSectionPadding,
         "bg-surface-muted border-y border-border"
       )}
       aria-labelledby={HEADING_ID}

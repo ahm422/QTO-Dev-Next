@@ -8,6 +8,7 @@ type OurServicesConfigType = typeof ourServicesConfig;
 import type { Service } from "@/types/service";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
+import { homepageSectionPadding } from "@/components/theme/sectionClasses";
 import { Reveal } from "@/components/animations/Reveal";
 import { ServiceCard } from "@/components/services/ServiceCard";
 
@@ -25,7 +26,8 @@ export function OurServicesSectionClient({
     return (
       <section
         className={cn(
-          "relative overflow-hidden py-24 md:py-32",
+          "relative overflow-hidden",
+          homepageSectionPadding,
           "bg-surface-muted border-y border-border"
         )}
         aria-labelledby={HEADING_ID}
@@ -42,7 +44,8 @@ export function OurServicesSectionClient({
   return (
     <section
       className={cn(
-        "relative overflow-hidden py-24 md:py-32",
+        "relative overflow-hidden",
+        homepageSectionPadding,
         "bg-surface-muted border-y border-border"
       )}
       aria-labelledby={HEADING_ID}
@@ -58,7 +61,7 @@ export function OurServicesSectionClient({
 
       <Container className="relative">
         <Reveal staggerSelector="[data-reveal]">
-          <div data-reveal className="mb-14 md:mb-16">
+          <div data-reveal className="mb-8 md:mb-10">
             <SectionHeader
               subtitle={cfg.subtitle}
               subtitleClassName="text-primary font-semibold tracking-widest"

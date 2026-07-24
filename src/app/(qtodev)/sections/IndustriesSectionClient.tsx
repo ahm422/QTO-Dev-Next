@@ -9,6 +9,7 @@ import { industriesConfig } from "@/config/industries";
 type IndustriesConfigType = typeof industriesConfig;
 import type { IndustryItem, IndustryIconKey } from "@/types/industry";
 import { cn } from "@/components/theme/cn";
+import { homepageSectionPadding } from "@/components/theme/sectionClasses";
 import { Reveal } from "@/components/animations/Reveal";
 import { useMotionEnabled } from "@/hooks/useReducedMotion";
 
@@ -306,7 +307,8 @@ export function IndustriesSectionClient({
   return (
     <section
       className={cn(
-        "relative overflow-hidden py-24 md:py-32",
+        "relative overflow-hidden",
+        homepageSectionPadding,
         "bg-surface-muted border-y border-border"
       )}
       aria-labelledby={HEADING_ID}
@@ -324,7 +326,7 @@ export function IndustriesSectionClient({
         <Reveal staggerSelector="[data-reveal]">
           <div
             data-reveal
-            className="text-center max-w-2xl mx-auto mb-12 md:mb-14"
+            className="text-center max-w-2xl mx-auto mb-8 md:mb-10"
           >
             <SectionHeader
               subtitle={cfg.subtitle}

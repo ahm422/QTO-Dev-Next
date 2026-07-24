@@ -9,6 +9,7 @@ import { faqsConfig } from "@/config/faqs";
 type FaqsConfigType = typeof faqsConfig;
 import type { Faq } from "@/types/faq";
 import { cn } from "@/components/theme/cn";
+import { homepageSectionPadding } from "@/components/theme/sectionClasses";
 
 const HEADING_ID = "faqs-heading";
 
@@ -25,7 +26,8 @@ export function FAQsSectionClient({ items , config}: { items: Faq[] ; config?: F
     <section
       id="faqs"
       className={cn(
-        "relative overflow-hidden py-24 md:py-32",
+        "relative overflow-hidden",
+        homepageSectionPadding,
         "bg-gradient-to-b from-surface via-surface-muted/40 to-surface",
         "border-y border-border/80"
       )}
@@ -54,7 +56,7 @@ export function FAQsSectionClient({ items , config}: { items: Faq[] ; config?: F
             />
           </div>
 
-          <div className="mt-14 mx-auto max-w-3xl space-y-4">
+          <div className="mt-8 md:mt-10 mx-auto max-w-3xl space-y-4">
             {items.map((item, index) => (
               <div key={index} data-reveal>
                 <FaqAccordionItem
