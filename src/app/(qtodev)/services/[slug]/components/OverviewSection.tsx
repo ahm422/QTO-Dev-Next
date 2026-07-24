@@ -1,20 +1,33 @@
-import Image from "next/image";
 import { WebDevelopmentServiceData } from "@/content/services/web-development";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
+import type { AppIconName } from "@/components/ui/shared/AppIcon";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
 
 interface OverviewSectionProps {
   service: WebDevelopmentServiceData;
-  blurDataURL: string;
+  /** Retained for page.tsx call-site compatibility; unused after deliverable-card IA */
+  blurDataURL?: string;
 }
 
-const iconSet = ["check", "shield-halved", "rocket", "gear", "chart-line", "magnifying-glass"] as const;
+const fallbackIcons: AppIconName[] = [
+  "laptop-code",
+  "rocket",
+  "chart-line",
+  "cart-shopping",
+  "building",
+  "gear",
+];
 
-export function OverviewSection({ service, blurDataURL }: OverviewSectionProps) {
+export function OverviewSection({ service }: OverviewSectionProps) {
+  const cards = service.deliverables ?? [];
+
   return (
-    <section className="relative overflow-hidden py-16 md:py-20 lg:py-24 bg-background" aria-labelledby="overview-heading">
+    <section
+      className="relative overflow-hidden bg-background py-16 md:py-20 lg:py-24"
+      aria-labelledby="what-we-deliver-heading"
+    >
       <div
         className="pointer-events-none absolute top-1/2 right-0 h-72 w-72 -translate-y-1/2 translate-x-1/4 rounded-full bg-primary/[0.05] blur-3xl"
         aria-hidden
@@ -22,60 +35,45 @@ export function OverviewSection({ service, blurDataURL }: OverviewSectionProps) 
 
       <Container size="xl" className="relative">
         <Reveal staggerSelector="[data-reveal]">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center lg:gap-16">
-            <div data-reveal>
-              <SectionHeader
-                subtitle="Overview"
-                subtitleClassName="text-primary font-semibold tracking-[0.2em]"
-                subtitlePill
-                title="Why companies choose us for web development"
-                headingId="overview-heading"
-                centered={false}
-              />
+          <div data-reveal>
+            <SectionHeader
+              subtitle="Deliverables"
+              subtitleClassName="text-primary font-semibold tracking-[0.2em]"
+              subtitlePill
+              title="What We Deliver"
+              description="Concrete products and systems we ship for this service—not generic overview prose."
+              headingId="what-we-deliver-heading"
+              centered={false}
+            />
+          </div>
 
-              <p className="mt-6 max-w-3xl text-base leading-8 text-foreground-muted">
-                {service.overviewText}
-              </p>
-
-              <ul className="mt-8 space-y-4">
-                {service.overviewBenefits.map((benefit, idx) => (
-                  <li key={benefit} className="flex items-start gap-4 rounded-lg border-l-2 border-primary/30 bg-surface/50 py-2 pl-4 pr-3">
-                    <span
-                      className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary ring-1 ring-primary/20"
-                      aria-hidden="true"
-                    >
-                      <AppIcon name={iconSet[idx % iconSet.length]} size="sm" />
-                    </span>
-                    <span className="text-sm leading-relaxed text-foreground-muted">{benefit}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div
-              data-reveal
-              className="relative overflow-hidden rounded-2xl border border-border bg-surface shadow-xl shadow-black/5 ring-1 ring-black/[0.03] transition-shadow hover:shadow-2xl lg:rounded-3xl"
-            >
-              <div className="relative aspect-[4/3] w-full">
-                <Image
-                  src={service.overviewImage.url}
-                  alt={service.overviewImage.alt}
-                  fill
-                  placeholder="blur"
-                  blurDataURL={blurDataURL}
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover"
-                />
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"
-                />
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"
-                />
-              </div>
-            </div>
+          <div
+            className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+            role="list"
+            aria-label="Service deliverables"
+          >
+            {cards.map((card, idx) => {
+              const iconName = card.icon ?? fallbackIcons[idx % fallbackIcons.length];
+              return (
+                <article
+                  key={card.title}
+                  data-reveal
+                  role="listitem"
+                  className="group flex flex-col rounded-2xl border border-border bg-surface p-6 shadow-sm shadow-black/[0.03] ring-1 ring-black/[0.02] transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/[0.05]"
+                >
+                  <span
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/12 text-primary ring-1 ring-primary/15 transition-colors group-hover:bg-primary/18"
+                    aria-hidden
+                  >
+                    <AppIcon name={iconName} size="sm" />
+                  </span>
+                  <h3 className="mt-4 text-base font-semibold text-foreground">{card.title}</h3>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-foreground-muted">
+                    {card.description}
+                  </p>
+                </article>
+              );
+            })}
           </div>
         </Reveal>
       </Container>

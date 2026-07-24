@@ -1,5 +1,6 @@
 import { WebDevelopmentServiceData } from "@/content/services/web-development";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
+import type { AppIconName } from "@/components/ui/shared/AppIcon";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
@@ -8,21 +9,25 @@ interface ProcessTimelineProps {
   service: WebDevelopmentServiceData;
 }
 
-const stepIcons = ["compass", "palette", "hammer", "laptop-code", "flask-vial", "rocket"] as const;
+const stepIcons: AppIconName[] = [
+  "compass",
+  "palette",
+  "server",
+  "flask-vial",
+  "rocket",
+];
 
 export function ProcessTimeline({ service }: ProcessTimelineProps) {
+  const steps = service.processSteps ?? [];
+  const chips = service.approachSupportChips ?? [];
+
   return (
     <section
       className="relative overflow-hidden bg-gradient-to-br from-surface via-surface to-primary/[0.03] py-16 md:py-20 lg:py-24"
-      aria-labelledby="process-heading"
+      aria-labelledby="approach-heading"
     >
-      {/* Warm gradient orbs */}
       <div
-        className="pointer-events-none absolute bottom-0 left-0 h-80 w-96 rounded-full bg-primary/[0.07] blur-3xl -translate-x-1/4 translate-y-1/3"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute top-1/3 right-0 h-56 w-72 rounded-full bg-primary/[0.05] blur-3xl -translate-y-1/2 translate-x-1/4"
+        className="pointer-events-none absolute bottom-0 left-0 h-80 w-96 -translate-x-1/4 translate-y-1/3 rounded-full bg-primary/[0.07] blur-3xl"
         aria-hidden
       />
 
@@ -30,22 +35,22 @@ export function ProcessTimeline({ service }: ProcessTimelineProps) {
         <Reveal staggerSelector="[data-reveal]">
           <div data-reveal>
             <SectionHeader
-              subtitle="Process"
+              subtitle="Approach"
               subtitleClassName="text-primary font-semibold tracking-[0.2em]"
               subtitlePill
-              title="Our proven web development process"
-              description="Structured, transparent, and built to minimize risk."
-              headingId="process-heading"
+              title="Our Service-Specific Approach"
+              description="A focused five-step path for this engagement—not a repeat of the main Services process."
+              headingId="approach-heading"
               centered
             />
           </div>
 
           <div
-            className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 xl:gap-8"
+            className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 xl:gap-6"
             role="list"
-            aria-label="Process steps"
+            aria-label="Approach steps"
           >
-            {service.processSteps.map((step, idx) => {
+            {steps.map((step, idx) => {
               const number = String(idx + 1).padStart(2, "0");
               const iconName = stepIcons[idx % stepIcons.length];
               return (
@@ -53,13 +58,12 @@ export function ProcessTimeline({ service }: ProcessTimelineProps) {
                   key={step.title}
                   data-reveal
                   role="listitem"
-                  className="group relative flex min-h-[280px] flex-col rounded-2xl border border-border/80 bg-surface/95 p-6 sm:p-7 shadow-sm shadow-black/[0.04] backdrop-blur-sm transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-primary/25 hover:shadow-xl hover:shadow-primary/[0.06] focus-within:ring-2 focus-within:ring-primary/40 focus-within:ring-offset-2 focus-within:ring-offset-surface"
+                  className="group relative flex min-h-[260px] flex-col rounded-2xl border border-border/80 bg-surface/95 p-6 shadow-sm shadow-black/[0.04] backdrop-blur-sm transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-primary/25 hover:shadow-xl hover:shadow-primary/[0.06]"
                 >
-                  {/* Connector line (desktop) */}
-                  {idx < service.processSteps.length - 1 ? (
+                  {idx < steps.length - 1 ? (
                     <span
                       className="pointer-events-none absolute -right-3 top-[4.5rem] z-0 hidden h-px w-6 bg-gradient-to-r from-primary/25 to-transparent xl:block"
-                      aria-hidden="true"
+                      aria-hidden
                     />
                   ) : null}
 
@@ -67,13 +71,13 @@ export function ProcessTimeline({ service }: ProcessTimelineProps) {
                     <div className="flex items-start justify-between gap-3">
                       <span
                         className="inline-flex h-8 min-w-8 items-center justify-center rounded-lg bg-primary px-2.5 font-mono text-sm font-bold text-white shadow-sm"
-                        aria-hidden="true"
+                        aria-hidden
                       >
                         {number}
                       </span>
                       <span
-                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary ring-1 ring-primary/15 transition-colors group-hover:bg-primary/18"
-                        aria-hidden="true"
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary ring-1 ring-primary/15"
+                        aria-hidden
                       >
                         <AppIcon name={iconName} size="sm" />
                       </span>
@@ -91,7 +95,7 @@ export function ProcessTimeline({ service }: ProcessTimelineProps) {
                         <li key={item} className="flex items-start gap-2.5">
                           <span
                             className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/50"
-                            aria-hidden="true"
+                            aria-hidden
                           />
                           <span>{item}</span>
                         </li>
@@ -102,6 +106,23 @@ export function ProcessTimeline({ service }: ProcessTimelineProps) {
               );
             })}
           </div>
+
+          {chips.length > 0 ? (
+            <div
+              className="mt-10 flex flex-wrap items-center justify-center gap-2.5"
+              data-reveal
+              aria-label="Approach support areas"
+            >
+              {chips.map((chip) => (
+                <span
+                  key={chip}
+                  className="inline-flex min-h-[36px] items-center rounded-xl border border-border bg-background px-4 py-2 text-sm font-medium text-foreground-muted shadow-sm ring-1 ring-black/[0.02]"
+                >
+                  {chip}
+                </span>
+              ))}
+            </div>
+          ) : null}
         </Reveal>
       </Container>
     </section>

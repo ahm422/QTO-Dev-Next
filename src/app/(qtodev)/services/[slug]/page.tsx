@@ -6,12 +6,9 @@ import { findPublishedServiceSlugsForBuild } from "@/lib/prisma/buildTimePrisma"
 import { skipBuildTimeD1 } from "@/lib/prisma/skipBuildTimeD1";
 import { HeroBanner } from "./components/HeroBanner";
 import { OverviewSection } from "./components/OverviewSection";
+import { ProblemsWeSolve } from "./components/ProblemsWeSolve";
 import { ProcessTimeline } from "./components/ProcessTimeline";
-import { TechStackStrip } from "./components/TechStackStrip";
-import { RelatedProjects } from "./components/RelatedProjects";
-import { ServicePackages } from "./components/ServicePackages";
-import { TrustSection } from "./components/TrustSection";
-import { ContactCTA } from "./components/ContactCTA";
+import { RelevantWorkAndCTA } from "./components/RelevantWorkAndCTA";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -61,12 +58,9 @@ export default async function ServiceOfferingPage({ params }: PageProps) {
     <main className="scroll-smooth bg-background text-foreground" aria-label="Service details">
       <HeroBanner service={service} blurDataURL={BLUR_DATA_URL} />
       <OverviewSection service={service} blurDataURL={BLUR_DATA_URL} />
+      <ProblemsWeSolve service={service} />
       <ProcessTimeline service={service} />
-      <TechStackStrip service={service} blurDataURL={BLUR_DATA_URL} />
-      <RelatedProjects service={service} blurDataURL={BLUR_DATA_URL} />
-      <ServicePackages service={service} />
-      <TrustSection service={service} blurDataURL={BLUR_DATA_URL} />
-      <ContactCTA />
+      <RelevantWorkAndCTA service={service} blurDataURL={BLUR_DATA_URL} />
     </main>
   );
 }

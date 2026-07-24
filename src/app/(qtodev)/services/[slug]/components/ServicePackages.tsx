@@ -8,6 +8,8 @@ import { cn } from "@/components/theme/cn";
 
 interface ServicePackagesProps {
   service: WebDevelopmentServiceData;
+  /** When true, skip outer section/Container (parent owns layout) */
+  embedded?: boolean;
 }
 
 const serviceAreas = [
@@ -21,17 +23,10 @@ const serviceAreas = [
 
 const areaIcons = ["bolt", "cloud", "cart-shopping", "building", "bullseye", "chart-line"] as const;
 
-export function ServicePackages({ service }: ServicePackagesProps) {
+export function ServicePackages({ service, embedded = false }: ServicePackagesProps) {
   const popularIndex = service.packages.findIndex((pkg) => pkg.isPopular);
 
-  return (
-    <section className="relative overflow-hidden py-16 md:py-20 lg:py-24 bg-background" aria-labelledby="service-packages-heading">
-      <div
-        className="pointer-events-none absolute bottom-0 right-0 h-56 w-72 rounded-full bg-primary/[0.05] blur-3xl translate-y-1/3 translate-x-1/4"
-        aria-hidden
-      />
-
-      <Container size="xl" className="relative">
+  const content = (
         <Reveal staggerSelector="[data-reveal]">
           <div data-reveal className="max-w-3xl">
             <SectionHeader
@@ -138,6 +133,27 @@ export function ServicePackages({ service }: ServicePackagesProps) {
             })}
           </div>
         </Reveal>
+  );
+
+  if (embedded) {
+    return (
+      <div className="relative" aria-labelledby="service-packages-heading">
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <section
+      className="relative overflow-hidden bg-background py-16 md:py-20 lg:py-24"
+      aria-labelledby="service-packages-heading"
+    >
+      <div
+        className="pointer-events-none absolute bottom-0 right-0 h-56 w-72 translate-x-1/4 translate-y-1/3 rounded-full bg-primary/[0.05] blur-3xl"
+        aria-hidden
+      />
+      <Container size="xl" className="relative">
+        {content}
       </Container>
     </section>
   );

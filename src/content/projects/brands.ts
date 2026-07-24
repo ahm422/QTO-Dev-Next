@@ -1,4 +1,5 @@
-import type { Project } from "./types";
+import type { Project, TechCategory } from "./types";
+import { DEFAULT_APPROACH_STEPS } from "./types";
 import { PEXELS_TECH_IMAGES } from "@/config/pexelsImages";
 
 const defaultServices = [
@@ -7,6 +8,10 @@ const defaultServices = [
   "Full-Stack Web App",
   "QA & Testing",
 ];
+
+function defaultTechByCategory(techStack: string[]): TechCategory[] {
+  return [{ category: "Technologies", items: techStack }];
+}
 
 function brandProject(input: {
   slug: string;
@@ -19,6 +24,7 @@ function brandProject(input: {
   overview: string;
   scope: string;
   techStack: string[];
+  techByCategory?: TechCategory[];
   problem: string[];
   solution: string[];
   outcomes: string[];
@@ -48,6 +54,7 @@ function brandProject(input: {
     },
     services: defaultServices,
     techStack: input.techStack,
+    techByCategory: input.techByCategory ?? defaultTechByCategory(input.techStack),
     team: "Product Manager + Designer + 2–3 Engineers + QA",
     timeline: "16–24 weeks",
     problem: input.problem,
@@ -60,7 +67,29 @@ function brandProject(input: {
         benefit: input.featureBenefit,
         image: { url: hero, alt: `${input.title} — ${input.featureTitle}` },
       },
+      {
+        title: "Platform Foundations",
+        bullets: ["Secure authentication", "Responsive UI", "Operational reporting"],
+        benefit: "A maintainable base for the next product cycle.",
+        image: { url: hero, alt: `${input.title} foundations` },
+      },
+      {
+        title: "Integrations",
+        bullets: ["API-first connectors", "Reliable data sync", "Admin controls"],
+        benefit: "Teams work from one connected system of record.",
+        image: { url: hero, alt: `${input.title} integrations` },
+      },
+      {
+        title: "Launch Readiness",
+        bullets: ["QA coverage for critical flows", "Monitoring hooks", "Handover docs"],
+        benefit: "Go-live with clear ownership and fewer surprises.",
+        image: { url: hero, alt: `${input.title} launch readiness` },
+      },
     ],
+    approach: {
+      title: "Technology & Development Approach",
+      steps: [...DEFAULT_APPROACH_STEPS],
+    },
     relatedProjects: input.related.map((r) => ({
       slug: r.slug,
       title: r.title,
