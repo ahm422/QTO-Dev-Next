@@ -9,6 +9,7 @@ export interface ServicePackage {
   timeline: string;
   features: string[];
   idealFor: string;
+  isPopular?: boolean;
 }
 
 export interface ServiceProjectCard {
@@ -197,6 +198,7 @@ export const webDevelopmentServiceData: WebDevelopmentServiceData = {
         "Integrated analytics and experimentation",
       ],
       idealFor: "Growing SaaS and e-commerce teams scaling product capabilities.",
+      isPopular: true,
     },
     {
       name: "Enterprise",
