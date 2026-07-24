@@ -8,15 +8,18 @@ import { Reveal } from "@/components/animations/Reveal";
 import { faqsConfig } from "@/config/faqs";
 type FaqsConfigType = typeof faqsConfig;
 import type { Faq } from "@/types/faq";
+import { faqItems } from "@/data/faqs";
 import { cn } from "@/components/theme/cn";
 import { homepageSectionPadding } from "@/components/theme/sectionClasses";
 
 const HEADING_ID = "faqs-heading";
 
 export function FAQsSectionClient({ items , config}: { items: Faq[] ; config?: FaqsConfigType}) {
-  const cfg = config ?? faqsConfig;
-  if (items.length === 0) return null;
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const cfg = config ?? faqsConfig;
+  const resolvedItems = items.length > 0 ? items : faqItems;
+
+  if (resolvedItems.length === 0) return null;
 
   const handleToggle = (index: number) => {
     setOpenIndex((prev) => (prev === index ? null : index));
@@ -57,7 +60,7 @@ export function FAQsSectionClient({ items , config}: { items: Faq[] ; config?: F
           </div>
 
           <div className="mt-8 md:mt-10 mx-auto max-w-3xl space-y-4">
-            {items.map((item, index) => (
+            {resolvedItems.map((item, index) => (
               <div key={index} data-reveal>
                 <FaqAccordionItem
                   index={index}
