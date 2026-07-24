@@ -12,9 +12,13 @@ const fallbackHero =
   "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=1600&h=1000&fit=crop";
 const fallbackOverview =
   "https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=1400&h=1000&fit=crop";
-const fallbackProject =
-  "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&h=800&fit=crop";
 
+/**
+ * Maps a Prisma Service row onto the public detail UI shape.
+ * Rich detail fields (deliverables, problemsWeSolve, processSteps,
+ * approachSupportChips, packages, relatedProjects) stay seed/content-file
+ * until a later CMS phase — spread from webDevelopmentServiceData.
+ */
 export function mapPrismaToContentService(row: ServiceWithTags): WebDevelopmentServiceData {
   const features = parseStringArray(row.features);
   const technologyTags = orderedTagValues(row.technologyTags);
@@ -31,7 +35,8 @@ export function mapPrismaToContentService(row: ServiceWithTags): WebDevelopmentS
     overviewText:
       row.shortDescription ||
       "We bring strategic product thinking and high-quality engineering to deliver outcomes your business can measure. Our process is transparent, collaborative, and focused on speed without sacrificing reliability.",
-    overviewBenefits: features,
+    overviewBenefits:
+      features.length > 0 ? features : webDevelopmentServiceData.overviewBenefits,
     overviewImage: {
       url: row.imageUrl ?? fallbackOverview,
       alt: row.imageAlt ?? `${row.title} overview image`,
@@ -40,13 +45,6 @@ export function mapPrismaToContentService(row: ServiceWithTags): WebDevelopmentS
       technologyTags.length > 0
         ? technologyTags
         : webDevelopmentServiceData.technologies,
-    relatedProjects: [
-      {
-        slug: "finflow-inc",
-        name: "FinFlow Inc.",
-        outcome: "Built payment analytics for faster finance decisions.",
-        thumbnail: fallbackProject,
-      },
-    ],
+    // Keep enriched seed relatedProjects (do not replace with thin stubs)
   };
 }

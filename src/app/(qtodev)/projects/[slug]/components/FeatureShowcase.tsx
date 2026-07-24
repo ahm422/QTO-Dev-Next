@@ -22,11 +22,11 @@ export function FeatureShowcase({ project, blurDataURL }: FeatureShowcaseProps) 
         <Reveal staggerSelector="[data-reveal]">
           <div data-reveal>
             <SectionHeader
-              subtitle="Features"
+              subtitle="Solution"
               subtitleClassName="text-primary font-semibold tracking-[0.2em]"
               subtitlePill
-              title="Key Features"
-              description="The capabilities that make this project stand out."
+              title="Solution & Key Features"
+              description="What we built—the capabilities that delivered the outcome."
               headingId="key-features-heading"
               centered={false}
             />

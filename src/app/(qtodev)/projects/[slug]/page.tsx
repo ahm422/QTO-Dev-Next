@@ -5,14 +5,10 @@ import {
 import { findPublishedProjectSlugsForBuild } from "@/lib/prisma/buildTimePrisma";
 import { skipBuildTimeD1 } from "@/lib/prisma/skipBuildTimeD1";
 import { CaseStudyHero } from "./components/CaseStudyHero";
-import { ProjectAbout } from "./components/ProjectAbout";
-import { ProblemSolution } from "./components/ProblemSolution";
+import { ProjectOverviewChallenge } from "./components/ProjectOverviewChallenge";
 import { FeatureShowcase } from "./components/FeatureShowcase";
-import { OurApproach } from "./components/OurApproach";
-import { TechStackStrip } from "./components/TechStackStrip";
-import { TestimonialBlock } from "./components/TestimonialBlock";
-import { OtherProjects } from "./components/OtherProjects";
-import { ContactCTAWithLocations } from "./components/ContactCTAWithLocations";
+import { TechnologyAndApproach } from "./components/TechnologyAndApproach";
+import { ResultsImpactAndCTA } from "./components/ResultsImpactAndCTA";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -61,14 +57,10 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   return (
     <main className="scroll-smooth bg-background text-foreground" aria-label="Project case study">
       <CaseStudyHero project={project} blurDataURL={BLUR_DATA_URL} />
-      <ProjectAbout project={project} />
-      <ProblemSolution project={project} />
+      <ProjectOverviewChallenge project={project} />
       <FeatureShowcase project={project} blurDataURL={BLUR_DATA_URL} />
-      <OurApproach project={project} />
-      <TechStackStrip project={project} />
-      <TestimonialBlock project={project} />
-      <OtherProjects project={project} />
-      <ContactCTAWithLocations />
+      <TechnologyAndApproach project={project} />
+      <ResultsImpactAndCTA project={project} />
     </main>
   );
 }

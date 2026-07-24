@@ -1,3 +1,8 @@
+export interface TechCategory {
+  category: string;
+  items: string[];
+}
+
 export interface Project {
   slug: string;
   title: string;
@@ -12,6 +17,8 @@ export interface Project {
   };
   services: string[];
   techStack: string[];
+  /** Categorized stack for Technology & Development Approach section */
+  techByCategory?: TechCategory[];
   team: string;
   timeline: string;
   problem: string[];
@@ -45,3 +52,13 @@ export interface Project {
   pdfDownloadUrl?: string;
   demoUrl?: string;
 }
+
+/** Default 6-step workflow strip for project detail IA */
+export const DEFAULT_APPROACH_STEPS = [
+  "Discovery",
+  "Architecture",
+  "UI/UX",
+  "Development",
+  "Testing",
+  "Deployment",
+] as const;

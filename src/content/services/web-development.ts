@@ -1,3 +1,5 @@
+import type { AppIconName } from "@/components/ui/shared/AppIcon";
+
 export interface ProcessStep {
   title: string;
   deliverables: string[];
@@ -12,11 +14,22 @@ export interface ServicePackage {
   isPopular?: boolean;
 }
 
+export interface ServiceContentCard {
+  title: string;
+  description: string;
+  icon?: AppIconName;
+}
+
 export interface ServiceProjectCard {
   slug: string;
   name: string;
-  outcome: string;
   thumbnail: string;
+  challenge: string;
+  solution: string;
+  tech: string[];
+  result: string;
+  /** @deprecated Prefer `result` for detail-page cards */
+  outcome?: string;
 }
 
 export interface ServiceTestimonial {
@@ -34,10 +47,14 @@ export interface WebDevelopmentServiceData {
   subheadline: string;
   proofChips: string[];
   heroImage: { url: string; alt: string };
+  /** Legacy overview prose — retained for mapper/CMS back-compat; not shown on detail IA */
   overviewText: string;
   overviewBenefits: string[];
   overviewImage: { url: string; alt: string };
+  deliverables: ServiceContentCard[];
+  problemsWeSolve: ServiceContentCard[];
   processSteps: ProcessStep[];
+  approachSupportChips: string[];
   technologies: string[];
   relatedProjects: ServiceProjectCard[];
   packages: ServicePackage[];
@@ -63,7 +80,7 @@ export const webDevelopmentServiceData: WebDevelopmentServiceData = {
     alt: "Web app mockups across desktop, tablet, and mobile",
   },
   overviewText:
-    "Great web products are not built by chance. They are built through disciplined strategy, clear communication, and technical execution that supports business goals. Our team partners with founders, product teams, and operations leaders to translate vision into measurable outcomes—higher conversion rates, faster release cycles, and systems that scale with confidence. We combine product thinking with engineering rigor to avoid bloated roadmaps, expensive rewrites, and delivery bottlenecks. Every engagement starts by understanding your growth model, user journey, and technical constraints, then we architect solutions that balance speed and quality. From modern frontend experiences to secure backend systems, we build with performance, accessibility, and long-term maintainability in mind. The result is a digital product that does not just look polished but consistently drives pipeline, retention, and revenue.",
+    "Great web products are not built by chance. They are built through disciplined strategy, clear communication, and technical execution that supports business goals.",
   overviewBenefits: [
     "Senior engineers and product-minded delivery from day one",
     "Scalable architecture designed for growth and maintainability",
@@ -76,61 +93,134 @@ export const webDevelopmentServiceData: WebDevelopmentServiceData = {
     url: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=1400&h=1000&fit=crop",
     alt: "Team planning modern web development roadmap",
   },
+  deliverables: [
+    {
+      title: "Custom Web Applications",
+      description:
+        "Bespoke apps tailored to your workflows, users, and growth model—not off-the-shelf templates.",
+      icon: "laptop-code",
+    },
+    {
+      title: "SaaS & MVPs",
+      description:
+        "Launch-ready SaaS products and MVPs with clear architecture so you can iterate without rewrites.",
+      icon: "rocket",
+    },
+    {
+      title: "Dashboards & Analytics",
+      description:
+        "Operational and executive dashboards that turn data into decisions with role-based views.",
+      icon: "chart-line",
+    },
+    {
+      title: "E-commerce Platforms",
+      description:
+        "Headless and custom commerce experiences optimized for conversion, inventory, and peak load.",
+      icon: "cart-shopping",
+    },
+    {
+      title: "CRM & ERP Systems",
+      description:
+        "Internal platforms that replace spreadsheets with reliable pipelines, permissions, and reporting.",
+      icon: "building",
+    },
+    {
+      title: "Integrations & Maintenance",
+      description:
+        "API integrations, ongoing support, and performance hardening so your product stays production-ready.",
+      icon: "gear",
+    },
+  ],
+  problemsWeSolve: [
+    {
+      title: "Manual, error-prone processes",
+      description:
+        "Teams lose hours to spreadsheets and handoffs. We digitize workflows with ownership and audit trails.",
+      icon: "list",
+    },
+    {
+      title: "Outdated or brittle applications",
+      description:
+        "Legacy stacks slow shipping and scare talent. We modernize without a risky big-bang rewrite.",
+      icon: "server",
+    },
+    {
+      title: "Poor performance & UX",
+      description:
+        "Slow pages and confusing flows kill conversion. We rebuild critical paths for speed and clarity.",
+      icon: "bolt",
+    },
+    {
+      title: "Disconnected systems",
+      description:
+        "Data silos block decisions. We connect tools with clean APIs and a single source of truth.",
+      icon: "share-nodes",
+    },
+    {
+      title: "Scalability bottlenecks",
+      description:
+        "Traffic and team growth break fragile setups. We design for load, observability, and safe releases.",
+      icon: "arrow-trending-up",
+    },
+    {
+      title: "Unclear product direction",
+      description:
+        "Vague roadmaps waste budget. We align requirements, architecture, and delivery milestones early.",
+      icon: "compass",
+    },
+  ],
   processSteps: [
     {
-      title: "Discovery & Strategy",
+      title: "Requirements & Architecture",
       deliverables: [
         "Stakeholder workshops and requirements mapping",
         "Business goals and KPI alignment",
-        "Scope boundaries and risk register",
+        "Architecture blueprint and tech decisions",
         "Delivery roadmap with milestones",
       ],
     },
     {
-      title: "UI/UX Design",
+      title: "UI Development",
       deliverables: [
         "Information architecture and user flows",
-        "Low/high fidelity wireframes",
         "Design system foundations",
-        "Interactive prototype validation",
+        "Responsive UI implementation",
+        "Interactive validation with stakeholders",
       ],
     },
     {
-      title: "Architecture & Tech Decisions",
+      title: "Backend & Integrations",
       deliverables: [
-        "Frontend/backend architecture blueprint",
-        "Data model and API contract design",
-        "Infrastructure and CI/CD decisions",
-        "Security and observability baseline",
+        "API contracts and data model",
+        "Core business logic and auth",
+        "Third-party and internal integrations",
+        "CI/CD and environment setup",
       ],
     },
     {
-      title: "Agile Development",
+      title: "Testing",
       deliverables: [
-        "Two-week sprint execution",
-        "Feature delivery with code reviews",
-        "Frequent demos and feedback loops",
-        "Continuous integration and deployment",
-      ],
-    },
-    {
-      title: "QA & Optimization",
-      deliverables: [
-        "Functional and regression testing",
+        "Functional and regression coverage",
         "Performance and accessibility checks",
-        "Cross-browser and device coverage",
-        "Bug triage and release hardening",
+        "Cross-browser and device QA",
+        "Release hardening and bug triage",
       ],
     },
     {
-      title: "Launch & Growth Support",
+      title: "Launch & Support",
       deliverables: [
         "Production release and monitoring",
         "Analytics instrumentation",
         "Post-launch optimization backlog",
-        "Long-term support and iteration plan",
+        "Ongoing support and iteration plan",
       ],
     },
+  ],
+  approachSupportChips: [
+    "Project communication",
+    "QA",
+    "Security",
+    "Deployment",
   ],
   technologies: [
     "Next.js",
@@ -152,26 +242,27 @@ export const webDevelopmentServiceData: WebDevelopmentServiceData = {
     {
       slug: "lahebo-grc-platform",
       name: "Lahebo GRC Platform",
+      thumbnail:
+        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&h=800&fit=crop",
+      challenge:
+        "Manual spreadsheet-driven compliance slowed audits and hid risk across teams.",
+      solution:
+        "Role-based GRC platform with automated evidence workflows and real-time dashboards.",
+      tech: ["Next.js", "TypeScript", "PostgreSQL", "AWS"],
+      result: "45% faster audit preparation with clearer executive visibility.",
       outcome: "Reduced audit preparation time by 45% with role-based workflows.",
-      thumbnail: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&h=800&fit=crop",
     },
     {
       slug: "finflow-inc",
       name: "FinFlow Inc.",
-      outcome: "Unified payment reconciliation and real-time finance reporting.",
       thumbnail: "/images/pexels-thisisengineering-3861958.jpg",
-    },
-    {
-      slug: "shopverse",
-      name: "ShopVerse",
-      outcome: "Improved conversion with headless checkout architecture.",
-      thumbnail: "/images/pexels-thisisengineering-3861967.jpg",
-    },
-    {
-      slug: "propwise-realty",
-      name: "PropWise Realty",
-      outcome: "Unified listings, tours, and deal pipelines for agents.",
-      thumbnail: "/images/pexels-olia-danilevich-4974912.jpg",
+      challenge:
+        "Payment reconciliation lived in spreadsheets across banks and processors.",
+      solution:
+        "Unified payment infrastructure with exception queues and scheduled finance reports.",
+      tech: ["Next.js", "PostgreSQL", "Stripe", "TypeScript"],
+      result: "Faster daily reconciliation and real-time exception visibility.",
+      outcome: "Unified payment reconciliation and real-time finance reporting.",
     },
   ],
   packages: [

@@ -1,4 +1,4 @@
-import { Project } from "./types";
+import { Project, DEFAULT_APPROACH_STEPS } from "./types";
 
 export const laheboProject: Project = {
   slug: "lahebo-grc-platform",
@@ -24,6 +24,13 @@ export const laheboProject: Project = {
   },
   services: ["Product Discovery", "UI/UX Design", "Full-Stack Web App", "QA & Testing", "Cloud DevOps"],
   techStack: ["Next.js", "TypeScript", "Node.js", "PostgreSQL", "Redis", "Tailwind CSS", "AWS"],
+  techByCategory: [
+    { category: "Frontend", items: ["Next.js", "TypeScript", "Tailwind CSS"] },
+    { category: "Backend", items: ["Node.js"] },
+    { category: "Database", items: ["PostgreSQL", "Redis"] },
+    { category: "Cloud", items: ["AWS"] },
+    { category: "Security", items: ["Role-based access", "Audit logging"] },
+  ],
   team: "Product Manager + UX Designer + 2 Frontend Devs + 2 Backend Devs + QA",
   timeline: "24 weeks",
   problem: [
@@ -85,13 +92,8 @@ export const laheboProject: Project = {
     },
   ],
   approach: {
-    title: "How We Built It",
-    steps: [
-      "Discovery workshops mapped business goals, constraints, and key user journeys.",
-      "Rapid wireframing validated workflows before development.",
-      "Sprint-based delivery shipped modular features every 2 weeks.",
-      "Structured QA and UAT reduced regressions before launch.",
-    ],
+    title: "Technology & Development Approach",
+    steps: [...DEFAULT_APPROACH_STEPS],
     challenges: [
       "Legacy data quality varied across teams, requiring normalization pipelines.",
       "Multiple stakeholder groups needed tailored dashboards and permissions.",
