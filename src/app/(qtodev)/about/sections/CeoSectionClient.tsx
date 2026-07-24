@@ -78,8 +78,10 @@ export function CeoSectionClient({
         <Reveal staggerSelector="[data-reveal]">
           <div
             className={cn(
-              "grid items-center gap-12 lg:grid-cols-2",
-              compact ? "lg:gap-10" : "lg:gap-16"
+              "grid items-center gap-12",
+              compact
+                ? "lg:grid-cols-2 lg:gap-10"
+                : "lg:grid-cols-[minmax(0,380px)_1fr] lg:gap-16"
             )}
           >
             {/* Photo card — left */}
@@ -88,7 +90,7 @@ export function CeoSectionClient({
               ref={hitRef}
               className={cn(
                 "group/ceo relative mx-auto w-full",
-                compact ? "max-w-xs lg:max-w-none" : "max-w-md lg:max-w-none"
+                compact ? "max-w-xs lg:max-w-none" : "max-w-sm"
               )}
             >
               <div ref={tiltRef} className="relative" style={{ transformStyle: "preserve-3d" }}>
@@ -113,7 +115,7 @@ export function CeoSectionClient({
                         width={800}
                         height={1000}
                         className="h-full w-full object-cover object-[center_15%]"
-                        sizes={compact ? "(max-width: 1024px) 80vw, 320px" : "(max-width: 1024px) 90vw, 480px"}
+                        sizes={compact ? "(max-width: 1024px) 80vw, 320px" : "(max-width: 1024px) 90vw, 384px"}
                         quality={85}
                       />
                     ) : (
