@@ -6,6 +6,7 @@ import {
   SITE_DESCRIPTION,
   SITE_NAME,
   SITE_URL,
+  SOCIAL_LINKS,
 } from "@/lib/constants";
 import { prisma } from "./helpers";
 
@@ -20,6 +21,9 @@ const entries: { key: string; value: string; label?: string }[] = [
   { key: "contact.email", value: CONTACT_EMAIL, label: "Contact email" },
   { key: "contact.phone", value: CONTACT_PHONE, label: "Contact phone" },
   { key: "contact.office", value: OFFICE_ADDRESS, label: "Office address" },
+  { key: "social.facebook", value: SOCIAL_LINKS.facebook, label: "Facebook URL" },
+  { key: "social.instagram", value: SOCIAL_LINKS.instagram, label: "Instagram URL" },
+  { key: "social.linkedin", value: SOCIAL_LINKS.linkedin, label: "LinkedIn URL" },
 ];
 
 export async function seedSiteConfig() {

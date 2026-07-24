@@ -3,7 +3,7 @@
 import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { persistD1Bookmark } from "@/lib/d1/session"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { siteConfigSchema, type SiteConfigInput } from "@/lib/validators/admin/siteConfig"
 
 
@@ -16,6 +16,7 @@ export async function upsertSiteConfig(data: SiteConfigInput) {
     update: { value: parsed.value, label: parsed.label },
   })
   revalidatePath("/")
+  revalidateTag("site-config", "max")
   await persistD1Bookmark()
 }
 
@@ -23,5 +24,6 @@ export async function deleteSiteConfig(key: string) {
   await requireDeleteAction()
   await prisma.siteConfig.delete({ where: { key } })
   revalidatePath("/")
+  revalidateTag("site-config", "max")
   await persistD1Bookmark()
 }

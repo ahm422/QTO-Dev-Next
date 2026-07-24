@@ -14,13 +14,12 @@ export const CACHE_DURATION = {
 };
 
 export const SOCIAL_LINKS = {
-  twitter: 'https://twitter.com/qtodev',
-  linkedin: 'https://linkedin.com/company/qtodev',
-  github: 'https://github.com/qtodev',
-  facebook: 'https://facebook.com/qtodev',
-  instagram: 'https://instagram.com/qtodev',
+  facebook: 'https://www.facebook.com/people/QTO-Dev/61591771419250/',
+  instagram: 'https://www.instagram.com/theqtodev/',
+  linkedin: 'https://www.linkedin.com/company/qtodev',
 };
 
-export const CONTACT_EMAIL = 'hello@qtodev.com';
-export const CONTACT_PHONE = '+92 312 1234567';
-export const OFFICE_ADDRESS = 'USA • UK • Saudi Arabia • Pakistan';
+export const CONTACT_EMAIL = 'info@qto.dev';
+export const CONTACT_PHONE = '03127581887';
+export const OFFICE_ADDRESS =
+  'QTO Dev Izmir town society extension road opposite 81-D Lahore';
