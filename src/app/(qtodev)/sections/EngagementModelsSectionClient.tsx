@@ -21,6 +21,7 @@ export function EngagementModelsSectionClient({
 }) {
   const cfg = config ?? engagementModelsConfig;
   if (items.length === 0) return null;
+
   return (
     <section
       className={cn(
@@ -29,7 +30,6 @@ export function EngagementModelsSectionClient({
       )}
       aria-labelledby={HEADING_ID}
     >
-      {/* Soft gradient orbs for depth */}
       <div
         className="pointer-events-none absolute top-1/2 left-0 w-[560px] h-[420px] rounded-full bg-primary/[0.05] blur-3xl -translate-x-1/2 -translate-y-1/2"
         aria-hidden
@@ -41,7 +41,7 @@ export function EngagementModelsSectionClient({
 
       <Container className="relative">
         <Reveal staggerSelector="[data-reveal]">
-          <div data-reveal className="mb-8 md:mb-10">
+          <div data-reveal className="mb-10 md:mb-12 lg:mb-14">
             <SectionHeader
               subtitle={cfg.subtitle}
               subtitleClassName="text-primary font-semibold tracking-[0.2em]"
@@ -52,41 +52,38 @@ export function EngagementModelsSectionClient({
               headingId={HEADING_ID}
             />
           </div>
+
+          <div
+            data-reveal
+            className={cn(
+              "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+              "gap-4 sm:gap-5 lg:gap-5",
+              "items-stretch pt-2"
+            )}
+            role="list"
+          >
+            {items.map((model) => (
+              <article
+                key={model.optionNumber}
+                role="listitem"
+                className="flex min-h-0 w-full min-w-0 overflow-visible"
+                data-reveal
+              >
+                <EngagementCard
+                  optionNumber={model.optionNumber}
+                  title={model.title}
+                  description={model.description}
+                  features={model.features}
+                  isPopular={model.isPopular}
+                  getStartedHref={model.getStartedHref}
+                  getStartedLabel={cfg.getStartedLabel}
+                  mostPopularLabel={cfg.mostPopularLabel}
+                />
+              </article>
+            ))}
+          </div>
         </Reveal>
       </Container>
-
-      {/* Full-width cards grid */}
-      <div className="relative w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
-        <div className="mx-auto w-full max-w-[1800px]">
-          <Reveal staggerSelector="[data-reveal]">
-            <div
-              data-reveal
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-4 items-stretch lg:items-center sm:[grid-template-columns:repeat(2,minmax(0,1fr))] lg:[grid-template-columns:repeat(3,minmax(0,1fr))]"
-              role="list"
-            >
-              {items.map((model) => (
-                <article
-                  key={model.optionNumber}
-                  role="listitem"
-                  className="flex min-h-0 w-full min-w-0 overflow-visible"
-                  data-reveal
-                >
-                  <EngagementCard
-                    optionNumber={model.optionNumber}
-                    title={model.title}
-                    description={model.description}
-                    features={model.features}
-                    isPopular={model.isPopular}
-                    getStartedHref={model.getStartedHref}
-                    getStartedLabel={cfg.getStartedLabel}
-                    mostPopularLabel={cfg.mostPopularLabel}
-                  />
-                </article>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-      </div>
     </section>
   );
 }

@@ -53,9 +53,9 @@ export function FeaturedPostsSectionClient({
             />
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10">
             {posts.map((post) => (
-              <div key={post.id} data-reveal>
+              <div key={post.id} data-reveal className="h-full min-w-0">
                 <FeaturedBlogCard post={post} readMoreLabel={cfg.readMoreLabel} />
               </div>
             ))}

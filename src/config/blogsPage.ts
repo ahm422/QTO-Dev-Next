@@ -3,6 +3,8 @@
  * CMS: blogs.page — edit in admin → Pages
  */
 
+import { BLOG_NEWS_CATEGORY } from "@/config/blogCategories";
+
 export const blogsPageConfig = {
   hero: {
     badge: "Blog",
@@ -17,6 +19,15 @@ export const blogsPageConfig = {
     titleHighlight: "Featured",
     description:
       "Hand-picked reads on development, performance, and modern web.",
+  },
+  news: {
+    subtitle: "NEWS",
+    title: "Company News",
+    titleHighlight: "News",
+    description:
+      "Updates from the QTO DEV team — launches, milestones, and announcements.",
+    category: BLOG_NEWS_CATEGORY,
+    limit: 3,
   },
   grid: {
     subtitle: "ALL POSTS",
@@ -80,6 +91,7 @@ export function mergeBlogsPageConfig(
     ...cms,
     hero: { ...blogsPageConfig.hero, ...cms.hero },
     featured: { ...blogsPageConfig.featured, ...cms.featured },
+    news: { ...blogsPageConfig.news, ...cms.news },
     grid: { ...blogsPageConfig.grid, ...cms.grid },
     filter: { ...blogsPageConfig.filter, ...cms.filter },
     pagination: { ...blogsPageConfig.pagination, ...cms.pagination, pageSize },

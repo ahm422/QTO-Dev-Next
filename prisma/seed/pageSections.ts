@@ -386,6 +386,15 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
         titleHighlight: "Featured",
         description: "Hand-picked reads on development, performance, and modern web.",
       },
+      news: {
+        subtitle: "NEWS",
+        title: "Company News",
+        titleHighlight: "News",
+        description:
+          "Updates from the QTO DEV team — launches, milestones, and announcements.",
+        category: "Company News",
+        limit: 3,
+      },
       grid: {
         subtitle: "ALL POSTS",
         title: "Articles & Insights",
