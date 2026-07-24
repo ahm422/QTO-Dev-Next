@@ -6,6 +6,7 @@ import { fromPrismaBlogPost, blogPostWithTagsInclude } from "@/lib/prisma/blogPo
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import AdminContentContext from "@/components/admin/layout/AdminContentContext"
 import FilterBar from "@/components/admin/data/FilterBar"
+import { BLOG_NEWS_CATEGORY } from "@/config/blogCategories"
 import BlogTable from "./Table"
 
 export default async function BlogPage({
@@ -31,15 +32,16 @@ export default async function BlogPage({
         title="Blog"
         subtitle="Manage blog posts and articles"
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Blog" }]}
-        publicHref="/blog"
+        publicHref="/blogs"
         primaryAction={roleCanCreateContent(role as AdminRole) ? { label: "+ New Post", href: "/admin/blog/new" } : undefined}
       />
       <AdminContentContext
         publicPaths={[
-          { label: "Blog listing", href: "/blog" },
-          { label: "Individual posts", href: "/blog" },
+          { label: "Blog listing", href: "/blogs" },
+          { label: "News section", href: "/blogs" },
+          { label: "Individual posts", href: "/blogs" },
         ]}
-        description="Each published post appears on /blog and at /blog/[slug]."
+        description={`Published posts appear on /blogs and /blogs/[slug]. Category "${BLOG_NEWS_CATEGORY}" surfaces in the News section.`}
         component="Blog grid in src/app/(qtodev)/blogs/"
       />
       <FilterBar searchPlaceholder="Search posts…" filters={[{ key: "status", placeholder: "All Statuses", options: [{ label: "Published", value: "published" }, { label: "Draft", value: "draft" }] }]} />

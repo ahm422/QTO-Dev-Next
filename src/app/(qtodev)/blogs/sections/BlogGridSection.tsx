@@ -44,12 +44,12 @@ export function BlogGridSection({
       ) : (
         <div
           className={cn(
-            "grid gap-8 lg:gap-10",
-            embedded ? "md:grid-cols-2" : "md:grid-cols-2 lg:grid-cols-3"
+            "grid gap-5 sm:gap-6 lg:gap-8",
+            embedded ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           )}
         >
           {posts.map((post) => (
-            <div key={post.id} data-reveal>
+            <div key={post.id} data-reveal className="h-full min-w-0">
               <LatestPostCard
                 post={post}
                 authorLabel={cfg.authorLabel}

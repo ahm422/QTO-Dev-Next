@@ -1,5 +1,6 @@
 import { BlogPost } from "@/types/blog";
 import { PEXELS_TECH_IMAGES } from "@/config/pexelsImages";
+import { BLOG_NEWS_CATEGORY } from "@/config/blogCategories";
 
 export const blogPosts: BlogPost[] = [
   {
@@ -140,5 +141,70 @@ export const blogPosts: BlogPost[] = [
       alt: "Tailwind CSS and modern UI styling"
     },
     readingTime: 15,
+  },
+  {
+    id: "5",
+    slug: "qto-dev-platform-launch",
+    title: "QTO DEV Launches Next-Gen Delivery Platform",
+    description: "Announcing our new delivery platform for faster builds and clearer client collaboration.",
+    excerpt:
+      "We're rolling out a new delivery platform that tightens feedback loops and keeps every milestone visible.",
+    content: `
+      <h2>What's shipping</h2>
+      <p>Today we're launching the next generation of our delivery platform — built for clarity from kickoff to handoff.</p>
+      <h3>Highlights</h3>
+      <ul>
+        <li>Live milestone tracking for every engagement</li>
+        <li>Faster review cycles with shared workspaces</li>
+        <li>Stronger security defaults across environments</li>
+      </ul>
+      <h2>Why it matters</h2>
+      <p>Clients get a single source of truth; our teams ship with less friction and more confidence.</p>
+      <blockquote>Better tooling means we spend more time building product and less time chasing status.</blockquote>
+    `,
+    author: "QTO DEV Team",
+    publishedAt: "2024-03-12",
+    updatedAt: "2024-03-12",
+    featured: false,
+    category: BLOG_NEWS_CATEGORY,
+    tags: ["Company", "Product", "Announcement"],
+    image: PEXELS_TECH_IMAGES[4],
+    coverImage: {
+      url: PEXELS_TECH_IMAGES[4],
+      alt: "QTO DEV team launching a new platform",
+    },
+    readingTime: 4,
+  },
+  {
+    id: "6",
+    slug: "qto-dev-office-expansion",
+    title: "QTO DEV Expands Engineering Capacity",
+    description: "We're growing the team to support more ambitious product builds across the region.",
+    excerpt:
+      "New engineering roles and studio capacity are coming online to support larger multi-product roadmaps.",
+    content: `
+      <h2>Growing with our clients</h2>
+      <p>Demand for high-performance product builds continues to climb — so we're expanding capacity across engineering and delivery.</p>
+      <h3>What we're adding</h3>
+      <ul>
+        <li>Additional full-stack and platform engineers</li>
+        <li>Dedicated QA and release coordination</li>
+        <li>Stronger pairing between design and engineering</li>
+      </ul>
+      <h2>Looking ahead</h2>
+      <p>Expect more published learnings from the build floor as the team scales.</p>
+    `,
+    author: "QTO DEV Team",
+    publishedAt: "2024-03-01",
+    updatedAt: "2024-03-01",
+    featured: false,
+    category: BLOG_NEWS_CATEGORY,
+    tags: ["Company", "Team", "Growth"],
+    image: PEXELS_TECH_IMAGES[5],
+    coverImage: {
+      url: PEXELS_TECH_IMAGES[5],
+      alt: "Engineering team collaboration at QTO DEV",
+    },
+    readingTime: 3,
   },
 ];

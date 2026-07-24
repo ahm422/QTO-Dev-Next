@@ -9,11 +9,12 @@ import FormGrid from "@/components/admin/forms/FormGrid"
 import MediaUpload from "@/components/admin/MediaUpload"
 import RichTextEditor from "@/components/admin/RichTextEditor"
 import LineListTextarea from "@/components/admin/forms/LineListTextarea"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { BLOG_CATEGORY_PRESETS, BLOG_NEWS_CATEGORY } from "@/config/blogCategories"
 import { createBlogPost, updateBlogPost } from "../actions"
 
 function slugify(s: string) { return s.toLowerCase().trim().replace(/[^a-z0-9\s-]/g,"").replace(/\s+/g,"-").replace(/-+/g,"-") }
@@ -77,7 +78,26 @@ export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPo
           )} />
           <FormGrid cols={3}>
             <FormField control={form.control} name="category" render={({ field }) => (
-              <FormItem><FormLabel>Category</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+              <FormItem>
+                <FormLabel>Category</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    list="blog-category-presets"
+                    placeholder={BLOG_NEWS_CATEGORY}
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <datalist id="blog-category-presets">
+                  {BLOG_CATEGORY_PRESETS.map((category) => (
+                    <option key={category} value={category} />
+                  ))}
+                </datalist>
+                <FormDescription>
+                  Use &quot;{BLOG_NEWS_CATEGORY}&quot; for the News section on /blogs. Publish to make it public.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
             )} />
             <FormField control={form.control} name="author" render={({ field }) => (
               <FormItem><FormLabel>Author</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>

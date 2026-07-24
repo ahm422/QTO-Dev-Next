@@ -1,16 +1,13 @@
 "use client";
 
-import { useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BlogPost } from "@/types/blog";
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Text } from "@/components/ui/shared/Text";
 import { Heading } from "@/components/ui/shared/Heading";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { formatDateShort } from "@/lib/format";
-import { useMotionEnabled } from "@/hooks/useReducedMotion";
 import { cn } from "@/components/theme/cn";
 
 interface FeaturedBlogCardProps {
@@ -18,97 +15,92 @@ interface FeaturedBlogCardProps {
   readMoreLabel: string;
 }
 
+/**
+ * Media-first vertical card — readable in 1–2 column grids and on mobile.
+ * Avoids side-by-side image/text inside narrow columns.
+ */
 export function FeaturedBlogCard({ post, readMoreLabel }: FeaturedBlogCardProps) {
-  const motionEnabled = useMotionEnabled();
-  const imageRef = useRef<HTMLDivElement>(null);
   const imageUrl = post.coverImage?.url ?? post.image;
   const imageAlt = post.coverImage?.alt ?? post.title;
   const excerpt = post.excerpt ?? post.description;
 
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>) => {
-      if (!motionEnabled || !imageRef.current) return;
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 16;
-      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 16;
-      imageRef.current.style.transform = `translate3d(${x}px, ${y}px, 0) scale(1.06)`;
-    },
-    [motionEnabled]
-  );
-
-  const handleMouseLeave = useCallback(() => {
-    if (!imageRef.current) return;
-    imageRef.current.style.transform = "translate3d(0, 0, 0) scale(1)";
-  }, []);
-
   return (
-    <Card className="overflow-hidden p-0 rounded-2xl border-primary/10 hover:border-primary/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 group">
+    <article
+      className={cn(
+        "group relative flex h-full flex-col overflow-hidden rounded-2xl",
+        "border border-border/80 bg-card",
+        "transition-[border-color,transform,box-shadow] duration-300",
+        "hover:border-primary/35 hover:-translate-y-0.5",
+        "hover:shadow-[0_20px_40px_-24px_rgba(0,0,0,0.45)]"
+      )}
+    >
       <Link
         href={`/blogs/${post.slug}`}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        className="flex flex-col md:flex-row focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-2xl"
+        className="flex h-full flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-2xl"
       >
-        <div className="relative w-full md:w-1/2 shrink-0 min-h-[16rem] md:min-h-[20rem] bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none overflow-hidden">
+        <div className="relative aspect-[16/10] w-full overflow-hidden bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5">
           {imageUrl ? (
-            <div
-              ref={imageRef}
-              className="absolute inset-0 transition-transform duration-300 ease-out will-change-transform"
-            >
-              <Image
-                src={imageUrl}
-                alt={imageAlt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority
-              />
-            </div>
+            <Image
+              src={imageUrl}
+              alt={imageAlt}
+              fill
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority
+            />
           ) : null}
-        </div>
-        <div className="flex flex-1 flex-col p-6 md:p-8 lg:p-10 text-left">
-          <Badge variant="default" className="mb-4 w-fit text-xs font-medium">
+          <div
+            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-background/10 to-transparent"
+            aria-hidden
+          />
+          <Badge className="absolute bottom-3 left-3 z-10 bg-primary text-primary-foreground shadow-sm">
             {post.category}
           </Badge>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-foreground-muted mb-3">
-            <span className="inline-flex items-center gap-1.5">
-              <AppIcon name="calendar" size="sm" className="text-foreground-muted" />
-              <time dateTime={post.publishedAt}>{formatDateShort(post.publishedAt)}</time>
+        </div>
+
+        <div className="flex flex-1 flex-col gap-3 p-5 sm:p-6">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm text-foreground-muted">
+            <time dateTime={post.publishedAt} className="inline-flex items-center gap-1.5">
+              <AppIcon name="calendar" size="sm" className="opacity-70" />
+              {formatDateShort(post.publishedAt)}
+            </time>
+            <span className="text-border" aria-hidden>
+              ·
             </span>
-            <span
-              className={cn(
-                "inline-flex items-center gap-1.5 transition-all duration-300",
-                "group-hover:text-primary group-hover:underline group-hover:underline-offset-4 group-hover:decoration-primary/40"
-              )}
-            >
-              <AppIcon
-                name="clock"
-                size="sm"
-                className="text-foreground-muted transition-colors duration-300 group-hover:text-primary"
-              />
-              <span className="transition-colors duration-300">{post.readingTime} min read</span>
+            <span className="inline-flex items-center gap-1.5">
+              <AppIcon name="clock" size="sm" className="opacity-70" />
+              {post.readingTime} min
             </span>
           </div>
+
           <Heading
             level={3}
-            className="mb-3 text-2xl md:text-3xl line-clamp-3 group-hover:text-primary transition-colors"
+            className="text-xl sm:text-2xl leading-snug line-clamp-2 tracking-tight transition-colors group-hover:text-primary"
           >
             {post.title}
           </Heading>
+
           {excerpt ? (
-            <Text size="base" color="muted" className="mb-4 line-clamp-3 leading-relaxed">
+            <Text size="sm" color="muted" className="line-clamp-2 sm:line-clamp-3 leading-relaxed">
               {excerpt}
             </Text>
           ) : null}
-          <Text size="sm" color="muted" className="mb-6">
-            {post.author}
-          </Text>
-          <span className="inline-flex items-center gap-2 text-primary font-semibold text-sm mt-auto">
-            {readMoreLabel}
-            <AppIcon name="arrow-right" size="sm" className="transition-transform group-hover:translate-x-0.5" />
-          </span>
+
+          <div className="mt-auto flex items-center justify-between gap-3 pt-2 border-t border-border/60">
+            <Text size="sm" color="muted" className="truncate text-xs sm:text-sm">
+              {post.author}
+            </Text>
+            <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-primary">
+              {readMoreLabel}
+              <AppIcon
+                name="arrow-right"
+                size="sm"
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              />
+            </span>
+          </div>
         </div>
       </Link>
-    </Card>
+    </article>
   );
 }

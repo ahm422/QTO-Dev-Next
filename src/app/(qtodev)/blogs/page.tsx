@@ -1,5 +1,6 @@
 import { BlogsHeroSection } from "./sections/BlogsHeroSection";
 import { FeaturedPostsSection } from "./sections/FeaturedPostsSection";
+import { NewsSection } from "./sections/NewsSection";
 import { BlogsFilterAndGrid } from "./sections/BlogsFilterAndGrid";
 import { BlogsSidebarSection } from "./sections/BlogsSidebarSection";
 import { Container } from "@/components/common/Container";
@@ -28,6 +29,7 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
     <>
       <BlogsHeroSection config={cmsConfig ?? undefined} />
       <FeaturedPostsSection config={cmsConfig ?? undefined} />
+      <NewsSection config={cmsConfig ?? undefined} />
 
       <Container className="py-10 md:py-14">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">

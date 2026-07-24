@@ -60,17 +60,18 @@ export function CeoSectionClient({
   return (
     <section
       className={cn(
-        "relative overflow-hidden bg-gradient-to-b from-surface via-primary/5 to-surface border-y border-border",
+        "relative overflow-hidden border-y border-border",
+        "bg-gradient-to-b from-surface via-primary/[0.04] to-surface",
         compact ? homepageSectionPadding : "py-20 md:py-28 lg:py-32"
       )}
       aria-labelledby={HEADING_ID}
     >
       <div
-        className="pointer-events-none absolute top-1/4 left-0 w-[480px] h-[320px] rounded-full bg-orange-400/10 blur-3xl -translate-x-1/3"
+        className="pointer-events-none absolute top-1/4 left-0 h-[320px] w-[420px] -translate-x-1/3 rounded-full bg-primary/10 blur-3xl"
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute bottom-0 right-0 w-[520px] h-[360px] rounded-full bg-primary/10 blur-3xl translate-x-1/4 translate-y-1/3"
+        className="pointer-events-none absolute bottom-0 right-0 h-[360px] w-[480px] translate-x-1/4 translate-y-1/3 rounded-full bg-orange-400/10 blur-3xl"
         aria-hidden
       />
 
@@ -78,34 +79,34 @@ export function CeoSectionClient({
         <Reveal staggerSelector="[data-reveal]">
           <div
             className={cn(
-              "grid items-center gap-12",
+              "grid items-center",
+              /* Tighter pairing — fill the container, less dead space between columns */
+              "gap-8 sm:gap-10 lg:gap-8 xl:gap-10",
               compact
-                ? "lg:grid-cols-2 lg:gap-10"
-                : "lg:grid-cols-[minmax(0,380px)_1fr] lg:gap-16"
+                ? "lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.15fr)]"
+                : "lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]"
             )}
           >
-            {/* Photo card — left */}
+            {/* Photo */}
             <div
               data-reveal
               ref={hitRef}
-              className={cn(
-                "group/ceo relative mx-auto w-full",
-                compact ? "max-w-xs lg:max-w-none" : "max-w-sm"
-              )}
+              className="group/ceo relative mx-auto w-full max-w-md lg:mx-0 lg:max-w-none"
             >
               <div ref={tiltRef} className="relative" style={{ transformStyle: "preserve-3d" }}>
                 <div
                   className={cn(
-                    "pointer-events-none absolute -inset-6 rounded-[2rem] bg-primary/30 blur-2xl opacity-60 transition-opacity duration-500",
-                    !compact && "group-hover/ceo:opacity-85"
+                    "pointer-events-none absolute -inset-5 rounded-[2rem] bg-primary/25 blur-2xl opacity-50 transition-opacity duration-500",
+                    "group-hover/ceo:opacity-75"
                   )}
+                  aria-hidden
                 />
 
-                <div className="relative rounded-3xl p-[2px] bg-gradient-to-br from-primary via-orange-400 to-primary shadow-2xl shadow-primary/30">
+                <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl p-[2px] bg-gradient-to-br from-primary via-orange-400 to-primary/80 shadow-xl shadow-primary/20">
                   <div
                     className={cn(
-                      "relative overflow-hidden rounded-[calc(1.5rem-2px)] bg-surface",
-                      compact ? "aspect-[3/4]" : "aspect-[4/5]"
+                      "relative overflow-hidden rounded-[calc(1rem-1px)] sm:rounded-[calc(1.5rem-2px)] bg-surface",
+                      compact ? "aspect-[4/5]" : "aspect-[4/5] lg:aspect-[3/4]"
                     )}
                   >
                     {founder.imageUrl ? (
@@ -114,17 +115,32 @@ export function CeoSectionClient({
                         alt={`${founder.name}, ${founder.designation}`}
                         width={800}
                         height={1000}
-                        className="h-full w-full object-cover object-[center_15%]"
-                        sizes={compact ? "(max-width: 1024px) 80vw, 320px" : "(max-width: 1024px) 90vw, 384px"}
+                        className="h-full w-full object-cover object-[center_18%] transition-transform duration-700 ease-out group-hover/ceo:scale-[1.03]"
+                        sizes="(max-width: 1024px) 90vw, 42vw"
                         quality={85}
+                        priority={compact}
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-primary/10 text-4xl font-semibold text-primary">
                         {firstName.charAt(0)}
                       </div>
                     )}
+                    <div
+                      className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent"
+                      aria-hidden
+                    />
                   </div>
                 </div>
+
+                {/* Name plate — compact/homepage; about page uses floating chips */}
+                {compact ? (
+                  <div className="absolute inset-x-3 bottom-3 z-10 sm:inset-x-4 sm:bottom-4">
+                    <div className="rounded-xl border border-white/15 bg-[#0d1117]/85 px-3.5 py-2.5 backdrop-blur-md shadow-lg sm:px-4 sm:py-3">
+                      <p className="text-sm font-semibold text-white sm:text-base">{founder.name}</p>
+                      <p className="text-xs text-white/65 sm:text-sm">{founder.designation}</p>
+                    </div>
+                  </div>
+                ) : null}
 
                 {!compact && (
                   <div className="pointer-events-none absolute inset-0 max-lg:contents lg:block">
@@ -133,8 +149,8 @@ export function CeoSectionClient({
                         ? founder.name
                         : chip.value;
                       const positions = [
-                        "-left-2 -top-3 lg:-left-5 lg:-top-4",
-                        "-right-1 bottom-8 lg:-right-4 lg:bottom-12",
+                        "-left-3 -top-3 xl:-left-5 xl:-top-4",
+                        "-right-2 bottom-8 xl:-right-4 xl:bottom-12",
                       ];
                       return (
                         <ChipShell
@@ -165,8 +181,8 @@ export function CeoSectionClient({
               </div>
             </div>
 
-            {/* Copy — right */}
-            <div className={compact ? "space-y-6" : "space-y-8"}>
+            {/* Copy */}
+            <div className="flex min-w-0 flex-col justify-center space-y-5 sm:space-y-6 lg:space-y-7">
               <div data-reveal>
                 <SectionHeader
                   subtitle={ceo.subtitle}
@@ -178,26 +194,33 @@ export function CeoSectionClient({
                 />
               </div>
 
-              <div data-reveal className="space-y-4">
-                <h3 className="text-xl font-semibold font-heading text-foreground md:text-2xl">
+              <div data-reveal className="relative space-y-4">
+                <div
+                  className="absolute -left-1 top-0 hidden h-full w-1 rounded-full bg-gradient-to-b from-primary to-primary/20 sm:block lg:-left-4"
+                  aria-hidden
+                />
+                <h3 className="font-heading text-lg font-semibold tracking-tight text-foreground sm:text-xl md:text-2xl">
                   {ceo.storyHeading}
                 </h3>
                 <p
                   className={cn(
-                    "text-base text-foreground-muted leading-relaxed md:text-lg",
-                    compact && "line-clamp-4"
+                    "text-sm leading-relaxed text-foreground-muted sm:text-base md:text-lg",
+                    compact ? "line-clamp-5 sm:line-clamp-6" : "max-w-prose"
                   )}
                 >
+                  <span className="mr-1 text-2xl leading-none text-primary/40" aria-hidden>
+                    &ldquo;
+                  </span>
                   {message}
                 </p>
               </div>
 
               {compact ? (
-                <div data-reveal>
+                <div data-reveal className="flex flex-wrap items-center gap-4 pt-1">
                   <Link
                     href="/about"
                     className={cn(
-                      "inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold",
+                      "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold sm:px-6 sm:py-3",
                       "bg-primary text-primary-foreground shadow-lg shadow-primary/25",
                       "transition-all duration-300",
                       "hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-xl hover:shadow-primary/35",
@@ -207,23 +230,31 @@ export function CeoSectionClient({
                     View About Us
                     <AppIcon name="arrow-right" size="sm" className="shrink-0" />
                   </Link>
+                  <p className="text-xs text-foreground-muted sm:text-sm">
+                    <span className="font-medium text-foreground">{founder.name}</span>
+                    <span className="mx-1.5 text-border">·</span>
+                    {founder.designation}
+                  </p>
                 </div>
               ) : (
                 <ul
                   data-reveal
-                  className="grid grid-cols-2 gap-6 sm:grid-cols-4 pt-2 list-none p-0 m-0"
+                  className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6 pt-2 list-none p-0 m-0"
                   aria-label="Company statistics"
                 >
                   {ceo.stats.map((stat) => (
-                    <li key={stat.label} className="text-center sm:text-left">
-                      <div className="text-2xl md:text-3xl font-bold font-heading text-foreground">
+                    <li
+                      key={stat.label}
+                      className="rounded-xl border border-border/60 bg-card/50 px-3 py-3 text-center sm:px-4 sm:text-left"
+                    >
+                      <div className="text-2xl font-bold font-heading text-foreground md:text-3xl">
                         <AnimatedCounter
                           value={stat.value}
                           suffix={stat.suffix}
                           label={stat.label}
                         />
                       </div>
-                      <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-foreground-muted">
+                      <p className="mt-1 text-[0.65rem] font-semibold uppercase tracking-wider text-foreground-muted sm:text-xs">
                         {stat.label}
                       </p>
                     </li>
