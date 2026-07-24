@@ -60,11 +60,9 @@ export const footerSections: FooterSection[] = [
 ];
 
 export const socialLinks = [
-  { label: "Twitter", href: SOCIAL_LINKS.twitter },
-  { label: "LinkedIn", href: SOCIAL_LINKS.linkedin },
-  { label: "GitHub", href: SOCIAL_LINKS.github },
   { label: "Facebook", href: SOCIAL_LINKS.facebook },
   { label: "Instagram", href: SOCIAL_LINKS.instagram },
+  { label: "LinkedIn", href: SOCIAL_LINKS.linkedin },
 ];
 
 export const defaultSiteBranding = {
@@ -77,4 +75,5 @@ export const defaultSiteBranding = {
     phone: CONTACT_PHONE,
     office: OFFICE_ADDRESS,
   },
+  social: socialLinks,
 } as const;

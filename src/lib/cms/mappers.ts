@@ -35,6 +35,7 @@ import type { ServiceWithTags } from "@/lib/prisma/serviceData";
 import { orderedTagValues, parseStringArray } from "@/lib/prisma/arrayFields";
 import { parseMetadata } from "@/lib/metadata";
 import { defaultSiteBranding } from "@/config/site";
+import { SOCIAL_LINKS } from "@/lib/constants";
 
 const PORTFOLIO_GRADIENTS: PortfolioGradientKey[] = [
   "blue-purple",
@@ -385,5 +386,10 @@ export function mapSiteConfigRows(rows: SiteConfig[]) {
       phone: map["contact.phone"] ?? defaultSiteBranding.contact.phone,
       office: map["contact.office"] ?? defaultSiteBranding.contact.office,
     },
+    social: [
+      { label: "Facebook", href: map["social.facebook"] ?? SOCIAL_LINKS.facebook },
+      { label: "Instagram", href: map["social.instagram"] ?? SOCIAL_LINKS.instagram },
+      { label: "LinkedIn", href: map["social.linkedin"] ?? SOCIAL_LINKS.linkedin },
+    ].filter((s) => Boolean(s.href)),
   };
 }

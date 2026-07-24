@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { apiSuccess, apiError } from "@/lib/apiResponses";
 import { formatZodFieldErrors } from "@/lib/validators/http";
@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
       update: { value: parsed.data.value, label: parsed.data.label },
     });
     revalidatePath("/");
+    revalidateTag("site-config", "max");
     return apiSuccess({ key: item.key }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/site-config", e);

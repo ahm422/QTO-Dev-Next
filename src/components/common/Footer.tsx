@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { SiteLogo } from "@/components/common/SiteLogo";
-import { footerSections, socialLinks } from "@/config/site";
+import { footerSections } from "@/config/site";
 import { findSiteBranding } from "@/lib/cms/siteConfig";
 import { cn } from "@/components/theme/cn";
 
 export async function Footer() {
   const branding = await findSiteBranding();
   const contact = branding.contact;
+  const social = branding.social ?? [];
   return (
     <footer
       className={cn(
@@ -27,7 +28,7 @@ export async function Footer() {
             </p>
             {/* Social links */}
             <div className="mt-2.5 flex flex-wrap gap-2">
-              {socialLinks.map(({ label, href }) => (
+              {social.map(({ label, href }) => (
                 <a
                   key={label}
                   href={href}

@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { apiSuccess, apiError } from "@/lib/apiResponses";
 import { formatZodFieldErrors } from "@/lib/validators/http";
@@ -35,6 +35,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   try {
     const item = await prisma.siteConfig.update({ where: { key }, data: parsed.data });
     revalidatePath("/");
+    revalidateTag("site-config", "max");
     return apiSuccess({ item });
   } catch (e) {
     return handleRouteError("PATCH /api/admin/site-config/[id]", e);
@@ -48,6 +49,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   try {
     await prisma.siteConfig.delete({ where: { key } });
     revalidatePath("/");
+    revalidateTag("site-config", "max");
     return apiSuccess({ key });
   } catch (e) {
     return handleRouteError("DELETE /api/admin/site-config/[id]", e);
