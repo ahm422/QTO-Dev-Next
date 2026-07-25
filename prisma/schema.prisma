@@ -366,6 +366,7 @@ model Project {
   coverImageUrl String?   @map("cover_image_url")
   images        String    @default("[]") // JSON string array; use parseStringArray in Phase 3
   liveUrl       String?   @map("live_url")
+  serviceSlug   String?   @map("service_slug")
   isFeatured    Boolean   @default(false) @map("is_featured")
   order         Int       @default(0)
   isPublished   Boolean   @default(true) @map("is_published")
@@ -379,6 +380,7 @@ model Project {
   @@index([slug])
   @@index([category])
   @@index([order])
+  @@index([serviceSlug])
   @@map("projects")
 }
 

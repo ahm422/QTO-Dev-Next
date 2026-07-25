@@ -1,5 +1,4 @@
 import type { AppIconName } from "@/components/ui/shared/AppIcon";
-import { staticImageUrl } from "@/config/staticImages";
 
 export interface ProcessStep {
   title: string;
@@ -239,33 +238,7 @@ export const webDevelopmentServiceData: WebDevelopmentServiceData = {
     "GraphQL",
     "Stripe",
   ],
-  relatedProjects: [
-    {
-      slug: "lahebo-grc-platform",
-      name: "Lahebo GRC Platform",
-      thumbnail:
-        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&h=800&fit=crop",
-      challenge:
-        "Manual spreadsheet-driven compliance slowed audits and hid risk across teams.",
-      solution:
-        "Role-based GRC platform with automated evidence workflows and real-time dashboards.",
-      tech: ["Next.js", "TypeScript", "PostgreSQL", "AWS"],
-      result: "45% faster audit preparation with clearer executive visibility.",
-      outcome: "Reduced audit preparation time by 45% with role-based workflows.",
-    },
-    {
-      slug: "finflow-inc",
-      name: "FinFlow Inc.",
-      thumbnail: staticImageUrl("/images/pexels-thisisengineering-3861958.jpg"),
-      challenge:
-        "Payment reconciliation lived in spreadsheets across banks and processors.",
-      solution:
-        "Unified payment infrastructure with exception queues and scheduled finance reports.",
-      tech: ["Next.js", "PostgreSQL", "Stripe", "TypeScript"],
-      result: "Faster daily reconciliation and real-time exception visibility.",
-      outcome: "Unified payment reconciliation and real-time finance reporting.",
-    },
-  ],
+  relatedProjects: [],
   packages: [
     {
       name: "Starter",

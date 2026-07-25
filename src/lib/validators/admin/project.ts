@@ -15,6 +15,7 @@ export const projectSchema = z.object({
   images: z.array(z.string()).default([]),
   techStack: z.array(z.string()).default([]),
   liveUrl: z.string().optional().default(""),
+  serviceSlug: z.string().optional().default(""),
   isFeatured: z.boolean().default(false),
   order: z.coerce.number().int().default(0),
   isPublished: z.boolean().default(false),

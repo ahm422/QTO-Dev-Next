@@ -13,23 +13,35 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { createProject, updateProject } from "../actions"
 
 function slugify(s: string) { return s.toLowerCase().trim().replace(/[^a-z0-9\s-]/g,"").replace(/\s+/g,"-").replace(/-+/g,"-") }
 
-export default function ProjectForm({ defaultValues }: { defaultValues?: ProjectInput & { id?: string } }) {
+const NONE_SERVICE = "none"
+
+type ServiceOption = { slug: string; title: string }
+
+export default function ProjectForm({
+  defaultValues,
+  services = [],
+}: {
+  defaultValues?: ProjectInput & { id?: string }
+  services?: ServiceOption[]
+}) {
   const isEdit = !!defaultValues?.id
   const form = useForm<ProjectInput>({
     resolver: formResolver(projectSchema),
     defaultValues: defaultValues
       ? {
           ...defaultValues,
+          serviceSlug: defaultValues.serviceSlug ?? "",
           completedAt:
             typeof defaultValues.completedAt === "string"
               ? defaultValues.completedAt
               : "",
         }
-      : { title: "", slug: "", client: "", category: "", tags: [], excerpt: "", description: "", challenge: "", solution: "", results: [], coverImageUrl: "", images: [], techStack: [], liveUrl: "", isFeatured: false, order: 0, isPublished: false, completedAt: "" },
+      : { title: "", slug: "", client: "", category: "", tags: [], excerpt: "", description: "", challenge: "", solution: "", results: [], coverImageUrl: "", images: [], techStack: [], liveUrl: "", serviceSlug: "", isFeatured: false, order: 0, isPublished: false, completedAt: "" },
   })
   const { isSubmitting } = form.formState
 
@@ -65,6 +77,30 @@ export default function ProjectForm({ defaultValues }: { defaultValues?: Project
               <FormItem><FormLabel>Order</FormLabel><FormControl><Input {...field} type="number" /></FormControl><FormMessage /></FormItem>
             )} />
           </FormGrid>
+          <FormField control={form.control} name="serviceSlug" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Related Service</FormLabel>
+              <Select
+                onValueChange={(value) => field.onChange(value === NONE_SERVICE ? "" : value)}
+                value={field.value ? field.value : NONE_SERVICE}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="None" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value={NONE_SERVICE}>None</SelectItem>
+                  {services.map((service) => (
+                    <SelectItem key={service.slug} value={service.slug}>
+                      {service.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )} />
           <FormField control={form.control} name="excerpt" render={({ field }) => (
             <FormItem><FormLabel>Excerpt</FormLabel><FormControl><Textarea {...field} rows={2} /></FormControl><FormMessage /></FormItem>
           )} />

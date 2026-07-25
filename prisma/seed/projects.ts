@@ -34,6 +34,10 @@ export async function seedProjects() {
     const images =
       detail?.features?.map((f) => f.image.url) ??
       (legacy.image ? [legacy.image] : []);
+    const serviceSlug =
+      legacy.slug === "lahebo-grc-platform" || legacy.slug === "finflow-inc"
+        ? "web-development"
+        : null;
 
     await prisma.project.upsert({
       where: { slug: legacy.slug },
@@ -52,6 +56,7 @@ export async function seedProjects() {
         images: stringifyStringArray(images),
         techStack: createOrderedChildren(legacy.technologies),
         liveUrl: detail?.demoUrl ?? null,
+        serviceSlug,
         isFeatured: legacy.featured,
         order: i,
         isPublished: true,
@@ -70,6 +75,7 @@ export async function seedProjects() {
         images: stringifyStringArray(images),
         techStack: replaceOrderedChildren(legacy.technologies),
         liveUrl: detail?.demoUrl ?? null,
+        serviceSlug,
         isFeatured: legacy.featured,
         order: i,
         isPublished: true,

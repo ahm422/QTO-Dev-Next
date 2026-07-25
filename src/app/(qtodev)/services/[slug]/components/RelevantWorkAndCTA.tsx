@@ -12,6 +12,8 @@ interface RelevantWorkAndCTAProps {
 }
 
 export function RelevantWorkAndCTA({ service, blurDataURL }: RelevantWorkAndCTAProps) {
+  const hasRelatedWork = (service.relatedProjects ?? []).length > 0;
+
   return (
     <section
       className="relative overflow-hidden bg-background py-16 md:py-20 lg:py-24"
@@ -26,11 +28,15 @@ export function RelevantWorkAndCTA({ service, blurDataURL }: RelevantWorkAndCTAP
         <Reveal staggerSelector="[data-reveal]">
           <div data-reveal>
             <SectionHeader
-              subtitle="Relevant work & next steps"
+              subtitle={hasRelatedWork ? "Relevant work & next steps" : "Next steps"}
               subtitleClassName="text-primary font-semibold tracking-[0.2em]"
               subtitlePill
-              title="Relevant Work & Final CTA"
-              description="See how we ship for this service, pick a package, then start a conversation."
+              title={hasRelatedWork ? "Relevant Work & Final CTA" : "Packages & Final CTA"}
+              description={
+                hasRelatedWork
+                  ? "See how we ship for this service, pick a package, then start a conversation."
+                  : "Pick a package that fits your scope, then start a conversation."
+              }
               headingId="relevant-work-heading"
               centered={false}
             />

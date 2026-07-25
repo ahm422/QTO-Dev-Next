@@ -10,11 +10,16 @@ export default async function ProjectFormPage({ params }: { params: Promise<{ id
   if (!["super_admin", "admin", "editor"].includes(session?.user?.role ?? "")) redirect("/admin/unauthorized")
   const { id } = await params
 
+  const services = await prisma.service.findMany({
+    select: { slug: true, title: true },
+    orderBy: { order: "asc" },
+  })
+
   if (id === "new") {
     return (
       <div className="space-y-6">
         <AdminPageHeader title="New Project" breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Projects", href: "/admin/projects" }, { label: "New" }]} />
-        <ProjectForm />
+        <ProjectForm services={services} />
       </div>
     )
   }
@@ -25,7 +30,7 @@ export default async function ProjectFormPage({ params }: { params: Promise<{ id
   return (
     <div className="space-y-6">
       <AdminPageHeader title="Edit Project" subtitle={record.title} badges={[{ label: record.isPublished ? "Published" : "Draft", variant: record.isPublished ? "success" : "warning" }]} breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Projects", href: "/admin/projects" }, { label: "Edit" }]} />
-      <ProjectForm defaultValues={fromPrismaProject(record)} />
+      <ProjectForm defaultValues={fromPrismaProject(record)} services={services} />
     </div>
   )
 }

@@ -5,6 +5,7 @@ import {
 } from "@/lib/prisma/arrayFields";
 import {
   webDevelopmentServiceData,
+  type ServiceProjectCard,
   type WebDevelopmentServiceData,
 } from "@/content/services/web-development";
 import { resolveMediaUrl } from "@/config/staticImages";
@@ -17,10 +18,14 @@ const fallbackOverview =
 /**
  * Maps a Prisma Service row onto the public detail UI shape.
  * Rich detail fields (deliverables, problemsWeSolve, processSteps,
- * approachSupportChips, packages, relatedProjects) stay seed/content-file
+ * approachSupportChips, packages, testimonials) stay seed/content-file
  * until a later CMS phase — spread from webDevelopmentServiceData.
+ * relatedProjects come from DB (passed in); never inherit the seed list.
  */
-export function mapPrismaToContentService(row: ServiceWithTags): WebDevelopmentServiceData {
+export function mapPrismaToContentService(
+  row: ServiceWithTags,
+  relatedProjects: ServiceProjectCard[] = []
+): WebDevelopmentServiceData {
   const features = parseStringArray(row.features);
   const technologyTags = orderedTagValues(row.technologyTags);
   return {
@@ -46,6 +51,6 @@ export function mapPrismaToContentService(row: ServiceWithTags): WebDevelopmentS
       technologyTags.length > 0
         ? technologyTags
         : webDevelopmentServiceData.technologies,
-    // Keep enriched seed relatedProjects (do not replace with thin stubs)
+    relatedProjects,
   };
 }
