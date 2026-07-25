@@ -12,6 +12,8 @@
     "postinstall": "prisma generate",
     "migrate:compare-counts": "tsx scripts/compare-migration-counts.ts",
     "migrate:media": "tsx scripts/migrate-media-garage-to-r2.ts",
+    "migrate:public-images": "tsx scripts/upload-public-images-to-r2.ts",
+    "migrate:cms-images": "tsx scripts/rewrite-cms-images-to-r2.ts",
     "migrate:icons": "tsx scripts/migrate-lucide-icons-to-app-icon.ts",
     "migrate:sync-staging-remote": "tsx scripts/migration/sync-staging-to-remote.ts",
     "build:analyze": "ANALYZE=true next build --webpack",

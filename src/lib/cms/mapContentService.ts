@@ -7,6 +7,7 @@ import {
   webDevelopmentServiceData,
   type WebDevelopmentServiceData,
 } from "@/content/services/web-development";
+import { resolveMediaUrl } from "@/config/staticImages";
 
 const fallbackHero =
   "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=1600&h=1000&fit=crop";
@@ -29,7 +30,7 @@ export function mapPrismaToContentService(row: ServiceWithTags): WebDevelopmentS
     headline: `${row.title} Services That Drive Growth`,
     subheadline: row.description,
     heroImage: {
-      url: row.imageUrl ?? fallbackHero,
+      url: resolveMediaUrl(row.imageUrl) ?? fallbackHero,
       alt: row.imageAlt ?? `${row.title} service hero`,
     },
     overviewText:
@@ -38,7 +39,7 @@ export function mapPrismaToContentService(row: ServiceWithTags): WebDevelopmentS
     overviewBenefits:
       features.length > 0 ? features : webDevelopmentServiceData.overviewBenefits,
     overviewImage: {
-      url: row.imageUrl ?? fallbackOverview,
+      url: resolveMediaUrl(row.imageUrl) ?? fallbackOverview,
       alt: row.imageAlt ?? `${row.title} overview image`,
     },
     technologies:

@@ -1,4 +1,5 @@
 import type { AppIconName } from "@/components/ui/shared/AppIcon";
+import { staticImageUrl } from "@/config/staticImages";
 
 export interface ProcessStep {
   title: string;
@@ -255,7 +256,7 @@ export const webDevelopmentServiceData: WebDevelopmentServiceData = {
     {
       slug: "finflow-inc",
       name: "FinFlow Inc.",
-      thumbnail: "/images/pexels-thisisengineering-3861958.jpg",
+      thumbnail: staticImageUrl("/images/pexels-thisisengineering-3861958.jpg"),
       challenge:
         "Payment reconciliation lived in spreadsheets across banks and processors.",
       solution:

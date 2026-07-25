@@ -1,0 +1,671 @@
+{
+  "generatedAt": "2026-07-25T04:18:00.000Z",
+  "issue": 370,
+  "categories": {
+    "A": "CMS-replaceable (upload in admin / seed D1, remove local fallback)",
+    "B": "Truly static chrome (upload once → R2 URL constants)",
+    "C": "Dead / duplicate local files (delete after live verify; do not upload unless needed)",
+    "dead": "Alias of C — unreferenced in source"
+  },
+  "sections": {
+    "team": "Team / leadership / about collage photos",
+    "backgrounds": "Page hero backgrounds (*-bg.jpg)",
+    "services": "Service card art (prefer optimized/*-1920.webp)",
+    "pexels": "Pexels tech imagery used as featured/blog/testimonial fallbacks",
+    "chrome": "Logos, favicon, site chrome",
+    "content": "Content seed thumbnails (overlap with pexels)",
+    "optimized": "Pre-encoded WebP/AVIF variants under optimized/",
+    "dead": "Unreferenced originals / legacy art"
+  },
+  "preferOptimized": {
+    "/images/CEO1.JPG": "/images/optimized/ceo-portrait-800.webp",
+    "/images/CEO.JPG": "/images/optimized/ceo-800.webp",
+    "/images/web-development.jpg": "/images/optimized/web-development-1920.webp",
+    "/images/mobile-app-developement.jpg": "/images/optimized/mobile-app-developement-1920.webp",
+    "/images/ui-ux-design.jpg": "/images/optimized/ui-ux-design-1920.webp",
+    "/images/ai.jpg": "/images/optimized/ai-1920.webp",
+    "/images/devops.jpg": "/images/optimized/devops-1920.webp",
+    "/images/technical-support.jpg": "/images/optimized/technical-support-1920.webp",
+    "/images/pexels-thisisengineering-3861958.jpg": "/images/optimized/pexels-thisisengineering-3861958-1920.webp",
+    "/images/pexels-thisisengineering-3861964.jpg": "/images/optimized/pexels-thisisengineering-3861964-1920.webp",
+    "/images/pexels-thisisengineering-3861967.jpg": "/images/optimized/pexels-thisisengineering-3861967-1920.webp"
+  },
+  "files": [
+    {
+      "publicPath": "/images/Frontend1.JPG",
+      "category": "A",
+      "section": "team",
+      "upload": true,
+      "refs": ["src/data/leadership.ts"]
+    },
+    {
+      "publicPath": "/images/Backend1.JPG",
+      "category": "A",
+      "section": "team",
+      "upload": true,
+      "refs": ["src/data/leadership.ts"]
+    },
+    {
+      "publicPath": "/images/it-team-2.JPG",
+      "category": "A",
+      "section": "team",
+      "upload": true,
+      "refs": [
+        "src/data/leadership.ts",
+        "src/app/(qtodev)/about/sections/LeadershipSectionClient.tsx (IT_TEAM_IMAGE)",
+        "src/app/(qtodev)/sections/AboutCompanySection.tsx (IMAGE_PRIMARY)"
+      ]
+    },
+    {
+      "publicPath": "/images/ITTeam.JPG",
+      "category": "A",
+      "section": "team",
+      "upload": true,
+      "refs": ["src/app/(qtodev)/sections/AboutCompanySection.tsx (IMAGE_OVERLAP)"]
+    },
+    {
+      "publicPath": "/images/optimized/ceo-portrait-800.webp",
+      "category": "A",
+      "section": "team",
+      "upload": true,
+      "refs": ["src/data/leadership.ts"]
+    },
+    {
+      "publicPath": "/images/optimized/ceo-800.webp",
+      "category": "A",
+      "section": "team",
+      "upload": true,
+      "refs": [],
+      "notes": "Alternate CEO optimized; prefer for CEO.JPG mapping"
+    },
+    {
+      "publicPath": "/images/CEO1.JPG",
+      "category": "C",
+      "section": "team",
+      "upload": false,
+      "preferInstead": "/images/optimized/ceo-portrait-800.webp",
+      "refs": [],
+      "notes": "Raw original superseded by optimized/ceo-portrait-800.webp"
+    },
+    {
+      "publicPath": "/images/CEO.JPG",
+      "category": "C",
+      "section": "team",
+      "upload": false,
+      "preferInstead": "/images/optimized/ceo-800.webp",
+      "refs": [],
+      "notes": "Raw original superseded by optimized/ceo-800.webp"
+    },
+    {
+      "publicPath": "/images/Frontend.JPG",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": [],
+      "notes": "Unreferenced duplicate of Frontend1.JPG"
+    },
+    {
+      "publicPath": "/images/Backend.JPG",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": [],
+      "notes": "Unreferenced duplicate of Backend1.JPG"
+    },
+    {
+      "publicPath": "/images/it-team-1.JPG",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": [],
+      "notes": "Unreferenced alternate team photo"
+    },
+    {
+      "publicPath": "/images/it-team-3.JPG",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": [],
+      "notes": "Unreferenced alternate team photo"
+    },
+    {
+      "publicPath": "/images/service-bg.jpg",
+      "category": "B",
+      "section": "backgrounds",
+      "upload": true,
+      "refs": ["src/config/pageBackgrounds.ts (/services)"]
+    },
+    {
+      "publicPath": "/images/projects-bg.jpg",
+      "category": "B",
+      "section": "backgrounds",
+      "upload": true,
+      "refs": ["src/config/pageBackgrounds.ts (/projects)"]
+    },
+    {
+      "publicPath": "/images/about-bg.jpg",
+      "category": "B",
+      "section": "backgrounds",
+      "upload": true,
+      "refs": [
+        "src/config/pageBackgrounds.ts (/about)",
+        "src/config/pageBackgrounds.ts (/products)"
+      ]
+    },
+    {
+      "publicPath": "/images/blog-bg.jpg",
+      "category": "B",
+      "section": "backgrounds",
+      "upload": true,
+      "refs": ["src/config/pageBackgrounds.ts (/blogs)"]
+    },
+    {
+      "publicPath": "/images/career-bg.jpg",
+      "category": "B",
+      "section": "backgrounds",
+      "upload": true,
+      "refs": ["src/config/pageBackgrounds.ts (/careers)"]
+    },
+    {
+      "publicPath": "/images/contact-bg.jpg",
+      "category": "B",
+      "section": "backgrounds",
+      "upload": true,
+      "refs": [
+        "src/config/pageBackgrounds.ts (/contact)",
+        "src/config/pageBackgrounds.ts (/requirements)"
+      ]
+    },
+    {
+      "publicPath": "/images/optimized/web-development-1920.webp",
+      "category": "A",
+      "section": "services",
+      "upload": true,
+      "refs": ["src/config/serviceCardImages.ts"]
+    },
+    {
+      "publicPath": "/images/optimized/mobile-app-developement-1920.webp",
+      "category": "A",
+      "section": "services",
+      "upload": true,
+      "refs": ["src/config/serviceCardImages.ts"]
+    },
+    {
+      "publicPath": "/images/optimized/ui-ux-design-1920.webp",
+      "category": "A",
+      "section": "services",
+      "upload": true,
+      "refs": ["src/config/serviceCardImages.ts"]
+    },
+    {
+      "publicPath": "/images/optimized/ai-1920.webp",
+      "category": "A",
+      "section": "services",
+      "upload": true,
+      "refs": ["src/config/serviceCardImages.ts"]
+    },
+    {
+      "publicPath": "/images/optimized/devops-1920.webp",
+      "category": "A",
+      "section": "services",
+      "upload": true,
+      "refs": ["src/config/serviceCardImages.ts"]
+    },
+    {
+      "publicPath": "/images/optimized/technical-support-1920.webp",
+      "category": "A",
+      "section": "services",
+      "upload": true,
+      "refs": ["src/config/serviceCardImages.ts"]
+    },
+    {
+      "publicPath": "/images/optimized/web-development-1920.avif",
+      "category": "C",
+      "section": "optimized",
+      "upload": false,
+      "refs": [],
+      "notes": "AVIF duplicate; WebP is the referenced variant"
+    },
+    {
+      "publicPath": "/images/optimized/mobile-app-developement-1920.avif",
+      "category": "C",
+      "section": "optimized",
+      "upload": false,
+      "refs": [],
+      "notes": "AVIF duplicate; WebP is the referenced variant"
+    },
+    {
+      "publicPath": "/images/optimized/ui-ux-design-1920.avif",
+      "category": "C",
+      "section": "optimized",
+      "upload": false,
+      "refs": [],
+      "notes": "AVIF duplicate; WebP is the referenced variant"
+    },
+    {
+      "publicPath": "/images/optimized/ai-1920.avif",
+      "category": "C",
+      "section": "optimized",
+      "upload": false,
+      "refs": [],
+      "notes": "AVIF duplicate; WebP is the referenced variant"
+    },
+    {
+      "publicPath": "/images/optimized/devops-1920.avif",
+      "category": "C",
+      "section": "optimized",
+      "upload": false,
+      "refs": [],
+      "notes": "AVIF duplicate; WebP is the referenced variant"
+    },
+    {
+      "publicPath": "/images/optimized/technical-support-1920.avif",
+      "category": "C",
+      "section": "optimized",
+      "upload": false,
+      "refs": [],
+      "notes": "AVIF duplicate; WebP is the referenced variant"
+    },
+    {
+      "publicPath": "/images/web-development.jpg",
+      "category": "C",
+      "section": "services",
+      "upload": false,
+      "preferInstead": "/images/optimized/web-development-1920.webp",
+      "refs": [],
+      "notes": "Raw original superseded by optimized WebP"
+    },
+    {
+      "publicPath": "/images/mobile-app-developement.jpg",
+      "category": "C",
+      "section": "services",
+      "upload": false,
+      "preferInstead": "/images/optimized/mobile-app-developement-1920.webp",
+      "refs": [],
+      "notes": "Raw original superseded by optimized WebP"
+    },
+    {
+      "publicPath": "/images/ui-ux-design.jpg",
+      "category": "C",
+      "section": "services",
+      "upload": false,
+      "preferInstead": "/images/optimized/ui-ux-design-1920.webp",
+      "refs": [],
+      "notes": "Raw original superseded by optimized WebP"
+    },
+    {
+      "publicPath": "/images/ai.jpg",
+      "category": "C",
+      "section": "services",
+      "upload": false,
+      "preferInstead": "/images/optimized/ai-1920.webp",
+      "refs": [],
+      "notes": "Raw original superseded by optimized WebP"
+    },
+    {
+      "publicPath": "/images/devops.jpg",
+      "category": "C",
+      "section": "services",
+      "upload": false,
+      "preferInstead": "/images/optimized/devops-1920.webp",
+      "refs": [],
+      "notes": "Raw original superseded by optimized WebP"
+    },
+    {
+      "publicPath": "/images/technical-support.jpg",
+      "category": "C",
+      "section": "services",
+      "upload": false,
+      "preferInstead": "/images/optimized/technical-support-1920.webp",
+      "refs": [],
+      "notes": "Raw original superseded by optimized WebP"
+    },
+    {
+      "publicPath": "/images/pexels-thisisengineering-3861958.jpg",
+      "category": "A",
+      "section": "pexels",
+      "upload": false,
+      "preferInstead": "/images/optimized/pexels-thisisengineering-3861958-1920.webp",
+      "refs": [
+        "src/config/pexelsImages.ts",
+        "src/content/projects/example.ts",
+        "src/content/services/web-development.ts"
+      ],
+      "notes": "Do not upload raw; map this publicPath to optimized WebP R2 URL"
+    },
+    {
+      "publicPath": "/images/pexels-thisisengineering-3861964.jpg",
+      "category": "A",
+      "section": "pexels",
+      "upload": false,
+      "preferInstead": "/images/optimized/pexels-thisisengineering-3861964-1920.webp",
+      "refs": ["src/config/pexelsImages.ts", "src/content/projects/example.ts"],
+      "notes": "Do not upload raw; map this publicPath to optimized WebP R2 URL"
+    },
+    {
+      "publicPath": "/images/pexels-thisisengineering-3861967.jpg",
+      "category": "A",
+      "section": "pexels",
+      "upload": false,
+      "preferInstead": "/images/optimized/pexels-thisisengineering-3861967-1920.webp",
+      "refs": ["src/config/pexelsImages.ts", "src/content/projects/example.ts"],
+      "notes": "Do not upload raw; map this publicPath to optimized WebP R2 URL"
+    },
+    {
+      "publicPath": "/images/pexels-kevin-ku-92347-577585.jpg",
+      "category": "A",
+      "section": "pexels",
+      "upload": true,
+      "refs": ["src/config/pexelsImages.ts"]
+    },
+    {
+      "publicPath": "/images/pexels-olia-danilevich-4974912.jpg",
+      "category": "A",
+      "section": "pexels",
+      "upload": true,
+      "refs": ["src/config/pexelsImages.ts"]
+    },
+    {
+      "publicPath": "/images/pexels-djordje-petrovic-590080-2102416.jpg",
+      "category": "A",
+      "section": "pexels",
+      "upload": true,
+      "refs": ["src/config/pexelsImages.ts"]
+    },
+    {
+      "publicPath": "/images/pexels-fotios-photos-16129728.jpg",
+      "category": "A",
+      "section": "pexels",
+      "upload": true,
+      "refs": ["src/config/pexelsImages.ts"]
+    },
+    {
+      "publicPath": "/images/pexels-mikhail-nilov-7988079.jpg",
+      "category": "A",
+      "section": "pexels",
+      "upload": true,
+      "refs": ["src/config/pexelsImages.ts"]
+    },
+    {
+      "publicPath": "/images/pexels-pixabay-256219.jpg",
+      "category": "A",
+      "section": "pexels",
+      "upload": true,
+      "refs": ["src/config/pexelsImages.ts"]
+    },
+    {
+      "publicPath": "/images/optimized/pexels-thisisengineering-3861958-1920.webp",
+      "category": "A",
+      "section": "pexels",
+      "upload": true,
+      "refs": [],
+      "notes": "Preferred upload target for pexels-thisisengineering-3861958.jpg"
+    },
+    {
+      "publicPath": "/images/optimized/pexels-thisisengineering-3861964-1920.webp",
+      "category": "A",
+      "section": "pexels",
+      "upload": true,
+      "refs": [],
+      "notes": "Preferred upload target for pexels-thisisengineering-3861964.jpg"
+    },
+    {
+      "publicPath": "/images/optimized/pexels-thisisengineering-3861967-1920.webp",
+      "category": "A",
+      "section": "pexels",
+      "upload": true,
+      "refs": [],
+      "notes": "Preferred upload target for pexels-thisisengineering-3861967.jpg"
+    },
+    {
+      "publicPath": "/images/optimized/pexels-thisisengineering-3861958-1920.avif",
+      "category": "C",
+      "section": "optimized",
+      "upload": false,
+      "refs": [],
+      "notes": "AVIF duplicate"
+    },
+    {
+      "publicPath": "/images/optimized/pexels-thisisengineering-3861964-1920.avif",
+      "category": "C",
+      "section": "optimized",
+      "upload": false,
+      "refs": [],
+      "notes": "AVIF duplicate"
+    },
+    {
+      "publicPath": "/images/optimized/pexels-thisisengineering-3861967-1920.avif",
+      "category": "C",
+      "section": "optimized",
+      "upload": false,
+      "refs": [],
+      "notes": "AVIF duplicate"
+    },
+    {
+      "publicPath": "/images/pexels-thisisengineering-3861951.jpg",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": [],
+      "notes": "Unreferenced Pexels original"
+    },
+    {
+      "publicPath": "/images/pexels-thisisengineering-3861972.jpg",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": [],
+      "notes": "Unreferenced Pexels original"
+    },
+    {
+      "publicPath": "/images/pexels-cottonbro-5483077.jpg",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": [],
+      "notes": "Unreferenced Pexels original"
+    },
+    {
+      "publicPath": "/images/pexels-hiteshchoudhary-340152.jpg",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": [],
+      "notes": "Unreferenced Pexels original"
+    },
+    {
+      "publicPath": "/images/pexels-markusspiske-4439901.jpg",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": [],
+      "notes": "Unreferenced Pexels original"
+    },
+    {
+      "publicPath": "/images/logo.png",
+      "category": "B",
+      "section": "chrome",
+      "upload": true,
+      "refs": ["src/components/common/SiteLogo.tsx (LOGO_LIGHT)"]
+    },
+    {
+      "publicPath": "/images/footer-logo.png",
+      "category": "B",
+      "section": "chrome",
+      "upload": true,
+      "refs": ["src/components/common/SiteLogo.tsx (LOGO_DARK)"]
+    },
+    {
+      "publicPath": "/images/fav-icon/icon.png",
+      "category": "B",
+      "section": "chrome",
+      "upload": true,
+      "refs": ["src/app/layout.tsx (metadata.icons)"]
+    },
+    {
+      "publicPath": "/images/about-company/office-collab.svg",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": [],
+      "notes": "Unreferenced SVG placeholder"
+    },
+    {
+      "publicPath": "/images/about-company/meeting-workshop.svg",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": [],
+      "notes": "Unreferenced SVG placeholder"
+    },
+    {
+      "publicPath": "/images/featured-work/placeholder.png",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": [],
+      "notes": "Unreferenced placeholder"
+    },
+    {
+      "publicPath": "/images/featured-work/README.md",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": [],
+      "notes": "Docs only — skip upload"
+    },
+    {
+      "publicPath": "/images/Flooring-1.jpg",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/Flooring-1.png",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/senior-estimator.jpg",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/senior.png",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/junior.png",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/login-bac-img.png",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/leadgeneration.jpg",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/businessperformance.jpg",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/businessplans.jpg",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/laborhealth.png",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/career.jpg",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/circle.png",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/sodapdf-converted.png",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/paint-1.png",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/mask-group@2x.png",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/enhanced-image 11.png",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/enhanced-image 12.png",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/enhaned-image 11.jpg",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    },
+    {
+      "publicPath": "/images/tech-logo.svg",
+      "category": "C",
+      "section": "dead",
+      "upload": false,
+      "refs": []
+    }
+  ]
+}

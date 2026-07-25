@@ -10,9 +10,10 @@ import { TiltCard } from "@/components/animations/TiltCard";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { cn } from "@/components/theme/cn";
 import type { LeadershipMember } from "@/types/leadership";
+import { staticImageUrl } from "@/config/staticImages";
 
 const HEADING_ID = "about-leadership-heading";
-const IT_TEAM_IMAGE = "/images/it-team-2.JPG";
+const IT_TEAM_IMAGE = staticImageUrl("/images/it-team-2.JPG");
 const IT_TEAM_ALT = "QTO DEV IT team at QTO House";
 
 export function LeadershipSectionClient({

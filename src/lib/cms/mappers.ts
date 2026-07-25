@@ -37,6 +37,7 @@ import type { ServiceWithTags } from "@/lib/prisma/serviceData";
 import { orderedTagValues, parseStringArray } from "@/lib/prisma/arrayFields";
 import { parseMetadata } from "@/lib/metadata";
 import { defaultSiteBranding } from "@/config/site";
+import { resolveMediaUrl, resolveMediaUrlOrEmpty } from "@/config/staticImages";
 import { SOCIAL_LINKS } from "@/lib/constants";
 
 const PORTFOLIO_GRADIENTS: PortfolioGradientKey[] = [
@@ -69,7 +70,7 @@ export function mapService(row: ServiceWithTags): Service {
     icon: row.icon,
     features: parseStringArray(row.features),
     technologyTags: orderedTagValues(row.technologyTags),
-    image: row.imageUrl ?? undefined,
+    image: resolveMediaUrl(row.imageUrl),
     imageAlt: row.imageAlt ?? undefined,
   };
 }
@@ -84,7 +85,7 @@ export function mapProduct(row: ProductWithFeatures): Product {
     description: row.description,
     statusLabel: row.statusLabel ?? undefined,
     titleHighlight: row.titleHighlight ?? undefined,
-    image: row.imageUrl ?? undefined,
+    image: resolveMediaUrl(row.imageUrl),
     imageAlt: row.imageAlt ?? undefined,
     order: row.order,
     features: row.features.map((f) => ({
@@ -116,7 +117,7 @@ export function mapFeaturedWork(row: FeaturedWork, index: number): FeaturedWorkI
     category: tags[0] ?? "PROJECT",
     description: row.description,
     slug,
-    image: row.imageUrl ?? "",
+    image: resolveMediaUrlOrEmpty(row.imageUrl),
     order: row.order,
   };
 }
@@ -152,9 +153,9 @@ export function mapTestimonial(row: Testimonial): TestimonialItem {
     authorName: row.clientName,
     authorTitle: row.clientRole,
     company: row.clientCompany,
-    avatar: row.avatarUrl ?? undefined,
+    avatar: resolveMediaUrl(row.avatarUrl),
     mediaType,
-    mediaUrl: row.mediaUrl ?? undefined,
+    mediaUrl: resolveMediaUrl(row.mediaUrl),
     mediaAlt: row.mediaAlt ?? undefined,
   };
 }
@@ -209,9 +210,9 @@ export function mapBlogPost(row: BlogPostWithTags): BlogPost {
     featured: row.isFeatured,
     category: row.category,
     tags: orderedTagValues(row.tags),
-    image: row.imageUrl ?? undefined,
+    image: resolveMediaUrl(row.imageUrl),
     coverImage: row.imageUrl
-      ? { url: row.imageUrl, alt: row.imageAlt ?? row.title }
+      ? { url: resolveMediaUrlOrEmpty(row.imageUrl), alt: row.imageAlt ?? row.title }
       : undefined,
     readingTime: Number.isFinite(row.readTime) ? row.readTime! : 5,
   };
@@ -233,7 +234,7 @@ export function mapProject(row: ProjectWithRelations): Project {
     title: row.title,
     description: row.description,
     shortDescription: row.excerpt,
-    image: row.coverImageUrl ?? undefined,
+    image: resolveMediaUrl(row.coverImageUrl),
     featured: row.isFeatured,
     category: row.category,
     tags: orderedTagValues(row.tags),
@@ -294,7 +295,7 @@ export function mapTeamMember(row: TeamMember): LeadershipMember {
     id: row.id,
     name: row.name,
     designation: row.role,
-    imageUrl: row.avatarUrl ?? undefined,
+    imageUrl: resolveMediaUrl(row.avatarUrl),
     bio: row.bio ?? undefined,
   };
 }
@@ -311,7 +312,7 @@ export function mapProjectToPortfolioCase(
     initial,
     gradient: PORTFOLIO_GRADIENTS[index % PORTFOLIO_GRADIENTS.length],
     slug: row.slug,
-    image: row.coverImageUrl ?? undefined,
+    image: resolveMediaUrl(row.coverImageUrl),
     imageAlt: row.title,
   };
 }
