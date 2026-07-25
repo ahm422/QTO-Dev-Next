@@ -6,6 +6,7 @@ export interface LeadershipMember {
   designation: string;
   imageUrl?: string;
   bio?: string;
+  linkedIn?: string;
 }
 
 export const leadershipTeam: LeadershipMember[] = [
