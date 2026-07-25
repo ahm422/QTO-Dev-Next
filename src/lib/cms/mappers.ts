@@ -297,6 +297,7 @@ export function mapTeamMember(row: TeamMember): LeadershipMember {
     designation: row.role,
     imageUrl: resolveMediaUrl(row.avatarUrl),
     bio: row.bio ?? undefined,
+    linkedIn: row.linkedIn?.trim() || undefined,
   };
 }
 
