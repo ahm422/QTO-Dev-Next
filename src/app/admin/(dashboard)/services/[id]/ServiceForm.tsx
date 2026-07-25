@@ -18,6 +18,7 @@ import WidgetCard from "@/components/admin/widgets/WidgetCard"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -129,6 +130,9 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
                           placeholder="e.g. Web Development"
                         />
                       </FormControl>
+                      <FormDescription>
+                        Aim for ~40 characters (about 2 lines on the homepage cards).
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -157,6 +161,9 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
                     <FormControl>
                       <Textarea {...field} rows={2} placeholder="Brief one-liner shown in cards and listings" />
                     </FormControl>
+                    <FormDescription>
+                      Keep under ~160 characters — used on cards and for SEO.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -272,6 +279,9 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
                         placeholder={"Feature 1\nFeature 2\nFeature 3"}
                       />
                     </FormControl>
+                    <FormDescription>
+                      Keep each feature short (~60 characters); the first 4 show on the services grid.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -310,8 +320,9 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
             <WidgetCard title="Tips">
               <ul className="space-y-2">
                 {[
-                  "Use a clear, benefit-focused title",
-                  "Keep the short description under 160 characters",
+                  "Keep titles benefit-focused and ~40 characters (2 lines on homepage cards)",
+                  "Keep the short description under ~160 characters (cards + SEO)",
+                  "Keep each feature short (~60 chars); first 4 show on the services grid",
                   "Add relevant tech tags to help with filtering",
                   "Publish only when all content is finalized",
                 ].map((tip, i) => (

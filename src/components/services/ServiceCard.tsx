@@ -65,7 +65,7 @@ export function ServiceCard({
       >
         <CardMedia src={imageSrc} sizes={sizes} motionOk={motionOk} />
 
-        <div className="relative z-10 flex flex-col items-center">
+        <div className="relative z-10 flex w-full flex-col items-center">
           <span
             className={cn(
               "mb-3 flex h-12 w-12 items-center justify-center rounded-xl",
@@ -87,8 +87,10 @@ export function ServiceCard({
           </span>
 
           <span
+            title={service.title}
             className={cn(
               "font-semibold text-sm sm:text-base leading-tight",
+              "line-clamp-2 w-full max-w-full",
               // Light mode: dark title on light wash; dark mode: white on dark wash
               "text-foreground dark:text-white",
               "[text-shadow:0_1px_2px_rgba(255,255,255,0.9)] dark:[text-shadow:0_1px_3px_rgba(0,0,0,0.9)]"
@@ -159,8 +161,9 @@ export function ServiceCard({
         </span>
 
         <h2
+          title={service.title}
           className={cn(
-            "text-2xl md:text-3xl font-bold mb-3 font-heading tracking-tight",
+            "text-2xl md:text-3xl font-bold mb-3 font-heading tracking-tight line-clamp-2",
             "text-foreground dark:text-white",
             "[text-shadow:0_1px_2px_rgba(255,255,255,0.9)] dark:[text-shadow:0_1px_3px_rgba(0,0,0,0.9)]"
           )}
@@ -169,6 +172,7 @@ export function ServiceCard({
         </h2>
 
         <p
+          title={service.shortDescription}
           className={cn(
             "mb-6 flex-1 leading-relaxed line-clamp-3",
             "text-foreground/85 dark:text-white/90",
@@ -194,14 +198,16 @@ export function ServiceCard({
                 <li
                   key={feature}
                   className={cn(
-                    "flex items-center gap-3",
+                    "flex items-start gap-3",
                     "text-foreground/85 dark:text-white/90"
                   )}
                 >
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/20 dark:bg-primary/30">
+                  <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/20 dark:bg-primary/30">
                     <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                   </span>
-                  {feature}
+                  <span title={feature} className="line-clamp-2 min-w-0">
+                    {feature}
+                  </span>
                 </li>
               ))}
             </ul>
