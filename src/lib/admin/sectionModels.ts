@@ -15,6 +15,7 @@ type CountableDelegate = {
 
 export const modelDelegates: Record<PrismaModelName, CountableDelegate> = {
   Service: prisma.service,
+  Product: prisma.product,
   ProcessStep: prisma.processStep,
   FeaturedWork: prisma.featuredWork,
   WhyChooseUs: prisma.whyChooseUs,
@@ -54,6 +55,7 @@ type TimeSeriesDelegate = {
  */
 export const timeSeriesDelegates: Partial<Record<PrismaModelName, TimeSeriesDelegate>> = {
   Service: prisma.service,
+  Product: prisma.product,
   ProcessStep: prisma.processStep,
   FeaturedWork: prisma.featuredWork,
   WhyChooseUs: prisma.whyChooseUs,
