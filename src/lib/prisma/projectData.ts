@@ -40,6 +40,7 @@ export function toPrismaProjectCreateData(
     solution: scalars.solution || null,
     coverImageUrl: scalars.coverImageUrl || null,
     liveUrl: scalars.liveUrl || null,
+    serviceSlug: scalars.serviceSlug || null,
     completedAt: scalars.completedAt ? new Date(scalars.completedAt) : null,
     results: stringifyStringArray(input.results),
     images: stringifyStringArray(input.images),
@@ -62,6 +63,7 @@ export function toPrismaProjectUpdateData(
     solution: scalars.solution || null,
     coverImageUrl: scalars.coverImageUrl || null,
     liveUrl: scalars.liveUrl || null,
+    serviceSlug: scalars.serviceSlug || null,
     completedAt: scalars.completedAt ? new Date(scalars.completedAt) : null,
     results: stringifyStringArray(input.results),
     images: stringifyStringArray(input.images),
@@ -88,6 +90,7 @@ export function toPrismaProjectPartialUpdateData(
   if (input.client !== undefined) data.client = input.client || null;
   if (input.coverImageUrl !== undefined) data.coverImageUrl = input.coverImageUrl || null;
   if (input.liveUrl !== undefined) data.liveUrl = input.liveUrl || null;
+  if (input.serviceSlug !== undefined) data.serviceSlug = input.serviceSlug || null;
   if (input.challenge !== undefined) data.challenge = input.challenge || null;
   if (input.solution !== undefined) data.solution = input.solution || null;
   if (input.completedAt !== undefined) {
@@ -107,6 +110,7 @@ export function fromPrismaProject(row: ProjectWithRelations) {
     client,
     coverImageUrl,
     liveUrl,
+    serviceSlug,
     challenge,
     solution,
     completedAt,
@@ -119,6 +123,7 @@ export function fromPrismaProject(row: ProjectWithRelations) {
     solution: solution ?? "",
     coverImageUrl: coverImageUrl ?? "",
     liveUrl: liveUrl ?? "",
+    serviceSlug: serviceSlug ?? "",
     completedAt: completedAt?.toISOString().split("T")[0] ?? "",
     tags: orderedTagValues(tagRows),
     techStack: orderedTagValues(techRows),
