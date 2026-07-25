@@ -13,9 +13,10 @@ import { cn } from "@/components/theme/cn";
 import { Reveal } from "@/components/animations/Reveal";
 import { InteractiveImage } from "@/components/animations/InteractiveImage";
 import { TiltCard } from "@/components/animations/TiltCard";
+import { staticImageUrl } from "@/config/staticImages";
 
-const IMAGE_PRIMARY = "/images/it-team-2.JPG";
-const IMAGE_OVERLAP = "/images/ITTeam.JPG";
+const IMAGE_PRIMARY = staticImageUrl("/images/it-team-2.JPG");
+const IMAGE_OVERLAP = staticImageUrl("/images/ITTeam.JPG");
 const IMAGE_ALT_PRIMARY = "QTO DEV IT team at QTO House";
 const IMAGE_ALT_OVERLAP = "QTO DEV team at QTO House event";
 

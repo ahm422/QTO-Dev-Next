@@ -1,0 +1,501 @@
+{
+  "generatedAt": "2026-07-25T04:19:45.625Z",
+  "issue": 370,
+  "root": "public/images",
+  "totalFiles": 82,
+  "totalBytes": 195588692,
+  "files": [
+    {
+      "path": "public/images/Frontend1.JPG",
+      "publicPath": "/images/Frontend1.JPG",
+      "sizeBytes": 16543450,
+      "sizeHuman": "15.8MB"
+    },
+    {
+      "path": "public/images/it-team-1.JPG",
+      "publicPath": "/images/it-team-1.JPG",
+      "sizeBytes": 14450688,
+      "sizeHuman": "13.8MB"
+    },
+    {
+      "path": "public/images/it-team-3.JPG",
+      "publicPath": "/images/it-team-3.JPG",
+      "sizeBytes": 14417920,
+      "sizeHuman": "13.8MB"
+    },
+    {
+      "path": "public/images/it-team-2.JPG",
+      "publicPath": "/images/it-team-2.JPG",
+      "sizeBytes": 14286848,
+      "sizeHuman": "13.6MB"
+    },
+    {
+      "path": "public/images/Frontend.JPG",
+      "publicPath": "/images/Frontend.JPG",
+      "sizeBytes": 13926400,
+      "sizeHuman": "13.3MB"
+    },
+    {
+      "path": "public/images/Backend1.JPG",
+      "publicPath": "/images/Backend1.JPG",
+      "sizeBytes": 12612180,
+      "sizeHuman": "12.0MB"
+    },
+    {
+      "path": "public/images/ITTeam.JPG",
+      "publicPath": "/images/ITTeam.JPG",
+      "sizeBytes": 11436032,
+      "sizeHuman": "10.9MB"
+    },
+    {
+      "path": "public/images/CEO1.JPG",
+      "publicPath": "/images/CEO1.JPG",
+      "sizeBytes": 10550328,
+      "sizeHuman": "10.1MB"
+    },
+    {
+      "path": "public/images/Backend.JPG",
+      "publicPath": "/images/Backend.JPG",
+      "sizeBytes": 6291456,
+      "sizeHuman": "6.0MB"
+    },
+    {
+      "path": "public/images/CEO.JPG",
+      "publicPath": "/images/CEO.JPG",
+      "sizeBytes": 6094848,
+      "sizeHuman": "5.8MB"
+    },
+    {
+      "path": "public/images/projects-bg.jpg",
+      "publicPath": "/images/projects-bg.jpg",
+      "sizeBytes": 5272765,
+      "sizeHuman": "5.0MB"
+    },
+    {
+      "path": "public/images/pexels-thisisengineering-3861958.jpg",
+      "publicPath": "/images/pexels-thisisengineering-3861958.jpg",
+      "sizeBytes": 5172975,
+      "sizeHuman": "4.9MB"
+    },
+    {
+      "path": "public/images/pexels-thisisengineering-3861951.jpg",
+      "publicPath": "/images/pexels-thisisengineering-3861951.jpg",
+      "sizeBytes": 4838503,
+      "sizeHuman": "4.6MB"
+    },
+    {
+      "path": "public/images/pexels-thisisengineering-3861967.jpg",
+      "publicPath": "/images/pexels-thisisengineering-3861967.jpg",
+      "sizeBytes": 4329002,
+      "sizeHuman": "4.1MB"
+    },
+    {
+      "path": "public/images/pexels-thisisengineering-3861964.jpg",
+      "publicPath": "/images/pexels-thisisengineering-3861964.jpg",
+      "sizeBytes": 4235639,
+      "sizeHuman": "4.0MB"
+    },
+    {
+      "path": "public/images/ui-ux-design.jpg",
+      "publicPath": "/images/ui-ux-design.jpg",
+      "sizeBytes": 3213400,
+      "sizeHuman": "3.1MB"
+    },
+    {
+      "path": "public/images/contact-bg.jpg",
+      "publicPath": "/images/contact-bg.jpg",
+      "sizeBytes": 3213170,
+      "sizeHuman": "3.1MB"
+    },
+    {
+      "path": "public/images/pexels-thisisengineering-3861972.jpg",
+      "publicPath": "/images/pexels-thisisengineering-3861972.jpg",
+      "sizeBytes": 3123075,
+      "sizeHuman": "3.0MB"
+    },
+    {
+      "path": "public/images/service-bg.jpg",
+      "publicPath": "/images/service-bg.jpg",
+      "sizeBytes": 2979720,
+      "sizeHuman": "2.8MB"
+    },
+    {
+      "path": "public/images/devops.jpg",
+      "publicPath": "/images/devops.jpg",
+      "sizeBytes": 2806434,
+      "sizeHuman": "2.7MB"
+    },
+    {
+      "path": "public/images/career-bg.jpg",
+      "publicPath": "/images/career-bg.jpg",
+      "sizeBytes": 2359395,
+      "sizeHuman": "2.3MB"
+    },
+    {
+      "path": "public/images/about-bg.jpg",
+      "publicPath": "/images/about-bg.jpg",
+      "sizeBytes": 2341648,
+      "sizeHuman": "2.2MB"
+    },
+    {
+      "path": "public/images/pexels-fotios-photos-16129728.jpg",
+      "publicPath": "/images/pexels-fotios-photos-16129728.jpg",
+      "sizeBytes": 2212264,
+      "sizeHuman": "2.1MB"
+    },
+    {
+      "path": "public/images/blog-bg.jpg",
+      "publicPath": "/images/blog-bg.jpg",
+      "sizeBytes": 2033881,
+      "sizeHuman": "1.9MB"
+    },
+    {
+      "path": "public/images/web-development.jpg",
+      "publicPath": "/images/web-development.jpg",
+      "sizeBytes": 1903400,
+      "sizeHuman": "1.8MB"
+    },
+    {
+      "path": "public/images/pexels-mikhail-nilov-7988079.jpg",
+      "publicPath": "/images/pexels-mikhail-nilov-7988079.jpg",
+      "sizeBytes": 1703574,
+      "sizeHuman": "1.6MB"
+    },
+    {
+      "path": "public/images/technical-support.jpg",
+      "publicPath": "/images/technical-support.jpg",
+      "sizeBytes": 1576166,
+      "sizeHuman": "1.5MB"
+    },
+    {
+      "path": "public/images/ai.jpg",
+      "publicPath": "/images/ai.jpg",
+      "sizeBytes": 1483077,
+      "sizeHuman": "1.4MB"
+    },
+    {
+      "path": "public/images/Flooring-1.jpg",
+      "publicPath": "/images/Flooring-1.jpg",
+      "sizeBytes": 1351319,
+      "sizeHuman": "1.3MB"
+    },
+    {
+      "path": "public/images/pexels-olia-danilevich-4974912.jpg",
+      "publicPath": "/images/pexels-olia-danilevich-4974912.jpg",
+      "sizeBytes": 1343079,
+      "sizeHuman": "1.3MB"
+    },
+    {
+      "path": "public/images/pexels-hiteshchoudhary-340152.jpg",
+      "publicPath": "/images/pexels-hiteshchoudhary-340152.jpg",
+      "sizeBytes": 1224598,
+      "sizeHuman": "1.2MB"
+    },
+    {
+      "path": "public/images/senior-estimator.jpg",
+      "publicPath": "/images/senior-estimator.jpg",
+      "sizeBytes": 1208005,
+      "sizeHuman": "1.2MB"
+    },
+    {
+      "path": "public/images/mobile-app-developement.jpg",
+      "publicPath": "/images/mobile-app-developement.jpg",
+      "sizeBytes": 1203221,
+      "sizeHuman": "1.1MB"
+    },
+    {
+      "path": "public/images/pexels-cottonbro-5483077.jpg",
+      "publicPath": "/images/pexels-cottonbro-5483077.jpg",
+      "sizeBytes": 1146810,
+      "sizeHuman": "1.1MB"
+    },
+    {
+      "path": "public/images/login-bac-img.png",
+      "publicPath": "/images/login-bac-img.png",
+      "sizeBytes": 814756,
+      "sizeHuman": "795.7KB"
+    },
+    {
+      "path": "public/images/leadgeneration.jpg",
+      "publicPath": "/images/leadgeneration.jpg",
+      "sizeBytes": 778282,
+      "sizeHuman": "760.0KB"
+    },
+    {
+      "path": "public/images/enhanced-image 11.png",
+      "publicPath": "/images/enhanced-image 11.png",
+      "sizeBytes": 762965,
+      "sizeHuman": "745.1KB"
+    },
+    {
+      "path": "public/images/businessperformance.jpg",
+      "publicPath": "/images/businessperformance.jpg",
+      "sizeBytes": 733723,
+      "sizeHuman": "716.5KB"
+    },
+    {
+      "path": "public/images/pexels-djordje-petrovic-590080-2102416.jpg",
+      "publicPath": "/images/pexels-djordje-petrovic-590080-2102416.jpg",
+      "sizeBytes": 702921,
+      "sizeHuman": "686.4KB"
+    },
+    {
+      "path": "public/images/senior.png",
+      "publicPath": "/images/senior.png",
+      "sizeBytes": 669277,
+      "sizeHuman": "653.6KB"
+    },
+    {
+      "path": "public/images/pexels-pixabay-256219.jpg",
+      "publicPath": "/images/pexels-pixabay-256219.jpg",
+      "sizeBytes": 599829,
+      "sizeHuman": "585.8KB"
+    },
+    {
+      "path": "public/images/businessplans.jpg",
+      "publicPath": "/images/businessplans.jpg",
+      "sizeBytes": 497783,
+      "sizeHuman": "486.1KB"
+    },
+    {
+      "path": "public/images/pexels-kevin-ku-92347-577585.jpg",
+      "publicPath": "/images/pexels-kevin-ku-92347-577585.jpg",
+      "sizeBytes": 485896,
+      "sizeHuman": "474.5KB"
+    },
+    {
+      "path": "public/images/mask-group@2x.png",
+      "publicPath": "/images/mask-group@2x.png",
+      "sizeBytes": 477467,
+      "sizeHuman": "466.3KB"
+    },
+    {
+      "path": "public/images/junior.png",
+      "publicPath": "/images/junior.png",
+      "sizeBytes": 477242,
+      "sizeHuman": "466.1KB"
+    },
+    {
+      "path": "public/images/enhaned-image 11.jpg",
+      "publicPath": "/images/enhaned-image 11.jpg",
+      "sizeBytes": 432366,
+      "sizeHuman": "422.2KB"
+    },
+    {
+      "path": "public/images/laborhealth.png",
+      "publicPath": "/images/laborhealth.png",
+      "sizeBytes": 431877,
+      "sizeHuman": "421.8KB"
+    },
+    {
+      "path": "public/images/enhanced-image 12.png",
+      "publicPath": "/images/enhanced-image 12.png",
+      "sizeBytes": 413764,
+      "sizeHuman": "404.1KB"
+    },
+    {
+      "path": "public/images/pexels-markusspiske-4439901.jpg",
+      "publicPath": "/images/pexels-markusspiske-4439901.jpg",
+      "sizeBytes": 385949,
+      "sizeHuman": "376.9KB"
+    },
+    {
+      "path": "public/images/optimized/ai-1920.webp",
+      "publicPath": "/images/optimized/ai-1920.webp",
+      "sizeBytes": 361750,
+      "sizeHuman": "353.3KB"
+    },
+    {
+      "path": "public/images/Flooring-1.png",
+      "publicPath": "/images/Flooring-1.png",
+      "sizeBytes": 350112,
+      "sizeHuman": "341.9KB"
+    },
+    {
+      "path": "public/images/career.jpg",
+      "publicPath": "/images/career.jpg",
+      "sizeBytes": 279288,
+      "sizeHuman": "272.7KB"
+    },
+    {
+      "path": "public/images/optimized/ai-1920.avif",
+      "publicPath": "/images/optimized/ai-1920.avif",
+      "sizeBytes": 269491,
+      "sizeHuman": "263.2KB"
+    },
+    {
+      "path": "public/images/optimized/pexels-thisisengineering-3861964-1920.webp",
+      "publicPath": "/images/optimized/pexels-thisisengineering-3861964-1920.webp",
+      "sizeBytes": 268882,
+      "sizeHuman": "262.6KB"
+    },
+    {
+      "path": "public/images/circle.png",
+      "publicPath": "/images/circle.png",
+      "sizeBytes": 261395,
+      "sizeHuman": "255.3KB"
+    },
+    {
+      "path": "public/images/sodapdf-converted.png",
+      "publicPath": "/images/sodapdf-converted.png",
+      "sizeBytes": 238267,
+      "sizeHuman": "232.7KB"
+    },
+    {
+      "path": "public/images/paint-1.png",
+      "publicPath": "/images/paint-1.png",
+      "sizeBytes": 238267,
+      "sizeHuman": "232.7KB"
+    },
+    {
+      "path": "public/images/optimized/web-development-1920.webp",
+      "publicPath": "/images/optimized/web-development-1920.webp",
+      "sizeBytes": 207686,
+      "sizeHuman": "202.8KB"
+    },
+    {
+      "path": "public/images/optimized/devops-1920.webp",
+      "publicPath": "/images/optimized/devops-1920.webp",
+      "sizeBytes": 153072,
+      "sizeHuman": "149.5KB"
+    },
+    {
+      "path": "public/images/optimized/web-development-1920.avif",
+      "publicPath": "/images/optimized/web-development-1920.avif",
+      "sizeBytes": 152217,
+      "sizeHuman": "148.6KB"
+    },
+    {
+      "path": "public/images/optimized/pexels-thisisengineering-3861964-1920.avif",
+      "publicPath": "/images/optimized/pexels-thisisengineering-3861964-1920.avif",
+      "sizeBytes": 145862,
+      "sizeHuman": "142.4KB"
+    },
+    {
+      "path": "public/images/optimized/pexels-thisisengineering-3861958-1920.webp",
+      "publicPath": "/images/optimized/pexels-thisisengineering-3861958-1920.webp",
+      "sizeBytes": 121834,
+      "sizeHuman": "119.0KB"
+    },
+    {
+      "path": "public/images/optimized/mobile-app-developement-1920.webp",
+      "publicPath": "/images/optimized/mobile-app-developement-1920.webp",
+      "sizeBytes": 114574,
+      "sizeHuman": "111.9KB"
+    },
+    {
+      "path": "public/images/optimized/pexels-thisisengineering-3861967-1920.webp",
+      "publicPath": "/images/optimized/pexels-thisisengineering-3861967-1920.webp",
+      "sizeBytes": 110794,
+      "sizeHuman": "108.2KB"
+    },
+    {
+      "path": "public/images/optimized/devops-1920.avif",
+      "publicPath": "/images/optimized/devops-1920.avif",
+      "sizeBytes": 107192,
+      "sizeHuman": "104.7KB"
+    },
+    {
+      "path": "public/images/optimized/technical-support-1920.webp",
+      "publicPath": "/images/optimized/technical-support-1920.webp",
+      "sizeBytes": 92444,
+      "sizeHuman": "90.3KB"
+    },
+    {
+      "path": "public/images/optimized/ui-ux-design-1920.webp",
+      "publicPath": "/images/optimized/ui-ux-design-1920.webp",
+      "sizeBytes": 85990,
+      "sizeHuman": "84.0KB"
+    },
+    {
+      "path": "public/images/optimized/mobile-app-developement-1920.avif",
+      "publicPath": "/images/optimized/mobile-app-developement-1920.avif",
+      "sizeBytes": 85639,
+      "sizeHuman": "83.6KB"
+    },
+    {
+      "path": "public/images/optimized/pexels-thisisengineering-3861958-1920.avif",
+      "publicPath": "/images/optimized/pexels-thisisengineering-3861958-1920.avif",
+      "sizeBytes": 75081,
+      "sizeHuman": "73.3KB"
+    },
+    {
+      "path": "public/images/optimized/pexels-thisisengineering-3861967-1920.avif",
+      "publicPath": "/images/optimized/pexels-thisisengineering-3861967-1920.avif",
+      "sizeBytes": 70148,
+      "sizeHuman": "68.5KB"
+    },
+    {
+      "path": "public/images/optimized/ceo-portrait-800.webp",
+      "publicPath": "/images/optimized/ceo-portrait-800.webp",
+      "sizeBytes": 66854,
+      "sizeHuman": "65.3KB"
+    },
+    {
+      "path": "public/images/optimized/ceo-800.webp",
+      "publicPath": "/images/optimized/ceo-800.webp",
+      "sizeBytes": 66854,
+      "sizeHuman": "65.3KB"
+    },
+    {
+      "path": "public/images/optimized/technical-support-1920.avif",
+      "publicPath": "/images/optimized/technical-support-1920.avif",
+      "sizeBytes": 54322,
+      "sizeHuman": "53.0KB"
+    },
+    {
+      "path": "public/images/optimized/ui-ux-design-1920.avif",
+      "publicPath": "/images/optimized/ui-ux-design-1920.avif",
+      "sizeBytes": 48362,
+      "sizeHuman": "47.2KB"
+    },
+    {
+      "path": "public/images/about-company/office-collab.svg",
+      "publicPath": "/images/about-company/office-collab.svg",
+      "sizeBytes": 3606,
+      "sizeHuman": "3.5KB"
+    },
+    {
+      "path": "public/images/about-company/meeting-workshop.svg",
+      "publicPath": "/images/about-company/meeting-workshop.svg",
+      "sizeBytes": 3488,
+      "sizeHuman": "3.4KB"
+    },
+    {
+      "path": "public/images/logo.png",
+      "publicPath": "/images/logo.png",
+      "sizeBytes": 2198,
+      "sizeHuman": "2.1KB"
+    },
+    {
+      "path": "public/images/footer-logo.png",
+      "publicPath": "/images/footer-logo.png",
+      "sizeBytes": 2058,
+      "sizeHuman": "2.0KB"
+    },
+    {
+      "path": "public/images/fav-icon/icon.png",
+      "publicPath": "/images/fav-icon/icon.png",
+      "sizeBytes": 1009,
+      "sizeHuman": "1009B"
+    },
+    {
+      "path": "public/images/tech-logo.svg",
+      "publicPath": "/images/tech-logo.svg",
+      "sizeBytes": 282,
+      "sizeHuman": "282B"
+    },
+    {
+      "path": "public/images/featured-work/README.md",
+      "publicPath": "/images/featured-work/README.md",
+      "sizeBytes": 240,
+      "sizeHuman": "240B"
+    },
+    {
+      "path": "public/images/featured-work/placeholder.png",
+      "publicPath": "/images/featured-work/placeholder.png",
+      "sizeBytes": 67,
+      "sizeHuman": "67B"
+    }
+  ]
+}

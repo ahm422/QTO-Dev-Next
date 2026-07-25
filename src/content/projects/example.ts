@@ -1,4 +1,5 @@
 import { Project, DEFAULT_APPROACH_STEPS } from "./types";
+import { staticImageUrl } from "@/config/staticImages";
 
 export const laheboProject: Project = {
   slug: "lahebo-grc-platform",
@@ -113,19 +114,19 @@ export const laheboProject: Project = {
       slug: "finflow-inc",
       title: "FinFlow Inc.",
       summary: "Payment infrastructure and analytics for finance teams.",
-      thumbnail: "/images/pexels-thisisengineering-3861958.jpg",
+      thumbnail: staticImageUrl("/images/pexels-thisisengineering-3861958.jpg"),
     },
     {
       slug: "shopverse",
       title: "ShopVerse",
       summary: "Headless commerce with custom checkout and inventory sync.",
-      thumbnail: "/images/pexels-thisisengineering-3861967.jpg",
+      thumbnail: staticImageUrl("/images/pexels-thisisengineering-3861967.jpg"),
     },
     {
       slug: "meditrack-health",
       title: "MediTrack Health",
       summary: "Secure patient and wellness tracking for clinics.",
-      thumbnail: "/images/pexels-thisisengineering-3861964.jpg",
+      thumbnail: staticImageUrl("/images/pexels-thisisengineering-3861964.jpg"),
     },
   ],
   pdfDownloadUrl: "/assets/case-studies/lahebo-case-study.pdf",

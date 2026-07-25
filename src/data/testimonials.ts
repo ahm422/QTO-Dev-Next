@@ -3,7 +3,7 @@ import { PEXELS_TECH_IMAGES } from "@/config/pexelsImages";
 
 /**
  * Testimonial items for the homepage (issue #26).
- * Uses Pexels tech imagery from public/images/ (issue #60).
+ * Uses R2-hosted Pexels tech imagery (issues #60, #370).
  */
 export const testimonialsItems: TestimonialItem[] = [
   {

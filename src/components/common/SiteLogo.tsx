@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import { useTheme } from "@/components/theme/ThemeProvider";
+import { SITE_LOGO_DARK, SITE_LOGO_LIGHT } from "@/config/staticImages";
 
-const LOGO_LIGHT = "/images/logo.png";
-const LOGO_DARK = "/images/footer-logo.png";
+const LOGO_LIGHT = SITE_LOGO_LIGHT;
+const LOGO_DARK = SITE_LOGO_DARK;
 
 interface SiteLogoProps {
   alt?: string;

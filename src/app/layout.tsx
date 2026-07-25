@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { cn } from "@/components/theme/cn";
 import { SITE_URL } from "@/lib/constants";
+import { SITE_FAVICON } from "@/config/staticImages";
 import { generalSans, inter } from "./fonts";
 
 const themeScript = `
@@ -20,8 +21,8 @@ export const metadata: Metadata = {
   description:
     "Premium web development, mobile app development, and UI/UX design services for modern businesses.",
   icons: {
-    icon: "/images/fav-icon/icon.png",
-    apple: "/images/fav-icon/icon.png",
+    icon: SITE_FAVICON,
+    apple: SITE_FAVICON,
   },
 };
 

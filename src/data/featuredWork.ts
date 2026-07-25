@@ -13,7 +13,7 @@ const SECTION_IMAGES = [
 
 /**
  * Featured work items for the homepage project showcase (issue #20).
- * Uses images from public/images/ for consistent design.
+ * Uses R2-hosted Pexels tech imagery (issue #370).
  */
 export const featuredWorkItems: FeaturedWorkItem[] = [
   {

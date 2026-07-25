@@ -14,7 +14,7 @@ export interface TestimonialItem {
   authorTitle: string;
   /** Company name */
   company: string;
-  /** Optional avatar image URL (e.g. from public/images/) */
+  /** Optional avatar image URL (e.g. R2 / CMS media URL) */
   avatar?: string;
   /** CMS media type */
   mediaType?: TestimonialMediaType;
