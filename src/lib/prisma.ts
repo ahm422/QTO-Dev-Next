@@ -34,11 +34,16 @@ function createPrismaProxy(): PrismaClient {
           if (typeof method === "symbol") return undefined;
           return (...args: unknown[]) =>
             getPrismaClient().then((client) => {
-              const model = client[prop as keyof PrismaClient] as Record<
-                string,
-                (...a: unknown[]) => unknown
-              >;
-              const fn = model[method];
+              const model = client[prop as keyof PrismaClient] as
+                | Record<string, (...a: unknown[]) => unknown>
+                | undefined;
+              if (model == null) {
+                throw new Error(
+                  `Prisma model "${String(prop)}" is not available on this client. ` +
+                    `Run \`npx prisma generate\` and restart the Next.js dev server.`
+                );
+              }
+              const fn = model[method as string];
               if (typeof fn === "function") {
                 return fn.call(model, ...args);
               }

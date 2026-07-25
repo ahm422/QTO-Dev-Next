@@ -10,6 +10,7 @@ import { seedIndustries } from "./seed/industries";
 import { seedJobs } from "./seed/jobs";
 import { seedProcessSteps } from "./seed/processSteps";
 import { seedProjects } from "./seed/projects";
+import { seedProducts } from "./seed/products";
 import { seedServices } from "./seed/services";
 import { seedSiteConfig } from "./seed/siteConfig";
 import { seedStats } from "./seed/stats";
@@ -25,6 +26,7 @@ async function main() {
   console.log(`Seeding CMS content into ${target} D1 from static data…`);
 
   await seedServices();
+  await seedProducts();
   await seedProcessSteps();
   await seedFeaturedWork();
   await seedWhyChooseUs();

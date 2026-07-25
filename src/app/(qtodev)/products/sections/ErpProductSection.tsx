@@ -1,7 +1,7 @@
-import { findErpSolutionsContent } from "@/lib/cms/about";
+import { findProductBySlug } from "@/lib/cms/products";
 import { ErpProductSectionClient } from "./ErpProductSectionClient";
 
 export async function ErpProductSection() {
-  const content = await findErpSolutionsContent();
-  return <ErpProductSectionClient content={content} />;
+  const product = await findProductBySlug("erp-solutions");
+  return <ErpProductSectionClient product={product} />;
 }

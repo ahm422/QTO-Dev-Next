@@ -25,12 +25,14 @@ import {
   Inbox,
   FileText,
   ClipboardList,
+  Package,
 } from "lucide-react"
 
 export type SectionGroup = "main" | "content" | "settings"
 
 export type PrismaModelName =
   | "Service"
+  | "Product"
   | "ProcessStep"
   | "FeaturedWork"
   | "WhyChooseUs"
@@ -87,6 +89,7 @@ export const contentSections: ContentSection[] = [
 
   // CONTENT
   { key: "services",          label: "Services",          href: "/admin/services",          icon: Briefcase,      group: "content", model: "Service",         countable: true,  publishable: true,  hasTimestamps: true,  color: "#F97316" },
+  { key: "products",          label: "Products",          href: "/admin/products",          icon: Package,        group: "content", model: "Product",         countable: true,  publishable: true,  hasTimestamps: true,  color: "#0EA5E9" },
   { key: "process-steps",     label: "Process Steps",     href: "/admin/process-steps",     icon: GitBranch,      group: "content", model: "ProcessStep",     countable: true,  publishable: true,  hasTimestamps: true,  color: "#06B6D4" },
   { key: "featured-work",     label: "Featured Work",     href: "/admin/featured-work",     icon: Star,           group: "content", model: "FeaturedWork",    countable: true,  publishable: true,  hasTimestamps: true },
   { key: "why-choose-us",     label: "Why Choose Us",     href: "/admin/why-choose-us",     icon: CheckSquare,    group: "content", model: "WhyChooseUs",     countable: true,  publishable: true,  hasTimestamps: true },

@@ -24,12 +24,14 @@ import type { IndustryItem, IndustryIconKey } from "@/types/industry";
 import type { Job } from "@/types/job";
 import type { PortfolioCase, PortfolioGradientKey } from "@/types/portfolio";
 import type { Project } from "@/types/project";
+import type { Product } from "@/types/product";
 import type { Service, WorkProcessStep } from "@/types/service";
 import type { StatsNumbersItem, StatsNumbersVariant } from "@/types/statsNumbers";
 import type { TestimonialItem } from "@/types/testimonials";
 import type { WhyChooseUsItem } from "@/types/whyChooseUs";
 import type { LeadershipMember } from "@/types/leadership";
 import type { BlogPostWithTags } from "@/lib/prisma/blogPostData";
+import type { ProductWithFeatures } from "@/lib/prisma/productData";
 import type { ProjectWithRelations } from "@/lib/prisma/projectData";
 import type { ServiceWithTags } from "@/lib/prisma/serviceData";
 import { orderedTagValues, parseStringArray } from "@/lib/prisma/arrayFields";
@@ -69,6 +71,27 @@ export function mapService(row: ServiceWithTags): Service {
     technologyTags: orderedTagValues(row.technologyTags),
     image: row.imageUrl ?? undefined,
     imageAlt: row.imageAlt ?? undefined,
+  };
+}
+
+export function mapProduct(row: ProductWithFeatures): Product {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    subtitle: row.subtitle ?? undefined,
+    shortDescription: row.shortDescription ?? undefined,
+    description: row.description,
+    statusLabel: row.statusLabel ?? undefined,
+    titleHighlight: row.titleHighlight ?? undefined,
+    image: row.imageUrl ?? undefined,
+    imageAlt: row.imageAlt ?? undefined,
+    order: row.order,
+    features: row.features.map((f) => ({
+      name: f.name,
+      description: f.description,
+      icon: f.icon ?? undefined,
+    })),
   };
 }
 
