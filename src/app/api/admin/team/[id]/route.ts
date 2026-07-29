@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { apiSuccess, apiError } from "@/lib/apiResponses";
 import { formatZodFieldErrors } from "@/lib/validators/http";
@@ -8,7 +7,8 @@ import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { writeContentAudit } from "@/lib/auth/audit";
 import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
-import { teamMemberSchema } from "@/lib/validators/admin/teamMember";
+import { teamMemberBaseSchema } from "@/lib/validators/admin/teamMember";
+import { revalidateTeamCaches } from "@/lib/revalidate";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error } = await requireAdminSession();
@@ -29,13 +29,31 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const { id } = await params;
   const { body, error: bodyError } = await parseJsonBody(request);
   if (bodyError) return bodyError;
-  const parsed = teamMemberSchema.partial().safeParse(body);
+  // Base schema only — Zod v4 forbids .partial() on refined schemas.
+  const parsed = teamMemberBaseSchema.partial().safeParse(body);
   if (!parsed.success)
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
+    if (parsed.data.isFounder) {
+      const existing = await prisma.teamMember.findUnique({
+        where: { id },
+        select: { avatarUrl: true },
+      });
+      const avatarUrl = parsed.data.avatarUrl ?? existing?.avatarUrl ?? "";
+      if (!avatarUrl.trim()) {
+        return apiError(400, "Validation failed", {
+          fieldErrors: {
+            avatarUrl: ["Avatar is required when featuring as Founder on the About page"],
+          },
+        });
+      }
+      await prisma.teamMember.updateMany({
+        where: { id: { not: id }, isFounder: true },
+        data: { isFounder: false },
+      });
+    }
     const item = await prisma.teamMember.update({ where: { id }, data: parsed.data });
-    revalidatePath("/");
-    revalidatePath("/about");
+    revalidateTeamCaches();
     await writeContentAudit({
       session,
       action: AUDIT_ACTIONS.CONTENT_UPDATED,
@@ -56,8 +74,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   try {
     const existing = await prisma.teamMember.findUnique({ where: { id }, select: { name: true } });
     await prisma.teamMember.delete({ where: { id } });
-    revalidatePath("/");
-    revalidatePath("/about");
+    revalidateTeamCaches();
     await writeContentAudit({
       session,
       action: AUDIT_ACTIONS.CONTENT_DELETED,

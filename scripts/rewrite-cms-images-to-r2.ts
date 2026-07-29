@@ -18,8 +18,8 @@ function hasFlag(name: string): boolean {
 
 function rewrite(url: string | null | undefined): string | null | undefined {
   if (!url) return url;
-  if (!url.startsWith("/images/")) return url;
-  return resolveMediaUrl(url) ?? url;
+  const resolved = resolveMediaUrl(url);
+  return resolved ?? url;
 }
 
 async function main() {

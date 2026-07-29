@@ -18,6 +18,9 @@ export const STATIC_IMAGE_URLS = {
   "/images/Backend1.JPG": r2StaticImage("Backend1.JPG"),
   "/images/it-team-2.JPG": r2StaticImage("it-team-2.JPG"),
   "/images/ITTeam.JPG": r2StaticImage("ITTeam.JPG"),
+  // Raw CEO originals were never uploaded to R2; map to optimized keys (issue #386).
+  "/images/CEO1.JPG": r2StaticImage("optimized/ceo-portrait-800.webp"),
+  "/images/CEO.JPG": r2StaticImage("optimized/ceo-800.webp"),
   "/images/optimized/ceo-portrait-800.webp": r2StaticImage(
     "optimized/ceo-portrait-800.webp"
   ),
@@ -85,7 +88,9 @@ export function staticImageUrl(path: StaticImagePath): string {
 
 /**
  * Resolve a CMS / legacy media URL for display.
- * Rewrites former `/images/...` public paths to R2; leaves absolute URLs untouched.
+ * Rewrites former `/images/...` public paths to R2.
+ * Also remaps absolute R2 URLs whose key is a known superseded static path
+ * (e.g. .../static/images/CEO1.JPG → optimized portrait).
  */
 export function resolveMediaUrl(
   url: string | null | undefined
@@ -95,6 +100,19 @@ export function resolveMediaUrl(
     const known = STATIC_IMAGE_URLS[url as StaticImagePath];
     if (known) return known;
     return r2StaticImage(url.slice("/images/".length));
+  }
+  try {
+    const { pathname } = new URL(url);
+    const marker = "/static/images/";
+    const idx = pathname.indexOf(marker);
+    if (idx !== -1) {
+      const key = pathname.slice(idx + marker.length);
+      const legacyPath = `/images/${key}` as StaticImagePath;
+      const known = STATIC_IMAGE_URLS[legacyPath];
+      if (known) return known;
+    }
+  } catch {
+    // not an absolute URL
   }
   return url;
 }

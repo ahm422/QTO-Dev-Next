@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/common/Container";
@@ -15,7 +15,7 @@ import { homepageSectionPadding } from "@/components/theme/sectionClasses";
 import type { LeadershipMember } from "@/types/leadership";
 import { aboutPageConfig } from "@/config/aboutPage";
 
-type CeoConfig = typeof aboutPageConfig.ceo & {
+type CeoConfig = Omit<typeof aboutPageConfig.ceo, "stats"> & {
   stats: readonly { label: string; value: number; suffix?: string }[];
 };
 
@@ -50,12 +50,14 @@ export function CeoSectionClient({
   const hitRef = useRef<HTMLDivElement>(null);
   const tiltRef = useRef<HTMLDivElement>(null);
   const tiltEnabled = !reducedMotion && !compact;
+  const [imageFailed, setImageFailed] = useState(false);
 
   useHeroTilt(hitRef, tiltRef, tiltEnabled);
 
   const firstName = founder.name.split(" ").find(Boolean) ?? founder.name;
   const message = ceo.message || founder.bio || "";
   const bobOk = !reducedMotion;
+  const showImage = Boolean(founder.imageUrl) && !imageFailed;
 
   return (
     <section
@@ -109,9 +111,9 @@ export function CeoSectionClient({
                       compact ? "aspect-[4/5]" : "aspect-[4/5] lg:aspect-[3/4]"
                     )}
                   >
-                    {founder.imageUrl ? (
+                    {showImage ? (
                       <Image
-                        src={founder.imageUrl}
+                        src={founder.imageUrl!}
                         alt={`${founder.name}, ${founder.designation}`}
                         width={800}
                         height={1000}
@@ -119,6 +121,7 @@ export function CeoSectionClient({
                         sizes="(max-width: 1024px) 90vw, 42vw"
                         quality={85}
                         priority={compact}
+                        onError={() => setImageFailed(true)}
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-primary/10 text-4xl font-semibold text-primary">
