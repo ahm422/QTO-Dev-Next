@@ -21,6 +21,16 @@ const columns: AdminTableColumn<TeamMember>[] = [
     ),
   },
   { key: "role", label: "Role", render: (r) => <CategoryBadge category={r.role} /> },
+  {
+    key: "isFounder",
+    label: "Founder",
+    render: (r) =>
+      r.isFounder ? (
+        <CategoryBadge category="Founder" className="bg-primary/10 text-primary border-primary/20" />
+      ) : (
+        <span className="text-xs text-muted-foreground">—</span>
+      ),
+  },
   { key: "isPublished", label: "Status", render: (r) => <StatusBadge status={r.isPublished} /> },
 ]
 

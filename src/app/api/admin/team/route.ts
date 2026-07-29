@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { apiSuccess, apiError } from "@/lib/apiResponses";
 import { formatZodFieldErrors } from "@/lib/validators/http";
@@ -9,6 +8,7 @@ import { handleRouteError } from "@/lib/api/handleRouteError";
 import { writeContentAudit } from "@/lib/auth/audit";
 import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { teamMemberSchema } from "@/lib/validators/admin/teamMember";
+import { revalidateTeamCaches } from "@/lib/revalidate";
 
 export async function GET() {
   const { error } = await requireAdminSession();
@@ -30,9 +30,14 @@ export async function POST(request: NextRequest) {
   if (!parsed.success)
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
+    if (parsed.data.isFounder) {
+      await prisma.teamMember.updateMany({
+        where: { isFounder: true },
+        data: { isFounder: false },
+      });
+    }
     const item = await prisma.teamMember.create({ data: parsed.data });
-    revalidatePath("/");
-    revalidatePath("/about");
+    revalidateTeamCaches();
     await writeContentAudit({
       session,
       action: AUDIT_ACTIONS.CONTENT_CREATED,

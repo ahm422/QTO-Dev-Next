@@ -2,6 +2,8 @@ import { findFounderTeamMember } from "@/lib/cms/team";
 import { findAboutPageContent } from "@/lib/cms/about";
 import { findPageSection } from "@/lib/cms/pageContent";
 import { aboutPageConfig } from "@/config/aboutPage";
+import { leadershipTeam } from "@/data/leadership";
+import type { LeadershipMember } from "@/types/leadership";
 import { CeoSectionClient } from "./CeoSectionClient";
 
 type AboutPageConfigType = typeof aboutPageConfig;
@@ -27,6 +29,39 @@ function resolveCeoStats(
   ];
 }
 
+function getStaticCeo(): LeadershipMember {
+  const ceo = leadershipTeam.find((m) => m.id === "ceo");
+  if (!ceo) {
+    throw new Error('leadershipTeam is missing the required "ceo" entry');
+  }
+  return ceo;
+}
+
+/** Prefer CMS founder fields; keep static portrait when CMS avatar is empty. */
+function resolveCeoFounder(
+  cms: LeadershipMember | null,
+  staticCeo: LeadershipMember
+): LeadershipMember {
+  if (!cms) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn(
+        "[CeoSection] No published founder in CMS; using leadershipTeam ceo fallback"
+      );
+    }
+    return staticCeo;
+  }
+
+  return {
+    ...staticCeo,
+    id: cms.id,
+    name: cms.name,
+    designation: cms.designation,
+    bio: cms.bio || staticCeo.bio,
+    linkedIn: cms.linkedIn ?? staticCeo.linkedIn,
+    imageUrl: cms.imageUrl || staticCeo.imageUrl,
+  };
+}
+
 export async function CeoSection({
   config,
   compact = false,
@@ -34,8 +69,9 @@ export async function CeoSection({
   config?: AboutPageConfigType;
   compact?: boolean;
 }) {
-  const founder = await findFounderTeamMember();
-  if (!founder) return null;
+  const staticCeo = getStaticCeo();
+  const cmsFounder = await findFounderTeamMember();
+  const founder = resolveCeoFounder(cmsFounder, staticCeo);
 
   const cmsConfig = config ?? (await findPageSection("about.page")) as AboutPageConfigType | null;
   const ceo = cmsConfig?.ceo ?? aboutPageConfig.ceo;

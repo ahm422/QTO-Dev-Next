@@ -6,9 +6,7 @@ import { persistD1Bookmark } from "@/lib/d1/session"
 import { redirect } from "next/navigation"
 import { teamMemberSchema, type TeamMemberInput } from "@/lib/validators/admin/teamMember"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
-import { revalidatePaths } from "@/lib/revalidate"
-
-const PATHS = ["/", "/about"] as const
+import { revalidateTeamCaches } from "@/lib/revalidate"
 
 async function enforceSingleFounder(excludeId?: string) {
   await prisma.teamMember.updateMany({
@@ -24,7 +22,7 @@ export async function createTeamMember(data: TeamMemberInput) {
     await enforceSingleFounder()
   }
   await prisma.teamMember.create({ data: parsed })
-  revalidatePaths([...PATHS])
+  revalidateTeamCaches()
   await persistD1Bookmark()
   redirect("/admin/team")
 }
@@ -36,7 +34,7 @@ export async function updateTeamMember(id: string, data: TeamMemberInput) {
     await enforceSingleFounder(id)
   }
   await prisma.teamMember.update({ where: { id }, data: parsed })
-  revalidatePaths([...PATHS])
+  revalidateTeamCaches()
   await persistD1Bookmark()
   redirect("/admin/team")
 }
@@ -44,14 +42,14 @@ export async function updateTeamMember(id: string, data: TeamMemberInput) {
 export async function deleteTeamMember(id: string) {
   await requireDeleteAction()
   await prisma.teamMember.delete({ where: { id } })
-  revalidatePaths([...PATHS])
+  revalidateTeamCaches()
   await persistD1Bookmark()
 }
 
 export async function toggleTeamMemberPublished(id: string, value: boolean) {
   await requireAdminAction()
   await prisma.teamMember.update({ where: { id }, data: { isPublished: value } })
-  revalidatePaths([...PATHS])
+  revalidateTeamCaches()
   await persistD1Bookmark()
 }
 
@@ -60,6 +58,6 @@ export async function reorderTeamMembers(items: { id: string; order: number }[])
   await persistOrderUpdates(items, (id, order) =>
     prisma.teamMember.update({ where: { id }, data: { order } })
   )
-  revalidatePaths([...PATHS])
+  revalidateTeamCaches()
   await persistD1Bookmark()
 }
