@@ -17,6 +17,7 @@ import StatCardGrid from "@/components/admin/data/StatCardGrid"
 import FilterBar from "@/components/admin/data/FilterBar"
 import ProductsTable from "./Table"
 import { Package } from "lucide-react"
+import { Suspense } from "react"
 
 export default async function ProductsPage({
   searchParams,
@@ -105,19 +106,21 @@ export default async function ProductsPage({
         />
       </StatCardGrid>
 
-      <FilterBar
-        searchPlaceholder="Search products…"
-        filters={[
-          {
-            key: "status",
-            placeholder: "All Statuses",
-            options: [
-              { label: "Published", value: "published" },
-              { label: "Draft", value: "draft" },
-            ],
-          },
-        ]}
-      />
+      <Suspense>
+        <FilterBar
+          searchPlaceholder="Search products…"
+          filters={[
+            {
+              key: "status",
+              placeholder: "All Statuses",
+              options: [
+                { label: "Published", value: "published" },
+                { label: "Draft", value: "draft" },
+              ],
+            },
+          ]}
+        />
+      </Suspense>
 
       <ProductsTable
         rows={rows.map(fromPrismaProduct)}

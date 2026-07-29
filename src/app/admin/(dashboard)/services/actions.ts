@@ -1,9 +1,8 @@
 "use server"
 
-import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
+import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { persistD1Bookmark } from "@/lib/d1/session"
-import { redirect } from "next/navigation"
 import { serviceSchema, type ServiceInput } from "@/lib/validators/admin/service"
 import { revalidatePaths } from "@/lib/revalidate"
 import { servicePaths } from "@/lib/revalidate-paths"
@@ -15,12 +14,12 @@ import {
 
 
 export async function createService(data: ServiceInput) {
-  await requireCreateAction()
+  await requireAdminAction()
   const parsed = serviceSchema.parse(data)
   await prisma.service.create({ data: toPrismaServiceCreateData(parsed) })
   revalidatePaths([...servicePaths(parsed.slug)])
   await persistD1Bookmark()
-  redirect("/admin/services")
+  return { success: true }
 }
 
 export async function updateService(id: string, data: ServiceInput) {
@@ -29,7 +28,7 @@ export async function updateService(id: string, data: ServiceInput) {
   await prisma.service.update({ where: { id }, data: toPrismaServiceUpdateData(parsed) })
   revalidatePaths([...servicePaths(parsed.slug)])
   await persistD1Bookmark()
-  redirect("/admin/services")
+  return { success: true }
 }
 
 export async function deleteService(id: string) {

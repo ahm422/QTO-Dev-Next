@@ -2,6 +2,7 @@
 
 import { useForm, useWatch } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { serviceSchema, type ServiceInput } from "@/lib/validators/admin/service"
 import FormSection from "@/components/admin/forms/FormSection"
@@ -52,6 +53,7 @@ interface ServiceFormProps {
 }
 
 export default function ServiceForm({ defaultValues }: ServiceFormProps) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
 
   const form = useForm<ServiceInput>({
@@ -98,6 +100,8 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
       } else {
         await createService(data)
       }
+      router.push("/admin/services")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }

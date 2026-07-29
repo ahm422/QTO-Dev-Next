@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { teamMemberSchema, type TeamMemberInput } from "@/lib/validators/admin/teamMember"
 import AdminForm from "@/components/admin/AdminForm"
@@ -16,6 +17,7 @@ import { createTeamMember, updateTeamMember } from "../actions"
 import type { TeamMember } from "@prisma/client"
 
 export default function TeamMemberForm({ defaultValues }: { defaultValues?: TeamMember }) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
   const form = useForm<TeamMemberInput>({
     resolver: formResolver(teamMemberSchema),
@@ -28,6 +30,8 @@ export default function TeamMemberForm({ defaultValues }: { defaultValues?: Team
     try {
       if (isEdit) await updateTeamMember(defaultValues.id, data)
       else await createTeamMember(data)
+      router.push("/admin/team")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }

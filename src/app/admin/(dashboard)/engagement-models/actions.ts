@@ -5,7 +5,6 @@ import { prisma } from "@/lib/prisma"
 import { persistD1Bookmark } from "@/lib/d1/session"
 import { toPrismaEngagementModelData } from "@/lib/prisma/jsonModelData"
 import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
 import { engagementModelSchema, type EngagementModelInput } from "@/lib/validators/admin/engagementModel"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
 
@@ -14,7 +13,7 @@ export async function createEngagementModel(data: EngagementModelInput) {
   await prisma.engagementModel.create({ data: toPrismaEngagementModelData(engagementModelSchema.parse(data)) })
   revalidatePath("/")
   await persistD1Bookmark()
-  redirect("/admin/engagement-models")
+  return { success: true }
 }
 
 export async function updateEngagementModel(id: string, data: EngagementModelInput) {
@@ -22,7 +21,7 @@ export async function updateEngagementModel(id: string, data: EngagementModelInp
   await prisma.engagementModel.update({ where: { id }, data: toPrismaEngagementModelData(engagementModelSchema.parse(data)) })
   revalidatePath("/")
   await persistD1Bookmark()
-  redirect("/admin/engagement-models")
+  return { success: true }
 }
 
 export async function deleteEngagementModel(id: string) {

@@ -6,6 +6,7 @@ import { fromPrismaBlogPost, blogPostWithTagsInclude } from "@/lib/prisma/blogPo
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import AdminContentContext from "@/components/admin/layout/AdminContentContext"
 import FilterBar from "@/components/admin/data/FilterBar"
+import { Suspense } from "react"
 import { BLOG_NEWS_CATEGORY } from "@/config/blogCategories"
 import BlogTable from "./Table"
 
@@ -52,7 +53,9 @@ export default async function BlogPage({
           No published &quot;{BLOG_NEWS_CATEGORY}&quot; posts — the News section on /blogs will show an empty state until you publish one with that category.
         </p>
       ) : null}
-      <FilterBar searchPlaceholder="Search posts…" filters={[{ key: "status", placeholder: "All Statuses", options: [{ label: "Published", value: "published" }, { label: "Draft", value: "draft" }] }]} />
+      <Suspense>
+        <FilterBar searchPlaceholder="Search posts…" filters={[{ key: "status", placeholder: "All Statuses", options: [{ label: "Published", value: "published" }, { label: "Draft", value: "draft" }] }]} />
+      </Suspense>
       <BlogTable rows={rows.map(fromPrismaBlogPost)}
         canDelete={roleCanDeleteContent(role as AdminRole)}
         canCreate={roleCanCreateContent(role as AdminRole)}

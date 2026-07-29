@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { projectSchema, type ProjectInput } from "@/lib/validators/admin/project"
 import AdminForm from "@/components/admin/AdminForm"
@@ -29,6 +30,7 @@ export default function ProjectForm({
   defaultValues?: ProjectInput & { id?: string }
   services?: ServiceOption[]
 }) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
   const form = useForm<ProjectInput>({
     resolver: formResolver(projectSchema),
@@ -49,6 +51,8 @@ export default function ProjectForm({
     try {
       if (isEdit && defaultValues?.id) await updateProject(defaultValues.id, data)
       else await createProject(data)
+      router.push("/admin/projects")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }

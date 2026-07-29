@@ -3,7 +3,6 @@
 import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { persistD1Bookmark } from "@/lib/d1/session"
-import { redirect } from "next/navigation"
 import { blogPostSchema, type BlogPostInput } from "@/lib/validators/admin/blogPost"
 import { revalidateBlogCaches } from "@/lib/revalidate"
 import {
@@ -28,7 +27,7 @@ export async function createBlogPost(data: BlogPostInput) {
   })
   revalidateBlogCaches(parsed.slug)
   await persistD1Bookmark()
-  redirect("/admin/blog")
+  return { success: true }
 }
 
 export async function updateBlogPost(id: string, data: BlogPostInput) {
@@ -49,7 +48,7 @@ export async function updateBlogPost(id: string, data: BlogPostInput) {
   })
   revalidateBlogCaches(parsed.slug)
   await persistD1Bookmark()
-  redirect("/admin/blog")
+  return { success: true }
 }
 
 export async function deleteBlogPost(id: string) {

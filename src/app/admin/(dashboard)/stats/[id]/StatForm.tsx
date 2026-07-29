@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { statSchema, type StatInput } from "@/lib/validators/admin/stat"
 import AdminForm from "@/components/admin/AdminForm"
@@ -14,6 +15,7 @@ import { createStat, updateStat } from "../actions"
 import type { Stat } from "@prisma/client"
 
 export default function StatForm({ defaultValues }: { defaultValues?: Stat }) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
   const form = useForm<StatInput>({
     resolver: formResolver(statSchema),
@@ -35,6 +37,8 @@ export default function StatForm({ defaultValues }: { defaultValues?: Stat }) {
     try {
       if (isEdit) await updateStat(defaultValues.id, data)
       else await createStat(data)
+      router.push("/admin/stats")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }

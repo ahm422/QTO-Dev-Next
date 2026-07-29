@@ -7,6 +7,7 @@ import AdminContentContext from "@/components/admin/layout/AdminContentContext"
 import StatCard from "@/components/admin/data/StatCard"
 import StatCardGrid from "@/components/admin/data/StatCardGrid"
 import FilterBar from "@/components/admin/data/FilterBar"
+import { Suspense } from "react"
 import StatisticsWidget from "@/components/admin/widgets/StatisticsWidget"
 import TipsWidget from "@/components/admin/widgets/TipsWidget"
 import ProcessStepsTable from "./Table"
@@ -59,19 +60,21 @@ export default async function ProcessStepsPage({
 
       <div className="grid lg:grid-cols-[1fr_280px] gap-6 items-start">
         <div className="space-y-4">
-          <FilterBar
-            searchPlaceholder="Search steps…"
-            filters={[
-              {
-                key: "status",
-                placeholder: "All Statuses",
-                options: [
-                  { label: "Published", value: "published" },
-                  { label: "Draft", value: "draft" },
-                ],
-              },
-            ]}
-          />
+          <Suspense>
+            <FilterBar
+              searchPlaceholder="Search steps…"
+              filters={[
+                {
+                  key: "status",
+                  placeholder: "All Statuses",
+                  options: [
+                    { label: "Published", value: "published" },
+                    { label: "Draft", value: "draft" },
+                  ],
+                },
+              ]}
+            />
+          </Suspense>
           <ProcessStepsTable rows={rows}
         canDelete={roleCanDeleteContent(role as AdminRole)}
         canCreate={roleCanCreateContent(role as AdminRole)}

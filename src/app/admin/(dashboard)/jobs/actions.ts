@@ -5,7 +5,6 @@ import { prisma } from "@/lib/prisma"
 import { persistD1Bookmark } from "@/lib/d1/session"
 import { toPrismaJobData } from "@/lib/prisma/jsonModelData"
 import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
 import { jobSchema, type JobInput } from "@/lib/validators/admin/job"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
 
@@ -14,7 +13,7 @@ export async function createJob(data: JobInput) {
   await prisma.job.create({ data: toPrismaJobData(jobSchema.parse(data)) })
   revalidatePath("/careers")
   await persistD1Bookmark()
-  redirect("/admin/jobs")
+  return { success: true }
 }
 
 export async function updateJob(id: string, data: JobInput) {
@@ -22,7 +21,7 @@ export async function updateJob(id: string, data: JobInput) {
   await prisma.job.update({ where: { id }, data: toPrismaJobData(jobSchema.parse(data)) })
   revalidatePath("/careers")
   await persistD1Bookmark()
-  redirect("/admin/jobs")
+  return { success: true }
 }
 
 export async function deleteJob(id: string) {

@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { engagementModelSchema, type EngagementModelInput } from "@/lib/validators/admin/engagementModel"
 import AdminForm from "@/components/admin/AdminForm"
@@ -16,6 +17,7 @@ import { createEngagementModel, updateEngagementModel } from "../actions"
 import type { EngagementModelInput } from "@/lib/validators/admin/engagementModel"
 
 export default function EngagementModelForm({ defaultValues }: { defaultValues?: EngagementModelInput & { id?: string } }) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
   const form = useForm<EngagementModelInput>({
     resolver: formResolver(engagementModelSchema),
@@ -27,6 +29,8 @@ export default function EngagementModelForm({ defaultValues }: { defaultValues?:
     try {
       if (isEdit) await updateEngagementModel(defaultValues.id, data)
       else await createEngagementModel(data)
+      router.push("/admin/engagement-models")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }

@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { workValueSchema, type WorkValueInput } from "@/lib/validators/admin/workValue"
 import AdminForm from "@/components/admin/AdminForm"
@@ -15,6 +16,7 @@ import { createWorkValue, updateWorkValue } from "../actions"
 import type { WorkValue } from "@prisma/client"
 
 export default function WorkValueForm({ defaultValues }: { defaultValues?: WorkValue }) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
   const form = useForm<WorkValueInput>({
     resolver: formResolver(workValueSchema),
@@ -26,6 +28,8 @@ export default function WorkValueForm({ defaultValues }: { defaultValues?: WorkV
     try {
       if (isEdit) await updateWorkValue(defaultValues.id, data)
       else await createWorkValue(data)
+      router.push("/admin/work-values")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }

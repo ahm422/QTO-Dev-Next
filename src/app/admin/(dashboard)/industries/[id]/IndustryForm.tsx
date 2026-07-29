@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { industrySchema, type IndustryInput } from "@/lib/validators/admin/industry"
 import AdminForm from "@/components/admin/AdminForm"
@@ -18,6 +19,7 @@ import type { IndustryInput } from "@/lib/validators/admin/industry"
 function slugify(s: string) { return s.toLowerCase().trim().replace(/[^a-z0-9\s-]/g,"").replace(/\s+/g,"-").replace(/-+/g,"-") }
 
 export default function IndustryForm({ defaultValues }: { defaultValues?: IndustryInput & { id?: string } }) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
   const form = useForm<IndustryInput>({
     resolver: formResolver(industrySchema),
@@ -29,6 +31,8 @@ export default function IndustryForm({ defaultValues }: { defaultValues?: Indust
     try {
       if (isEdit) await updateIndustry(defaultValues.id, data)
       else await createIndustry(data)
+      router.push("/admin/industries")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }

@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { testimonialSchema, type TestimonialInput } from "@/lib/validators/admin/testimonial"
 import AdminForm from "@/components/admin/AdminForm"
@@ -17,18 +18,21 @@ import { createTestimonial, updateTestimonial } from "../actions"
 import type { Testimonial } from "@prisma/client"
 
 export default function TestimonialForm({ defaultValues }: { defaultValues?: Testimonial }) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
   const form = useForm<TestimonialInput>({
     resolver: formResolver(testimonialSchema),
     defaultValues: defaultValues ?? { clientName: "", clientRole: "", clientCompany: "", quote: "", mediaType: "none", mediaUrl: "", mediaAlt: "", avatarUrl: "", avatarColor: "", rating: 5, order: 0, isPublished: false },
   })
-  const { isSubmitting, watch } = form.formState
+  const { isSubmitting } = form.formState
   const mediaType = form.watch("mediaType")
 
   async function onSubmit(data: TestimonialInput) {
     try {
       if (isEdit) await updateTestimonial(defaultValues.id, data)
       else await createTestimonial(data)
+      router.push("/admin/testimonials")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }

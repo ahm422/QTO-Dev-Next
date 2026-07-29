@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
-import { isRedirectError } from "next/dist/client/components/redirect-error"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { blogPostSchema, type BlogPostInput } from "@/lib/validators/admin/blogPost"
 import AdminForm from "@/components/admin/AdminForm"
@@ -69,6 +69,7 @@ function publishSuccessToast(data: BlogPostInput) {
 }
 
 export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPostInput & { id?: string } }) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
   const initialCategory = defaultValues?.category ?? ""
   const [showCustomCategory, setShowCustomCategory] = useState(
@@ -97,11 +98,9 @@ export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPo
       if (isEdit && defaultValues?.id) await updateBlogPost(defaultValues.id, payload)
       else await createBlogPost(payload)
       publishSuccessToast(payload)
+      router.push("/admin/blog")
+      router.refresh()
     } catch (err) {
-      if (isRedirectError(err)) {
-        publishSuccessToast(payload)
-        throw err
-      }
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }
   }

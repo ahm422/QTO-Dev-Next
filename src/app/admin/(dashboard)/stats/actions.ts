@@ -3,7 +3,6 @@
 import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { persistD1Bookmark } from "@/lib/d1/session"
-import { redirect } from "next/navigation"
 import { statSchema, type StatInput } from "@/lib/validators/admin/stat"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
 import { revalidateStatPages } from "@/lib/admin/revalidateStatPages"
@@ -13,7 +12,7 @@ export async function createStat(data: StatInput) {
   await prisma.stat.create({ data: statSchema.parse(data) })
   revalidateStatPages()
   await persistD1Bookmark()
-  redirect("/admin/stats")
+  return { success: true }
 }
 
 export async function updateStat(id: string, data: StatInput) {
@@ -21,7 +20,7 @@ export async function updateStat(id: string, data: StatInput) {
   await prisma.stat.update({ where: { id }, data: statSchema.parse(data) })
   revalidateStatPages()
   await persistD1Bookmark()
-  redirect("/admin/stats")
+  return { success: true }
 }
 
 export async function deleteStat(id: string) {

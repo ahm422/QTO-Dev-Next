@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { contactInfoSchema, type ContactInfoInput } from "@/lib/validators/admin/contactInfo"
 import AdminForm from "@/components/admin/AdminForm"
@@ -14,6 +15,7 @@ import { createContactInfo, updateContactInfo } from "../actions"
 import type { ContactInfo } from "@prisma/client"
 
 export default function ContactInfoForm({ defaultValues }: { defaultValues?: ContactInfo }) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
   const form = useForm<ContactInfoInput>({
     resolver: formResolver(contactInfoSchema),
@@ -25,6 +27,8 @@ export default function ContactInfoForm({ defaultValues }: { defaultValues?: Con
     try {
       if (isEdit) await updateContactInfo(defaultValues.id, data)
       else await createContactInfo(data)
+      router.push("/admin/contact-info")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }

@@ -5,7 +5,6 @@ import { prisma } from "@/lib/prisma"
 import { persistD1Bookmark } from "@/lib/d1/session"
 import { toPrismaFeaturedWorkData } from "@/lib/prisma/jsonModelData"
 import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
 import { featuredWorkSchema, type FeaturedWorkInput } from "@/lib/validators/admin/featuredWork"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
 
@@ -14,7 +13,7 @@ export async function createFeaturedWork(data: FeaturedWorkInput) {
   await prisma.featuredWork.create({ data: toPrismaFeaturedWorkData(featuredWorkSchema.parse(data)) })
   revalidatePath("/")
   await persistD1Bookmark()
-  redirect("/admin/featured-work")
+  return { success: true }
 }
 
 export async function updateFeaturedWork(id: string, data: FeaturedWorkInput) {
@@ -22,7 +21,7 @@ export async function updateFeaturedWork(id: string, data: FeaturedWorkInput) {
   await prisma.featuredWork.update({ where: { id }, data: toPrismaFeaturedWorkData(featuredWorkSchema.parse(data)) })
   revalidatePath("/")
   await persistD1Bookmark()
-  redirect("/admin/featured-work")
+  return { success: true }
 }
 
 export async function deleteFeaturedWork(id: string) {

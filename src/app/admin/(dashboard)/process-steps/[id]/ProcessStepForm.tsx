@@ -2,6 +2,7 @@
 
 import { useForm, useWatch } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { processStepSchema, type ProcessStepInput } from "@/lib/validators/admin/processStep"
 import FormSection from "@/components/admin/forms/FormSection"
@@ -20,6 +21,7 @@ import type { ProcessStep } from "@prisma/client"
 import { normalizeStoredIcon } from "@/lib/icons/iconMap"
 
 export default function ProcessStepForm({ defaultValues }: { defaultValues?: ProcessStep }) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
 
   const form = useForm<ProcessStepInput>({
@@ -47,6 +49,8 @@ export default function ProcessStepForm({ defaultValues }: { defaultValues?: Pro
     try {
       if (isEdit) await updateProcessStep(defaultValues.id, data)
       else await createProcessStep(data)
+      router.push("/admin/process-steps")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }

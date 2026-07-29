@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { jobSchema, type JobInput } from "@/lib/validators/admin/job"
 import AdminForm from "@/components/admin/AdminForm"
@@ -16,6 +17,7 @@ import { createJob, updateJob } from "../actions"
 import type { JobInput } from "@/lib/validators/admin/job"
 
 export default function JobForm({ defaultValues }: { defaultValues?: JobInput & { id?: string; postedAt?: Date | string | null; expiresAt?: Date | string | null } }) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
   const form = useForm<JobInput>({
     resolver: formResolver(jobSchema),
@@ -51,6 +53,8 @@ export default function JobForm({ defaultValues }: { defaultValues?: JobInput & 
     try {
       if (isEdit) await updateJob(defaultValues.id, data)
       else await createJob(data)
+      router.push("/admin/jobs")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }
