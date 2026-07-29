@@ -96,7 +96,10 @@ export async function getBlogPostsByCategory(
   category: string,
   limit?: number
 ): Promise<BlogPost[]> {
-  let results = (await getSortedPosts()).filter((p) => p.category === category);
+  const needle = category.trim();
+  let results = (await getSortedPosts()).filter(
+    (p) => p.category.trim() === needle
+  );
   if (limit) {
     results = results.slice(0, limit);
   }

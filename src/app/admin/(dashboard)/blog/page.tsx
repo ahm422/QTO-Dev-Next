@@ -25,6 +25,9 @@ export default async function BlogPage({
   }
 
   const rows = await prisma.blogPost.findMany({ where, orderBy: { createdAt: "desc" }, include: blogPostWithTagsInclude })
+  const publishedNewsCount = await prisma.blogPost.count({
+    where: { isPublished: true, category: BLOG_NEWS_CATEGORY },
+  })
 
   return (
     <div className="space-y-6">
@@ -44,6 +47,11 @@ export default async function BlogPage({
         description={`Published posts appear on /blogs and /blogs/[slug]. Category "${BLOG_NEWS_CATEGORY}" surfaces in the News section.`}
         component="Blog grid in src/app/(qtodev)/blogs/"
       />
+      {publishedNewsCount === 0 ? (
+        <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-950 dark:text-amber-100">
+          No published &quot;{BLOG_NEWS_CATEGORY}&quot; posts — the News section on /blogs will show an empty state until you publish one with that category.
+        </p>
+      ) : null}
       <FilterBar searchPlaceholder="Search posts…" filters={[{ key: "status", placeholder: "All Statuses", options: [{ label: "Published", value: "published" }, { label: "Draft", value: "draft" }] }]} />
       <BlogTable rows={rows.map(fromPrismaBlogPost)}
         canDelete={roleCanDeleteContent(role as AdminRole)}
