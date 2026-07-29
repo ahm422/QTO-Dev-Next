@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { apiSuccess, apiError } from "@/lib/apiResponses";
 import { formatZodFieldErrors } from "@/lib/validators/http";
@@ -9,6 +8,7 @@ import { handleRouteError } from "@/lib/api/handleRouteError";
 import { writeContentAudit } from "@/lib/auth/audit";
 import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { productSchema } from "@/lib/validators/admin/product";
+import { revalidateProductsCaches } from "@/lib/revalidate";
 import {
   fromPrismaProduct,
   productWithFeaturesInclude,
@@ -61,7 +61,7 @@ export async function PATCH(
       data: updateData,
       include: productWithFeaturesInclude,
     });
-    revalidatePath("/products");
+    revalidateProductsCaches();
     await writeContentAudit({
       session,
       action: AUDIT_ACTIONS.CONTENT_UPDATED,
@@ -90,7 +90,7 @@ export async function DELETE(
       select: { title: true },
     });
     await prisma.product.delete({ where: { id } });
-    revalidatePath("/products");
+    revalidateProductsCaches();
     await writeContentAudit({
       session,
       action: AUDIT_ACTIONS.CONTENT_DELETED,

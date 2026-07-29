@@ -69,8 +69,8 @@ export default async function ProductsPage({
 
       <AdminContentContext
         publicPaths={[{ label: "Products page", href: "/products" }]}
-        description="ERP and Construct Quest sections on /products. Order here controls display order when listing published products."
-        component="ErpProductSection / ConstructQuestSection in src/app/(qtodev)/products/sections/"
+        description="Published products appear on /products in order. Change order or publish status here to update the public page."
+        component="ProductSection in src/app/(qtodev)/products/sections/"
       />
 
       <StatCardGrid cols={4}>
