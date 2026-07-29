@@ -42,6 +42,11 @@ function r2CdnHostnamePattern(): {
 const r2CdnPattern = r2CdnHostnamePattern();
 
 const IS_DEV = process.env.NODE_ENV === "development";
+const GTM_SRC = "https://www.googletagmanager.com";
+const GA_SRC = "https://www.google-analytics.com";
+const GA_REGION1_SRC = "https://region1.google-analytics.com";
+const GA_ANALYTICS_SRC = "https://analytics.google.com";
+const GA_SSL_SRC = "https://ssl.google-analytics.com";
 
 const remotePatterns = [
   {
@@ -59,9 +64,29 @@ const remotePatterns = [
 ];
 
 function buildGlobalCsp(): string {
-  const scriptSrc = IS_DEV
-    ? "'self' 'unsafe-inline' 'unsafe-eval'"
-    : "'self' 'unsafe-inline'";
+  const scriptSrc = [
+    IS_DEV ? "'self' 'unsafe-inline' 'unsafe-eval'" : "'self' 'unsafe-inline'",
+    GTM_SRC,
+  ].join(" ");
+  const imgSrc = [
+    "'self'",
+    "data:",
+    "blob:",
+    "https://images.unsplash.com",
+    GTM_SRC,
+    GA_SRC,
+    GA_REGION1_SRC,
+    GA_ANALYTICS_SRC,
+    GA_SSL_SRC,
+  ].join(" ");
+  const connectSrc = [
+    "'self'",
+    GTM_SRC,
+    GA_SRC,
+    GA_REGION1_SRC,
+    GA_ANALYTICS_SRC,
+    GA_SSL_SRC,
+  ].join(" ");
   const r2PublicUrl = process.env.R2_PUBLIC_URL;
   let r2Origin = "";
   if (r2PublicUrl) {
@@ -76,8 +101,9 @@ function buildGlobalCsp(): string {
     `script-src ${scriptSrc}`,
     "style-src 'self' 'unsafe-inline'",
     "font-src 'self' fonts.gstatic.com",
-    `img-src 'self' data: blob: https://images.unsplash.com${r2Origin}`,
-    "connect-src 'self'",
+    `img-src ${imgSrc}${r2Origin}`,
+    `connect-src ${connectSrc}`,
+    `frame-src ${GTM_SRC}`,
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
