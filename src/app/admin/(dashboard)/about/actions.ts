@@ -4,7 +4,6 @@ import { requireAdminAction, requireDeleteAction } from "@/lib/auth/requireServe
 import { prisma } from "@/lib/prisma"
 import { persistD1Bookmark } from "@/lib/d1/session"
 import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
 import { aboutContentSchema, type AboutContentInput } from "@/lib/validators/admin/aboutContent"
 import { stringifyMetadata } from "@/lib/metadata"
 
@@ -37,7 +36,7 @@ export async function upsertAboutContent(data: AboutContentInput) {
   })
   revalidatePath("/about")
   await persistD1Bookmark()
-  redirect("/admin/about")
+  return { success: true }
 }
 
 export async function deleteAboutContent(section: string) {

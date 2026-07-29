@@ -3,7 +3,6 @@
 import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { persistD1Bookmark } from "@/lib/d1/session"
-import { redirect } from "next/navigation"
 import { revalidateTag } from "next/cache"
 import { projectSchema, type ProjectInput } from "@/lib/validators/admin/project"
 import { revalidatePaths } from "@/lib/revalidate"
@@ -32,7 +31,7 @@ export async function createProject(data: ProjectInput) {
   await prisma.project.create({ data: toPrismaProjectCreateData(parsed) })
   revalidateProjectCaches(parsed.slug, parsed.serviceSlug)
   await persistD1Bookmark()
-  redirect("/admin/projects")
+  return { success: true }
 }
 
 export async function updateProject(id: string, data: ProjectInput) {
@@ -49,7 +48,7 @@ export async function updateProject(id: string, data: ProjectInput) {
     previous?.serviceSlug
   )
   await persistD1Bookmark()
-  redirect("/admin/projects")
+  return { success: true }
 }
 
 export async function deleteProject(id: string) {

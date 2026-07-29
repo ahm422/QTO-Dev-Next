@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { featuredWorkSchema, type FeaturedWorkInput } from "@/lib/validators/admin/featuredWork"
 import AdminForm from "@/components/admin/AdminForm"
@@ -17,6 +18,7 @@ import { createFeaturedWork, updateFeaturedWork } from "../actions"
 import type { FeaturedWorkInput } from "@/lib/validators/admin/featuredWork"
 
 export default function FeaturedWorkForm({ defaultValues }: { defaultValues?: FeaturedWorkInput & { id?: string } }) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
   const form = useForm<FeaturedWorkInput>({
     resolver: formResolver(featuredWorkSchema),
@@ -28,6 +30,8 @@ export default function FeaturedWorkForm({ defaultValues }: { defaultValues?: Fe
     try {
       if (isEdit) await updateFeaturedWork(defaultValues.id, data)
       else await createFeaturedWork(data)
+      router.push("/admin/featured-work")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }

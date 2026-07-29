@@ -6,7 +6,6 @@ import { persistD1Bookmark } from "@/lib/d1/session"
 import { stringifyMetadata } from "@/lib/metadata"
 import { revalidatePaths } from "@/lib/revalidate"
 import { pageSectionPaths } from "@/lib/revalidate-paths"
-import { redirect } from "next/navigation"
 
 function pageSectionDataString(data: object): string {
   return stringifyMetadata(data) ?? "{}"
@@ -23,7 +22,7 @@ export async function updatePageSection(slug: string, data: object, isPublished:
   })
   await invalidate(slug)
   await persistD1Bookmark()
-  redirect("/admin/pages")
+  return { success: true }
 }
 
 export async function togglePageSectionPublished(slug: string, value: boolean) {
@@ -38,7 +37,7 @@ export async function createPageSection(slug: string, label: string, data: objec
   await prisma.pageSection.create({ data: { slug, label, data: pageSectionDataString(data), isPublished: true } })
   await invalidate(slug)
   await persistD1Bookmark()
-  redirect("/admin/pages")
+  return { success: true }
 }
 
 export async function deletePageSection(slug: string) {

@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { whyChooseUsSchema, type WhyChooseUsInput } from "@/lib/validators/admin/whyChooseUs"
 import AdminForm from "@/components/admin/AdminForm"
@@ -37,6 +38,7 @@ function toWhyChooseUsFormValues(record?: WhyChooseUs): WhyChooseUsInput {
 }
 
 export default function WhyChooseUsForm({ defaultValues }: { defaultValues?: WhyChooseUs }) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
   const form = useForm<WhyChooseUsInput>({
     resolver: formResolver(whyChooseUsSchema),
@@ -48,6 +50,8 @@ export default function WhyChooseUsForm({ defaultValues }: { defaultValues?: Why
     try {
       if (isEdit) await updateWhyChooseUs(defaultValues.id, data)
       else await createWhyChooseUs(data)
+      router.push("/admin/why-choose-us")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }

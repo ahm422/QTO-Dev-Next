@@ -2,6 +2,7 @@
 
 import { useFieldArray, useForm, useWatch } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { productSchema, type ProductInput } from "@/lib/validators/admin/product"
 import FormSection from "@/components/admin/forms/FormSection"
@@ -43,6 +44,7 @@ interface ProductFormProps {
 }
 
 export default function ProductForm({ defaultValues }: ProductFormProps) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
 
   const form = useForm<ProductInput>({
@@ -96,6 +98,8 @@ export default function ProductForm({ defaultValues }: ProductFormProps) {
       } else {
         await createProduct(data)
       }
+      router.push("/admin/products")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }

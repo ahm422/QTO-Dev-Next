@@ -6,6 +6,7 @@ import AdminPageHeader from "@/components/admin/layout/AdminPageHeader";
 import StatCard from "@/components/admin/data/StatCard";
 import StatCardGrid from "@/components/admin/data/StatCardGrid";
 import FilterBar from "@/components/admin/data/FilterBar";
+import { Suspense } from "react";
 import AdminPagination from "@/components/admin/data/AdminPagination";
 import DateRangeFilter from "@/components/admin/data/DateRangeFilter";
 import AuditLogTable from "./Table";
@@ -80,28 +81,34 @@ export default async function AuditLogPage({
       </StatCardGrid>
 
       <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2">
-        <FilterBar
-          searchPlaceholder="Search by email…"
-          filters={[
-            {
-              key: "action",
-              placeholder: "All actions",
-              options: ACTION_OPTIONS,
-            },
-          ]}
-          className="flex-1"
-        />
-        <DateRangeFilter />
+        <Suspense>
+          <FilterBar
+            searchPlaceholder="Search by email…"
+            filters={[
+              {
+                key: "action",
+                placeholder: "All actions",
+                options: ACTION_OPTIONS,
+              },
+            ]}
+            className="flex-1"
+          />
+        </Suspense>
+        <Suspense>
+          <DateRangeFilter />
+        </Suspense>
       </div>
 
       <AuditLogTable rows={rows} />
 
-      <AdminPagination
-        page={query.page}
-        pageSize={query.pageSize}
-        total={total}
-        totalPages={totalPages}
-      />
+      <Suspense>
+        <AdminPagination
+          page={query.page}
+          pageSize={query.pageSize}
+          total={total}
+          totalPages={totalPages}
+        />
+      </Suspense>
     </div>
   );
 }

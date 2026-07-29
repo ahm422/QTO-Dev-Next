@@ -47,6 +47,9 @@ export function buildMediaKey(filename: string): string {
 }
 
 export function getPublicUrl(key: string): string {
+  if (process.env.NODE_ENV === "development") {
+    return `/api/media/${key}`
+  }
   const publicBase = process.env.R2_PUBLIC_URL!.replace(/\/$/, "")
   return `${publicBase}/${key}`
 }

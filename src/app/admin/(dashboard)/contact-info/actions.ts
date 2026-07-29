@@ -4,7 +4,6 @@ import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/
 import { prisma } from "@/lib/prisma"
 import { persistD1Bookmark } from "@/lib/d1/session"
 import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
 import { contactInfoSchema, type ContactInfoInput } from "@/lib/validators/admin/contactInfo"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
 
@@ -14,7 +13,7 @@ export async function createContactInfo(data: ContactInfoInput) {
   await prisma.contactInfo.create({ data: contactInfoSchema.parse(data) })
   revalidatePath("/contact")
   await persistD1Bookmark()
-  redirect("/admin/contact-info")
+  return { success: true }
 }
 
 export async function updateContactInfo(id: string, data: ContactInfoInput) {
@@ -22,7 +21,7 @@ export async function updateContactInfo(id: string, data: ContactInfoInput) {
   await prisma.contactInfo.update({ where: { id }, data: contactInfoSchema.parse(data) })
   revalidatePath("/contact")
   await persistD1Bookmark()
-  redirect("/admin/contact-info")
+  return { success: true }
 }
 
 export async function deleteContactInfo(id: string) {

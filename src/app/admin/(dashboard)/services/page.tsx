@@ -10,6 +10,7 @@ import StatCardGrid from "@/components/admin/data/StatCardGrid"
 import FilterBar from "@/components/admin/data/FilterBar"
 import ServicesTable from "./Table"
 import { Briefcase } from "lucide-react"
+import { Suspense } from "react"
 
 export default async function ServicesPage({
   searchParams,
@@ -60,19 +61,21 @@ export default async function ServicesPage({
         <StatCard label="Publish Rate" value={`${Math.round((published / Math.max(1, total)) * 100)}%`} iconColor="blue" progress={(published / Math.max(1, total)) * 100} />
       </StatCardGrid>
 
-      <FilterBar
-        searchPlaceholder="Search services…"
-        filters={[
-          {
-            key: "status",
-            placeholder: "All Statuses",
-            options: [
-              { label: "Published", value: "published" },
-              { label: "Draft", value: "draft" },
-            ],
-          },
-        ]}
-      />
+      <Suspense>
+        <FilterBar
+          searchPlaceholder="Search services…"
+          filters={[
+            {
+              key: "status",
+              placeholder: "All Statuses",
+              options: [
+                { label: "Published", value: "published" },
+                { label: "Draft", value: "draft" },
+              ],
+            },
+          ]}
+        />
+      </Suspense>
 
       <ServicesTable rows={rows.map(fromPrismaService)}
         canDelete={roleCanDeleteContent(role as AdminRole)}

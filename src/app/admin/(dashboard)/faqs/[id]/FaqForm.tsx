@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { faqSchema, type FaqInput } from "@/lib/validators/admin/faq"
 import AdminForm from "@/components/admin/AdminForm"
@@ -15,6 +16,7 @@ import { createFaq, updateFaq } from "../actions"
 import type { Faq } from "@prisma/client"
 
 export default function FaqForm({ defaultValues }: { defaultValues?: Faq }) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
   const form = useForm<FaqInput>({
     resolver: formResolver(faqSchema),
@@ -26,6 +28,8 @@ export default function FaqForm({ defaultValues }: { defaultValues?: Faq }) {
     try {
       if (isEdit) await updateFaq(defaultValues.id, data)
       else await createFaq(data)
+      router.push("/admin/faqs")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }

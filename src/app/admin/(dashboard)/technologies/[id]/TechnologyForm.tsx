@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { technologySchema, type TechnologyInput } from "@/lib/validators/admin/technology"
 import AdminForm from "@/components/admin/AdminForm"
@@ -17,6 +18,7 @@ import type { Technology } from "@prisma/client"
 function slugify(s: string) { return s.toLowerCase().trim().replace(/[^a-z0-9\s-]/g,"").replace(/\s+/g,"-").replace(/-+/g,"-") }
 
 export default function TechnologyForm({ defaultValues }: { defaultValues?: Technology }) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.id
   const form = useForm<TechnologyInput>({
     resolver: formResolver(technologySchema),
@@ -28,6 +30,8 @@ export default function TechnologyForm({ defaultValues }: { defaultValues?: Tech
     try {
       if (isEdit) await updateTechnology(defaultValues.id, data)
       else await createTechnology(data)
+      router.push("/admin/technologies")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }

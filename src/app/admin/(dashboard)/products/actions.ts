@@ -7,7 +7,6 @@ import {
 } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { persistD1Bookmark } from "@/lib/d1/session"
-import { redirect } from "next/navigation"
 import { productSchema, type ProductInput } from "@/lib/validators/admin/product"
 import { revalidateProductsCaches } from "@/lib/revalidate"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
@@ -22,7 +21,7 @@ export async function createProduct(data: ProductInput) {
   await prisma.product.create({ data: toPrismaProductCreateData(parsed) })
   revalidateProductsCaches()
   await persistD1Bookmark()
-  redirect("/admin/products")
+  return { success: true }
 }
 
 export async function updateProduct(id: string, data: ProductInput) {
@@ -34,7 +33,7 @@ export async function updateProduct(id: string, data: ProductInput) {
   })
   revalidateProductsCaches()
   await persistD1Bookmark()
-  redirect("/admin/products")
+  return { success: true }
 }
 
 export async function deleteProduct(id: string) {

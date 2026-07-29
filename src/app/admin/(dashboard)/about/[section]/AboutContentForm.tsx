@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form"
 import { useState } from "react"
 import { formResolver } from "@/lib/admin/formResolver"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { aboutContentSchema, type AboutContentInput } from "@/lib/validators/admin/aboutContent"
 import { parseMetadata } from "@/lib/metadata"
@@ -31,6 +32,7 @@ function toFormValues(record: AboutContent): AboutContentInput {
 }
 
 export default function AboutContentForm({ defaultValues, sectionParam }: { defaultValues?: AboutContent; sectionParam: string }) {
+  const router = useRouter()
   const sectionKey = defaultValues?.section ?? (sectionParam === "new" ? "" : sectionParam)
   const showMetadata = sectionKey === "erp-solutions" || sectionKey === "values" || !!defaultValues?.metadata
 
@@ -55,6 +57,8 @@ export default function AboutContentForm({ defaultValues, sectionParam }: { defa
     }
     try {
       await upsertAboutContent(data)
+      router.push("/admin/about")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }

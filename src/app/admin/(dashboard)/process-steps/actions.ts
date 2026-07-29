@@ -3,7 +3,6 @@
 import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { persistD1Bookmark } from "@/lib/d1/session"
-import { redirect } from "next/navigation"
 import { processStepSchema, type ProcessStepInput } from "@/lib/validators/admin/processStep"
 import { revalidatePaths } from "@/lib/revalidate"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
@@ -16,7 +15,7 @@ export async function createProcessStep(data: ProcessStepInput) {
   await prisma.processStep.create({ data: processStepSchema.parse(data) })
   revalidatePaths([...PATHS])
   await persistD1Bookmark()
-  redirect("/admin/process-steps")
+  return { success: true }
 }
 
 export async function updateProcessStep(id: string, data: ProcessStepInput) {
@@ -24,7 +23,7 @@ export async function updateProcessStep(id: string, data: ProcessStepInput) {
   await prisma.processStep.update({ where: { id }, data: processStepSchema.parse(data) })
   revalidatePaths([...PATHS])
   await persistD1Bookmark()
-  redirect("/admin/process-steps")
+  return { success: true }
 }
 
 export async function deleteProcessStep(id: string) {

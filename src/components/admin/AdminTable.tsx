@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { ReactNode, useEffect, useState, useTransition } from "react"
+import { ReactNode, useEffect, useRef, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import {
@@ -273,8 +273,13 @@ export default function AdminTable<T extends OrderableRow>({
   const sensors = useSensors(useSensor(PointerSensor))
   const showDrag = Boolean(onReorder)
 
+  const prevRowIds = useRef("")
   useEffect(() => {
-    setItems(initialRows)
+    const ids = initialRows.map((r) => r.id).join(",")
+    if (ids !== prevRowIds.current) {
+      prevRowIds.current = ids
+      setItems(initialRows)
+    }
   }, [initialRows])
 
   function handleDragEnd(event: DragEndEvent) {

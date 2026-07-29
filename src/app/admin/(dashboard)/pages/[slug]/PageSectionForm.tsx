@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { updatePageSection, createPageSection } from "../actions"
 import AdminForm from "@/components/admin/AdminForm"
@@ -13,6 +14,7 @@ import { parseMetadata } from "@/lib/metadata"
 import type { PageSection } from "@prisma/client"
 
 export default function PageSectionForm({ defaultValues }: { defaultValues?: PageSection }) {
+  const router = useRouter()
   const isEdit = !!defaultValues?.slug
   const [slug, setSlug] = useState(defaultValues?.slug ?? "")
   const [label, setLabel] = useState(defaultValues?.label ?? "")
@@ -45,6 +47,8 @@ export default function PageSectionForm({ defaultValues }: { defaultValues?: Pag
       } else {
         await createPageSection(slug, label, data)
       }
+      router.push("/admin/pages")
+      router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
       setIsSubmitting(false)

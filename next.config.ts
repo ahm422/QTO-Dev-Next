@@ -41,6 +41,8 @@ function r2CdnHostnamePattern(): {
 
 const r2CdnPattern = r2CdnHostnamePattern();
 
+const IS_DEV = process.env.NODE_ENV === "development";
+
 const remotePatterns = [
   {
     protocol: "https" as const,
@@ -50,9 +52,11 @@ const remotePatterns = [
   ...(r2CdnPattern && r2CdnPattern.hostname !== r2Pattern?.hostname
     ? [r2CdnPattern]
     : []),
+  // Allow localhost for local dev R2 proxy (/api/media/...)
+  ...(IS_DEV
+    ? [{ protocol: "http" as const, hostname: "localhost" }]
+    : []),
 ];
-
-const IS_DEV = process.env.NODE_ENV === "development";
 
 function buildGlobalCsp(): string {
   const scriptSrc = IS_DEV
