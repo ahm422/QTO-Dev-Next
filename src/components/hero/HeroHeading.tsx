@@ -1,33 +1,14 @@
 import { heroConfig } from "@/config/hero";
 import { cn } from "@/components/theme/cn";
+import {
+  phraseGroupClass,
+  shouldStackOnDesktop,
+} from "@/components/hero/heroHeadingWrap";
 
 interface HeroHeadingProps {
   readonly className?: string;
   readonly heading?: string;
   readonly headingHighlight?: string;
-}
-
-/**
- * Length-aware wrap control (issue #376). Thresholds are estimated from the
- * hero type scale: ~26 bold chars fit the full-width column at sm–md, and
- * ~15 chars fit the narrow lg left column on one line.
- */
-/** Longest phrase that can be safely forced onto one line from sm up. */
-const NOWRAP_MAX_CHARS = 22;
-/** Combined copy shorter than this fits one desktop line — skip stacking. */
-const STACK_MIN_TOTAL_CHARS = 16;
-
-/**
- * Same-color phrases stay together from sm–md when short enough to fit the
- * full-width column; longer taglines wrap naturally instead of overflowing.
- * At lg+ each tone becomes its own block (wrap only at the tone boundary)
- * unless the whole heading is short enough for a single line.
- */
-function phraseGroupClass(text: string, stackOnDesktop: boolean): string {
-  return cn(
-    text.length <= NOWRAP_MAX_CHARS && "max-sm:whitespace-normal sm:whitespace-nowrap",
-    stackOnDesktop && "lg:block lg:whitespace-normal"
-  );
 }
 
 export function HeroHeading({
@@ -48,8 +29,7 @@ export function HeroHeading({
     return <h1 className={headingClasses}>{heading}</h1>;
   }
 
-  const stackOnDesktop =
-    heading.length + headingHighlight.length + 1 > STACK_MIN_TOTAL_CHARS;
+  const stackOnDesktop = shouldStackOnDesktop(heading, headingHighlight);
 
   return (
     <h1 className={headingClasses}>
