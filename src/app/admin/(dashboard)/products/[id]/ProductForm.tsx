@@ -143,7 +143,7 @@ export default function ProductForm({ defaultValues }: ProductFormProps) {
                     <FormItem>
                       <FormLabel>Slug</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="construct-quest" />
+                        <Input {...field} placeholder="my-product" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -401,10 +401,10 @@ export default function ProductForm({ defaultValues }: ProductFormProps) {
             <WidgetCard title="Tips">
               <ul className="space-y-2">
                 {[
-                  'Use slug "erp-solutions" for the ERP section',
-                  'Use slug "construct-quest" for Construct Quest',
+                  "Published products appear on /products sorted by order",
+                  "Slug becomes the section anchor (e.g. #my-product)",
                   "Features become the module cards on /products",
-                  "Unpublished products show an empty state publicly",
+                  "Unpublished products are omitted from /products",
                 ].map((tip, i) => (
                   <li
                     key={i}

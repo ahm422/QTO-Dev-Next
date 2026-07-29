@@ -1,5 +1,5 @@
 import { revalidatePath, revalidateTag } from "next/cache";
-import { blogPaths } from "@/lib/revalidate-paths";
+import { blogPaths, productPaths } from "@/lib/revalidate-paths";
 
 export function revalidatePaths(paths: string[]) {
   for (const path of paths) {
@@ -17,4 +17,10 @@ export function revalidateBlogCaches(slug?: string | null) {
 export function revalidateTeamCaches() {
   revalidatePaths(["/", "/about"]);
   revalidateTag("team", "max");
+}
+
+/** Path + tag invalidation for public products CMS reads (`tags: ["products"]`). */
+export function revalidateProductsCaches() {
+  revalidatePaths([...productPaths()]);
+  revalidateTag("products", "max");
 }

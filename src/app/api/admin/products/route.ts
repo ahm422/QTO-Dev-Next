@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { apiSuccess, apiError } from "@/lib/apiResponses";
 import { formatZodFieldErrors } from "@/lib/validators/http";
@@ -9,6 +8,7 @@ import { handleRouteError } from "@/lib/api/handleRouteError";
 import { writeContentAudit } from "@/lib/auth/audit";
 import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { productSchema } from "@/lib/validators/admin/product";
+import { revalidateProductsCaches } from "@/lib/revalidate";
 import {
   fromPrismaProduct,
   productWithFeaturesInclude,
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       data: toPrismaProductCreateData(parsed.data),
       include: productWithFeaturesInclude,
     });
-    revalidatePath("/products");
+    revalidateProductsCaches();
     await writeContentAudit({
       session,
       action: AUDIT_ACTIONS.CONTENT_CREATED,
