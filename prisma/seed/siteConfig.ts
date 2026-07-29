@@ -24,6 +24,8 @@ const entries: { key: string; value: string; label?: string }[] = [
   { key: "social.facebook", value: SOCIAL_LINKS.facebook, label: "Facebook URL" },
   { key: "social.instagram", value: SOCIAL_LINKS.instagram, label: "Instagram URL" },
   { key: "social.linkedin", value: SOCIAL_LINKS.linkedin, label: "LinkedIn URL" },
+  { key: "social.twitter", value: "", label: "Twitter URL" },
+  { key: "social.github", value: "", label: "GitHub URL" },
 ];
 
 export async function seedSiteConfig() {
