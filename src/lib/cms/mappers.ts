@@ -415,6 +415,8 @@ export function mapSiteConfigRows(rows: SiteConfig[]) {
       { label: "Facebook", href: map["social.facebook"] ?? SOCIAL_LINKS.facebook },
       { label: "Instagram", href: map["social.instagram"] ?? SOCIAL_LINKS.instagram },
       { label: "LinkedIn", href: map["social.linkedin"] ?? SOCIAL_LINKS.linkedin },
+      { label: "Twitter", href: map["social.twitter"] ?? "" },
+      { label: "GitHub", href: map["social.github"] ?? "" },
     ].filter((s) => Boolean(s.href)),
   };
 }

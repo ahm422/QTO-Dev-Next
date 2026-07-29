@@ -19,6 +19,7 @@ import {
   Handshake,
   Phone,
   Settings2,
+  SlidersHorizontal,
   Shield,
   ScrollText,
   LayoutTemplate,
@@ -114,9 +115,10 @@ export const contentSections: ContentSection[] = [
   { key: "requirements",        label: "Requirements",     href: "/admin/requirements",        icon: ClipboardList, group: "content", countable: false },
 
   // SETTINGS
-  { key: "site-config", label: "Site Config", href: "/admin/site-config", icon: Settings2,   group: "settings", model: "SiteConfig", countable: false, publishable: false, hasTimestamps: false },
-  { key: "users",       label: "Admin Users", href: "/admin/users",       icon: Shield,      group: "settings", countable: false, requiredRole: ["super_admin"] },
-  { key: "audit-log",   label: "Audit Log",   href: "/admin/audit-log",   icon: ScrollText,  group: "settings", countable: false, requiredRole: ["super_admin"] },
+  { key: "site-settings", label: "Site Settings", href: "/admin/site-settings", icon: SlidersHorizontal, group: "settings", model: "SiteConfig", countable: false, publishable: false, hasTimestamps: false },
+  { key: "site-config",   label: "Site Config (Advanced)", href: "/admin/site-config", icon: Settings2, group: "settings", model: "SiteConfig", countable: false, publishable: false, hasTimestamps: false },
+  { key: "users",         label: "Admin Users", href: "/admin/users",       icon: Shield,      group: "settings", countable: false, requiredRole: ["super_admin"] },
+  { key: "audit-log",     label: "Audit Log",   href: "/admin/audit-log",   icon: ScrollText,  group: "settings", countable: false, requiredRole: ["super_admin"] },
 ]
 
 export const GROUP_LABELS: Record<SectionGroup, string> = {

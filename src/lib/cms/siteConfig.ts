@@ -9,7 +9,7 @@ export const findSiteBranding = cache(
       const rows = await (await getCachedReadPrisma()).siteConfig.findMany();
       return mapSiteConfigRows(rows);
     },
-    ["site-branding", "v3-contact-social"],
+    ["site-branding", "v4-contact-social"],
     { revalidate: 3600, tags: ["site-config"] }
   )
 );
