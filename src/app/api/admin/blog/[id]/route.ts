@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { apiSuccess, apiError } from "@/lib/apiResponses";
 import { formatZodFieldErrors } from "@/lib/validators/http";
@@ -9,6 +8,7 @@ import { handleRouteError } from "@/lib/api/handleRouteError";
 import { writeContentAudit } from "@/lib/auth/audit";
 import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { blogPostSchema } from "@/lib/validators/admin/blogPost";
+import { revalidateBlogCaches } from "@/lib/revalidate";
 import {
   blogPostWithTagsInclude,
   fromPrismaBlogPost,
@@ -62,10 +62,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       },
       include: blogPostWithTagsInclude,
     });
-    revalidatePath("/");
-    revalidatePath("/blogs");
-    revalidatePath("/sitemap.xml");
-    if (item.slug) revalidatePath(`/blogs/${item.slug}`);
+    revalidateBlogCaches(item.slug);
     const justPublished = item.isPublished && !existing?.publishedAt;
     await writeContentAudit({
       session,
@@ -87,10 +84,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   try {
     const existing = await prisma.blogPost.findUnique({ where: { id }, select: { slug: true, title: true } });
     await prisma.blogPost.delete({ where: { id } });
-    revalidatePath("/");
-    revalidatePath("/blogs");
-    revalidatePath("/sitemap.xml");
-    if (existing?.slug) revalidatePath(`/blogs/${existing.slug}`);
+    revalidateBlogCaches(existing?.slug);
     await writeContentAudit({
       session,
       action: AUDIT_ACTIONS.CONTENT_DELETED,

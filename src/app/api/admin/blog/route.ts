@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { apiSuccess, apiError } from "@/lib/apiResponses";
 import { formatZodFieldErrors } from "@/lib/validators/http";
@@ -9,6 +8,7 @@ import { handleRouteError } from "@/lib/api/handleRouteError";
 import { writeContentAudit } from "@/lib/auth/audit";
 import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { blogPostSchema } from "@/lib/validators/admin/blogPost";
+import { revalidateBlogCaches } from "@/lib/revalidate";
 import {
   blogPostWithTagsInclude,
   fromPrismaBlogPost,
@@ -58,9 +58,7 @@ export async function POST(request: NextRequest) {
       },
       include: blogPostWithTagsInclude,
     });
-    revalidatePath("/");
-    revalidatePath("/blogs");
-    revalidatePath("/sitemap.xml");
+    revalidateBlogCaches(item.slug);
     await writeContentAudit({
       session,
       action: item.isPublished ? AUDIT_ACTIONS.CONTENT_PUBLISHED : AUDIT_ACTIONS.CONTENT_CREATED,

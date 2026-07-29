@@ -5,7 +5,7 @@
 
 export const BLOG_NEWS_CATEGORY = "Company News" as const;
 
-/** Suggested categories in admin (datalist). Free-text custom values still allowed. */
+/** Suggested categories in admin. Free-text custom values still allowed. */
 export const BLOG_CATEGORY_PRESETS = [
   BLOG_NEWS_CATEGORY,
   "Web Development",
@@ -13,3 +13,12 @@ export const BLOG_CATEGORY_PRESETS = [
   "React",
   "CSS",
 ] as const;
+
+/** Trim whitespace and map case-insensitive matches onto canonical presets. */
+export function normalizeBlogCategory(raw: string): string {
+  const trimmed = raw.trim();
+  const match = BLOG_CATEGORY_PRESETS.find(
+    (p) => p.toLowerCase() === trimmed.toLowerCase()
+  );
+  return match ?? trimmed;
+}

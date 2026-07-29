@@ -20,7 +20,6 @@ export function NewsSectionClient({
 }) {
   const cfg = mergeBlogsPageConfig(config);
   const { news } = cfg;
-  if (posts.length === 0) return null;
 
   return (
     <section
@@ -49,20 +48,26 @@ export function NewsSectionClient({
             />
           </div>
 
-          {/* Full-width editorial rows — scannable on mobile, no cramped 2-col splits */}
-          <div className="flex flex-col gap-4 sm:gap-5 md:gap-6">
-            {posts.map((post, index) => (
-              <div key={post.id} data-reveal>
-                <LatestPostCard
-                  post={post}
-                  authorLabel={cfg.authorLabel}
-                  readMoreLabel={cfg.readMoreLabel}
-                  layout="editorial"
-                  featured={index === 0}
-                />
-              </div>
-            ))}
-          </div>
+          {posts.length === 0 ? (
+            <p data-reveal className="text-sm text-muted-foreground">
+              No company news yet.
+            </p>
+          ) : (
+            /* Full-width editorial rows — scannable on mobile, no cramped 2-col splits */
+            <div className="flex flex-col gap-4 sm:gap-5 md:gap-6">
+              {posts.map((post, index) => (
+                <div key={post.id} data-reveal>
+                  <LatestPostCard
+                    post={post}
+                    authorLabel={cfg.authorLabel}
+                    readMoreLabel={cfg.readMoreLabel}
+                    layout="editorial"
+                    featured={index === 0}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </Reveal>
       </Container>
     </section>
