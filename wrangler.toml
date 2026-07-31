@@ -22,9 +22,13 @@ service = "qto-dev-next"
 [images]
 binding = "IMAGES"
 
-# Non-secret production vars — set in Workers → Settings → Variables (not in this file):
-#   NEXT_PUBLIC_SITE_URL, R2_PUBLIC_URL, EMAIL_FROM, EMAIL_ADMIN_TO
 # Email Sending uses the EMAIL binding below (no API key). From-address must be @qtodev.com.
+# Declared here, not in the dashboard: `wrangler deploy` replaces plaintext vars with this
+# config, so dashboard-only vars are dropped on the next deploy (secrets are preserved).
+[vars]
+EMAIL_FROM = "noreply@qtodev.com"
+EMAIL_ADMIN_TO = "admin@example.com"
+
 #
 # Nightly token cleanup — fires at 03:00 UTC and calls GET /api/cron/cleanup-tokens
 # via an external cron service (e.g. Upstash QStash or EasyCron) with:
@@ -55,6 +59,10 @@ bucket_name = "qtodev-media"
 # Apply:  npx wrangler d1 migrations apply qtodev-d1-staging --remote --env staging
 [env.staging]
 name = "qtodev-site-staging"
+
+[env.staging.vars]
+EMAIL_FROM = "staging@qtodev.com"
+EMAIL_ADMIN_TO = "admin@example.com"
 
 [[env.staging.services]]
 binding = "WORKER_SELF_REFERENCE"
