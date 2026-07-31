@@ -5,7 +5,7 @@ import { createJobApplication } from "@/services/jobApplicationService"
 import { jobApplicationSchema } from "@/lib/validators/jobApplication"
 import { asOptionalHeader, formatZodFieldErrors } from "@/lib/validators/http"
 import { apiError, apiSuccess, logApiError, mapApiError } from "@/lib/apiResponses"
-import { getResendAddresses, isResendConfigured, sendResendReactEmail } from "@/lib/resend"
+import { getEmailAddresses, isEmailConfigured, sendReactEmail } from "@/lib/email"
 
 export async function POST(request: NextRequest) {
   try {
@@ -44,11 +44,11 @@ export async function POST(request: NextRequest) {
         metadata: null,
       })
 
-      if (isResendConfigured()) {
-        const addresses = getResendAddresses()
+      if (isEmailConfigured()) {
+        const addresses = getEmailAddresses()
         if (addresses) {
           const { from, adminTo } = addresses
-          const result = await sendResendReactEmail({
+          const result = await sendReactEmail({
             from,
             to: adminTo,
             subject: `New application: ${body.jobTitle} — ${body.name}`,

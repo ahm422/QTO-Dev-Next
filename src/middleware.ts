@@ -1,3 +1,6 @@
+// Kept as `middleware.ts` (not Next 16's `proxy.ts`): proxy.ts is forced onto the
+// Node.js runtime, which @opennextjs/cloudflare rejects at build time. Edge-runtime
+// middleware is the only variant the Cloudflare adapter can bundle.
 import { NextRequest, NextResponse } from "next/server";
 import { decodeAccessToken } from "@/lib/auth/jwt";
 import { isRoleAllowedForPath } from "@/lib/auth/adminRoutes";
