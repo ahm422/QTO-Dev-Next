@@ -2,6 +2,7 @@ import { getServerSession } from "@/lib/auth/session"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
+import AdminSendEmailDialog from "@/components/admin/AdminSendEmailDialog"
 import { FileText, ExternalLink } from "lucide-react"
 
 export default async function JobApplicationsPage() {
@@ -35,6 +36,7 @@ export default async function JobApplicationsPage() {
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">Resume</th>
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">LinkedIn</th>
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">Applied</th>
+                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -75,6 +77,14 @@ export default async function JobApplicationsPage() {
                   </td>
                   <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
                     {row.createdAt.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+                  </td>
+                  <td className="px-4 py-3">
+                    <AdminSendEmailDialog
+                      toEmail={row.email}
+                      recipientName={row.name}
+                      defaultSubject={`Re: Your application for ${row.jobTitle}`}
+                      triggerLabel="Email"
+                    />
                   </td>
                 </tr>
               ))}

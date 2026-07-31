@@ -117,6 +117,7 @@ export async function POST(request: NextRequest) {
             await sendReactEmail({
               from,
               to: adminTo,
+              replyTo: body.email,
               subject: `New requirements: ${body.name} (${body.intent})`,
               react: jsx(RequirementNotification, {
                 intent: body.intent,

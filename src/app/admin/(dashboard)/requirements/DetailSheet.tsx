@@ -6,6 +6,7 @@ import {
   DetailSection,
   MessageBlock,
 } from "@/components/admin/inbox/DetailFieldList";
+import AdminSendEmailDialog from "@/components/admin/AdminSendEmailDialog";
 import {
   Sheet,
   SheetContent,
@@ -46,23 +47,32 @@ export default function RequirementDetailSheet({
     ? formatQuestionnaireForDisplay(questionnaire)
     : [];
   const trackingFields = buildTrackingFields(row);
+  const name = displayRequirementName(row);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:max-w-lg overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>{displayRequirementName(row)}</SheetTitle>
+          <SheetTitle>{name}</SheetTitle>
           <SheetDescription>
             Submitted {formatInboxDate(row.createdAt)}
           </SheetDescription>
         </SheetHeader>
 
         <div className="space-y-6 px-4 pb-6">
+          <div>
+            <AdminSendEmailDialog
+              toEmail={row.email}
+              recipientName={name}
+              defaultSubject={`Re: Your project inquiry — ${name}`}
+            />
+          </div>
+
           <DetailSection title="Contact">
             <DetailFieldList
               fields={buildRequirementContactFields({
                 ...row,
-                name: displayRequirementName(row),
+                name,
               })}
             />
           </DetailSection>

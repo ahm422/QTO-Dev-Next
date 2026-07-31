@@ -82,6 +82,7 @@ export async function POST(request: NextRequest) {
             sendReactEmail({
               from,
               to: adminTo,
+              replyTo: body.email,
               subject: `New contact: ${body.name}`,
               react: jsx(ContactNotification, {
                 name: body.name,
@@ -96,6 +97,7 @@ export async function POST(request: NextRequest) {
             sendReactEmail({
               from,
               to: body.email,
+              replyTo: adminTo,
               subject: `We received your message — ${SITE_NAME}`,
               react: jsx(ContactConfirmation, {
                 name: body.name,

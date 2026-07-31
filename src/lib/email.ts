@@ -26,6 +26,8 @@ export type SendReactEmailInput = {
   to: string;
   subject: string;
   react: ReactElement;
+  /** When set, Reply goes here instead of the from-address. */
+  replyTo?: string;
 };
 
 function formatSendError(error: unknown): Error {
@@ -66,6 +68,9 @@ export async function sendReactEmail(input: SendReactEmailInput): Promise<void> 
       subject: input.subject,
       html,
       text,
+      ...(input.replyTo?.trim()
+        ? { replyTo: input.replyTo.trim() }
+        : {}),
     });
   } catch (error) {
     throw formatSendError(error);

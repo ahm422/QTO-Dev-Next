@@ -6,6 +6,7 @@ import {
   DetailSection,
   MessageBlock,
 } from "@/components/admin/inbox/DetailFieldList";
+import AdminSendEmailDialog from "@/components/admin/AdminSendEmailDialog";
 import {
   Sheet,
   SheetContent,
@@ -37,22 +38,31 @@ export default function ContactDetailSheet({
   if (!row) return null;
 
   const trackingFields = buildTrackingFields(row);
+  const name = displayContactName(row);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:max-w-lg overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>{displayContactName(row)}</SheetTitle>
+          <SheetTitle>{name}</SheetTitle>
           <SheetDescription>
             Received {formatInboxDate(row.createdAt)}
           </SheetDescription>
         </SheetHeader>
 
         <div className="space-y-6 px-4 pb-6">
+          <div>
+            <AdminSendEmailDialog
+              toEmail={row.email}
+              recipientName={name}
+              defaultSubject={`Re: ${displayContactSubject(row)}`}
+            />
+          </div>
+
           <DetailSection title="Contact">
             <DetailFieldList
               fields={[
-                { label: "Name", value: displayContactName(row) },
+                { label: "Name", value: name },
                 { label: "Email", value: row.email },
                 { label: "Subject", value: displayContactSubject(row) },
               ]}

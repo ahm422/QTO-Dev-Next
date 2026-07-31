@@ -51,6 +51,7 @@ export async function POST(request: NextRequest) {
           const result = await sendReactEmail({
             from,
             to: adminTo,
+            replyTo: body.email,
             subject: `New application: ${body.jobTitle} — ${body.name}`,
             react: jsx(JobApplicationEmail, {
               jobTitle: body.jobTitle,
