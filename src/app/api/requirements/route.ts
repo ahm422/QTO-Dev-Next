@@ -18,10 +18,10 @@ import {
 } from "@/lib/validators/http";
 import { apiError, apiSuccess, logApiError, mapApiError } from "@/lib/apiResponses";
 import {
-  getResendAddresses,
-  isResendConfigured,
-  sendResendReactEmail,
-} from "@/lib/resend";
+  getEmailAddresses,
+  isEmailConfigured,
+  sendReactEmail,
+} from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   try {
@@ -105,16 +105,16 @@ export async function POST(request: NextRequest) {
       });
 
       // DB write is source of truth; email failures are logged only.
-      if (isResendConfigured()) {
-        const addresses = getResendAddresses();
+      if (isEmailConfigured()) {
+        const addresses = getEmailAddresses();
         if (!addresses) {
           console.warn(
-            "[/api/requirements] RESEND_API_KEY set but RESEND_FROM_EMAIL or RESEND_TO_EMAIL missing; skipping emails"
+            "[/api/requirements] EMAIL_FROM set but EMAIL_ADMIN_TO missing; skipping emails"
           );
         } else {
           const { from, adminTo } = addresses;
           try {
-            await sendResendReactEmail({
+            await sendReactEmail({
               from,
               to: adminTo,
               subject: `New requirements: ${body.name} (${body.intent})`,

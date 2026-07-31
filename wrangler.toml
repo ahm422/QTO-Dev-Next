@@ -23,7 +23,8 @@ service = "qto-dev-next"
 binding = "IMAGES"
 
 # Non-secret production vars — set in Workers → Settings → Variables (not in this file):
-#   NEXT_PUBLIC_SITE_URL, R2_PUBLIC_URL, RESEND_FROM_EMAIL, RESEND_TO_EMAIL
+#   NEXT_PUBLIC_SITE_URL, R2_PUBLIC_URL, EMAIL_FROM, EMAIL_ADMIN_TO
+# Email Sending uses the EMAIL binding below (no API key). From-address must be @qtodev.com.
 #
 # Nightly token cleanup — fires at 03:00 UTC and calls GET /api/cron/cleanup-tokens
 # via an external cron service (e.g. Upstash QStash or EasyCron) with:
@@ -32,6 +33,9 @@ binding = "IMAGES"
 # exposes one, use an external HTTP trigger pointed at your deployed worker URL.
 [triggers]
 crons = ["0 3 * * *"]
+
+[[send_email]]
+name = "EMAIL"
 
 # D1 (Workers runtime). Apply schema: wrangler d1 migrations apply qtodev-d1 --remote
 # Local dev: wrangler d1 migrations apply qtodev-d1 --local
@@ -68,3 +72,6 @@ migrations_dir = "./migrations/d1"
 [[env.staging.r2_buckets]]
 binding = "MEDIA"
 bucket_name = "qtodev-media"
+
+[[env.staging.send_email]]
+name = "EMAIL"

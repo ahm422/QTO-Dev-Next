@@ -160,7 +160,6 @@ Copy from `.env.example` / `.dev.vars.example` into the Cloudflare dashboard (Pr
 | `JWT_ACCESS_SECRET` | JWT signing secret (`openssl rand -hex 64`) |
 | `CRON_SECRET` | Bearer token for `GET /api/cron/cleanup-tokens` (`openssl rand -hex 32`) |
 | `REVALIDATE_SECRET` | Bearer token for `POST /api/revalidate` (`openssl rand -hex 32`) |
-| `RESEND_API_KEY` | Resend transactional email |
 | `UPSTASH_REDIS_REST_URL` | **Required in production** — in-memory rate limit is dev-only |
 | `UPSTASH_REDIS_REST_TOKEN` | **Required in production** |
 | `R2_S3_ENDPOINT` | S3-compatible R2 API endpoint |
@@ -175,8 +174,8 @@ Copy from `.env.example` / `.dev.vars.example` into the Cloudflare dashboard (Pr
 |----------|--------|
 | `NEXT_PUBLIC_SITE_URL` | Canonical URLs, auth redirects |
 | `R2_PUBLIC_URL` | Public CDN base URL for uploaded media |
-| `RESEND_FROM_EMAIL` | Verified domain sender |
-| `RESEND_TO_EMAIL` | Internal notification recipient |
+| `EMAIL_FROM` | Sender on `qtodev.com` (e.g. `noreply@qtodev.com`; staging: `staging@qtodev.com`) |
+| `EMAIL_ADMIN_TO` | Internal notification recipient |
 
 **Bindings:**
 
@@ -184,6 +183,7 @@ Copy from `.env.example` / `.dev.vars.example` into the Cloudflare dashboard (Pr
 |----------|--------|
 | `DB` | D1 database (`qtodev-d1`) — see [docs/d1-provisioning.md](docs/d1-provisioning.md) |
 | `MEDIA` | R2 bucket (`qtodev-media`) |
+| `EMAIL` | Cloudflare Email Service (`[[send_email]]`) — no API key |
 
 CLI: `wrangler secret put JWT_ACCESS_SECRET` (repeat per secret). Verify: `npm run secrets:verify`.
 

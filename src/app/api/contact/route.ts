@@ -20,10 +20,10 @@ import {
 } from "@/lib/validators/http";
 import { apiError, apiSuccess, logApiError, mapApiError } from "@/lib/apiResponses";
 import {
-  getResendAddresses,
-  isResendConfigured,
-  sendResendReactEmail,
-} from "@/lib/resend";
+  getEmailAddresses,
+  isEmailConfigured,
+  sendReactEmail,
+} from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   try {
@@ -70,16 +70,16 @@ export async function POST(request: NextRequest) {
       });
 
       // DB write is source of truth; email failures are logged only.
-      if (isResendConfigured()) {
-        const addresses = getResendAddresses();
+      if (isEmailConfigured()) {
+        const addresses = getEmailAddresses();
         if (!addresses) {
           console.warn(
-            "[/api/contact] RESEND_API_KEY set but RESEND_FROM_EMAIL or RESEND_TO_EMAIL missing; skipping emails"
+            "[/api/contact] EMAIL_FROM set but EMAIL_ADMIN_TO missing; skipping emails"
           );
         } else {
           const { from, adminTo } = addresses;
           const results = await Promise.allSettled([
-            sendResendReactEmail({
+            sendReactEmail({
               from,
               to: adminTo,
               subject: `New contact: ${body.name}`,
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
                 submissionId: created.id,
               }),
             }),
-            sendResendReactEmail({
+            sendReactEmail({
               from,
               to: body.email,
               subject: `We received your message — ${SITE_NAME}`,

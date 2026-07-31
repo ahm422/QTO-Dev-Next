@@ -8,7 +8,7 @@ import { forgotPasswordSchema } from "@/lib/validators/auth";
 import { formatZodFieldErrors } from "@/lib/validators/http";
 import { apiError, logApiError } from "@/lib/apiResponses";
 import { checkRateLimit, rateLimitExceededResponse } from "@/lib/rateLimit";
-import { getResendFromAddress, isResendConfigured, sendResendReactEmail } from "@/lib/resend";
+import { getEmailFromAddress, isEmailConfigured, sendReactEmail } from "@/lib/email";
 import PasswordResetEmail from "@/emails/PasswordResetEmail";
 
 const GENERIC_SUCCESS = {
@@ -53,12 +53,12 @@ export async function POST(request: NextRequest) {
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
         const resetUrl = `${siteUrl}/admin/reset-password?token=${rawToken}`;
 
-        if (isResendConfigured()) {
-          const from = getResendFromAddress();
+        if (isEmailConfigured()) {
+          const from = getEmailFromAddress();
           if (!from) {
-            console.warn("[forgot-password] RESEND_FROM_EMAIL missing; skipping email");
+            console.warn("[forgot-password] EMAIL_FROM missing; skipping email");
           } else {
-            await sendResendReactEmail({
+            await sendReactEmail({
               from,
               to: email,
               subject: "Reset your admin password",
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
             }).catch((err) => logApiError("/api/auth/forgot-password/email", err));
           }
         } else if (process.env.NODE_ENV !== "production") {
-          console.warn("[forgot-password] Resend not configured; reset URL:", resetUrl);
+          console.warn("[forgot-password] Email not configured; reset URL:", resetUrl);
         }
 
         await writeAuditLog({
