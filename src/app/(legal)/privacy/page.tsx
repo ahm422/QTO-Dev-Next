@@ -1,5 +1,13 @@
 import { Container } from "@/components/common/Container";
 import { Heading } from "@/components/ui/shared/Heading";
+import { generateSEOMetadata } from "@/lib/seo";
+
+export const metadata = generateSEOMetadata({
+  title: "Privacy Policy | QTO Dev",
+  description:
+    "How QTO Dev collects, uses, and protects your personal information when you use our website and services.",
+  url: "/privacy",
+});
 
 export default function PrivacyPage() {
   return (

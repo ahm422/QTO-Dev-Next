@@ -41,7 +41,7 @@ export function ArticleHeader({ post }: ArticleHeaderProps) {
           <div className="flex flex-col gap-6">
             {/* Title */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-              {post.title}
+              {post.title?.trim() || "QTO Dev Blog"}
             </h1>
 
             {/* Meta Information */}

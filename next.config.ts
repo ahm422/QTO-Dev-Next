@@ -131,6 +131,22 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns,
   },
+  async redirects() {
+    return [
+      {
+        source: "/get-a-quote",
+        destination: "/requirements",
+        permanent: true,
+      },
+      // Canonical host: www → apex (requires www DNS to exist in Cloudflare)
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.qtodev.com" }],
+        destination: "https://qtodev.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [{ source: "/(.*)", headers: GLOBAL_SECURITY_HEADERS }];
   },

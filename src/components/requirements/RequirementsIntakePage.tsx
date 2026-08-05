@@ -140,8 +140,8 @@ function apiFieldErrorsToForm(
 }
 
 export interface RequirementsIntakePageProps {
-  analyticsPath: "/requirements" | "/get-a-quote";
-  source: "requirements" | "get-a-quote";
+  analyticsPath: "/requirements";
+  source: "requirements";
   eyebrow: string;
   title: string;
   subtitle: string;

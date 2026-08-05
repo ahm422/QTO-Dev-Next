@@ -7,6 +7,14 @@ import { Container } from "@/components/common/Container";
 import { CTA } from "@/components/common/CTA";
 import { mergeBlogsPageConfig } from "@/config/blogsPage";
 import { findPageSection } from "@/lib/cms/pageContent";
+import { generateSEOMetadata } from "@/lib/seo";
+
+export const metadata = generateSEOMetadata({
+  title: "Blog | QTO Dev",
+  description:
+    "Insights on web development, product design, and digital delivery from the QTO Dev team.",
+  url: "/blogs",
+});
 
 interface BlogsPageProps {
   searchParams: Promise<{

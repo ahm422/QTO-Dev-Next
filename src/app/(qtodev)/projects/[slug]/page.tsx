@@ -4,6 +4,7 @@ import {
 } from "@/lib/cms/projects";
 import { findPublishedProjectSlugsForBuild } from "@/lib/prisma/buildTimePrisma";
 import { skipBuildTimeD1 } from "@/lib/prisma/skipBuildTimeD1";
+import { generateSEOMetadata } from "@/lib/seo";
 import { CaseStudyHero } from "./components/CaseStudyHero";
 import { ProjectOverviewChallenge } from "./components/ProjectOverviewChallenge";
 import { FeatureShowcase } from "./components/FeatureShowcase";
@@ -22,22 +23,22 @@ export async function generateMetadata({ params }: PageProps) {
   const project = await findContentProjectBySlug(slug);
 
   if (!project) {
-    return {
+    return generateSEOMetadata({
       title: "Project Not Found",
       description: "The case study you are looking for could not be found.",
-    };
+      url: `/projects/${slug}`,
+      robots: { index: false, follow: false },
+    });
   }
 
-  return {
-    title: `${project.title} | Project Case Study`,
-    description: project.subtitle,
-    openGraph: {
-      title: project.title,
-      description: project.subtitle,
-      images: [{ url: project.heroImage.url, alt: project.heroImage.alt }],
-      type: "article",
-    },
-  };
+  return generateSEOMetadata({
+    title: `${project.title} | QTO Dev`,
+    description:
+      project.subtitle?.trim() ||
+      "A QTO Dev case study focused on measurable product outcomes.",
+    image: project.heroImage.url,
+    url: `/projects/${slug}`,
+  });
 }
 
 export async function generateStaticParams() {

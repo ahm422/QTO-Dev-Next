@@ -1,5 +1,13 @@
 import { Container } from "@/components/common/Container";
 import { Heading } from "@/components/ui/shared/Heading";
+import { generateSEOMetadata } from "@/lib/seo";
+
+export const metadata = generateSEOMetadata({
+  title: "Cookie Policy | QTO Dev",
+  description:
+    "Learn how QTO Dev uses cookies and similar technologies on our website, and how you can manage your preferences.",
+  url: "/cookies",
+});
 
 export default function CookiesPage() {
   return (

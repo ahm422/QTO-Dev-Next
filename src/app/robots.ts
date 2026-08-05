@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next';
+import { SITE_URL } from '@/lib/constants';
 
 export const dynamic = 'force-static';
 
@@ -7,8 +8,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: ['/'],
-      disallow: ['/admin', '/api', '/_next'],
+      disallow: ['/admin', '/api'],
     },
-    sitemap: 'https://qtodev.com/sitemap.xml',
+    sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }

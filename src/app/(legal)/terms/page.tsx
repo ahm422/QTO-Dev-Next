@@ -1,5 +1,13 @@
 import { Container } from "@/components/common/Container";
 import { Heading } from "@/components/ui/shared/Heading";
+import { generateSEOMetadata } from "@/lib/seo";
+
+export const metadata = generateSEOMetadata({
+  title: "Terms of Service | QTO Dev",
+  description:
+    "Terms governing your use of the QTO Dev website and engagement with our development and design services.",
+  url: "/terms",
+});
 
 export default function TermsPage() {
   return (

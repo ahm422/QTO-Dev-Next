@@ -1,13 +1,14 @@
-import type { Metadata } from "next";
 import { RequirementsHero } from "@/components/requirements/RequirementsHero";
 import { RequirementsIntakePage } from "@/components/requirements/RequirementsIntakePage";
 import { getTrustMetrics } from "@/lib/cms/stats";
+import { generateSEOMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = generateSEOMetadata({
   title: "Project Requirements | QTO Dev",
   description:
     "Share your project requirements and goals. We'll follow up with clear next steps within 1–2 business days.",
-};
+  url: "/requirements",
+});
 
 export default async function RequirementsPage() {
   const metrics = await getTrustMetrics();

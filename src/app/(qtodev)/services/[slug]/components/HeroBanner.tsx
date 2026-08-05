@@ -35,11 +35,15 @@ export function HeroBanner({ service, blurDataURL }: HeroBannerProps) {
         <div className="mt-12 grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <h1 className="font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl lg:leading-[1.1]">
-              {service.headline}
+              {service.headline?.trim() ||
+                service.breadcrumbLabel?.trim() ||
+                "QTO Dev Services"}
             </h1>
-            <p className="mt-6 max-w-2xl text-lg font-medium leading-relaxed text-foreground-muted md:text-xl">
-              {service.subheadline}
-            </p>
+            {service.subheadline?.trim() ? (
+              <p className="mt-6 max-w-2xl text-lg font-medium leading-relaxed text-foreground-muted md:text-xl">
+                {service.subheadline}
+              </p>
+            ) : null}
 
             <div className="mt-8 flex flex-wrap gap-2.5">
               {service.proofChips.map((chip) => (

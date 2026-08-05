@@ -28,18 +28,28 @@ export function mapPrismaToContentService(
 ): WebDevelopmentServiceData {
   const features = parseStringArray(row.features);
   const technologyTags = orderedTagValues(row.technologyTags);
+  const title = row.title?.trim() || "Service";
+  const shortDescription = row.shortDescription?.trim() || "";
+  const description = row.description?.trim() || "";
+  const lead =
+    shortDescription ||
+    description ||
+    "Premium web development and design services from QTO Dev.";
+
   return {
     ...webDevelopmentServiceData,
     slug: row.slug,
-    breadcrumbLabel: row.title,
-    headline: `${row.title} Services That Drive Growth`,
-    subheadline: row.description,
+    breadcrumbLabel: title,
+    headline: title ? `${title} Services That Drive Growth` : "QTO Dev Services",
+    // Prefer shortDescription for hero/meta; keep long description for overview body.
+    subheadline: lead,
     heroImage: {
       url: resolveMediaUrl(row.imageUrl) ?? fallbackHero,
-      alt: row.imageAlt ?? `${row.title} service hero`,
+      alt: row.imageAlt ?? `${title} service hero`,
     },
     overviewText:
-      row.shortDescription ||
+      description ||
+      shortDescription ||
       "We bring strategic product thinking and high-quality engineering to deliver outcomes your business can measure. Our process is transparent, collaborative, and focused on speed without sacrificing reliability.",
     overviewBenefits:
       features.length > 0 ? features : webDevelopmentServiceData.overviewBenefits,

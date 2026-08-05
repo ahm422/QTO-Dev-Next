@@ -47,11 +47,13 @@ export function CaseStudyHero({ project, blurDataURL }: CaseStudyHeroProps) {
         <div className="mt-10 grid grid-cols-1 items-center gap-10 lg:mt-14 lg:grid-cols-2 lg:gap-16">
           <div>
             <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl lg:leading-[1.08]">
-              {project.title}
+              {project.title?.trim() || "Project case study"}
             </h1>
-            <p className="mt-5 max-w-xl text-base font-medium leading-relaxed text-foreground-muted sm:text-lg md:mt-6 md:text-xl">
-              {project.subtitle}
-            </p>
+            {project.subtitle?.trim() ? (
+              <p className="mt-5 max-w-xl text-base font-medium leading-relaxed text-foreground-muted sm:text-lg md:mt-6 md:text-xl">
+                {project.subtitle}
+              </p>
+            ) : null}
 
             <div className="mt-6 flex flex-wrap gap-2 md:mt-8">
               {project.chips.map((chip) => (

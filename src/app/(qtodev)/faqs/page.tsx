@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
 import { findPublishedFaqs } from "@/lib/cms/faqs";
 import { findPageSection } from "@/lib/cms/pageContent";
 import { FAQsSectionClient } from "@/app/(qtodev)/sections/FAQsSectionClient";
 import { faqsConfig } from "@/config/faqs";
 import { faqItems } from "@/data/faqs";
+import { generateSEOMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = generateSEOMetadata({
   title: "FAQs | QTO Dev",
   description: "Answers to the most common questions about working with QTO Dev.",
-};
+  url: "/faqs",
+});
 
 export default async function FAQsPage() {
   const [faqs, sectionConfig] = await Promise.all([

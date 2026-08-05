@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { getBlogBySlug } from '@/lib/blog';
 import { findPublishedBlogSlugsForBuild } from '@/lib/prisma/buildTimePrisma';
 import { skipBuildTimeD1 } from '@/lib/prisma/skipBuildTimeD1';
+import { generateSEOMetadata } from '@/lib/seo';
 import { ArticleHeader } from './_components/ArticleHeader';
 import { ArticleBody } from './_components/ArticleBody';
 import { ArticleSidebar } from './_components/ArticleSidebar';
@@ -21,25 +22,24 @@ export async function generateMetadata({ params }: BlogDetailPageProps) {
   const post = await getBlogBySlug(slug);
 
   if (!post) {
-    return {
+    return generateSEOMetadata({
       title: 'Article Not Found',
       description: 'The blog post you are looking for does not exist.',
-    };
+      url: `/blogs/${slug}`,
+      robots: { index: false, follow: false },
+    });
   }
 
-  return {
-    title: `${post.title} | Blog`,
-    description: post.excerpt || post.description,
-    openGraph: {
-      title: post.title,
-      description: post.excerpt || post.description,
-      type: 'article',
-      publishedTime: post.publishedAt,
-      authors: [post.author],
-      tags: post.tags,
-      images: post.coverImage?.url ? [{ url: post.coverImage.url }] : [],
-    },
-  };
+  return generateSEOMetadata({
+    title: `${post.title} | QTO Dev`,
+    description:
+      (post.excerpt || post.description || "").trim() ||
+      "Insights on web development, product design, and digital delivery from QTO Dev.",
+    image: post.coverImage?.url,
+    url: `/blogs/${slug}`,
+    author: post.author,
+    publishedAt: post.publishedAt,
+  });
 }
 
 export async function generateStaticParams() {
