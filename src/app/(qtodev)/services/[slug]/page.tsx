@@ -4,6 +4,7 @@ import {
 } from "@/lib/cms/services";
 import { findPublishedServiceSlugsForBuild } from "@/lib/prisma/buildTimePrisma";
 import { skipBuildTimeD1 } from "@/lib/prisma/skipBuildTimeD1";
+import { generateSEOMetadata } from "@/lib/seo";
 import { HeroBanner } from "./components/HeroBanner";
 import { OverviewSection } from "./components/OverviewSection";
 import { ProblemsWeSolve } from "./components/ProblemsWeSolve";
@@ -22,22 +23,22 @@ export async function generateMetadata({ params }: PageProps) {
   const service = await findContentServiceBySlug(slug);
 
   if (!service) {
-    return {
+    return generateSEOMetadata({
       title: "Service Not Found",
       description: "The requested service page could not be found.",
-    };
+      url: `/services/${slug}`,
+      robots: { index: false, follow: false },
+    });
   }
 
-  return {
-    title: `${service.breadcrumbLabel} | QTO Dev Services`,
-    description: service.subheadline,
-    openGraph: {
-      title: service.headline,
-      description: service.subheadline,
-      images: [{ url: service.heroImage.url, alt: service.heroImage.alt }],
-      type: "website",
-    },
-  };
+  return generateSEOMetadata({
+    title: `${service.breadcrumbLabel} | QTO Dev`,
+    description:
+      service.subheadline?.trim() ||
+      "Premium web development and design services from QTO Dev.",
+    image: service.heroImage.url,
+    url: `/services/${slug}`,
+  });
 }
 
 export async function generateStaticParams() {

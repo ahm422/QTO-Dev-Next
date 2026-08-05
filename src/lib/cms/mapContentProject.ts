@@ -56,10 +56,16 @@ export function mapPrismaToContentProject(
       ? results.slice(0, 3)
       : ["Faster delivery cycles", "Higher user satisfaction", "Stronger product adoption"];
 
+  const title = item.title?.trim() || "Project case study";
+  const subtitle =
+    item.excerpt?.trim() ||
+    item.description?.trim() ||
+    "A product engagement focused on measurable outcomes and clear delivery.";
+
   return {
     slug: item.slug,
-    title: item.title,
-    subtitle: item.excerpt,
+    title,
+    subtitle,
     heroImage: { url: heroUrl, alt: item.title },
     chips: [
       { label: "Industry", value: item.category || "Technology" },

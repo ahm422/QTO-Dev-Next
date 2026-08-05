@@ -8,6 +8,14 @@ import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { productsPageConfig } from "@/config/productsPage";
 import { findPublishedProducts } from "@/lib/cms/products";
 import { cn } from "@/components/theme/cn";
+import { generateSEOMetadata } from "@/lib/seo";
+
+export const metadata = generateSEOMetadata({
+  title: "Products | QTO Dev",
+  description:
+    "Explore QTO Dev products — purpose-built software that helps businesses ship faster and operate smarter.",
+  url: "/products",
+});
 
 function ProductsOverview({
   products,

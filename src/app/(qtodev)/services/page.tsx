@@ -6,6 +6,14 @@ import { ServicesWhyChooseUsSection } from "./sections/ServicesWhyChooseUsSectio
 import { ServicesCTASection } from "./sections/ServicesCTASection";
 import { servicesPageConfig } from "@/config/servicesPage";
 import { findPageSection } from "@/lib/cms/pageContent";
+import { generateSEOMetadata } from "@/lib/seo";
+
+export const metadata = generateSEOMetadata({
+  title: "Services | QTO Dev",
+  description:
+    "Web development, mobile apps, UI/UX design, and product engineering services from QTO Dev.",
+  url: "/services",
+});
 
 export default async function ServicesPage() {
   const cmsConfig = await findPageSection("services.page") as typeof servicesPageConfig | null;

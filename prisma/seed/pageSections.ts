@@ -89,7 +89,9 @@ const sections: { slug: string; label: string; data: Record<string, unknown> }[]
       subtitle: "OUR FEATURED WORK",
       title: "Our Featured Work",
       titleHighlight: "Featured",
-      description: "",
+      description:
+        "Selected product and engineering work across web, mobile, and platform engagements.",
+
       viewAllLabel: "View All -",
       viewAllHref: "/projects",
     },

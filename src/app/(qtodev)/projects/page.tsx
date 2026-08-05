@@ -4,6 +4,14 @@ import { ProjectsValueSection } from "./sections/ProjectsValueSection";
 import { CTA } from "@/components/common/CTA";
 import { projectsPageConfig } from "@/config/projectsPage";
 import { findPageSection } from "@/lib/cms/pageContent";
+import { generateSEOMetadata } from "@/lib/seo";
+
+export const metadata = generateSEOMetadata({
+  title: "Projects | QTO Dev",
+  description:
+    "Browse QTO Dev case studies — selected web, product, and design work for modern businesses.",
+  url: "/projects",
+});
 
 interface ProjectsPageProps {
   searchParams: Promise<{

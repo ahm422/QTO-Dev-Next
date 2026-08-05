@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { cn } from "@/components/theme/cn";
 import { SITE_URL } from "@/lib/constants";
 import { SITE_FAVICON } from "@/config/staticImages";
+import { generateSEOMetadata } from "@/lib/seo";
 import { generalSans, inter } from "./fonts";
 
 const GTM_ID = "GTM-5DMZ28NG";
@@ -22,11 +22,14 @@ const themeScript = `
 })();
 `;
 
-export const metadata: Metadata = {
+export const metadata = {
+  ...generateSEOMetadata({
+    title: "QTO Dev - Web Development & Design Services",
+    description:
+      "Premium web development, mobile app development, and UI/UX design services for modern businesses.",
+    url: "/",
+  }),
   metadataBase: new URL(SITE_URL),
-  title: "QTO Dev - Web Development & Design Services",
-  description:
-    "Premium web development, mobile app development, and UI/UX design services for modern businesses.",
   icons: {
     icon: SITE_FAVICON,
     apple: SITE_FAVICON,

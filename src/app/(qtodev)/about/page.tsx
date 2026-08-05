@@ -9,6 +9,14 @@ import { TrustSection } from "./sections/TrustSection";
 import { CTA } from "@/components/common/CTA";
 import { aboutPageConfig } from "@/config/aboutPage";
 import { findPageSection } from "@/lib/cms/pageContent";
+import { generateSEOMetadata } from "@/lib/seo";
+
+export const metadata = generateSEOMetadata({
+  title: "About | QTO Dev",
+  description:
+    "Learn about QTO Dev — our mission, values, and the team building premium web and product experiences.",
+  url: "/about",
+});
 
 export default async function AboutPage() {
   const cmsConfig = await findPageSection("about.page") as typeof aboutPageConfig | null;

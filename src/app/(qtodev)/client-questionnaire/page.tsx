@@ -2,6 +2,14 @@ import { ContactLayout } from "@/components/contact/ContactLayout";
 import { TrustStrip } from "@/components/marketing/TrustStrip";
 import { Text } from "@/components/ui/shared/Text";
 import { ClientQuestionnaireForm } from "@/components/client-questionnaire/ClientQuestionnaireForm";
+import { generateSEOMetadata } from "@/lib/seo";
+
+export const metadata = generateSEOMetadata({
+  title: "Client Questionnaire | QTO Dev",
+  description:
+    "Complete the QTO Dev client questionnaire so we can understand your goals and recommend the right solution.",
+  url: "/client-questionnaire",
+});
 
 export default function ClientQuestionnairePage() {
   return (

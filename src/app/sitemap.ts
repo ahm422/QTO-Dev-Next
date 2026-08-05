@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next';
+import { SITE_URL } from '@/lib/constants';
 import {
   findPublishedBlogSlugsForBuild,
   findPublishedProjectSlugsForBuild,
@@ -11,7 +12,7 @@ export const revalidate = 3600;
 export const dynamic = 'force-dynamic';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://qtodev.com';
+  const baseUrl = SITE_URL;
 
   const [serviceSlugs, projectSlugs, blogSlugs] = await Promise.all([
     findPublishedServiceSlugsForBuild(),
