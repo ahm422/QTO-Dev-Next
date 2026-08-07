@@ -8,6 +8,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: ['/'],
+      // Never disallow /_next — Next.js CSS/JS and /_next/image must remain crawlable.
+      // Blocking it causes Semrush "Blocked internal resources" and can hurt rendering/indexing signals.
       disallow: ['/admin', '/api'],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
