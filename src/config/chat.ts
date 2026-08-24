@@ -15,3 +15,13 @@ export function isChatEnabled(): boolean {
 export function isPublicChatEnabled(): boolean {
   return isChatEnabled() && process.env.NEXT_PUBLIC_CHAT_PUBLIC_ENABLED === "true";
 }
+
+/**
+ * Per-surface flag for the admin dashboard ops widget ("QTO Ops Assistant"),
+ * independent of the public marketing-site widget. Defaults to disabled —
+ * set NEXT_PUBLIC_CHAT_ADMIN_ENABLED=true to bring it back without a code
+ * change. Still gated by the master isChatEnabled() switch.
+ */
+export function isAdminChatEnabled(): boolean {
+  return isChatEnabled() && process.env.NEXT_PUBLIC_CHAT_ADMIN_ENABLED === "true";
+}

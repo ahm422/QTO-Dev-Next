@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { useChatWidget } from "@/hooks/useChatWidget";
 import { httpAdminChatProvider } from "@/lib/chat/httpChatProvider";
-import { isChatEnabled } from "@/config/chat";
+import { isAdminChatEnabled } from "@/config/chat";
 import { ChatLauncherButton } from "@/components/chat/ChatLauncherButton";
 import { ChatPanel } from "@/components/chat/ChatPanel";
 import { ChatHeader } from "@/components/chat/ChatHeader";
@@ -40,7 +40,7 @@ export function AdminChatWidget({
   ticketStatus = "pending",
   org = "qto-core",
 }: AdminChatWidgetProps) {
-  const enabled = isChatEnabled();
+  const enabled = isAdminChatEnabled();
   const widget = useChatWidget({ provider: httpAdminChatProvider, variant: "admin", enabled });
   const launcherRef = useRef<HTMLButtonElement>(null);
 
