@@ -3,6 +3,7 @@
 import type { WhyChooseUsItem } from "@/types/whyChooseUs";
 import { AppIcon, type AppIconName } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
+import { RichText } from "@/components/common/RichText";
 
 const DEFAULT_ICONS: AppIconName[] = [
   "rocket",
@@ -54,9 +55,7 @@ export function BenefitCard({
           <h3 className="font-heading text-lg font-semibold text-foreground sm:text-xl">
             {item.title}
           </h3>
-          <p className="mt-2 text-sm leading-relaxed text-foreground-muted">
-            {item.description}
-          </p>
+          <RichText html={item.description} className="mt-2 text-sm leading-relaxed text-foreground-muted" />
         </div>
       </div>
     </article>

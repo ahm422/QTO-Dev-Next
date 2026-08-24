@@ -3,6 +3,7 @@ import { SiteLogo } from "@/components/common/SiteLogo";
 import { footerSections } from "@/config/site";
 import { findSiteBranding } from "@/lib/cms/siteConfig";
 import { cn } from "@/components/theme/cn";
+import { RichText } from "@/components/common/RichText";
 
 export async function Footer() {
   const branding = await findSiteBranding();
@@ -23,9 +24,7 @@ export async function Footer() {
             <div className="flex items-center mb-2">
               <SiteLogo width={140} height={36} className="h-8 w-auto object-contain" />
             </div>
-            <p className="text-foreground-muted text-sm leading-snug">
-              {branding.description}
-            </p>
+            <RichText html={branding.description} className="text-foreground-muted text-sm leading-snug" />
             {/* Social links */}
             <div className="mt-2.5 flex flex-wrap gap-2">
               {social.map(({ label, href }) => (

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useChatWidget } from "@/hooks/useChatWidget";
 import { httpPublicChatProvider } from "@/lib/chat/httpChatProvider";
-import { isChatEnabled } from "@/config/chat";
+import { isPublicChatEnabled } from "@/config/chat";
 import { ChatLauncherButton } from "@/components/chat/ChatLauncherButton";
 import { ChatPanel } from "@/components/chat/ChatPanel";
 import { ChatHeader } from "@/components/chat/ChatHeader";
@@ -15,7 +15,7 @@ const GREETING_IDLE_MS = 4000;
  * (see `(qtodev)/layout.tsx`), talks to `/api/chat` via `httpChatProvider`.
  */
 export function PublicChatWidget() {
-  const enabled = isChatEnabled();
+  const enabled = isPublicChatEnabled();
   const widget = useChatWidget({ provider: httpPublicChatProvider, variant: "public", enabled });
   const launcherRef = useRef<HTMLButtonElement>(null);
   const [hoverGreeting, setHoverGreeting] = useState(false);

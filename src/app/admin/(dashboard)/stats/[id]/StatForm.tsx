@@ -9,6 +9,7 @@ import AdminForm from "@/components/admin/AdminForm"
 import FormGrid from "@/components/admin/forms/FormGrid"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { createStat, updateStat } from "../actions"
@@ -57,7 +58,7 @@ export default function StatForm({ defaultValues }: { defaultValues?: Stat }) {
             )} />
           </FormGrid>
           <FormField control={form.control} name="description" render={({ field }) => (
-            <FormItem><FormLabel>Description</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+            <FormItem><FormLabel>Description</FormLabel><FormControl><RichTextEditor value={field.value} onChange={field.onChange} onBlur={field.onBlur} minHeightClassName="min-h-20" /></FormControl><FormMessage /></FormItem>
           )} />
           <FormGrid cols={3}>
             <FormField control={form.control} name="icon" render={({ field }) => (

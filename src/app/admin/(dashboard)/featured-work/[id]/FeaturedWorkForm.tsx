@@ -9,9 +9,9 @@ import AdminForm from "@/components/admin/AdminForm"
 import FormGrid from "@/components/admin/forms/FormGrid"
 import MediaUpload from "@/components/admin/MediaUpload"
 import LineListTextarea from "@/components/admin/forms/LineListTextarea"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { createFeaturedWork, updateFeaturedWork } from "../actions"
@@ -60,13 +60,9 @@ export default function FeaturedWorkForm({ defaultValues }: { defaultValues?: Fe
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <div className="relative">
-                    <Textarea {...field} rows={3} maxLength={200} className="pb-6" />
-                    <span className="absolute bottom-2 right-3 text-xs text-muted-foreground pointer-events-none">
-                      {(field.value?.length ?? 0)}/200
-                    </span>
-                  </div>
+                  <RichTextEditor value={field.value} onChange={field.onChange} onBlur={field.onBlur} minHeightClassName="min-h-20" />
                 </FormControl>
+                <FormDescription>Keep under ~200 characters — used on cards.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}

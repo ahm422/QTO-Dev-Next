@@ -10,6 +10,7 @@ import { AppIcon } from "@/components/ui/shared/AppIcon";
 import type { AppIconName } from "@/components/ui/shared/AppIcon";
 import { getDepartmentAccent } from "@/lib/careers/departmentAccent";
 import { JobApplyDialog } from "@/components/careers/JobApplyDialog";
+import { RichText } from "@/components/common/RichText";
 
 const HEADING_ID = "open-roles-heading";
 
@@ -124,9 +125,10 @@ function JobCard({ job }: { job: Job }) {
               {job.roleSummary}
             </p>
           ) : job.description ? (
-            <p className="mt-3 text-sm leading-relaxed text-foreground-muted sm:text-[15px]">
-              {job.description}
-            </p>
+            <RichText
+              html={job.description}
+              className="mt-3 text-sm leading-relaxed text-foreground-muted sm:text-[15px]"
+            />
           ) : null}
 
           {responsibilities.length > 0 ? (
