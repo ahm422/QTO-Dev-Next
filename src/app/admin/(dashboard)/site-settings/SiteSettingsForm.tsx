@@ -13,6 +13,7 @@ import FormActions from "@/components/admin/forms/FormActions"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { Globe, Mail, Share2 } from "lucide-react"
 import { saveSiteSettings } from "./actions"
 
@@ -75,8 +76,11 @@ export default function SiteSettingsForm({ defaultValues }: { defaultValues: Sit
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea {...field} rows={3} placeholder="Short site description" className="resize-y min-h-[4.5rem]" />
+                  <RichTextEditor value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="Short site description" minHeightClassName="min-h-20" />
                 </FormControl>
+                <FormDescription>
+                  If this is ever wired into an SEO/OG &lt;meta&gt; tag, run it through `stripHtml()` first — meta tags can&apos;t hold markup.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

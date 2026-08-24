@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { Button } from "@/components/ui/button"
 import { FileText, Image as ImageIcon, Layers, Plus, Trash2 } from "lucide-react"
 import {
@@ -238,9 +239,10 @@ export default function ProductForm({ defaultValues }: ProductFormProps) {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Textarea
-                        {...field}
-                        rows={5}
+                      <RichTextEditor
+                        value={field.value}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
                         placeholder="Full product body copy"
                       />
                     </FormControl>

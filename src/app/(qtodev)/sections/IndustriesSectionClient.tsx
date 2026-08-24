@@ -12,6 +12,8 @@ import { cn } from "@/components/theme/cn";
 import { homepageSectionPadding } from "@/components/theme/sectionClasses";
 import { Reveal } from "@/components/animations/Reveal";
 import { useMotionEnabled } from "@/hooks/useReducedMotion";
+import { RichText } from "@/components/common/RichText";
+import { stripHtml } from "@/lib/sanitize-html";
 
 const HEADING_ID = "industries-heading";
 const CARD_WIDTH = 300;
@@ -146,7 +148,7 @@ function IndustryCard({
               isFocused ? "text-white/90" : "text-white/70"
             )}
           >
-            — {item.description}
+            — <RichText html={item.description} as="span" />
           </p>
         </div>
       </div>
@@ -483,7 +485,7 @@ export function IndustriesSectionClient({
         </Container>
 
         <div aria-live="polite" aria-atomic className="sr-only">
-          {items[activeIndex]?.title}: {items[activeIndex]?.description}
+          {items[activeIndex]?.title}: {stripHtml(items[activeIndex]?.description ?? "")}
         </div>
       </div>
     </section>

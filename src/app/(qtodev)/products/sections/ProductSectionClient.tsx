@@ -8,15 +8,12 @@ import { Card } from "@/components/ui/card";
 import { Reveal } from "@/components/animations/Reveal";
 import { AppIcon, type AppIconName } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
+import { isHtmlBody, sanitizeHtml } from "@/lib/sanitize-html";
 import type { Product } from "@/types/product";
 
 const MODULE_ICONS = ["chart-line", "users", "cart-shopping", "link"] as const;
 const DEFAULT_PRODUCT_IMAGE =
   "https://pub-your-r2-bucket-id.r2.dev/media/4a92c122-6f8d-4001-a92f-ae318cd45775/20260727_164532.png";
-
-function isHtmlBody(body: string): boolean {
-  return /<[a-z][\s\S]*>/i.test(body);
-}
 
 function resolveIcon(
   icon: string | undefined,
@@ -112,8 +109,8 @@ export function ProductSectionClient({
                 <div className="max-w-3xl">
                   {isHtmlBody(product.description) ? (
                     <div
-                      className="text-base md:text-lg text-foreground-muted leading-relaxed prose prose-sm md:prose-base max-w-none dark:prose-invert"
-                      dangerouslySetInnerHTML={{ __html: product.description }}
+                      className="prose-style text-base md:text-lg leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.description) }}
                     />
                   ) : (
                     <p className="text-base md:text-lg text-foreground-muted leading-relaxed">

@@ -2,6 +2,7 @@
 
 import { AppIcon, type AppIconName } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
+import { RichText } from "@/components/common/RichText";
 
 const DEFAULT_ICONS: AppIconName[] = ["chart-line", "laptop-code", "handshake"];
 
@@ -50,9 +51,7 @@ export function ValuePropCard({ item, index }: { item: WorkValueItem; index: num
           <h3 className="font-heading text-lg font-semibold text-foreground sm:text-xl">
             {item.title}
           </h3>
-          <p className="mt-2 text-sm leading-relaxed text-foreground-muted sm:text-base">
-            {item.description}
-          </p>
+          <RichText html={item.description} className="mt-2 text-sm leading-relaxed text-foreground-muted sm:text-base" />
         </div>
       </div>
     </article>
