@@ -1,0 +1,41 @@
+{
+  "name": "qtodev-chatbot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Standalone RAG chatbot for QTO Dev — reads the existing D1 database read-only, indexes published CMS content into Qdrant, and serves a chat API. Fully independent from the main QTO-Dev-Next app.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "sync:once": "tsx src/scripts/syncOnce.ts",
+    "reindex:all": "tsx src/scripts/reindexAll.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^4.2.0",
+    "@langchain/core": "^1.2.9",
+    "@langchain/openai": "^1.5.10",
+    "@langchain/qdrant": "^1.0.3",
+    "@langchain/textsplitters": "^1.0.1",
+    "@qdrant/js-client-rest": "^1.13.0",
+    "better-sqlite3": "^13.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "uuid": "^9.0.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.0",
+    "@types/uuid": "^9.0.8",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

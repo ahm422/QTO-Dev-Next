@@ -1,0 +1,17 @@
+meta {
+  name: Metrics
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/metrics
+  body: none
+  auth: none
+}
+
+docs {
+  Standing shape of the index — not per-request. Returns:
+  { sources: { count, tables[], searchableTables[] }, retrieval: { topK, scoreThreshold },
+    sync: { inProgress, intervalMinutes, last }, uptimeSeconds }
+}

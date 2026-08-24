@@ -1,0 +1,34 @@
+meta {
+  name: Chat - Follow-up (with sessionId)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/chat
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "message": "Can you tell me more about that?",
+    "sessionId": "{{sessionId}}"
+  }
+}
+
+script:post-response {
+  if (res.body && res.body.sessionId) {
+    bru.setEnvVar("sessionId", res.body.sessionId);
+  }
+}
+
+docs {
+  Run "Chat - Send Message" first so {{sessionId}} is populated, then run
+  this to test conversation history/multi-turn context. If sessionId is
+  unknown or expired, the server silently starts a fresh session.
+}

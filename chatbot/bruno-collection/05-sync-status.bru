@@ -1,0 +1,16 @@
+meta {
+  name: Sync - Status
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/sync/status
+  body: none
+  auth: none
+}
+
+docs {
+  Returns { inProgress, lastSync } — the summary of the last completed sync
+  (per source: ingested/updated/unpublished/removed/skipped/errors counts).
+}
