@@ -30,6 +30,7 @@
     "d1:setup": "wrangler d1 migrations apply qtodev-d1 --local && npm run db:seed:local",
     "d1:setup:staging": "npm run d1:migrate:staging:local && npm run d1:migrate:staging && npm run db:seed:staging && npm run d1:sync:staging",
     "d1:sync:staging": "npm run migrate:sync-staging-remote",
+    "d1:sync:production:content": "tsx scripts/migration/sync-content-to-production.ts -- --confirm-production",
     "db:seed:local": "prisma db seed",
     "db:seed:staging": "tsx prisma/seed.ts -- --d1=staging",
     "db:seed:erp-solutions:remote": "tsx scripts/seed-erp-solutions-remote.ts -- --d1=remote --confirm-production",
