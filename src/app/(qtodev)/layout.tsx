@@ -3,6 +3,9 @@ import { Footer } from "@/components/common/Footer";
 import { FloatingContactButton } from "@/components/common/FloatingContactButton";
 import MaintenanceBanner from "@/components/common/MaintenanceBanner";
 import { isWriteFrozen } from "@/lib/freeze-writes";
+// Client-only, ssr:false-wrapped loader — avoids affecting SSR/edge bundle size
+// or blocking first paint.
+import PublicChatWidget from "@/components/chat/public/PublicChatWidgetLoader";
 
 export const revalidate = 3600;
 
@@ -21,6 +24,7 @@ export default function QTODevLayout({
       <main className="flex-grow">{children}</main>
       <Footer />
       <FloatingContactButton />
+      <PublicChatWidget />
     </div>
   );
 }
