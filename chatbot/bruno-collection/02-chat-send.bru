@@ -1,0 +1,40 @@
+meta {
+  name: Chat - Send Message
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/chat
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "message": "What services does QTO Dev offer?"
+  }
+}
+
+script:post-response {
+  if (res.body && res.body.sessionId) {
+    bru.setEnvVar("sessionId", res.body.sessionId);
+  }
+}
+
+docs {
+  Starts a new conversation (no sessionId sent). The response's sessionId is
+  auto-saved into the {{sessionId}} env var by the post-response script, so
+  "Chat - Follow-up" can reuse it for a multi-turn test.
+
+  If you get {"error":"Validation failed","details":{"message":["Required"]}},
+  the body type dropdown near the body editor is not set to JSON — switch it
+  to JSON and make sure this body block is actually selected/visible.
+
+  Response shape: { "sessionId": "...", "reply": "..." }
+  (add CHAT_EXPOSE_DEBUG_INFO=true in .env to also get sources/timing)
+}

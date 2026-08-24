@@ -1,0 +1,17 @@
+meta {
+  name: Health Check
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/health
+  body: none
+  auth: none
+}
+
+docs {
+  Checks D1 connectivity, Qdrant connectivity, whether a sync is in progress,
+  and the last sync summary. Run this first to confirm the service is up
+  and both dependencies are reachable before testing /chat.
+}

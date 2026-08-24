@@ -1,0 +1,22 @@
+meta {
+  name: Sync - Trigger Run
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/sync/run
+  body: none
+  auth: none
+}
+
+headers {
+  x-sync-token: {{syncToken}}
+}
+
+docs {
+  Manually triggers a full sync pass instead of waiting for the background
+  interval. Only required if SYNC_TRIGGER_TOKEN is set in .env — if it's
+  unset, this header is ignored and the request succeeds without it. Returns
+  409 if a sync is already in progress.
+}
