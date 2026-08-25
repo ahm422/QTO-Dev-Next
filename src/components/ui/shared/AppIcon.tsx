@@ -13,6 +13,7 @@ import {
   faCheck,
   faClock,
   faCloud,
+  faCommentDots,
   faCompass,
   faEnvelope,
   faFlaskVial,
@@ -33,16 +34,19 @@ import {
   faMobileScreen,
   faMoon,
   faPalette,
+  faPaperPlane,
   faPhone,
   faPlane,
   faRobot,
   faRocket,
+  faRotateRight,
   faServer,
   faShareNodes,
   faShapes,
   faShieldHalved,
   faStar,
   faSun,
+  faTriangleExclamation,
   faUsers,
   faUniversalAccess,
   faWandSparkles,
@@ -103,7 +107,11 @@ export type AppIconName =
   | "arrow-trending-up"
   | "layers"
   | "star"
-  | "users";
+  | "users"
+  | "comment-dots"
+  | "paper-plane"
+  | "rotate-right"
+  | "triangle-exclamation";
 
 const iconMap: Record<AppIconName, IconDefinition> = {
   "arrow-right": faArrowRight,
@@ -155,6 +163,10 @@ const iconMap: Record<AppIconName, IconDefinition> = {
   sparkles: faWandSparkles,
   "arrow-trending-up": faArrowTrendUp,
   layers: faLayerGroup,
+  "comment-dots": faCommentDots,
+  "paper-plane": faPaperPlane,
+  "rotate-right": faRotateRight,
+  "triangle-exclamation": faTriangleExclamation,
 };
 
 interface AppIconProps {

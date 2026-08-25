@@ -14,7 +14,7 @@ import PublishWidget from "@/components/admin/widgets/PublishWidget"
 import WidgetCard from "@/components/admin/widgets/WidgetCard"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { GitBranch, Info } from "lucide-react"
 import { createProcessStep, updateProcessStep, toggleProcessStepPublished } from "../actions"
 import type { ProcessStep } from "@prisma/client"
@@ -91,7 +91,7 @@ export default function ProcessStepForm({ defaultValues }: { defaultValues?: Pro
               <FormField control={form.control} name="description" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description</FormLabel>
-                  <FormControl><Textarea {...field} rows={4} placeholder="Describe what happens in this step…" /></FormControl>
+                  <FormControl><RichTextEditor value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="Describe what happens in this step…" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />

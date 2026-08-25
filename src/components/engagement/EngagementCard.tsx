@@ -7,6 +7,7 @@ import { TiltCard } from "@/components/animations/TiltCard";
 import { useMotionEnabled } from "@/hooks/useReducedMotion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/components/theme/cn";
+import { RichText } from "@/components/common/RichText";
 
 export interface EngagementCardProps {
   optionNumber: string;
@@ -109,9 +110,10 @@ function EngagementCardInner({
       <h3 className="mt-5 font-heading text-xl font-bold tracking-tight text-foreground sm:text-2xl">
         {title}
       </h3>
-      <p className="mt-2 text-sm leading-relaxed text-foreground-muted sm:text-base">
-        {description}
-      </p>
+      <RichText
+        html={description}
+        className="mt-2 text-sm leading-relaxed text-foreground-muted sm:text-base"
+      />
 
       <ul className="mt-6 flex-1 space-y-3">
         {features.map((feature, i) => (

@@ -10,7 +10,7 @@ import FormGrid from "@/components/admin/forms/FormGrid"
 import LineListTextarea from "@/components/admin/forms/LineListTextarea"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { createEngagementModel, updateEngagementModel } from "../actions"
@@ -52,7 +52,7 @@ export default function EngagementModelForm({ defaultValues }: { defaultValues?:
             <FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
           )} />
           <FormField control={form.control} name="description" render={({ field }) => (
-            <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>
+            <FormItem><FormLabel>Description</FormLabel><FormControl><RichTextEditor value={field.value} onChange={field.onChange} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem>
           )} />
           <FormField control={form.control} name="features" render={({ field }) => (
             <FormItem><FormLabel>Features (one per line)</FormLabel><FormControl><LineListTextarea value={field.value} onChange={field.onChange} rows={4} /></FormControl><FormMessage /></FormItem>

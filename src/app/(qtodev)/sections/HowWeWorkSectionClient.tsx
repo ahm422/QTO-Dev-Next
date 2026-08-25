@@ -10,6 +10,7 @@ import { Reveal } from "@/components/animations/Reveal";
 import { TiltCard } from "@/components/animations/TiltCard";
 import { cn } from "@/components/theme/cn";
 import { useMotionEnabled } from "@/hooks/useReducedMotion";
+import { RichText } from "@/components/common/RichText";
 import type { WorkProcessStep } from "@/types/service";
 
 const SECTION_HEADING_ID = "how-we-work-heading";
@@ -46,9 +47,10 @@ function ProcessStepCard({
         <h3 className="font-heading text-lg font-semibold text-white md:text-xl">
           {step.title}
         </h3>
-        <p className="mt-3 flex-1 text-sm leading-relaxed text-white/80 md:text-base">
-          {step.description}
-        </p>
+        <RichText
+          html={step.description}
+          className="mt-3 flex-1 text-sm leading-relaxed text-white/80 md:text-base"
+        />
       </div>
     </div>
   );

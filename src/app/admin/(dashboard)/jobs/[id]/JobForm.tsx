@@ -7,7 +7,7 @@ import { toast } from "sonner"
 import { jobSchema, type JobInput } from "@/lib/validators/admin/job"
 import AdminForm from "@/components/admin/AdminForm"
 import FormGrid from "@/components/admin/forms/FormGrid"
-import RichTextEditor from "@/components/admin/RichTextEditor"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import LineListTextarea from "@/components/admin/forms/LineListTextarea"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -84,7 +84,7 @@ export default function JobForm({ defaultValues }: { defaultValues?: JobInput & 
             )} />
           </FormGrid>
           <FormField control={form.control} name="description" render={({ field }) => (
-            <FormItem><FormControl><RichTextEditor value={field.value ?? ""} onChange={field.onChange} label="Description" /></FormControl><FormMessage /></FormItem>
+            <FormItem><FormControl><RichTextEditor value={field.value ?? ""} onChange={field.onChange} onBlur={field.onBlur} label="Description" /></FormControl><FormMessage /></FormItem>
           )} />
           <FormField control={form.control} name="requirements" render={({ field }) => (
             <FormItem><FormLabel>Requirements (one per line)</FormLabel><FormControl><LineListTextarea value={field.value} onChange={field.onChange} rows={4} /></FormControl><FormMessage /></FormItem>

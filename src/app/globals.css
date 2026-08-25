@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@plugin "@tailwindcss/typography";
 
 /* Custom variant: dark mode when .dark is on an ancestor (e.g. html) */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -969,6 +970,29 @@ h6 {
 
 .scrollbar-none::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Edge */
+}
+
+/*
+ * Rich-text rendering for CMS `description` fields authored via
+ * RichTextEditor (bold/italic/underline/strikethrough, lists, links, inline
+ * code) — used by both the admin editor surface and the public-facing
+ * RichText component so formatted content looks correct in both places and
+ * in both themes.
+ */
+.prose-style {
+  @apply prose prose-sm md:prose-base max-w-none text-foreground-muted dark:prose-invert;
+  @apply prose-headings:text-foreground prose-strong:text-foreground;
+  @apply prose-a:text-primary prose-a:no-underline hover:prose-a:underline;
+  @apply prose-code:text-foreground prose-code:before:content-none prose-code:after:content-none;
+}
+
+/* RichTextEditor (admin) placeholder text — see @tiptap/extension-placeholder */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: var(--color-muted-foreground);
 }
 
 /* Utility: visually hide scrollbars but keep scroll behavior */

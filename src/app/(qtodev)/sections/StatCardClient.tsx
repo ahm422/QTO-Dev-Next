@@ -3,6 +3,7 @@
 import { AnimatedCounter } from "@/components/animations/AnimatedCounter";
 import { parseStatValue } from "@/lib/parseStatValue";
 import { cn } from "@/components/theme/cn";
+import { RichText } from "@/components/common/RichText";
 import type { StatsNumbersItem, StatsNumbersVariant } from "@/types/statsNumbers";
 
 const variantStyles: Record<
@@ -96,15 +97,14 @@ export function StatCardClient({
             item.value
           )}
         </p>
-        <p
+        <RichText
+          html={item.description}
           className={cn(
             "flex-1 leading-relaxed",
             compact ? "text-xs max-w-none" : "text-sm max-w-md",
             styles.description
           )}
-        >
-          {item.description}
-        </p>
+        />
       </div>
     </div>
   );
