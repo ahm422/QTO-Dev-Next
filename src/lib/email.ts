@@ -52,7 +52,7 @@ export async function sendReactEmail(input: SendReactEmailInput): Promise<void> 
   }
 
   const [html, text] = await Promise.all([
-    render(input.react),
+    render(input.react, { pretty: false }),
     render(input.react, { plainText: true }),
   ]);
 
