@@ -1,4 +1,4 @@
-import DOMPurify from "isomorphic-dompurify"
+import sanitize from "sanitize-html"
 
 /**
  * Tags/attributes allowed out of the admin RichTextEditor. Keep this in sync
@@ -22,10 +22,10 @@ const ALLOWED_ATTR = ["href", "target", "rel"]
  */
 export function sanitizeHtml(html: string): string {
   if (!html) return ""
-  return DOMPurify.sanitize(html, {
-    ALLOWED_TAGS,
-    ALLOWED_ATTR,
-    ALLOW_DATA_ATTR: false,
+  return sanitize(html, {
+    allowedTags: ALLOWED_TAGS,
+    allowedAttributes: { a: ALLOWED_ATTR },
+    allowedSchemes: ["http", "https", "mailto", "tel"],
   })
 }
 
