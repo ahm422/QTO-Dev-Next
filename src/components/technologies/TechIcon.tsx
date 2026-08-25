@@ -1,21 +1,84 @@
 "use client";
 
-import * as SimpleIcons from "@icons-pack/react-simple-icons";
+import {
+  SiNextdotjs, SiNextdotjsHex,
+  SiReact, SiReactHex,
+  SiTypescript, SiTypescriptHex,
+  SiNodedotjs, SiNodedotjsHex,
+  SiTailwindcss, SiTailwindcssHex,
+  SiVercel, SiVercelHex,
+  SiPostgresql, SiPostgresqlHex,
+  SiMongodb, SiMongodbHex,
+  SiDocker, SiDockerHex,
+  SiPrisma, SiPrismaHex,
+  SiRedis, SiRedisHex,
+  SiGraphql, SiGraphqlHex,
+  SiStripe, SiStripeHex,
+  SiDjango, SiDjangoHex,
+  SiCloudflare, SiCloudflareHex,
+  SiJenkins, SiJenkinsHex,
+  SiZod, SiZodHex,
+} from "@icons-pack/react-simple-icons";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { catalogByKey, catalogByName } from "@/lib/technologies/techCatalog";
 import { CUSTOM_TECH_ICONS } from "@/components/technologies/CustomTechIcons";
 
 type SiIcon = React.ComponentType<{ size?: number; color?: string; title?: string }>;
 
+/**
+ * Curated, statically-imported subset of `@icons-pack/react-simple-icons` matching
+ * `TECH_CATALOG` (see prisma/seed/data/techIconKeys.ts, the source of truth for seeded
+ * Technology rows). Explicit imports (vs. `import * as SimpleIcons`) let the bundler
+ * tree-shake the other ~3,200 icons out of the Worker bundle — see issue #408.
+ * Any iconKey outside this set falls back to the letter-avatar below, same as it always
+ * has for icon keys unresolvable via simple-icons.
+ */
+const SIMPLE_ICONS: Record<string, SiIcon> = {
+  nextdotjs: SiNextdotjs,
+  react: SiReact,
+  typescript: SiTypescript,
+  nodedotjs: SiNodedotjs,
+  tailwindcss: SiTailwindcss,
+  vercel: SiVercel,
+  postgresql: SiPostgresql,
+  mongodb: SiMongodb,
+  docker: SiDocker,
+  prisma: SiPrisma,
+  redis: SiRedis,
+  graphql: SiGraphql,
+  stripe: SiStripe,
+  django: SiDjango,
+  cloudflare: SiCloudflare,
+  jenkins: SiJenkins,
+  zod: SiZod,
+};
+
+const SIMPLE_ICON_HEX: Record<string, string> = {
+  nextdotjs: SiNextdotjsHex,
+  react: SiReactHex,
+  typescript: SiTypescriptHex,
+  nodedotjs: SiNodedotjsHex,
+  tailwindcss: SiTailwindcssHex,
+  vercel: SiVercelHex,
+  postgresql: SiPostgresqlHex,
+  mongodb: SiMongodbHex,
+  docker: SiDockerHex,
+  prisma: SiPrismaHex,
+  redis: SiRedisHex,
+  graphql: SiGraphqlHex,
+  stripe: SiStripeHex,
+  django: SiDjangoHex,
+  cloudflare: SiCloudflareHex,
+  jenkins: SiJenkinsHex,
+  zod: SiZodHex,
+};
+
 export function resolveSimpleIcon(iconKey: string): SiIcon | undefined {
-  const exportName = "Si" + iconKey.charAt(0).toUpperCase() + iconKey.slice(1);
-  return (SimpleIcons as Record<string, unknown>)[exportName] as SiIcon | undefined;
+  return SIMPLE_ICONS[iconKey];
 }
 
 export function resolveSimpleIconColor(iconKey: string): string | undefined {
-  const exportName = "Si" + iconKey.charAt(0).toUpperCase() + iconKey.slice(1) + "Hex";
-  const hex = (SimpleIcons as Record<string, unknown>)[exportName];
-  return typeof hex === "string" ? hex : undefined;
+  return SIMPLE_ICON_HEX[iconKey];
 }
 
 /** Brand color from techCatalog first, then simple-icons hex. */
