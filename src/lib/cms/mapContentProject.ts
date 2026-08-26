@@ -2,6 +2,7 @@ import type { ProjectWithRelations } from "@/lib/prisma/projectData";
 import { orderedTagValues, parseStringArray } from "@/lib/prisma/arrayFields";
 import type { Project } from "@/content/projects/types";
 import { DEFAULT_APPROACH_STEPS } from "@/content/projects/types";
+import { stripHtml } from "@/lib/sanitize-html";
 
 const defaultHero = {
   url: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600&h=900&fit=crop",
@@ -59,7 +60,7 @@ export function mapPrismaToContentProject(
   const title = item.title?.trim() || "Project case study";
   const subtitle =
     item.excerpt?.trim() ||
-    item.description?.trim() ||
+    (item.description?.trim() ? stripHtml(item.description) : "") ||
     "A product engagement focused on measurable outcomes and clear delivery.";
 
   return {

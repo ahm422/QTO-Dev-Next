@@ -3,6 +3,7 @@ import { Project } from "@/content/projects/types";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
+import { RichText } from "@/components/common/RichText";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import type { AppIconName } from "@/components/ui/shared/AppIcon";
 
@@ -53,9 +54,11 @@ export function ProjectOverviewChallenge({ project }: ProjectOverviewChallengePr
                 <h3 className="text-sm font-semibold uppercase tracking-wide text-foreground-muted">
                   Objective
                 </h3>
-                <p className="mt-3 text-base leading-8 text-foreground-muted md:text-lg">
-                  {project.about.overview}
-                </p>
+                <RichText
+                  html={project.about.overview}
+                  as="div"
+                  className="mt-3 text-base leading-8 text-foreground-muted md:text-lg"
+                />
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
