@@ -27,6 +27,7 @@ import {
   FileText,
   ClipboardList,
   Package,
+  IdCard,
 } from "lucide-react"
 
 export type SectionGroup = "main" | "content" | "settings"
@@ -52,6 +53,7 @@ export type PrismaModelName =
   | "ContactInfo"
   | "PageSection"
   | "SiteConfig"
+  | "Employee"
 
 export type ContentSection = {
   /** Stable id, e.g. "services" — matches API response keys. */
@@ -108,6 +110,7 @@ export const contentSections: ContentSection[] = [
   { key: "jobs",              label: "Jobs",              href: "/admin/jobs",              icon: Handshake,      group: "content", model: "Job",             countable: true,  publishable: true,  hasTimestamps: true },
   { key: "contact-info",      label: "Contact Info",      href: "/admin/contact-info",      icon: Phone,          group: "content", model: "ContactInfo",     countable: true,  publishable: true,  hasTimestamps: false },
   { key: "pages",             label: "Pages",             href: "/admin/pages",             icon: LayoutTemplate, group: "content", model: "PageSection",     countable: false, publishable: true,  hasTimestamps: false },
+  { key: "employees",         label: "Employees",         href: "/admin/employees",         icon: IdCard,         group: "content", model: "Employee",        countable: true,  publishable: false, hasTimestamps: true,  color: "#14B8A6", requiredRole: ["super_admin", "hr"] },
 
   // SUBMISSIONS (nav-only, no CRUD-managed model)
   { key: "contact-submissions", label: "Contact Inbox",    href: "/admin/contact-submissions", icon: Inbox,         group: "content", countable: false },

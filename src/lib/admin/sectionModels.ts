@@ -34,6 +34,7 @@ export const modelDelegates: Record<PrismaModelName, CountableDelegate> = {
   ContactInfo: prisma.contactInfo,
   PageSection: prisma.pageSection,
   SiteConfig: prisma.siteConfig,
+  Employee: prisma.employee,
 }
 
 /**
@@ -70,4 +71,5 @@ export const timeSeriesDelegates: Partial<Record<PrismaModelName, TimeSeriesDele
   WorkValue: prisma.workValue,
   TeamMember: prisma.teamMember,
   Job: prisma.job,
+  Employee: prisma.employee,
 }
