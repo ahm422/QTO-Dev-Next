@@ -1,4 +1,4 @@
-export const ADMIN_ROLES = ["super_admin", "admin", "editor"] as const;
+export const ADMIN_ROLES = ["super_admin", "admin", "editor", "hr"] as const;
 export type AdminRole = (typeof ADMIN_ROLES)[number];
 
 export function isAdminRole(v: string): v is AdminRole {
