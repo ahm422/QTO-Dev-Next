@@ -25,6 +25,7 @@ const ROLE_CONFIG: Record<string, { label: string; dotClass: string }> = {
   super_admin: { label: "Super Admin", dotClass: "bg-rose-500" },
   admin: { label: "Admin", dotClass: "bg-primary" },
   editor: { label: "Editor", dotClass: "bg-emerald-500" },
+  hr: { label: "HR", dotClass: "bg-amber-500" },
 };
 
 interface AdminUserFormUser {

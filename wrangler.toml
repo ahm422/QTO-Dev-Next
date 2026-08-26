@@ -28,6 +28,11 @@ binding = "IMAGES"
 [vars]
 EMAIL_FROM = "noreply@qtodev.com"
 EMAIL_ADMIN_TO = "admin@example.com"
+# Employee HR module (#414): QR codes and onboarding-email links are built
+# from this — wrong/missing value means every QR code points at the wrong
+# host. `.env`/`.env.example` only cover local dev; the deployed Worker
+# needs it declared here too.
+NEXT_PUBLIC_SITE_URL = "https://qtodev.com"
 
 #
 # Nightly token cleanup — fires at 03:00 UTC and calls GET /api/cron/cleanup-tokens
@@ -63,6 +68,7 @@ name = "qtodev-site-staging"
 [env.staging.vars]
 EMAIL_FROM = "staging@qtodev.com"
 EMAIL_ADMIN_TO = "admin@example.com"
+NEXT_PUBLIC_SITE_URL = "https://qtodev-site-staging.your-subdomain.workers.dev"
 
 [[env.staging.services]]
 binding = "WORKER_SELF_REFERENCE"
