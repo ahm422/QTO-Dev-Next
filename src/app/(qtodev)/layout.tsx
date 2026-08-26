@@ -1,6 +1,5 @@
 import { Navbar } from "@/components/common/Navbar";
 import { Footer } from "@/components/common/Footer";
-import { FloatingContactButton } from "@/components/common/FloatingContactButton";
 import MaintenanceBanner from "@/components/common/MaintenanceBanner";
 import { isWriteFrozen } from "@/lib/freeze-writes";
 // Client-only, ssr:false-wrapped loader — avoids affecting SSR/edge bundle size
@@ -23,7 +22,6 @@ export default function QTODevLayout({
       <Navbar />
       <main className="flex-grow">{children}</main>
       <Footer />
-      <FloatingContactButton />
       <PublicChatWidget />
     </div>
   );

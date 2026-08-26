@@ -117,8 +117,12 @@ chatRouter.post("/chat/stream", rateLimit, async (req, res) => {
   });
   res.flushHeaders();
 
+  // Note: listen on `res`, not `req` — `req`'s "close" fires once the request body has been
+  // fully read (which already happened in express.json() before this handler even runs), so it
+  // is not a signal the client disconnected. `res`'s "close" fires when the underlying
+  // connection actually terminates, which is what we want to detect here.
   const abortController = new AbortController();
-  req.on("close", () => abortController.abort());
+  res.on("close", () => abortController.abort());
 
   try {
     for await (const event of streamChatMessage(validated.sessionId, validated.message)) {

@@ -1,13 +1,13 @@
 import { NextRequest } from "next/server";
 import { apiError } from "@/lib/apiResponses";
 import { mockPublicChatProvider } from "@/lib/chat/mockChatProvider";
-import { isAsyncIterable } from "@/lib/chat/chatClient";
+import { getClientIp, sendBackendChatMessage } from "@/lib/chat/backendChatProvider";
 import type { ChatChunk } from "@/types/chat";
 
 /**
- * Public chat endpoint. Currently backed by the in-memory mock provider —
- * swap the provider used here for the real backend client once it lands;
- * the wire shape (see docs/chat-widget-contract.md) stays the same.
+ * Public chat endpoint. Greeting/quick-replies are static UI copy, served from the mock
+ * provider; message sending is proxied to the real `chatbot/` RAG service (see
+ * `src/lib/chat/backendChatProvider.ts`). Wire shape is documented in docs/chat-widget-contract.md.
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -38,7 +38,13 @@ export async function POST(request: NextRequest) {
     return apiError(400, "sessionId and text are required");
   }
 
-  const result = mockPublicChatProvider.sendMessage(body.sessionId, body.text);
+  const result = sendBackendChatMessage(
+    "public",
+    body.sessionId,
+    body.text,
+    request.signal,
+    getClientIp(request.headers)
+  );
 
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
@@ -46,12 +52,7 @@ export async function POST(request: NextRequest) {
       const write = (chunk: ChatChunk) => controller.enqueue(encoder.encode(`${JSON.stringify(chunk)}\n`));
 
       try {
-        if (isAsyncIterable(result)) {
-          for await (const chunk of result) write(chunk);
-        } else {
-          const message = await result;
-          write({ messageId: message.id, delta: message.content, done: true, structuredData: message.structuredData, quickReplies: message.quickReplies });
-        }
+        for await (const chunk of result) write(chunk);
       } finally {
         controller.close();
       }

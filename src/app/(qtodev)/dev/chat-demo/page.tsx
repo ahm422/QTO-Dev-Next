@@ -1,3 +1,5 @@
+"use client";
+
 import { notFound } from "next/navigation";
 import {
   ChatMessageBubble,
@@ -9,21 +11,23 @@ import {
 import type { ChatMessage, StructuredDataBlock } from "@/types/chat";
 
 // Manual render harness for the shared chat components (no Storybook in this repo).
-// Dev-only — 404s in production builds.
-export const dynamic = "force-dynamic";
+// Dev-only — 404s in production builds. Route segment config (e.g. `export const dynamic`)
+// isn't valid from a "use client" file, so the production gate below is a runtime check instead.
 
+// Fixed timestamps, not `new Date()` — this is a Client Component, so a call computed at
+// module scope would run once during SSR and again on hydration, producing a mismatch.
 const SAMPLE_MESSAGES: ChatMessage[] = [
   {
     id: "1",
     role: "assistant",
     content: "Hi! I'm the QTO Assistant. How can I help today?",
-    createdAt: new Date().toISOString(),
+    createdAt: "2025-01-01T09:00:00.000Z",
   },
   {
     id: "2",
     role: "user",
     content: "What services do you offer?",
-    createdAt: new Date().toISOString(),
+    createdAt: "2025-01-01T09:00:05.000Z",
   },
 ];
 

@@ -2,13 +2,14 @@ import { NextRequest } from "next/server";
 import { apiError } from "@/lib/apiResponses";
 import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { mockAdminChatProvider } from "@/lib/chat/mockChatProvider";
-import { isAsyncIterable } from "@/lib/chat/chatClient";
+import { getClientIp, sendBackendChatMessage } from "@/lib/chat/backendChatProvider";
 import type { ChatChunk } from "@/types/chat";
 
 /**
- * Admin ops chat endpoint. Auth-gated to logged-in admin sessions.
- * Currently backed by the in-memory mock provider — swap for the real
- * backend/ticket-system client once it lands; the wire shape stays the same.
+ * Admin ops chat endpoint. Auth-gated to logged-in admin sessions. Greeting/quick-replies are
+ * static UI copy, served from the mock provider; message sending is proxied to the real
+ * `chatbot/` RAG service (see `src/lib/chat/backendChatProvider.ts`) — there is no separate
+ * ticket-system-aware backend yet, so both widgets currently share the same RAG service.
  */
 export async function GET(request: NextRequest) {
   const { error } = await requireAdminSession();
@@ -45,7 +46,13 @@ export async function POST(request: NextRequest) {
     return apiError(400, "sessionId and text are required");
   }
 
-  const result = mockAdminChatProvider.sendMessage(body.sessionId, body.text);
+  const result = sendBackendChatMessage(
+    "admin",
+    body.sessionId,
+    body.text,
+    request.signal,
+    getClientIp(request.headers)
+  );
 
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
@@ -53,12 +60,7 @@ export async function POST(request: NextRequest) {
       const write = (chunk: ChatChunk) => controller.enqueue(encoder.encode(`${JSON.stringify(chunk)}\n`));
 
       try {
-        if (isAsyncIterable(result)) {
-          for await (const chunk of result) write(chunk);
-        } else {
-          const message = await result;
-          write({ messageId: message.id, delta: message.content, done: true, structuredData: message.structuredData, quickReplies: message.quickReplies });
-        }
+        for await (const chunk of result) write(chunk);
       } finally {
         controller.close();
       }

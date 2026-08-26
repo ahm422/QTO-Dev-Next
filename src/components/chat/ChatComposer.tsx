@@ -41,7 +41,7 @@ export function ChatComposer({ onSend, disabled, placeholder = "Type a messageâ€
         aria-label="Message"
         className={cn(
           "max-h-24 flex-1 resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground",
-          "placeholder:text-foreground-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+          "placeholder:text-foreground-muted transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
           "disabled:opacity-50"
         )}
       />
@@ -51,9 +51,11 @@ export function ChatComposer({ onSend, disabled, placeholder = "Type a messageâ€
         disabled={disabled || value.trim().length === 0}
         aria-label="Send message"
         className={cn(
-          "flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-white transition",
-          "hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-          "disabled:pointer-events-none disabled:opacity-40"
+          "flex size-9 shrink-0 items-center justify-center rounded-full text-white shadow-sm transition",
+          "bg-gradient-to-br from-primary via-primary to-orange-600",
+          "hover:scale-105 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+          "disabled:pointer-events-none disabled:opacity-40 disabled:hover:scale-100",
+          "motion-reduce:transition-none motion-reduce:hover:scale-100"
         )}
       >
         <AppIcon name="paper-plane" size="sm" />

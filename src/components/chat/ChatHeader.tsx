@@ -33,12 +33,12 @@ export function ChatHeader({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 rounded-t-2xl border-b border-border bg-primary px-4 py-3 text-white",
+        "flex items-center gap-3 rounded-t-2xl border-b border-black/10 bg-gradient-to-br from-primary via-primary to-orange-600 px-4 py-3 text-white",
         className
       )}
     >
       {avatar ?? (
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white/15">
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white/15 ring-2 ring-white/25">
           <AppIcon name="comment-dots" size="sm" className="text-white" />
         </div>
       )}
@@ -52,13 +52,17 @@ export function ChatHeader({
         </div>
         {subtitle && (
           <p className="mt-0.5 flex items-center gap-1.5 text-xs text-white/80">
-            <span
-              className={cn(
-                "size-1.5 rounded-full",
-                statusColor === "green" ? "bg-green-400" : "bg-white/50"
+            <span className="relative flex size-1.5" aria-hidden="true">
+              {statusColor === "green" && (
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-green-400 opacity-75 motion-reduce:hidden" />
               )}
-              aria-hidden="true"
-            />
+              <span
+                className={cn(
+                  "relative inline-flex size-1.5 rounded-full",
+                  statusColor === "green" ? "bg-green-400" : "bg-white/50"
+                )}
+              />
+            </span>
             {subtitle}
           </p>
         )}
