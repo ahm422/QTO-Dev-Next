@@ -61,11 +61,12 @@ export default async function PublicEmployeeCardPage({
         designation={card.designation}
         employeeCode={card.employeeCode}
         department={card.department}
+        team={card.team}
+        status="active"
         photoUrl={photoUrl}
         qrUrl={qrUrl}
       />
-      <div className="w-full max-w-xs rounded-2xl border border-border bg-card p-5 shadow-sm">
-        {detailRow("Team", card.team)}
+      <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-5 shadow-sm">
         {detailRow("Email", card.email)}
         {detailRow("Phone", card.phone)}
         {detailRow("CNIC", card.cnic)}
