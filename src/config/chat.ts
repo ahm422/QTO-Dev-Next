@@ -25,3 +25,18 @@ export function isPublicChatEnabled(): boolean {
 export function isAdminChatEnabled(): boolean {
   return isChatEnabled() && process.env.NEXT_PUBLIC_CHAT_ADMIN_ENABLED === "true";
 }
+
+/**
+ * Base URL of the standalone `chatbot/` RAG service (server-side only — never exposed to the
+ * client, the widgets only ever talk to `/api/chat` / `/api/admin/chat`). Defaults to the
+ * service's local dev port; override in production once the service has a real deployment.
+ */
+export function getChatbotServiceUrl(): string {
+  return process.env.CHATBOT_SERVICE_URL ?? "http://localhost:8787";
+}
+
+/** Timeout (ms) for a single request to the chatbot backend service. */
+export function getChatbotServiceTimeoutMs(): number {
+  const raw = Number(process.env.CHATBOT_SERVICE_TIMEOUT_MS);
+  return Number.isFinite(raw) && raw > 0 ? raw : 30_000;
+}

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isAsyncIterable, type ChatProvider } from "@/lib/chat/chatClient";
-import { useChatPersistence } from "@/hooks/useChatPersistence";
+import { useChatPersistence, type ChatLauncherPosition } from "@/hooks/useChatPersistence";
 import type { ChatMessage, ChatVariant, QuickReply } from "@/types/chat";
 
 function id(prefix: string): string {
@@ -30,6 +30,9 @@ export interface UseChatWidgetResult {
   unreadCount: number;
   greetingDismissed: boolean;
   dismissGreeting: () => void;
+  /** Dragged screen position of the launcher icon; `null` = use its default corner. */
+  position: ChatLauncherPosition | null;
+  setPosition: (position: ChatLauncherPosition) => void;
   sendMessage: (text: string) => void;
   sendQuickReply: (reply: QuickReply) => void;
   retryLastMessage: () => void;
@@ -209,6 +212,8 @@ export function useChatWidget({ provider, variant, enabled = true }: UseChatWidg
     unreadCount: persistence.unreadCount,
     greetingDismissed: persistence.dismissedGreetings.includes("hover-bubble"),
     dismissGreeting: () => persistence.dismissGreeting("hover-bubble"),
+    position: persistence.position,
+    setPosition: persistence.setPosition,
     sendMessage,
     sendQuickReply,
     retryLastMessage,

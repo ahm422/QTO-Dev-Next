@@ -4,6 +4,7 @@ import { cn } from "@/components/theme/cn";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { ChatTimestamp } from "@/components/chat/ChatTimestamp";
 import { ChatStructuredCard } from "@/components/chat/ChatStructuredCard";
+import { ChatMarkdown } from "@/components/chat/ChatMarkdown";
 import type { ChatMessage } from "@/types/chat";
 
 interface ChatMessageBubbleProps {
@@ -19,18 +20,25 @@ export function ChatMessageBubble({ message, className }: ChatMessageBubbleProps
     <div
       className={cn("flex w-full flex-col gap-1", isUser ? "items-end" : "items-start", className)}
     >
-      <div
-        className={cn(
-          "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap break-words",
-          isUser
-            ? "rounded-br-sm bg-primary text-white"
-            : "rounded-bl-sm border border-border bg-surface text-foreground"
+      <div className={cn("flex max-w-[90%] items-end gap-2", isUser ? "flex-row-reverse" : "flex-row")}>
+        {!isUser && (
+          <div className="mb-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-orange-600">
+            <AppIcon name="comment-dots" size="sm" className="!text-[11px] text-white" />
+          </div>
         )}
-      >
-        {message.content}
-        {message.pending && message.content.length === 0 && (
-          <span className="inline-block h-3 w-3 animate-pulse rounded-full bg-current opacity-50" />
-        )}
+        <div
+          className={cn(
+            "min-w-0 rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed break-words",
+            isUser
+              ? "rounded-br-sm bg-primary text-white whitespace-pre-wrap"
+              : "rounded-bl-sm border border-border bg-surface text-foreground"
+          )}
+        >
+          {isUser ? message.content : <ChatMarkdown content={message.content} />}
+          {message.pending && message.content.length === 0 && (
+            <span className="inline-block h-3 w-3 animate-pulse rounded-full bg-current opacity-50" />
+          )}
+        </div>
       </div>
 
       {message.attachments && message.attachments.length > 0 && (

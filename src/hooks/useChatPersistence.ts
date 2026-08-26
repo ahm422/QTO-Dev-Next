@@ -3,12 +3,19 @@
 import { useCallback, useState } from "react";
 import type { ChatVariant } from "@/types/chat";
 
+export interface ChatLauncherPosition {
+  x: number;
+  y: number;
+}
+
 interface PersistedChatState {
   sessionId: string;
   open: boolean;
   unreadCount: number;
   /** Ids of greeting bubbles the visitor has already dismissed, so they don't reappear. */
   dismissedGreetings: string[];
+  /** Dragged screen position of the launcher icon; `null` = use its default corner. */
+  position: ChatLauncherPosition | null;
 }
 
 const DEFAULT_STATE: PersistedChatState = {
@@ -16,6 +23,7 @@ const DEFAULT_STATE: PersistedChatState = {
   open: false,
   unreadCount: 0,
   dismissedGreetings: [],
+  position: null,
 };
 
 function storageKey(variant: ChatVariant): string {
@@ -38,6 +46,7 @@ function readState(variant: ChatVariant): PersistedChatState {
       open: parsed.open ?? false,
       unreadCount: parsed.unreadCount ?? 0,
       dismissedGreetings: parsed.dismissedGreetings ?? [],
+      position: parsed.position ?? null,
     };
   } catch {
     return { ...DEFAULT_STATE, sessionId: generateSessionId() };
@@ -88,8 +97,10 @@ export function useChatPersistence(variant: ChatVariant) {
     open: state.open,
     unreadCount: state.unreadCount,
     dismissedGreetings: state.dismissedGreetings,
+    position: state.position,
     setOpen: (open: boolean) => update({ open }),
     setUnreadCount: (unreadCount: number) => update({ unreadCount }),
+    setPosition: (position: ChatLauncherPosition) => update({ position }),
     dismissGreeting,
   };
 }

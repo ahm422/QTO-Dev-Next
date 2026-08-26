@@ -11,6 +11,9 @@ import { ChatComposer } from "@/components/chat/ChatComposer";
 import { ChatTypingIndicator } from "@/components/chat/ChatTypingIndicator";
 import type { ChatMessage, QuickReply } from "@/types/chat";
 
+/** `"contact"` swaps the body for `contactBody` (e.g. a lead-capture form) — same shell either way. */
+export type ChatPanelBodyMode = "chat" | "contact";
+
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -29,10 +32,18 @@ interface ChatPanelProps {
   header: ReactNode;
   footer?: ReactNode;
   contextBar?: ReactNode;
-  /** Desktop positioning/sizing classes; overridden by a full-screen sheet below the mobile breakpoint. */
+  /** Desktop sizing classes (width/height/rounding) — position comes from `anchorStyle` instead,
+   * so the panel can open next to wherever the (draggable) launcher currently is. Overridden by
+   * a full-screen sheet below the mobile breakpoint. */
   anchorClassName: string;
+  /** Desktop `top`/`left` pixel position, computed by the caller (see `launcherPosition.ts`). Ignored on mobile. */
+  anchorStyle?: { top: number; left: number };
   composerPlaceholder?: string;
   className?: string;
+  /** Defaults to `"chat"`. When `"contact"`, renders `contactBody` instead of messages+composer. */
+  bodyMode?: ChatPanelBodyMode;
+  /** Required when `bodyMode="contact"` — typically a compact lead-capture form. */
+  contactBody?: ReactNode;
 }
 
 /**
@@ -55,8 +66,11 @@ export function ChatPanel({
   footer,
   contextBar,
   anchorClassName,
+  anchorStyle,
   composerPlaceholder,
   className,
+  bodyMode = "chat",
+  contactBody,
 }: ChatPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -116,9 +130,10 @@ export function ChatPanel({
       role="dialog"
       aria-modal="true"
       aria-label={title}
+      style={!isMobile ? anchorStyle : undefined}
       className={cn(
-        "z-40 flex flex-col overflow-hidden border border-border bg-background text-foreground shadow-2xl",
-        isMobile ? "fixed inset-0 rounded-none" : cn("rounded-2xl", anchorClassName),
+        "fixed z-40 flex flex-col overflow-hidden border border-border bg-background text-foreground shadow-2xl ring-1 ring-black/[0.03] dark:ring-white/[0.04]",
+        isMobile ? "inset-0 rounded-none" : cn("rounded-2xl", anchorClassName),
         !reduceMotion && "animate-in fade-in slide-in-from-bottom-2 duration-200",
         className
       )}
@@ -126,35 +141,41 @@ export function ChatPanel({
       {header}
       {contextBar}
 
-      <div ref={listRef} aria-live="polite" className="flex-1 space-y-3 overflow-y-auto p-4">
-        {messages.map((message) => (
-          <ChatMessageBubble key={message.id} message={message} />
-        ))}
-        {isTyping && <ChatTypingIndicator />}
+      {bodyMode === "contact" ? (
+        <div className="flex-1 overflow-y-auto p-4">{contactBody}</div>
+      ) : (
+        <div ref={listRef} aria-live="polite" className="flex-1 space-y-3 overflow-y-auto p-4">
+          {messages.map((message) => (
+            <ChatMessageBubble key={message.id} message={message} />
+          ))}
+          {isTyping && <ChatTypingIndicator />}
 
-        {error && (
-          <div className="flex items-start gap-2 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-600 dark:text-red-400">
-            <AppIcon name="triangle-exclamation" size="sm" />
-            <div className="flex-1">
-              <p>{error}</p>
-              <button
-                type="button"
-                onClick={onRetry}
-                className="mt-1 inline-flex items-center gap-1 font-medium underline underline-offset-2"
-              >
-                <AppIcon name="rotate-right" size="sm" />
-                Retry
-              </button>
+          {error && (
+            <div className="flex items-start gap-2 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-600 dark:text-red-400">
+              <AppIcon name="triangle-exclamation" size="sm" />
+              <div className="flex-1">
+                <p>{error}</p>
+                <button
+                  type="button"
+                  onClick={onRetry}
+                  className="mt-1 inline-flex items-center gap-1 font-medium underline underline-offset-2"
+                >
+                  <AppIcon name="rotate-right" size="sm" />
+                  Retry
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {trailingQuickReplies.length > 0 && (
-          <ChatQuickReplies replies={trailingQuickReplies} onSelect={onQuickReply} />
-        )}
-      </div>
+          {trailingQuickReplies.length > 0 && (
+            <ChatQuickReplies replies={trailingQuickReplies} onSelect={onQuickReply} />
+          )}
+        </div>
+      )}
 
-      <ChatComposer onSend={onSend} disabled={isTyping} placeholder={composerPlaceholder} />
+      {bodyMode === "chat" && (
+        <ChatComposer onSend={onSend} disabled={isTyping} placeholder={composerPlaceholder} />
+      )}
 
       {footer}
     </div>
