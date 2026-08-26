@@ -6,10 +6,6 @@ import AdminHeader from "@/components/admin/AdminHeader"
 import { AdminThemeProvider } from "@/components/admin/AdminThemeProvider"
 import MaintenanceBanner from "@/components/common/MaintenanceBanner"
 import { isWriteFrozen } from "@/lib/freeze-writes"
-// Client-only, ssr:false-wrapped loader — avoids affecting SSR/edge bundle size
-// or blocking first paint. This layout only renders for authenticated admin
-// sessions (redirect below), so the widget never mounts on /admin/(auth)/* routes.
-import AdminChatWidget from "@/components/chat/admin/AdminChatWidgetLoader"
 
 export default async function AdminDashboardLayout({
   children,
@@ -41,7 +37,6 @@ export default async function AdminDashboardLayout({
         <AdminHeader userEmail={userEmail} userRole={userRole} />
         <main className="flex-1 p-4 lg:p-6">{children}</main>
       </div>
-      <AdminChatWidget userRole={userRole} />
     </AdminThemeProvider>
   )
 }
