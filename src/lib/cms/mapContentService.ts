@@ -9,6 +9,7 @@ import {
   type WebDevelopmentServiceData,
 } from "@/content/services/web-development";
 import { resolveMediaUrl } from "@/config/staticImages";
+import { stripHtml } from "@/lib/sanitize-html";
 
 const fallbackHero =
   "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=1600&h=1000&fit=crop";
@@ -33,7 +34,7 @@ export function mapPrismaToContentService(
   const description = row.description?.trim() || "";
   const lead =
     shortDescription ||
-    description ||
+    (description ? stripHtml(description) : "") ||
     "Premium web development and design services from QTO Dev.";
 
   return {

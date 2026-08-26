@@ -3,6 +3,7 @@ import { Project } from "@/content/projects/types";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
+import { RichText } from "@/components/common/RichText";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import type { AppIconName } from "@/components/ui/shared/AppIcon";
 
@@ -35,9 +36,11 @@ export function ProjectAbout({ project }: ProjectAboutProps) {
 
           <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-5 lg:gap-14">
             <div className="lg:col-span-3" data-reveal>
-              <p className="text-base leading-8 text-foreground-muted md:text-lg">
-                {project.about.overview}
-              </p>
+              <RichText
+                html={project.about.overview}
+                as="div"
+                className="text-base leading-8 text-foreground-muted md:text-lg"
+              />
 
               <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
                 {project.about.scope && (
