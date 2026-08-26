@@ -12,7 +12,7 @@ export function ArticleBody({ post }: ArticleBodyProps) {
   const keyTakeaways = extractKeyTakeaways(post.content, 4);
 
   return (
-    <div className="prose prose-slate max-w-none">
+    <div className="prose-style">
       {intro ? (
         <p className="text-lg leading-relaxed text-foreground-muted mb-8 font-medium">
           {intro}
