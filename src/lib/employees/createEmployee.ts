@@ -1,19 +1,76 @@
 import { prisma } from "@/lib/prisma";
 import type { Employee } from "@prisma/client";
+import { jsx } from "react/jsx-runtime";
 import type { EmployeeInput } from "@/lib/validators/employees/employee";
 import { generatePublicId } from "@/lib/employees/publicId";
 import { generateEmployeeQr } from "@/lib/employees/qr";
+import { isEmailConfigured, getEmailAddresses, sendReactEmail } from "@/lib/email";
+import { logApiError } from "@/lib/apiResponses";
+import { SITE_URL } from "@/lib/constants";
+import EmployeeWelcomeEmail from "@/emails/EmployeeWelcomeEmail";
+import HrOnboardingNotice from "@/emails/HrOnboardingNotice";
 
 interface CreateEmployeeOptions {
   createdBy?: string | null;
-  /** Bulk-import commit (Phase 06) passes true — one digest email replaces N per-row sends. */
+  /** Skip the welcome/HR-notice emails for this creation (e.g. scripted/seed creates). */
   suppressEmail?: boolean;
 }
 
+async function sendOnboardingEmails(employee: Employee, createdBy?: string | null) {
+  if (!isEmailConfigured()) return;
+  const addresses = getEmailAddresses();
+  if (!addresses) return;
+  const { from, adminTo } = addresses;
+
+  const cardUrl = `${SITE_URL}/employee/${employee.publicId}`;
+  const adminUrl = `${SITE_URL}/admin/employees/${employee.id}`;
+
+  const sends: Promise<void>[] = [];
+
+  if (employee.email) {
+    sends.push(
+      sendReactEmail({
+        from,
+        to: employee.email,
+        replyTo: adminTo,
+        subject: `Welcome, ${employee.name}!`,
+        react: jsx(EmployeeWelcomeEmail, {
+          name: employee.name,
+          employeeCode: employee.employeeCode,
+          designation: employee.designation,
+          department: employee.department,
+          cardUrl,
+        }),
+      }).catch((err) => logApiError("employees/create:welcome-email", err)),
+    );
+  }
+
+  const creator = createdBy
+    ? await prisma.adminUser.findUnique({ where: { id: createdBy }, select: { email: true } })
+    : null;
+
+  sends.push(
+    sendReactEmail({
+      from,
+      to: adminTo,
+      subject: `New employee: ${employee.name}`,
+      react: jsx(HrOnboardingNotice, {
+        name: employee.name,
+        employeeCode: employee.employeeCode,
+        department: employee.department,
+        createdByEmail: creator?.email,
+        adminUrl,
+      }),
+    }).catch((err) => logApiError("employees/create:hr-notice-email", err)),
+  );
+
+  await Promise.allSettled(sends);
+}
+
 /**
- * Shared employee-creation path used by the admin create API/form (Phase 03)
- * and, later, the bulk-import commit step (Phase 06) — keeping this in one
- * place is what lets suppressEmail be threaded through consistently.
+ * Shared employee-creation path used by both the admin create API route and
+ * the dashboard's createEmployee server action — one place to generate the
+ * publicId/QR and fire onboarding emails consistently.
  */
 export async function createEmployeeRecord(
   data: EmployeeInput,
@@ -34,10 +91,9 @@ export async function createEmployeeRecord(
     ? await prisma.employee.update({ where: { id: employee.id }, data: { qrKey } })
     : employee;
 
-  // TODO(#414 Phase 07): send EmployeeWelcomeEmail / HrOnboardingNotice here
-  // unless opts.suppressEmail — wired once src/emails/EmployeeWelcomeEmail.tsx
-  // and sendReactEmail plumbing for this feature land.
-  void opts.suppressEmail;
+  if (!opts.suppressEmail) {
+    await sendOnboardingEmails(finalEmployee, opts.createdBy);
+  }
 
   return finalEmployee;
 }
