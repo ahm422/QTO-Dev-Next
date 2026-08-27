@@ -65,8 +65,8 @@ Both modes refuse any non-`SELECT` statement at the code level regardless of mod
 │      sync-state.json       │
 │        hash compare        │
 └────────────────────────────┘
-      unchanged → skip
-               │  new / changed
+      unchanged → skip new / changed
+               │  
                ▼
 ┌────────────────────────────┐
 │           Chunk            │
