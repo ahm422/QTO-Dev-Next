@@ -6,6 +6,7 @@ import AdminHeader from "@/components/admin/AdminHeader"
 import { AdminThemeProvider } from "@/components/admin/AdminThemeProvider"
 import MaintenanceBanner from "@/components/common/MaintenanceBanner"
 import { isWriteFrozen } from "@/lib/freeze-writes"
+import { isAdminRole } from "@/lib/auth/roles"
 
 export default async function AdminDashboardLayout({
   children,
@@ -14,7 +15,10 @@ export default async function AdminDashboardLayout({
 }) {
   const session = await getServerSession()
   const role = session?.user?.role ?? ""
-  if (!["super_admin", "admin", "editor"].includes(role)) {
+  // Any known admin role (including hr, scoped to /admin/employees by
+  // isRoleAllowedForPath in middleware) reaches the dashboard shell —
+  // page-level checks handle finer-grained authorization from here.
+  if (!isAdminRole(role)) {
     redirect("/admin/unauthorized")
   }
 

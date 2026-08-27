@@ -47,6 +47,12 @@ const GA_SRC = "https://www.google-analytics.com";
 const GA_REGION1_SRC = "https://region1.google-analytics.com";
 const GA_ANALYTICS_SRC = "https://analytics.google.com";
 const GA_SSL_SRC = "https://ssl.google-analytics.com";
+// GTM fires a Microsoft Clarity tag at runtime; Cloudflare auto-injects its
+// own beacon.min.js on proxied requests (Web Analytics). Both load from
+// script-src and phone home via connect-src, so both need to be allowed.
+const CLARITY_SRC = "https://www.clarity.ms";
+const CF_INSIGHTS_SRC = "https://static.cloudflareinsights.com";
+const CF_INSIGHTS_CONNECT_SRC = "https://cloudflareinsights.com";
 
 const remotePatterns = [
   {
@@ -67,6 +73,8 @@ function buildGlobalCsp(): string {
   const scriptSrc = [
     IS_DEV ? "'self' 'unsafe-inline' 'unsafe-eval'" : "'self' 'unsafe-inline'",
     GTM_SRC,
+    CLARITY_SRC,
+    CF_INSIGHTS_SRC,
   ].join(" ");
   const imgSrc = [
     "'self'",
@@ -86,6 +94,8 @@ function buildGlobalCsp(): string {
     GA_REGION1_SRC,
     GA_ANALYTICS_SRC,
     GA_SSL_SRC,
+    CLARITY_SRC,
+    CF_INSIGHTS_CONNECT_SRC,
   ].join(" ");
   const r2PublicUrl = process.env.R2_PUBLIC_URL;
   let r2Origin = "";

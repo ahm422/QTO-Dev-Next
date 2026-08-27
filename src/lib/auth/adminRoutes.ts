@@ -1,6 +1,9 @@
 const ROUTE_RULES: { prefix: string; allowedRoles: string[] }[] = [
   { prefix: "/admin/users", allowedRoles: ["super_admin"] },
   { prefix: "/admin/audit-log", allowedRoles: ["super_admin"] },
+  // hr has no access to the general CMS content prefix below — it's scoped
+  // to the employee HR module only (#414).
+  { prefix: "/admin/employees", allowedRoles: ["super_admin", "hr"] },
   { prefix: "/admin", allowedRoles: ["super_admin", "admin", "editor"] },
 ];
 

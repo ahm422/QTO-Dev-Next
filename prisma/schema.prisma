@@ -568,6 +568,8 @@ model AdminUser {
 
   refreshTokens RefreshToken[]
   auditLogs     AuditLog[]
+  employees     Employee[]
+  importBatches ImportBatch[]
 
   @@map("admin_users")
 }
@@ -600,6 +602,79 @@ model PasswordResetToken {
 
   @@index([email])
   @@map("password_reset_tokens")
+}
+
+// ─── EMPLOYEE HR MODULE ──────────────────────────────────────────────────────
+model Employee {
+  id                       String    @id @default(uuid())
+  employeeCode             String    @unique @map("employee_code")
+  publicId                 String    @unique @map("public_id")
+  name                     String
+  designation              String?
+  department               String?
+  team                     String?
+  status                   String    @default("active") @map("status")
+  email                    String?
+  phone                    String?
+  cnic                     String    @unique
+  cnicIssueDate            DateTime? @map("cnic_issue_date")
+  cnicExpiryDate           DateTime? @map("cnic_expiry_date")
+  dob                      DateTime?
+  officeAddress            String?   @map("office_address")
+  emergencyContactName     String?   @map("emergency_contact_name")
+  emergencyContactPhone    String?   @map("emergency_contact_phone")
+  emergencyContactRelation String?   @map("emergency_contact_relation")
+  photoKey                 String?   @map("photo_key")
+  qrKey                    String?   @map("qr_key")
+  joiningDate              DateTime? @map("joining_date")
+  createdBy                String?   @map("created_by")
+  createdAt                DateTime  @default(now()) @map("created_at")
+  updatedAt                DateTime  @updatedAt @map("updated_at")
+
+  creator    AdminUser?  @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+  importRows ImportRow[]
+
+  @@index([status])
+  @@index([department])
+  @@index([publicId])
+  @@index([team])
+  @@map("employees")
+}
+
+model ImportBatch {
+  id           String   @id @default(uuid())
+  status       String   @default("processing")
+  fileKey      String   @map("file_key")
+  fileName     String?  @map("file_name")
+  errorMessage String?  @map("error_message")
+  createdBy    String?  @map("created_by")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  creator AdminUser?  @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+  rows    ImportRow[]
+
+  @@index([status])
+  @@map("import_batches")
+}
+
+model ImportRow {
+  id               String   @id @default(uuid())
+  batchId          String   @map("batch_id")
+  rawData          String   @map("raw_data")
+  mappedData       String?  @map("mapped_data")
+  status           String   @default("pending")
+  validationErrors String?  @map("validation_errors")
+  employeeId       String?  @map("employee_id")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  batch    ImportBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  employee Employee?   @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+
+  @@index([batchId])
+  @@index([status])
+  @@map("import_rows")
 }
 
 model AuditLog {

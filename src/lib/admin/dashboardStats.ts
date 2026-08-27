@@ -74,11 +74,19 @@ export async function getDashboardStats(): Promise<DashboardStatsResponse> {
     Promise.all(
       countableSections.map(async (section) => {
         const delegate = modelDelegates[section.model!]
-        const [count, published] = await Promise.all([
-          delegate.count(),
-          section.publishable ? delegate.count({ where: { isPublished: true } }) : Promise.resolve(null),
-        ])
-        return { key: section.key, count, published }
+        try {
+          const [count, published] = await Promise.all([
+            delegate.count(),
+            section.publishable ? delegate.count({ where: { isPublished: true } }) : Promise.resolve(null),
+          ])
+          return { key: section.key, count, published }
+        } catch (err) {
+          // A section's table can lag behind a migration (new model shipped
+          // but not yet applied to this DB). Don't let one bad section take
+          // the whole dashboard down — surface it as "no data" instead.
+          console.error(`[dashboardStats] count failed for section "${section.key}"`, err)
+          return { key: section.key, count: 0, published: null }
+        }
       })
     ),
     // Field-completeness signal: count blog posts missing key fields (no full-row loads).

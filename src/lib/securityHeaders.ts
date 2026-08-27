@@ -15,10 +15,17 @@ function buildR2ImgSrc(): string {
 
 const R2_IMG_SRC = buildR2ImgSrc();
 
+// Hosts GTM injects scripts from at runtime (GTM loader + tags it fires,
+// e.g. Microsoft Clarity) plus Cloudflare's own auto-injected beacon.
+const ANALYTICS_SCRIPT_HOSTS =
+  "https://www.googletagmanager.com https://www.clarity.ms https://static.cloudflareinsights.com";
+const ANALYTICS_CONNECT_HOSTS =
+  "https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://cloudflareinsights.com";
+
 function buildCsp(): string {
   const scriptSrc = IS_DEV
     ? "'self' 'unsafe-inline' 'unsafe-eval'"
-    : "'self' 'unsafe-inline'";
+    : `'self' 'unsafe-inline' ${ANALYTICS_SCRIPT_HOSTS}`;
 
   const directives = [
     "default-src 'self'",
@@ -26,7 +33,7 @@ function buildCsp(): string {
     "style-src 'self' 'unsafe-inline'",
     "font-src 'self' fonts.gstatic.com",
     `img-src 'self' data: blob: https://images.unsplash.com${R2_IMG_SRC}`,
-    "connect-src 'self'",
+    `connect-src 'self' ${ANALYTICS_CONNECT_HOSTS}`,
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",

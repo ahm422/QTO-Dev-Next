@@ -52,3 +52,7 @@ coverage/
 .wrangler
 .dev.vars*
 !.dev.vars.example
+
+# Local-only scratch (chatbot prototype + DB dumps)
+chatbot/
+*.sql

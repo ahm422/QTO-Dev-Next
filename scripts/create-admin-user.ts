@@ -8,7 +8,7 @@
  *   npm run admin:create-user -- --d1=staging --email=you@example.com
  *   npm run admin:create-user -- --d1=remote --email=you@example.com
  *
- * Valid roles: super_admin (default), admin, editor
+ * Valid roles: super_admin (default), admin, editor, hr
  *
  * Requires --d1=local|staging|remote (wrangler D1 bindings).
  */
@@ -21,6 +21,7 @@ import {
   initD1Target,
 } from "./migration/d1-target";
 import type { D1Target } from "./migration/cli";
+import { ADMIN_ROLES, type AdminRole } from "../src/lib/auth/roles";
 
 function loadEnvFile(path: string) {
   if (!existsSync(path)) return;
@@ -90,8 +91,11 @@ function prompt(question: string, hidden = false): Promise<string> {
   });
 }
 
-const VALID_ROLES = ["super_admin", "admin", "editor"] as const;
-type ValidRole = (typeof VALID_ROLES)[number];
+// Reused from src/lib/auth/roles.ts so this bootstrap script can't drift
+// from the app's actual role set (it did — "hr" was missing here until
+// this fix, see #414).
+const VALID_ROLES = ADMIN_ROLES;
+type ValidRole = AdminRole;
 
 async function resolveCredentials(): Promise<{
   email: string;
