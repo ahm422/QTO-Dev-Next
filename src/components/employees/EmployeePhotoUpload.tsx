@@ -12,6 +12,9 @@ interface EmployeePhotoUploadProps {
   /** R2 key (Employee.photoKey), not a URL — see #414 Phase 04. */
   value: string | null | undefined
   onChange: (key: string | null) => void
+  /** Fires with the freshly uploaded (or cleared) preview URL so a parent
+   * can show it in a live badge preview before the row is saved. */
+  onUploaded?: (url: string | null) => void
   /** Resolved preview URL for the current value, admin-side only. */
   initialUrl?: string | null
   label?: string
@@ -40,6 +43,7 @@ async function uploadFile(file: File): Promise<{ key: string; url?: string }> {
 export default function EmployeePhotoUpload({
   value,
   onChange,
+  onUploaded,
   initialUrl,
   label = "Photo",
   variant = "default",
@@ -54,6 +58,7 @@ export default function EmployeePhotoUpload({
       const { key, url } = await uploadFile(file)
       onChange(key)
       setPreviewUrl(url ?? null)
+      onUploaded?.(url ?? null)
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Upload failed")
     } finally {
@@ -71,6 +76,7 @@ export default function EmployeePhotoUpload({
     e?.stopPropagation()
     onChange(null)
     setPreviewUrl(null)
+    onUploaded?.(null)
   }
 
   if (variant === "avatar") {

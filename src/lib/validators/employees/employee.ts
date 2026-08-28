@@ -8,6 +8,9 @@ export const CNIC_REGEX = /^\d{5}-\d{7}-\d{1}$/;
 export const EMPLOYEE_STATUSES = ["active", "inactive", "terminated"] as const;
 export type EmployeeStatus = (typeof EMPLOYEE_STATUSES)[number];
 
+export const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"] as const;
+export type BloodGroup = (typeof BLOOD_GROUPS)[number];
+
 function isFutureDate(date: Date): boolean {
   const today = new Date();
   today.setHours(23, 59, 59, 999);
@@ -33,6 +36,11 @@ export const employeeBaseSchema = z.object({
   cnicIssueDate: z.coerce.date().optional().nullable(),
   cnicExpiryDate: z.coerce.date().optional().nullable(),
   dob: z.coerce.date().optional().nullable(),
+  bloodGroup: z
+    .union([z.enum(BLOOD_GROUPS), z.literal("")])
+    .optional()
+    .nullable()
+    .default(""),
   officeAddress: z.string().optional().default(""),
   emergencyContactName: z.string().optional().default(""),
   emergencyContactPhone: z.string().optional().default(""),

@@ -37,7 +37,6 @@ export default async function EmployeeFormPage({ params }: { params: Promise<{ i
       <EmployeeForm
         defaultValues={record}
         photoUrl={record.photoKey ? getPublicUrl(record.photoKey) : null}
-        qrUrl={record.qrKey ? getPublicUrl(record.qrKey) : null}
       />
     </div>
   )

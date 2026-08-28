@@ -2,8 +2,8 @@ import { notFound } from "next/navigation"
 import { headers } from "next/headers"
 import type { NextRequest } from "next/server"
 import { getPublicEmployeeCard } from "@/lib/employees/publicCard"
-import { getPublicUrl } from "@/lib/garage"
 import { checkRateLimit } from "@/lib/rateLimit"
+import { SITE_URL } from "@/lib/constants"
 import EmployeeCard from "@/components/employees/EmployeeCard"
 
 // No cache — a terminated/deactivated employee's card must stop resolving
@@ -11,16 +11,6 @@ import EmployeeCard from "@/components/employees/EmployeeCard"
 export const dynamic = "force-dynamic"
 
 const RATE_LIMIT = { limit: 30, windowSeconds: 300 } // 30 req / 5 min per IP
-
-function detailRow(label: string, value: string | null | undefined) {
-  if (!value) return null
-  return (
-    <div className="flex items-start justify-between gap-4 py-2 border-b border-border last:border-b-0">
-      <span className="text-sm text-muted-foreground shrink-0">{label}</span>
-      <span className="text-sm text-foreground text-right">{value}</span>
-    </div>
-  )
-}
 
 export default async function PublicEmployeeCardPage({
   params,
@@ -52,7 +42,7 @@ export default async function PublicEmployeeCardPage({
   if (!card) notFound()
 
   const photoUrl = card.photoKey ? `/api/employee-public/${card.publicId}/photo` : null
-  const qrUrl = card.qrKey ? getPublicUrl(card.qrKey) : null
+  const qrUrl = card.qrKey ? `/api/employee-public/${card.publicId}/qr` : null
 
   return (
     <main className="min-h-screen flex flex-col items-center gap-6 p-6 py-12">
@@ -65,16 +55,16 @@ export default async function PublicEmployeeCardPage({
         status="active"
         photoUrl={photoUrl}
         qrUrl={qrUrl}
+        publicUrl={`${SITE_URL.replace(/\/$/, "")}/employee/${card.publicId}`}
+        phone={card.phone}
+        officeAddress={card.officeAddress}
+        cnic={card.cnic}
+        bloodGroup={card.bloodGroup}
+        joiningDate={card.joiningDate}
+        emergencyContactName={card.emergencyContactName}
+        emergencyContactPhone={card.emergencyContactPhone}
+        emergencyContactRelation={card.emergencyContactRelation}
       />
-      <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-5 shadow-sm">
-        {detailRow("Email", card.email)}
-        {detailRow("Phone", card.phone)}
-        {detailRow("CNIC", card.cnic)}
-        {detailRow("Office Address", card.officeAddress)}
-        {detailRow("Emergency Contact", card.emergencyContactName)}
-        {detailRow("Emergency Phone", card.emergencyContactPhone)}
-        {detailRow("Relation", card.emergencyContactRelation)}
-      </div>
     </main>
   )
 }
