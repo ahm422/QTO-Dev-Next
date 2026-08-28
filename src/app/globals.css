@@ -994,7 +994,10 @@ h6 {
  * here; without this the body text keeps prose's default dark grey and is
  * nearly invisible on the dark admin surface.
  */
-[data-slot="rich-text-editor"] .tiptap {
+[data-slot="rich-text-editor"] .tiptap,
+[data-slot="rich-text-editor"] .tiptap.prose {
+  /* Both the normal and the `-invert` sets are mapped, so the surface stays
+     correct even if a caller (or a stale bundle) still applies prose-invert. */
   --tw-prose-body: var(--foreground);
   --tw-prose-headings: var(--foreground);
   --tw-prose-lead: var(--foreground);
@@ -1011,7 +1014,30 @@ h6 {
   --tw-prose-pre-bg: var(--muted);
   --tw-prose-th-borders: var(--border);
   --tw-prose-td-borders: var(--border);
+  --tw-prose-invert-body: var(--foreground);
+  --tw-prose-invert-headings: var(--foreground);
+  --tw-prose-invert-lead: var(--foreground);
+  --tw-prose-invert-links: var(--primary);
+  --tw-prose-invert-bold: var(--foreground);
+  --tw-prose-invert-counters: var(--muted-foreground);
+  --tw-prose-invert-bullets: var(--muted-foreground);
+  --tw-prose-invert-hr: var(--border);
+  --tw-prose-invert-quotes: var(--foreground);
+  --tw-prose-invert-quote-borders: var(--border);
+  --tw-prose-invert-captions: var(--muted-foreground);
+  --tw-prose-invert-code: var(--foreground);
+  --tw-prose-invert-pre-code: var(--foreground);
+  --tw-prose-invert-pre-bg: var(--muted);
+  --tw-prose-invert-th-borders: var(--border);
+  --tw-prose-invert-td-borders: var(--border);
   color: var(--foreground);
+}
+
+[data-slot="rich-text-editor"] .tiptap :where(p, li, blockquote, h1, h2, h3, h4, h5, h6, strong, em, code, a) {
+  color: inherit;
+}
+[data-slot="rich-text-editor"] .tiptap :where(a) {
+  color: var(--primary);
 }
 
 /* RichTextEditor (admin) placeholder text — see @tiptap/extension-placeholder */

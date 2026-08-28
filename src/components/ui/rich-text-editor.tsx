@@ -314,8 +314,14 @@ export function RichTextEditor({
     editable: !disabled,
     editorProps: {
       attributes: {
+        // Colors come from the `[data-slot="rich-text-editor"] .tiptap` rule in
+        // globals.css, which maps prose's `--tw-prose-*` vars to the admin
+        // theme tokens. We deliberately do NOT use `dark:prose-invert` here:
+        // the admin shell themes via `.admin-light`/`.admin-dark`, while the
+        // `dark:` variant keys off `.dark` on <html> (set from the OS theme),
+        // so the two can disagree and wash the text out.
         class: cn(
-          "prose prose-sm max-w-none dark:prose-invert focus:outline-none px-3 py-2",
+          "prose prose-sm max-w-none focus:outline-none px-3 py-2",
           minHeightClassName
         ),
       },

@@ -173,10 +173,10 @@ export default function EmployeeCard({
       )}
     >
       {/* Header band */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-primary/80 px-5 pt-5 pb-16 print:bg-white print:pb-4">
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-primary/80 px-5 pt-5 pb-5 print:bg-white print:pb-4">
         {/* decorative glints */}
         <div className="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full bg-white/15 blur-2xl print:hidden" />
-        <div className="pointer-events-none absolute -left-10 top-8 h-24 w-40 -rotate-12 bg-white/10 blur-xl print:hidden" />
+        <div className="pointer-events-none absolute -left-10 -bottom-12 h-24 w-40 -rotate-12 bg-white/10 blur-xl print:hidden" />
 
         <div className="relative flex items-start justify-between gap-2">
           <div className="flex items-center gap-2 text-primary-foreground print:text-black">
@@ -202,8 +202,8 @@ export default function EmployeeCard({
       </div>
 
       {/* Identity */}
-      <div className="flex flex-col items-center px-5 -mt-12">
-        <div className="size-28 shrink-0 overflow-hidden rounded-2xl bg-muted ring-4 ring-card shadow-lg print:ring-2 print:ring-black">
+      <div className="flex flex-col items-center px-5 pt-5">
+        <div className="relative size-28 shrink-0 overflow-hidden rounded-2xl bg-muted ring-4 ring-card shadow-lg outline outline-1 outline-primary/25 print:ring-2 print:ring-black print:outline-0">
           {photoUrl ? (
             <Image src={photoUrl} alt={name} width={112} height={112} className="h-full w-full object-cover" />
           ) : (
