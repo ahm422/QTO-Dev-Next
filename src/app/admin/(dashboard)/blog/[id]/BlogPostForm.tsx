@@ -9,7 +9,7 @@ import { blogPostSchema, type BlogPostInput } from "@/lib/validators/admin/blogP
 import AdminForm from "@/components/admin/AdminForm"
 import FormGrid from "@/components/admin/forms/FormGrid"
 import MediaUpload from "@/components/admin/MediaUpload"
-import RichTextEditor from "@/components/admin/RichTextEditor"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import LineListTextarea from "@/components/admin/forms/LineListTextarea"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -163,7 +163,7 @@ export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPo
           <FormField control={form.control} name="content" render={({ field }) => (
             <FormItem>
               <FormControl>
-                <RichTextEditor value={field.value ?? ""} onChange={field.onChange} label="Content" />
+                <RichTextEditor value={field.value ?? ""} onChange={field.onChange} onBlur={field.onBlur} label="Content" />
               </FormControl>
               <FormMessage />
             </FormItem>

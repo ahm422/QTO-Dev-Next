@@ -6,9 +6,12 @@ import StarterKit from "@tiptap/starter-kit"
 import Underline from "@tiptap/extension-underline"
 import Link from "@tiptap/extension-link"
 import Placeholder from "@tiptap/extension-placeholder"
-import { AlertCircle, Bold, Italic, Underline as UnderlineIcon, Strikethrough, List, ListOrdered, LinkIcon, Code, Undo2, Redo2, ChevronDown } from "lucide-react"
+import Image from "@tiptap/extension-image"
+import { toast } from "sonner"
+import { AlertCircle, Bold, Italic, Underline as UnderlineIcon, Strikethrough, List, ListOrdered, LinkIcon, Code, Undo2, Redo2, ChevronDown, Quote, Minus, ImageIcon, Loader2, Upload } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { uploadEditorImage } from "@/lib/admin/uploadEditorImage"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -107,6 +110,84 @@ function LinkButton({ editor }: { editor: Editor }) {
   )
 }
 
+function ImageButton({ editor }: { editor: Editor }) {
+  const [open, setOpen] = React.useState(false)
+  const [url, setUrl] = React.useState("")
+  const [uploading, setUploading] = React.useState(false)
+  const fileRef = React.useRef<HTMLInputElement>(null)
+
+  function insert(src: string) {
+    const trimmed = src.trim()
+    if (!trimmed) return
+    editor.chain().focus().setImage({ src: trimmed }).run()
+    setUrl("")
+    setOpen(false)
+  }
+
+  async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ""
+    if (!file) return
+    setUploading(true)
+    try {
+      insert(await uploadEditorImage(file))
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Image upload failed")
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <span>
+          <ToolbarButton onClick={() => setOpen(true)} disabled={uploading} label="Insert image">
+            {uploading ? <Loader2 className="size-4 animate-spin" /> : <ImageIcon className="size-4" />}
+          </ToolbarButton>
+        </span>
+      </PopoverTrigger>
+      <PopoverContent className="w-80 space-y-2" align="start">
+        <form
+          className="flex items-center gap-2"
+          onSubmit={(e) => {
+            e.preventDefault()
+            insert(url)
+          }}
+        >
+          <Input
+            autoFocus
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder="https://…/image.png"
+            className="h-8"
+          />
+          <Button type="submit" size="sm" disabled={!url.trim()}>
+            Add
+          </Button>
+        </form>
+        <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+          <span className="h-px flex-1 bg-border" />
+          or
+          <span className="h-px flex-1 bg-border" />
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="w-full gap-2"
+          disabled={uploading}
+          onClick={() => fileRef.current?.click()}
+        >
+          {uploading ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
+          {uploading ? "Uploading…" : "Upload image"}
+        </Button>
+        <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
+      </PopoverContent>
+    </Popover>
+  )
+}
+
 function Toolbar({ editor }: { editor: Editor }) {
   const activeStyle = BLOCK_STYLES.find((s) => s.isActive(editor)) ?? BLOCK_STYLES[0]
 
@@ -163,10 +244,17 @@ function Toolbar({ editor }: { editor: Editor }) {
       <ToolbarButton onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive("orderedList")} label="Numbered list">
         <ListOrdered className="size-4" />
       </ToolbarButton>
+      <ToolbarButton onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive("blockquote")} label="Blockquote">
+        <Quote className="size-4" />
+      </ToolbarButton>
+      <ToolbarButton onClick={() => editor.chain().focus().setHorizontalRule().run()} label="Horizontal rule">
+        <Minus className="size-4" />
+      </ToolbarButton>
 
       <Separator orientation="vertical" className="mx-1 h-5" />
 
       <LinkButton editor={editor} />
+      <ImageButton editor={editor} />
     </div>
   )
 }
@@ -216,14 +304,24 @@ export function RichTextEditor({
         autolink: true,
         HTMLAttributes: { rel: "noopener noreferrer nofollow", target: "_blank" },
       }),
+      Image.configure({
+        inline: false,
+        HTMLAttributes: { class: "rounded-md", loading: "lazy" },
+      }),
       Placeholder.configure({ placeholder: placeholder ?? "" }),
     ],
     content: value || "",
     editable: !disabled,
     editorProps: {
       attributes: {
+        // Colors come from the `[data-slot="rich-text-editor"] .tiptap` rule in
+        // globals.css, which maps prose's `--tw-prose-*` vars to the admin
+        // theme tokens. We deliberately do NOT use `dark:prose-invert` here:
+        // the admin shell themes via `.admin-light`/`.admin-dark`, while the
+        // `dark:` variant keys off `.dark` on <html> (set from the OS theme),
+        // so the two can disagree and wash the text out.
         class: cn(
-          "prose prose-sm max-w-none dark:prose-invert focus:outline-none px-3 py-2",
+          "prose prose-sm max-w-none focus:outline-none px-3 py-2",
           minHeightClassName
         ),
       },

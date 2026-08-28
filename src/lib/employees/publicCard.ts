@@ -3,9 +3,10 @@ import { prisma } from "@/lib/prisma";
 /**
  * Server-side allowlist projection for the unauthenticated public employee
  * card (#414 Phase 04, locked decision: full source allowlist — CNIC,
- * phone, office address, emergency contacts all render on this page).
- * Only these columns ever leave the query — never spread a full Employee
- * row into a public response.
+ * phone, office address, emergency contacts all render on this page;
+ * #416 adds blood group + joining date). DOB and CNIC issue/expiry dates
+ * are deliberately NOT here — admin-only. Only these columns ever leave the
+ * query — never spread a full Employee row into a public response.
  */
 const PUBLIC_CARD_SELECT = {
   publicId: true,
@@ -17,6 +18,7 @@ const PUBLIC_CARD_SELECT = {
   email: true,
   phone: true,
   cnic: true,
+  bloodGroup: true,
   officeAddress: true,
   emergencyContactName: true,
   emergencyContactPhone: true,
@@ -53,6 +55,7 @@ export async function getPublicEmployeeCard(publicId: string) {
     email: employee.email,
     phone: employee.phone,
     cnic: employee.cnic,
+    bloodGroup: employee.bloodGroup,
     officeAddress: employee.officeAddress,
     emergencyContactName: employee.emergencyContactName,
     emergencyContactPhone: employee.emergencyContactPhone,

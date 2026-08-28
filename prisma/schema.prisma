@@ -620,6 +620,7 @@ model Employee {
   cnicIssueDate            DateTime? @map("cnic_issue_date")
   cnicExpiryDate           DateTime? @map("cnic_expiry_date")
   dob                      DateTime?
+  bloodGroup               String?   @map("blood_group")
   officeAddress            String?   @map("office_address")
   emergencyContactName     String?   @map("emergency_contact_name")
   emergencyContactPhone    String?   @map("emergency_contact_phone")

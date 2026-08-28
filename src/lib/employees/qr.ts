@@ -1,9 +1,30 @@
 import QRCode from "qrcode";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { logApiError } from "@/lib/apiResponses";
+import { SITE_URL } from "@/lib/constants";
 
-function buildEmployeeCardUrl(publicId: string): string {
-  const site = process.env.NEXT_PUBLIC_SITE_URL!.replace(/\/$/, "");
+const LOOPBACK_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]", "::1", "0.0.0.0"]);
+
+/**
+ * Canonical public URL baked into an employee's QR PNG. Uses `SITE_URL`
+ * (`NEXT_PUBLIC_SITE_URL` with a `https://qtodev.com` fallback) rather than a
+ * bare `process.env.X!` — the old non-null assertion is what let
+ * `http://localhost:3000` get permanently encoded into prod QR codes (#416).
+ * In production a loopback host is a misconfiguration, so throw rather than
+ * mint a dead QR.
+ */
+export function buildEmployeeCardUrl(publicId: string): string {
+  const site = SITE_URL.replace(/\/$/, "");
+  const host = (() => {
+    try {
+      return new URL(site).hostname;
+    } catch {
+      return "";
+    }
+  })();
+  if (process.env.NODE_ENV === "production" && LOOPBACK_HOSTS.has(host)) {
+    throw new Error(`Refusing to build an employee QR URL for loopback host "${host}"`);
+  }
   return `${site}/employee/${publicId}`;
 }
 

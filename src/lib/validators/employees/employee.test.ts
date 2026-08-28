@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CNIC_REGEX, employeeSchema } from "@/lib/validators/employees/employee";
+import { BLOOD_GROUPS, CNIC_REGEX, employeeSchema } from "@/lib/validators/employees/employee";
 
 function baseInput(overrides: Record<string, unknown> = {}) {
   return {
@@ -66,5 +66,20 @@ describe("employeeSchema", () => {
   it("defaults status to active", () => {
     const result = employeeSchema.parse(baseInput());
     expect(result.status).toBe("active");
+  });
+
+  it("accepts every valid blood group", () => {
+    for (const group of BLOOD_GROUPS) {
+      expect(employeeSchema.safeParse(baseInput({ bloodGroup: group })).success).toBe(true);
+    }
+  });
+
+  it("accepts an empty blood group", () => {
+    expect(employeeSchema.safeParse(baseInput({ bloodGroup: "" })).success).toBe(true);
+  });
+
+  it("rejects an invalid blood group", () => {
+    expect(employeeSchema.safeParse(baseInput({ bloodGroup: "XYZ" })).success).toBe(false);
+    expect(employeeSchema.safeParse(baseInput({ bloodGroup: "a+" })).success).toBe(false);
   });
 });

@@ -10,7 +10,7 @@ import { parseMetadata } from "@/lib/metadata"
 import AdminForm from "@/components/admin/AdminForm"
 import FormGrid from "@/components/admin/forms/FormGrid"
 import MediaUpload from "@/components/admin/MediaUpload"
-import RichTextEditor from "@/components/admin/RichTextEditor"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -83,7 +83,7 @@ export default function AboutContentForm({ defaultValues, sectionParam }: { defa
             <FormItem><FormLabel>Subtitle</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
           )} />
           <FormField control={form.control} name="body" render={({ field }) => (
-            <FormItem><FormControl><RichTextEditor value={field.value ?? ""} onChange={field.onChange} label="Body" /></FormControl><FormMessage /></FormItem>
+            <FormItem><FormControl><RichTextEditor value={field.value ?? ""} onChange={field.onChange} onBlur={field.onBlur} label="Body" /></FormControl><FormMessage /></FormItem>
           )} />
           <FormField control={form.control} name="imageUrl" render={({ field }) => (
             <FormItem><FormControl><MediaUpload value={field.value ?? ""} onChange={field.onChange} label="Image" /></FormControl><FormMessage /></FormItem>
