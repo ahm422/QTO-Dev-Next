@@ -1,6 +1,19 @@
 import type { ReactNode } from "react"
 import Image from "next/image"
-import { BadgeCheck, ScanLine } from "lucide-react"
+import {
+  BadgeCheck,
+  ScanLine,
+  IdCard,
+  Droplet,
+  CalendarDays,
+  Fingerprint,
+  Cake,
+  Stamp,
+  Phone,
+  MapPin,
+  ShieldAlert,
+  type LucideIcon,
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { SITE_NAME } from "@/lib/constants"
 
@@ -63,23 +76,38 @@ function formatDate(value: Dateish): string | null {
 }
 
 function DetailRow({
+  icon: Icon,
   label,
   value,
   mono,
-  full,
+  wrap,
 }: {
+  icon: LucideIcon
   label: string
   value: ReactNode
   mono?: boolean
-  full?: boolean
+  wrap?: boolean
 }) {
   if (value === null || value === undefined || value === "") return null
   return (
-    <div className={cn("min-w-0", full && "col-span-2")}>
-      <dt className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</dt>
-      <dd className={cn("mt-0.5 break-words text-[11px] leading-snug text-foreground", mono && "font-mono tabular-nums")}>
-        {value}
-      </dd>
+    <div className="flex items-center gap-3 py-2">
+      <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary print:bg-white print:ring-1 print:ring-black print:text-black">
+        <Icon className="size-3.5" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-[9px] font-semibold uppercase tracking-[0.12em] text-muted-foreground print:text-black">
+          {label}
+        </span>
+        <span
+          className={cn(
+            "block text-[12px] font-medium leading-tight text-foreground print:text-black",
+            wrap ? "break-words" : "truncate",
+            mono && "font-mono tracking-tight",
+          )}
+        >
+          {value}
+        </span>
+      </span>
     </div>
   )
 }
@@ -138,22 +166,29 @@ export default function EmployeeCard({
     <div
       data-employee-badge
       className={cn(
-        "flex w-full max-w-[360px] flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-lg shadow-black/5",
-        "print:max-w-none print:rounded-none print:border print:border-black print:bg-white print:text-black print:shadow-none",
+        "flex w-full max-w-[360px] flex-col overflow-hidden rounded-[26px] bg-card text-card-foreground",
+        "ring-1 ring-black/5 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.28)]",
+        "print:max-w-none print:rounded-none print:bg-white print:text-black print:shadow-none print:ring-1 print:ring-black",
         className,
       )}
     >
       {/* Header band */}
-      <div className="relative bg-gradient-to-br from-primary to-primary/70 px-5 pt-4 pb-10 print:bg-white print:pb-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex items-center gap-1.5 text-primary-foreground/90 print:text-black">
-            <BadgeCheck className="h-3.5 w-3.5" />
-            <span className="text-[10px] font-semibold uppercase tracking-widest">{SITE_NAME} · Employee ID</span>
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-primary/80 px-5 pt-5 pb-16 print:bg-white print:pb-4">
+        {/* decorative glints */}
+        <div className="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full bg-white/15 blur-2xl print:hidden" />
+        <div className="pointer-events-none absolute -left-10 top-8 h-24 w-40 -rotate-12 bg-white/10 blur-xl print:hidden" />
+
+        <div className="relative flex items-start justify-between gap-2">
+          <div className="flex items-center gap-2 text-primary-foreground print:text-black">
+            <span className="flex size-6 items-center justify-center rounded-md bg-white/20 print:bg-white print:ring-1 print:ring-black">
+              <BadgeCheck className="size-3.5" />
+            </span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.18em]">{SITE_NAME}</span>
           </div>
           {status && (
             <span
               className={cn(
-                "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize backdrop-blur-sm print:ring-1 print:ring-black",
+                "shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide backdrop-blur-sm print:ring-1 print:ring-black",
                 statusStyle ?? "bg-white/20 text-primary-foreground",
               )}
             >
@@ -161,32 +196,37 @@ export default function EmployeeCard({
             </span>
           )}
         </div>
+        <p className="relative mt-1 text-[9px] font-semibold uppercase tracking-[0.32em] text-primary-foreground/70 print:text-black">
+          Employee Identification
+        </p>
       </div>
 
       {/* Identity */}
-      <div className="flex flex-col items-center px-5 -mt-8">
-        <div className="h-24 w-24 shrink-0 overflow-hidden rounded-full border-4 border-card bg-muted shadow-md print:border-black">
+      <div className="flex flex-col items-center px-5 -mt-12">
+        <div className="size-28 shrink-0 overflow-hidden rounded-2xl bg-muted ring-4 ring-card shadow-lg print:ring-2 print:ring-black">
           {photoUrl ? (
-            <Image src={photoUrl} alt={name} width={96} height={96} className="h-full w-full object-cover" />
+            <Image src={photoUrl} alt={name} width={112} height={112} className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-primary/10 text-2xl font-semibold text-primary print:bg-white print:text-black">
+            <div className="flex h-full w-full items-center justify-center bg-primary/10 text-3xl font-bold text-primary print:bg-white print:text-black">
               {initial}
             </div>
           )}
         </div>
 
-        <div className="mt-2.5 min-w-0 text-center">
-          <p className="truncate text-lg font-semibold leading-tight text-foreground">{name}</p>
-          {designation && <p className="truncate text-sm text-muted-foreground print:text-black">{designation}</p>}
+        <div className="mt-3 min-w-0 max-w-full text-center">
+          <p className="truncate text-xl font-bold tracking-tight text-foreground">{name}</p>
+          {designation && (
+            <p className="truncate text-[13px] font-semibold text-primary print:text-black">{designation}</p>
+          )}
           {(department || team) && (
             <div className="mt-2 flex flex-wrap items-center justify-center gap-1.5">
               {department && (
-                <span className="rounded-full bg-muted px-2.5 py-0.5 text-[11px] font-medium text-foreground print:ring-1 print:ring-black">
+                <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary print:ring-1 print:ring-black print:text-black">
                   {department}
                 </span>
               )}
               {team && (
-                <span className="rounded-full bg-muted px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground print:ring-1 print:ring-black">
+                <span className="rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:ring-1 print:ring-black print:text-black">
                   {team}
                 </span>
               )}
@@ -195,37 +235,48 @@ export default function EmployeeCard({
         </div>
       </div>
 
-      {/* Detail grid */}
-      <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2.5 px-5">
-        <DetailRow label="Employee ID" value={employeeCode} mono />
-        <DetailRow label="Blood Group" value={bloodGroup} mono />
-        <DetailRow label="Joining Date" value={formatDate(joiningDate)} />
-        <DetailRow label="CNIC" value={cnic} mono />
-        {admin && <DetailRow label="Date of Birth" value={formatDate(dob)} />}
-        {admin && <DetailRow label="CNIC Issued" value={formatDate(cnicIssueDate)} />}
-        <DetailRow label="Contact Number" value={phone} mono />
-        <DetailRow label="Company Address" value={officeAddress} full />
-        <DetailRow label="Emergency Contact" value={emergency || null} full />
+      {/* perforation-style divider */}
+      <div className="mx-5 mt-4 border-t border-dashed border-border" />
+
+      {/* Detail list — one field per line */}
+      <dl className="mt-1 divide-y divide-border/50 px-5">
+        <DetailRow icon={IdCard} label="Employee ID" value={employeeCode} mono />
+        <DetailRow icon={Droplet} label="Blood Group" value={bloodGroup} mono />
+        <DetailRow icon={CalendarDays} label="Joining Date" value={formatDate(joiningDate)} />
+        <DetailRow icon={Fingerprint} label="CNIC" value={cnic} mono />
+        {admin && <DetailRow icon={Cake} label="Date of Birth" value={formatDate(dob)} />}
+        {admin && <DetailRow icon={Stamp} label="CNIC Issued" value={formatDate(cnicIssueDate)} />}
+        <DetailRow icon={Phone} label="Contact Number" value={phone} mono />
+        <DetailRow icon={MapPin} label="Company Address" value={officeAddress} wrap />
+        <DetailRow icon={ShieldAlert} label="Emergency Contact" value={emergency || null} wrap />
       </dl>
 
       {/* QR footer */}
       {hasQr ? (
-        <div className="mt-4 flex flex-col items-center gap-2 border-t border-border bg-muted/20 px-5 py-4 print:border-black print:bg-white">
-          <div className="h-28 w-28 shrink-0 rounded-lg border border-border bg-white p-1.5 print:border-black">
+        <div className="mt-3 flex items-center gap-3 border-t border-border bg-muted/40 px-5 py-4 print:border-black print:bg-white">
+          <div className="size-[70px] shrink-0 rounded-xl bg-white p-1.5 ring-1 ring-black/10 print:ring-black">
             {qrNode ?? (
               // eslint-disable-next-line @next/next/no-img-element -- proxied QR route / opaque key, not an optimizable static asset
               <img src={qrUrl ?? undefined} alt="Employee QR code" className="h-full w-full object-contain" />
             )}
           </div>
-          <p className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground print:text-black">
-            <ScanLine className="h-3 w-3" />
-            Scan to view profile
-          </p>
-          {scanHost && <p className="text-[10px] text-muted-foreground print:text-black">{scanHost}</p>}
+          <div className="min-w-0 flex-1">
+            <p className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.14em] text-foreground print:text-black">
+              <ScanLine className="size-3.5 text-primary print:text-black" />
+              Scan to verify
+            </p>
+            <p className="mt-0.5 text-[10px] text-muted-foreground print:text-black">Opens this employee&apos;s live profile</p>
+            {scanHost && (
+              <p className="mt-0.5 truncate font-mono text-[10px] text-muted-foreground print:text-black">{scanHost}</p>
+            )}
+          </div>
         </div>
       ) : (
-        <div className="mt-4 pb-4" />
+        <div className="mt-3 pb-3" />
       )}
+
+      {/* base accent */}
+      <div className="h-1.5 w-full bg-gradient-to-r from-primary via-primary/50 to-primary print:hidden" />
     </div>
   )
 }
