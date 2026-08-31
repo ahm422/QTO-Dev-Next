@@ -1,7 +1,11 @@
 import { NextRequest } from "next/server"
 import { getCloudflareContext } from "@opennextjs/cloudflare"
-import { getPublicEmployeeCard } from "@/lib/employees/publicCard"
+import { getPublicCardAssets } from "@/lib/employees/publicCard"
 import { checkRateLimit, rateLimitExceededResponse } from "@/lib/rateLimit"
+
+// Shared, immutable-per-key R2 asset: browser + CDN may hold it, and a
+// conditional re-request gets a 304. Regenerating the QR writes a new key.
+const CACHE_CONTROL = "public, max-age=300, s-maxage=86400"
 
 /**
  * Streams an employee's QR PNG from R2 without exposing the underlying key or
@@ -21,8 +25,8 @@ export async function GET(
   if (!rateLimit.allowed) return rateLimitExceededResponse(rateLimit.retryAfterSeconds)
 
   const { publicId } = await params
-  const card = await getPublicEmployeeCard(publicId)
-  if (!card?.qrKey) {
+  const assets = await getPublicCardAssets(publicId)
+  if (!assets?.qrKey) {
     return new Response("Not Found", { status: 404 })
   }
 
@@ -34,12 +38,20 @@ export async function GET(
   }
   if (!env.MEDIA) return new Response("MEDIA binding not configured", { status: 503 })
 
-  const object = await env.MEDIA.get(card.qrKey)
+  // `onlyIf: request.headers` lets R2 evaluate If-None-Match itself; on a
+  // match it returns an R2Object with no `body`, which we turn into a 304.
+  const object = await env.MEDIA.get(assets.qrKey, { onlyIf: request.headers })
   if (!object) return new Response("Not Found", { status: 404 })
 
   const headers = new Headers()
-  headers.set("Content-Type", object.httpMetadata?.contentType ?? "image/png")
-  headers.set("Cache-Control", "private, max-age=300")
+  object.writeHttpMetadata(headers)
+  if (!headers.has("Content-Type")) headers.set("Content-Type", "image/png")
+  headers.set("Cache-Control", CACHE_CONTROL)
+  if (object.httpEtag) headers.set("ETag", object.httpEtag)
+
+  if (!("body" in object) || object.body === null) {
+    return new Response(null, { status: 304, headers })
+  }
 
   return new Response(object.body as ReadableStream, { status: 200, headers })
 }
