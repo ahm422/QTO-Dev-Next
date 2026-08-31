@@ -7,8 +7,9 @@ import Underline from "@tiptap/extension-underline"
 import Link from "@tiptap/extension-link"
 import Placeholder from "@tiptap/extension-placeholder"
 import Image from "@tiptap/extension-image"
+import { TableKit } from "@tiptap/extension-table"
 import { toast } from "sonner"
-import { AlertCircle, Bold, Italic, Underline as UnderlineIcon, Strikethrough, List, ListOrdered, LinkIcon, Code, Undo2, Redo2, ChevronDown, Quote, Minus, ImageIcon, Loader2, Upload } from "lucide-react"
+import { AlertCircle, Bold, Italic, Underline as UnderlineIcon, Strikethrough, List, ListOrdered, LinkIcon, Code, Undo2, Redo2, ChevronDown, Quote, Minus, ImageIcon, Loader2, Upload, Table2 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { useAdminTheme } from "@/components/admin/AdminThemeProvider"
@@ -30,6 +31,20 @@ const BLOCK_STYLES = [
   { label: "Heading 1", isActive: (editor: Editor) => editor.isActive("heading", { level: 1 }), run: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 1 }).run() },
   { label: "Heading 2", isActive: (editor: Editor) => editor.isActive("heading", { level: 2 }), run: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 2 }).run() },
   { label: "Heading 3", isActive: (editor: Editor) => editor.isActive("heading", { level: 3 }), run: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 3 }).run() },
+]
+
+/** Table toolbar actions. `insert` always runs; the rest need the caret to be
+ * inside a table (`inTableOnly`), matching how TipTap's table commands no-op
+ * outside one. */
+const TABLE_ACTIONS = [
+  { label: "Insert table", run: (editor: Editor) => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run() },
+  { label: "Add row above", inTableOnly: true, run: (editor: Editor) => editor.chain().focus().addRowBefore().run() },
+  { label: "Add row below", inTableOnly: true, run: (editor: Editor) => editor.chain().focus().addRowAfter().run() },
+  { label: "Delete row", inTableOnly: true, run: (editor: Editor) => editor.chain().focus().deleteRow().run() },
+  { label: "Add column left", inTableOnly: true, run: (editor: Editor) => editor.chain().focus().addColumnBefore().run() },
+  { label: "Add column right", inTableOnly: true, run: (editor: Editor) => editor.chain().focus().addColumnAfter().run() },
+  { label: "Delete column", inTableOnly: true, run: (editor: Editor) => editor.chain().focus().deleteColumn().run() },
+  { label: "Delete table", inTableOnly: true, run: (editor: Editor) => editor.chain().focus().deleteTable().run() },
 ]
 
 /**
@@ -202,6 +217,34 @@ function ImageButton({ editor }: { editor: Editor }) {
   )
 }
 
+function TableButton({ editor }: { editor: Editor }) {
+  const adminThemeClass = useAdminThemeClass()
+  const inTable = editor.isActive("table")
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <span>
+          <ToolbarButton onClick={() => {}} active={inTable} label="Table">
+            <Table2 className="size-4" />
+          </ToolbarButton>
+        </span>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className={adminThemeClass}>
+        {TABLE_ACTIONS.map((action) => (
+          <DropdownMenuItem
+            key={action.label}
+            disabled={action.inTableOnly && !inTable}
+            onSelect={() => action.run(editor)}
+          >
+            {action.label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
 function Toolbar({ editor }: { editor: Editor }) {
   const activeStyle = BLOCK_STYLES.find((s) => s.isActive(editor)) ?? BLOCK_STYLES[0]
   const adminThemeClass = useAdminThemeClass()
@@ -270,6 +313,7 @@ function Toolbar({ editor }: { editor: Editor }) {
 
       <LinkButton editor={editor} />
       <ImageButton editor={editor} />
+      <TableButton editor={editor} />
     </div>
   )
 }
@@ -317,12 +361,16 @@ export function RichTextEditor({
       Link.configure({
         openOnClick: false,
         autolink: true,
-        HTMLAttributes: { rel: "noopener noreferrer nofollow", target: "_blank" },
+        // Dofollow by default — link equity matters for our own + outbound
+        // links. `rel` is normalised again at render time (sanitize-html) so
+        // existing `nofollow` content is fixed and internal links open in-tab.
+        HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" },
       }),
       Image.configure({
         inline: false,
         HTMLAttributes: { class: "rounded-md", loading: "lazy" },
       }),
+      TableKit.configure({ table: { resizable: true } }),
       Placeholder.configure({ placeholder: placeholder ?? "" }),
     ],
     content: value || "",

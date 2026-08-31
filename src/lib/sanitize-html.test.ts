@@ -80,6 +80,31 @@ describe("sanitizeRichHtml — legacy long-form bodies", () => {
     expect(out).toContain("<td>a</td>")
   })
 
+  it("drops empty Word wrappers/nested layout tables but keeps genuinely empty data cells", () => {
+    const out = sanitizeRichHtml(
+      "<table><tbody>" +
+        "<tr><td><table class=\"MsoNormalTable\"><tbody><tr><td></td></tr></tbody></table>" +
+        "<p><span> </span></p><p><b><span>Header</span></b></p></td><td></td></tr>" +
+        "<tr><td>a</td><td>b</td></tr>" +
+        "</tbody></table>",
+    )
+    expect(out).not.toContain("MsoNormalTable") // empty nested layout table gone
+    expect(out).not.toMatch(/<p>\s*<\/p>/) // &nbsp;-only spacer gone
+    expect(out).toContain("Header")
+    // The real (empty) second column cell in row 1 is preserved so columns line up.
+    expect(out).toContain("<td></td>")
+  })
+
+  it("drops Word's near-black inline color so themed text stays visible, keeps real colors", () => {
+    for (const black of ["black", "windowtext", "#000", "#000000", "rgb(0,0,0)"]) {
+      const out = sanitizeRichHtml(`<span style="color:${black}">x</span>`)
+      expect(out).not.toMatch(/color\s*:/i)
+    }
+    // A genuine authored colour survives.
+    expect(sanitizeRichHtml('<span style="color:#e11d48">x</span>')).toContain("color:#e11d48")
+    expect(sanitizeRichHtml('<span style="color:#333">x</span>')).toContain("color:#333")
+  })
+
   it("still strips <script>, handlers and javascript: urls", () => {
     const out = sanitizeRichHtml(
       '<p onclick="x()">hi<script>alert(1)</script><a href="javascript:alert(1)">l</a></p>',
@@ -98,6 +123,74 @@ describe("sanitizeRichHtml — legacy long-form bodies", () => {
   it("still restricts <img> to https/relative", () => {
     expect(sanitizeRichHtml('<img src="http://evil/x.png">')).not.toContain("http://evil")
     expect(sanitizeRichHtml('<img src="https://pub-abc.r2.dev/x.png">')).toContain("https://pub-abc.r2.dev/x.png")
+  })
+})
+
+describe("anchor normalisation — dofollow + link styling", () => {
+  it("strips nofollow (and sponsored/ugc) from rel, keeps the rest", () => {
+    const out = sanitizeRichHtml(
+      '<a href="https://external.example/x" rel="noopener noreferrer nofollow sponsored ugc">x</a>',
+    )
+    expect(out).not.toContain("nofollow")
+    expect(out).not.toContain("sponsored")
+    expect(out).not.toContain("ugc")
+    expect(out).toContain("noopener")
+    expect(out).toContain("noreferrer")
+  })
+
+  it("keeps target=_blank external links secure with rel=noopener noreferrer", () => {
+    const out = sanitizeRichHtml('<a href="https://external.example/x">x</a>')
+    expect(out).toContain('target="_blank"')
+    expect(out).toMatch(/rel="[^"]*noopener[^"]*noreferrer[^"]*"/)
+    expect(out).not.toContain("nofollow")
+  })
+
+  it("makes internal links same-tab and dofollow (no target, no rel)", () => {
+    const rel = sanitizeRichHtml('<a href="/blogs/what-is-website-development">x</a>')
+    expect(rel).toContain('href="/blogs/what-is-website-development"')
+    expect(rel).not.toContain("target=")
+    expect(rel).not.toContain("rel=")
+
+    const abs = sanitizeRichHtml(
+      '<a href="https://qtodev.com/blogs/x" rel="nofollow" target="_blank">x</a>',
+    )
+    expect(abs).not.toContain("target=")
+    expect(abs).not.toContain("rel=")
+  })
+
+  it("leaves mailto:/tel: links untouched (no target/rel added)", () => {
+    const mail = sanitizeRichHtml('<a href="mailto:info@qto.dev">mail</a>')
+    expect(mail).toContain('href="mailto:info@qto.dev"')
+    expect(mail).not.toContain("target=")
+    expect(mail).not.toContain("rel=")
+  })
+
+  it("strips inline color / text-decoration from <a> but not from <span>", () => {
+    const out = sanitizeRichHtml(
+      '<p><span style="color:#333"><a href="https://external.example" style="color:inherit;text-decoration:none;font-weight:700">link</a></span></p>',
+    )
+    const anchor = out.slice(out.indexOf("<a"), out.indexOf("</a>"))
+    expect(anchor).not.toMatch(/color\s*:/)
+    expect(anchor).not.toMatch(/text-decoration\s*:/)
+    expect(anchor).toMatch(/font-weight\s*:\s*700/)
+    // colour on the wrapping span is still allowed elsewhere
+    expect(out).toContain('<span style="color:#333">')
+  })
+
+  it("normalises rel on the strict profile too", () => {
+    const out = sanitizeHtml('<a href="https://external.example" rel="nofollow">x</a>')
+    expect(out).not.toContain("nofollow")
+    expect(out).toContain("noopener")
+  })
+
+  it("keeps table structure + colspan/rowspan while normalising anchors inside", () => {
+    const out = sanitizeRichHtml(
+      '<table><thead><tr><th colspan="2">h</th></tr></thead><tbody><tr><td rowspan="2"><a href="/x" rel="nofollow">c</a></td></tr></tbody></table>',
+    )
+    expect(out).toContain('colspan="2"')
+    expect(out).toContain('rowspan="2"')
+    expect(out).toContain("<td")
+    expect(out).not.toContain("nofollow")
   })
 })
 
