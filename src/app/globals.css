@@ -987,12 +987,25 @@ h6 {
 }
 
 /*
- * RichTextEditor (admin) editing surface — drive Tailwind Typography colors
- * from the semantic theme tokens so authored content stays high-contrast in
- * BOTH admin themes. The admin shell wraps in .admin-light / .admin-dark
- * (not .dark), so the editor's `dark:prose-invert` variant never triggers
- * here; without this the body text keeps prose's default dark grey and is
- * nearly invisible on the dark admin surface.
+ * RichTextEditor (admin) — anchor BOTH the surface background and the text to
+ * the admin semantic tokens (which .admin-light / .admin-dark override), so
+ * the whole widget stays self-consistent no matter what `.dark`-keyed public
+ * palette the surrounding page resolves to. Without the explicit background,
+ * an admin-dark editor with no `.dark` on <html> renders near-white text on
+ * the page's near-white public background (#418).
+ */
+[data-slot="rich-text-editor"] {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/*
+ * Editing surface — drive Tailwind Typography colors from the semantic theme
+ * tokens so authored content stays high-contrast in BOTH admin themes. The
+ * admin shell wraps in .admin-light / .admin-dark (not .dark), so the editor's
+ * `dark:prose-invert` variant never triggers here; without this the body text
+ * keeps prose's default dark grey and is nearly invisible on the dark admin
+ * surface.
  */
 [data-slot="rich-text-editor"] .tiptap,
 [data-slot="rich-text-editor"] .tiptap.prose {
@@ -1040,13 +1053,28 @@ h6 {
   color: var(--primary);
 }
 
-/* RichTextEditor (admin) placeholder text — see @tiptap/extension-placeholder */
-.tiptap p.is-editor-empty:first-child::before {
+/* Theme-independent contrast floor: pins editor text to a concrete colour per
+   admin theme so a token regression or a stale prose-invert bundle can never
+   wash it out. Higher specificity than the `color: var(--foreground)` rule
+   above by design — keep these hexes in sync with `--foreground` in the
+   .admin-light / .admin-dark blocks. Links keep `--primary` via the rule
+   below; headings inherit this colour (same value as the token). */
+.admin-light [data-slot="rich-text-editor"] .tiptap {
+  color: #09090b;
+}
+.admin-dark [data-slot="rich-text-editor"] .tiptap {
+  color: #fafafa;
+}
+
+/* RichTextEditor (admin) placeholder text — see @tiptap/extension-placeholder.
+   Scoped to the editor and reading the admin `--muted-foreground` token (not
+   the public `--color-muted-foreground`) so it follows the admin theme. */
+[data-slot="rich-text-editor"] .tiptap p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   float: left;
   height: 0;
   pointer-events: none;
-  color: var(--color-muted-foreground);
+  color: var(--muted-foreground, #71717a);
 }
 
 /* Utility: visually hide scrollbars but keep scroll behavior */

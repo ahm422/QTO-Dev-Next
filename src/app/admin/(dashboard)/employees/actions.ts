@@ -1,11 +1,13 @@
 "use server"
 
+import { revalidateTag } from "next/cache"
 import { requireServerAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { persistD1Bookmark } from "@/lib/d1/session"
 import { employeeSchema, employeeBaseSchema, type EmployeeInput } from "@/lib/validators/employees/employee"
 import { createEmployeeRecord } from "@/lib/employees/createEmployee"
 import { generateEmployeeQr } from "@/lib/employees/qr"
+import { EMPLOYEE_PUBLIC_CARD_TAG } from "@/lib/employees/publicCard"
 
 const EMPLOYEE_ROLES = ["super_admin", "hr"] as const
 
@@ -42,6 +44,9 @@ export async function updateEmployee(
     }
   }
 
+  // Drop the public image-proxy asset cache so a status / photo / QR change
+  // (incl. a deactivation) is reflected within the freshness window.
+  revalidateTag(EMPLOYEE_PUBLIC_CARD_TAG, "max")
   await persistD1Bookmark()
   return { success: true }
 }
@@ -49,5 +54,6 @@ export async function updateEmployee(
 export async function deleteEmployee(id: string) {
   await requireEmployeeDeleteAction()
   await prisma.employee.delete({ where: { id } })
+  revalidateTag(EMPLOYEE_PUBLIC_CARD_TAG, "max")
   await persistD1Bookmark()
 }

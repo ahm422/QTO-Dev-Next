@@ -22,12 +22,18 @@ export default async function PublicEmployeeCardPage({
   // checkRateLimit only reads `.headers.get(...)` off its `request` param,
   // so the read-only Headers from next/headers() satisfies it here — Server
   // Components don't get a NextRequest.
+  // Rate-limit check and the card read don't depend on each other — run them
+  // together so a scan isn't paying for two serial round-trips. The card is
+  // simply discarded if the request is rate-limited.
   const requestLike = { headers: await headers() } as unknown as NextRequest
-  const rateLimit = await checkRateLimit({
-    request: requestLike,
-    routeKey: "employee-public-card",
-    config: RATE_LIMIT,
-  })
+  const [rateLimit, card] = await Promise.all([
+    checkRateLimit({
+      request: requestLike,
+      routeKey: "employee-public-card",
+      config: RATE_LIMIT,
+    }),
+    getPublicEmployeeCard(publicId),
+  ])
   if (!rateLimit.allowed) {
     return (
       <main className="min-h-screen flex items-center justify-center p-6">
@@ -36,7 +42,6 @@ export default async function PublicEmployeeCardPage({
     )
   }
 
-  const card = await getPublicEmployeeCard(publicId)
   // Identical response whether publicId is unknown or the employee is
   // inactive/terminated — one code path, no branch that leaks which.
   if (!card) notFound()

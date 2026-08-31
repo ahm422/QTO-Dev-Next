@@ -1,5 +1,4 @@
 import type { ReactNode } from "react"
-import Image from "next/image"
 import {
   BadgeCheck,
   ScanLine,
@@ -205,7 +204,16 @@ export default function EmployeeCard({
       <div className="flex flex-col items-center px-5 pt-5">
         <div className="relative size-28 shrink-0 overflow-hidden rounded-2xl bg-muted ring-4 ring-card shadow-lg outline outline-1 outline-primary/25 print:ring-2 print:ring-black print:outline-0">
           {photoUrl ? (
-            <Image src={photoUrl} alt={name} width={112} height={112} className="h-full w-full object-cover" />
+            // eslint-disable-next-line @next/next/no-img-element -- photoUrl is either the access-controlled proxy route (public page) or a direct R2 URL (admin preview); neither is an optimizable static asset, and routing it through next/image stalls on the Cloudflare runtime (#418)
+            <img
+              src={photoUrl}
+              alt={name}
+              width={112}
+              height={112}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover"
+            />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-primary/10 text-3xl font-bold text-primary print:bg-white print:text-black">
               {initial}
@@ -253,8 +261,8 @@ export default function EmployeeCard({
 
       {/* QR footer */}
       {hasQr ? (
-        <div className="mt-3 flex items-center gap-3 border-t border-border bg-muted/40 px-5 py-4 print:border-black print:bg-white">
-          <div className="size-[70px] shrink-0 rounded-xl bg-white p-1.5 ring-1 ring-black/10 print:ring-black">
+        <div className="mt-3 flex items-center gap-4 border-t border-border bg-muted/40 px-5 py-4 print:border-black print:bg-white">
+          <div className="size-[120px] shrink-0 rounded-xl bg-white p-2 ring-1 ring-black/10 print:ring-black">
             {qrNode ?? (
               // eslint-disable-next-line @next/next/no-img-element -- proxied QR route / opaque key, not an optimizable static asset
               <img src={qrUrl ?? undefined} alt="Employee QR code" className="h-full w-full object-contain" />

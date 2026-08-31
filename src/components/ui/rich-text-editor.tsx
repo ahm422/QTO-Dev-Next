@@ -11,6 +11,7 @@ import { toast } from "sonner"
 import { AlertCircle, Bold, Italic, Underline as UnderlineIcon, Strikethrough, List, ListOrdered, LinkIcon, Code, Undo2, Redo2, ChevronDown, Quote, Minus, ImageIcon, Loader2, Upload } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { useAdminTheme } from "@/components/admin/AdminThemeProvider"
 import { uploadEditorImage } from "@/lib/admin/uploadEditorImage"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -30,6 +31,17 @@ const BLOCK_STYLES = [
   { label: "Heading 2", isActive: (editor: Editor) => editor.isActive("heading", { level: 2 }), run: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 2 }).run() },
   { label: "Heading 3", isActive: (editor: Editor) => editor.isActive("heading", { level: 3 }), run: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 3 }).run() },
 ]
+
+/**
+ * The editor's DropdownMenu / Popover content portals to `document.body`,
+ * outside the `.admin-light` / `.admin-dark` wrapper, so its `--popover*` /
+ * `--foreground` tokens would fall back to the public-site palette and go
+ * unreadable. Re-applying the current admin theme class on the portaled
+ * content re-anchors those tokens regardless of `.dark` on <html> (#418).
+ */
+function useAdminThemeClass() {
+  return useAdminTheme().theme === "dark" ? "admin-dark" : "admin-light"
+}
 
 function ToolbarButton({
   onClick,
@@ -64,6 +76,7 @@ function ToolbarButton({
 function LinkButton({ editor }: { editor: Editor }) {
   const [open, setOpen] = React.useState(false)
   const [url, setUrl] = React.useState("")
+  const adminThemeClass = useAdminThemeClass()
 
   return (
     <Popover
@@ -80,7 +93,7 @@ function LinkButton({ editor }: { editor: Editor }) {
           </ToolbarButton>
         </span>
       </PopoverTrigger>
-      <PopoverContent className="w-72" align="start">
+      <PopoverContent className={cn(adminThemeClass, "w-72")} align="start">
         <form
           className="flex items-center gap-2"
           onSubmit={(e) => {
@@ -115,6 +128,7 @@ function ImageButton({ editor }: { editor: Editor }) {
   const [url, setUrl] = React.useState("")
   const [uploading, setUploading] = React.useState(false)
   const fileRef = React.useRef<HTMLInputElement>(null)
+  const adminThemeClass = useAdminThemeClass()
 
   function insert(src: string) {
     const trimmed = src.trim()
@@ -147,7 +161,7 @@ function ImageButton({ editor }: { editor: Editor }) {
           </ToolbarButton>
         </span>
       </PopoverTrigger>
-      <PopoverContent className="w-80 space-y-2" align="start">
+      <PopoverContent className={cn(adminThemeClass, "w-80 space-y-2")} align="start">
         <form
           className="flex items-center gap-2"
           onSubmit={(e) => {
@@ -190,6 +204,7 @@ function ImageButton({ editor }: { editor: Editor }) {
 
 function Toolbar({ editor }: { editor: Editor }) {
   const activeStyle = BLOCK_STYLES.find((s) => s.isActive(editor)) ?? BLOCK_STYLES[0]
+  const adminThemeClass = useAdminThemeClass()
 
   return (
     <div className="flex flex-wrap items-center gap-0.5 border-b border-input bg-muted/30 px-1.5 py-1">
@@ -209,7 +224,7 @@ function Toolbar({ editor }: { editor: Editor }) {
             <ChevronDown className="size-3.5 opacity-60" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
+        <DropdownMenuContent align="start" className={adminThemeClass}>
           {BLOCK_STYLES.map((style) => (
             <DropdownMenuItem key={style.label} onSelect={() => style.run(editor)}>
               {style.label}
@@ -352,7 +367,7 @@ export function RichTextEditor({
   return (
     <div className="w-full">
       {label && (
-        <Label htmlFor={editorId} className="block text-foreground mb-1">
+        <Label htmlFor={editorId} className="block text-[var(--foreground)] mb-1">
           {label}
           {required && <span className="text-destructive ml-0.5">*</span>}
         </Label>
@@ -363,11 +378,13 @@ export function RichTextEditor({
         {...rest}
         id={editorId}
         className={cn(
-          "flex w-full flex-col rounded-md border border-input bg-transparent shadow-xs transition-[color,box-shadow]",
+          // Background + text color are pinned to the admin tokens in
+          // globals.css ([data-slot="rich-text-editor"]) so the widget can't
+          // inherit a mismatched `.dark`-keyed public palette (#418).
+          "flex w-full flex-col rounded-md border border-input shadow-xs transition-[color,box-shadow]",
           "focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50",
           "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
           disabled && "cursor-not-allowed opacity-50",
-          "dark:bg-input/30",
           className
         )}
       >
