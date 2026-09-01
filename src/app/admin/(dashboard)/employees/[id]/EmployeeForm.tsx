@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { User, Building2, Phone, IdCard, ShieldAlert, Eye, RefreshCw } from "lucide-react"
+import { User, Building2, Phone, IdCard, ShieldAlert, Eye } from "lucide-react"
 import { formResolver } from "@/lib/admin/formResolver"
 import {
   employeeSchema,
@@ -21,7 +21,6 @@ import EmployeePhotoUpload from "@/components/employees/EmployeePhotoUpload"
 import EmployeeCard from "@/components/employees/EmployeeCard"
 import EmployeeQrPreview from "@/components/employees/EmployeeQrPreview"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -47,7 +46,6 @@ export default function EmployeeForm({
   const isEdit = !!defaultValues?.id
 
   const [livePhotoUrl, setLivePhotoUrl] = useState<string | null>(photoUrl ?? null)
-  const [regenerating, setRegenerating] = useState(false)
 
   const form = useForm<EmployeeInput>({
     resolver: formResolver(employeeSchema),
@@ -102,22 +100,6 @@ export default function EmployeeForm({
       router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
-    }
-  }
-
-  async function regenerateQr() {
-    if (!defaultValues?.id) return
-    setRegenerating(true)
-    try {
-      const res = await fetch(`/api/admin/employees/${defaultValues.id}/qr/regenerate`, { method: "POST" })
-      const json = (await res.json().catch(() => ({}))) as { error?: string }
-      if (!res.ok) throw new Error(json.error ?? "Regeneration failed")
-      toast.success("QR code regenerated")
-      router.refresh()
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Regeneration failed")
-    } finally {
-      setRegenerating(false)
     }
   }
 
@@ -289,22 +271,10 @@ export default function EmployeeForm({
                 qrNode={publicUrl ? <EmployeeQrPreview url={publicUrl} /> : undefined}
               />
             </div>
-            {isEdit && (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="w-full gap-2"
-                onClick={regenerateQr}
-                disabled={regenerating}
-              >
-                <RefreshCw className={regenerating ? "h-3.5 w-3.5 animate-spin" : "h-3.5 w-3.5"} />
-                {regenerating ? "Regenerating…" : "Regenerate QR code"}
-              </Button>
-            )}
             <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
-              This is the printable ID badge and the public QR-scan page. The preview QR is live;
-              the stored PNG refreshes on save or via “Regenerate”.
+              This is the printable ID badge and the public QR-scan page. The QR points at the
+              employee’s permanent public URL and never changes once minted, so a printed card
+              stays valid.
             </p>
           </div>
         </div>

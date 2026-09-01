@@ -22,11 +22,7 @@ export async function createEmployee(data: EmployeeInput) {
   return { success: true, id: employee.id }
 }
 
-export async function updateEmployee(
-  id: string,
-  data: Partial<EmployeeInput>,
-  opts: { regenerateQr?: boolean } = {},
-) {
+export async function updateEmployee(id: string, data: Partial<EmployeeInput>) {
   await requireEmployeeAction()
   const parsed = employeeBaseSchema.partial().parse(data)
   const employee = await prisma.employee.update({
@@ -35,11 +31,12 @@ export async function updateEmployee(
     select: { id: true, publicId: true, qrKey: true },
   })
 
-  // Backfill / refresh the QR: on first save it may never have been minted,
-  // and older rows carry a QR baked with a stale (localhost) URL (#416).
-  if (opts.regenerateQr || !employee.qrKey) {
+  // First-mint backfill only: a row that has never had a QR gets one now. An
+  // existing QR is never re-minted — it is printed on physical employee cards
+  // and must stay byte-stable for the life of the card.
+  if (!employee.qrKey) {
     const { qrKey } = await generateEmployeeQr(employee.id, employee.publicId)
-    if (qrKey && qrKey !== employee.qrKey) {
+    if (qrKey) {
       await prisma.employee.update({ where: { id }, data: { qrKey } })
     }
   }
