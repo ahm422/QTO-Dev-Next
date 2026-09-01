@@ -4,6 +4,7 @@ import type { AboutPageContent } from "@/lib/cms/mappers";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Card } from "@/components/ui/card";
+import { RichText } from "@/components/common/RichText";
 import { Reveal } from "@/components/animations/Reveal";
 import { aboutPageConfig } from "@/config/aboutPage";
 type AboutPageConfigType = typeof aboutPageConfig;
@@ -63,9 +64,10 @@ export function MissionVisionSectionClient({
                 <h3 className="text-xl font-heading font-bold text-foreground mb-4">
                   Our Mission
                 </h3>
-                <p className="text-lg text-foreground-muted leading-relaxed flex-1">
-                  {content.mission}
-                </p>
+                <RichText
+                  html={content.mission}
+                  className="text-lg text-foreground-muted leading-relaxed flex-1"
+                />
               </Card>
             </div>
             <div data-reveal>
@@ -80,9 +82,10 @@ export function MissionVisionSectionClient({
                 <h3 className="text-xl font-heading font-bold text-foreground mb-4">
                   Our Vision
                 </h3>
-                <p className="text-lg text-foreground-muted leading-relaxed flex-1">
-                  {content.vision}
-                </p>
+                <RichText
+                  html={content.vision}
+                  className="text-lg text-foreground-muted leading-relaxed flex-1"
+                />
               </Card>
             </div>
           </div>

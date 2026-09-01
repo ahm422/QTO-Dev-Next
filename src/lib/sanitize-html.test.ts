@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest"
-import { sanitizeHtml, sanitizeRichHtml, isHtmlBody, stripHtml } from "./sanitize-html"
+import {
+  sanitizeHtml,
+  sanitizeRichHtml,
+  isHtmlBody,
+  stripHtml,
+  linkifyPlainText,
+  linkifyHtml,
+} from "./sanitize-html"
 
 describe("sanitizeHtml — images", () => {
   it("keeps an https <img> with src/alt/width/height/loading", () => {
@@ -191,6 +198,101 @@ describe("anchor normalisation — dofollow + link styling", () => {
     expect(out).toContain('rowspan="2"')
     expect(out).toContain("<td")
     expect(out).not.toContain("nofollow")
+  })
+})
+
+describe("linkifyPlainText", () => {
+  it("wraps a bare https:// URL in an anchor", () => {
+    const out = linkifyPlainText("visit https://example.com now")
+    expect(out).toBe('visit <a href="https://example.com">https://example.com</a> now')
+  })
+
+  it("gives a www. host an https:// href", () => {
+    const out = linkifyPlainText("see www.example.com")
+    expect(out).toBe('see <a href="https://www.example.com">www.example.com</a>')
+  })
+
+  it("keeps trailing sentence punctuation outside the anchor", () => {
+    const out = linkifyPlainText("read https://example.com/page.")
+    expect(out).toBe(
+      'read <a href="https://example.com/page">https://example.com/page</a>.',
+    )
+  })
+
+  it("HTML-escapes the surrounding text", () => {
+    const out = linkifyPlainText("a < b & c https://example.com")
+    expect(out).toBe(
+      'a &lt; b &amp; c <a href="https://example.com">https://example.com</a>',
+    )
+  })
+
+  it("returns escaped text unchanged when there is no URL", () => {
+    expect(linkifyPlainText('Tom & Jerry <best>')).toBe("Tom &amp; Jerry &lt;best&gt;")
+    expect(linkifyPlainText("")).toBe("")
+  })
+
+  it("normalises to a secure dofollow external link once sanitised", () => {
+    const out = sanitizeHtml(linkifyPlainText("visit https://external.example for more"))
+    expect(out).toContain('href="https://external.example"')
+    expect(out).toContain('target="_blank"')
+    expect(out).toMatch(/rel="[^"]*noopener[^"]*noreferrer[^"]*"/)
+    expect(out).not.toContain("nofollow")
+  })
+})
+
+describe("linkifyHtml — bare URLs typed into the editor", () => {
+  it("wraps a bare URL sitting in a <p> text node", () => {
+    const out = linkifyHtml("<p>QTO DEV https://qtoerp.com creates experiences</p>")
+    expect(out).toBe(
+      '<p>QTO DEV <a href="https://qtoerp.com">https://qtoerp.com</a> creates experiences</p>',
+    )
+  })
+
+  it("gives a www. host an https:// href", () => {
+    expect(linkifyHtml("<p>see www.example.com</p>")).toBe(
+      '<p>see <a href="https://www.example.com">www.example.com</a></p>',
+    )
+  })
+
+  it("keeps trailing punctuation outside the anchor", () => {
+    expect(linkifyHtml("<p>read https://example.com/page.</p>")).toBe(
+      '<p>read <a href="https://example.com/page">https://example.com/page</a>.</p>',
+    )
+  })
+
+  it("leaves a URL that is already inside an <a> untouched", () => {
+    const input = '<p><a href="https://example.com">https://example.com</a></p>'
+    expect(linkifyHtml(input)).toBe(input)
+  })
+
+  it("does not touch a URL that only appears in an attribute", () => {
+    const input = '<p><a href="https://example.com">click here</a></p>'
+    expect(linkifyHtml(input)).toBe(input)
+  })
+
+  it("does not double-escape existing entities in the text node", () => {
+    expect(linkifyHtml("<p>Tom &amp; Jerry https://example.com</p>")).toBe(
+      '<p>Tom &amp; Jerry <a href="https://example.com">https://example.com</a></p>',
+    )
+  })
+
+  it("is a no-op when there is no URL", () => {
+    expect(linkifyHtml("<p>just some prose</p>")).toBe("<p>just some prose</p>")
+  })
+
+  it("normalises to a secure dofollow external link once sanitised", () => {
+    const out = sanitizeHtml(linkifyHtml("<p>QTO DEV https://qtoerp.com rocks</p>"))
+    expect(out).toContain('href="https://qtoerp.com"')
+    expect(out).toContain('target="_blank"')
+    expect(out).toMatch(/rel="[^"]*noopener[^"]*noreferrer[^"]*"/)
+    expect(out).not.toContain("nofollow")
+  })
+
+  it("keeps an internal bare URL dofollow and same-tab once sanitised", () => {
+    const out = sanitizeHtml(linkifyHtml("<p>more at https://qtodev.com/about here</p>"))
+    expect(out).toContain('href="https://qtodev.com/about"')
+    expect(out).not.toContain("target=")
+    expect(out).not.toContain("rel=")
   })
 })
 

@@ -22,7 +22,7 @@ export default function PrivacyPage() {
 
       <section className="py-16">
         <Container size="sm">
-          <article className="prose prose-lg max-w-none text-foreground-muted">
+          <article className="prose-style prose-lg max-w-none">
             <h2 className="text-2xl font-bold mt-8 mb-4">Introduction</h2>
             <p>
               QTO Development ("we", "our", or "us") operates the qtodev.com website (the

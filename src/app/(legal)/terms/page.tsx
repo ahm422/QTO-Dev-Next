@@ -22,7 +22,7 @@ export default function TermsPage() {
 
       <section className="py-16">
         <Container size="sm">
-          <article className="prose prose-lg max-w-none text-foreground-muted">
+          <article className="prose-style prose-lg max-w-none">
             <h2 className="text-2xl font-bold mt-8 mb-4">Agreement to Terms</h2>
             <p>
               By accessing and using this website, you accept and agree to be bound by the terms
