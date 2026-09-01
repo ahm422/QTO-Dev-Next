@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Reveal } from "@/components/animations/Reveal";
 import { AppIcon, type AppIconName } from "@/components/ui/shared/AppIcon";
 import { cn } from "@/components/theme/cn";
-import { isHtmlBody, sanitizeHtml } from "@/lib/sanitize-html";
+import { RichText } from "@/components/common/RichText";
 import type { Product } from "@/types/product";
 
 const MODULE_ICONS = ["chart-line", "users", "cart-shopping", "link"] as const;
@@ -107,16 +107,10 @@ export function ProductSectionClient({
 
               {product.description && (
                 <div className="max-w-3xl">
-                  {isHtmlBody(product.description) ? (
-                    <div
-                      className="prose-style text-base md:text-lg leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.description) }}
-                    />
-                  ) : (
-                    <p className="text-base md:text-lg text-foreground-muted leading-relaxed">
-                      {product.description}
-                    </p>
-                  )}
+                  <RichText
+                    html={product.description}
+                    className="text-base md:text-lg leading-relaxed text-foreground-muted"
+                  />
                 </div>
               )}
 

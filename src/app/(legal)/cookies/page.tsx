@@ -22,7 +22,7 @@ export default function CookiesPage() {
 
       <section className="py-16">
         <Container size="sm">
-          <article className="prose prose-lg max-w-none text-foreground-muted">
+          <article className="prose-style prose-lg max-w-none">
             <h2 className="text-2xl font-bold mt-8 mb-4">What are Cookies?</h2>
             <p>
               Cookies are small text files that are placed on your computer by websites that you

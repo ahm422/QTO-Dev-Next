@@ -219,6 +219,88 @@ export function isHtmlBody(body: string): boolean {
   return /<[a-z][\s\S]*>/i.test(body)
 }
 
+const HTML_ESCAPES: Record<string, string> = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+}
+
+function escapeHtml(text: string): string {
+  return text.replace(/[&<>"']/g, (char) => HTML_ESCAPES[char])
+}
+
+/** Matches a bare `http(s)://…` or `www.…` run up to the next whitespace/`<`. */
+const BARE_URL = /(https?:\/\/[^\s<]+|www\.[^\s<]+)/gi
+
+/**
+ * Turns one matched bare-URL run into an `<a>`. Trailing sentence punctuation is
+ * kept outside the anchor and `www.` hosts get an `https://` href. `escape`
+ * controls whether the visible label/trailing text is HTML-escaped: `true` when
+ * the surrounding string is plain text, `false` when it is already an HTML text
+ * node (the editor has escaped it) so we don't double-escape.
+ */
+function wrapBareUrl(raw: string, escape: boolean): string {
+  let url = raw
+  let trailing = ""
+  const trailingMatch = url.match(/[.,;:!?)\]}'"]+$/)
+  if (trailingMatch) {
+    trailing = url.slice(url.length - trailingMatch[0].length)
+    url = url.slice(0, url.length - trailingMatch[0].length)
+  }
+  const href = url.toLowerCase().startsWith("www.") ? `https://${url}` : url
+  const label = escape ? escapeHtml(url) : url
+  const trail = escape ? escapeHtml(trailing) : trailing
+  return `<a href="${escapeHtml(href)}">${label}</a>${trail}`
+}
+
+/**
+ * Wraps bare `http(s)://…` / `www.…` URLs in an otherwise plain-text string with
+ * `<a>` tags, HTML-escaping everything else. Used by `<RichText>` for legacy
+ * plain-text `description` rows so authored URLs become styled, clickable links
+ * without a data migration. The result is still passed through `sanitizeHtml`,
+ * which owns rel/target/dofollow normalisation (see `transformAnchor`). Trailing
+ * sentence punctuation is kept outside the anchor; `www.` hosts get an `https://`
+ * href.
+ */
+export function linkifyPlainText(text: string): string {
+  if (!text) return ""
+  const urlPattern = new RegExp(BARE_URL.source, "gi")
+  let result = ""
+  let lastIndex = 0
+  let match: RegExpExecArray | null
+  while ((match = urlPattern.exec(text)) !== null) {
+    result += escapeHtml(text.slice(lastIndex, match.index))
+    result += wrapBareUrl(match[0], true)
+    lastIndex = match.index + match[0].length
+  }
+  result += escapeHtml(text.slice(lastIndex))
+  return result
+}
+
+/**
+ * Linkifies bare URLs that sit in the *text nodes* of an HTML string — i.e.
+ * content authored in `RichTextEditor` where the user typed a URL but never
+ * pressed the toolbar Link button. URLs already inside an `<a>` (or anywhere in
+ * a tag) are left untouched. The result is still passed through `sanitizeHtml`,
+ * which owns rel/target/dofollow normalisation and brand styling, so a typed
+ * URL renders identically to one added via the Link button.
+ */
+export function linkifyHtml(html: string): string {
+  if (!html || !/(https?:\/\/|www\.)/i.test(html)) return html
+  let anchorDepth = 0
+  return html.replace(/<[^>]+>|[^<]+/g, (token) => {
+    if (token[0] === "<") {
+      if (/^<a[\s>]/i.test(token)) anchorDepth++
+      else if (/^<\/a\s*>/i.test(token)) anchorDepth = Math.max(0, anchorDepth - 1)
+      return token
+    }
+    if (anchorDepth > 0) return token
+    return token.replace(new RegExp(BARE_URL.source, "gi"), (m) => wrapBareUrl(m, false))
+  })
+}
+
 /**
  * Strips markup down to plain text — for contexts that need a plain string
  * (SEO/meta descriptions, card previews, search matching) even when the
