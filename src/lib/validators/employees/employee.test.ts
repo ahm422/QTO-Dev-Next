@@ -56,6 +56,37 @@ describe("employeeSchema", () => {
     expect(result.success).toBe(false);
   });
 
+  it("treats empty-string date inputs as null (optional dates)", () => {
+    const r = employeeSchema.safeParse(
+      baseInput({ dob: "", joiningDate: "", cnicIssueDate: "", cnicExpiryDate: "" }),
+    );
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect(r.data.dob).toBeNull();
+      expect(r.data.joiningDate).toBeNull();
+      expect(r.data.cnicIssueDate).toBeNull();
+      expect(r.data.cnicExpiryDate).toBeNull();
+    }
+  });
+
+  it("still parses real date strings to Date", () => {
+    const r = employeeSchema.safeParse(baseInput({ joiningDate: "2024-01-15" }));
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.joiningDate).toBeInstanceOf(Date);
+  });
+
+  it("still enforces cross-field date rules when both dates are set", () => {
+    const r = employeeSchema.safeParse(
+      baseInput({ cnicIssueDate: "2020-01-01", cnicExpiryDate: "2019-01-01" }),
+    );
+    expect(r.success).toBe(false);
+  });
+
+  it("accepts a partial form where dates were typed then cleared", () => {
+    const r = employeeSchema.safeParse(baseInput({ dob: "", cnicExpiryDate: "" }));
+    expect(r.success).toBe(true);
+  });
+
   it("accepts cnicExpiryDate on or after cnicIssueDate", () => {
     const result = employeeSchema.safeParse(
       baseInput({ cnicIssueDate: "2020-01-01", cnicExpiryDate: "2020-01-01" }),

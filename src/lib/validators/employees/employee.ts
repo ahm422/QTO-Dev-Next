@@ -17,6 +17,15 @@ function isFutureDate(date: Date): boolean {
   return date.getTime() > today.getTime();
 }
 
+// An empty <input type="date"> submits "" — not undefined and not null — so
+// `.optional().nullable()` never short-circuits and "" flows into
+// `z.coerce.date()`, which yields an Invalid Date ("expected date, received
+// Date"). Normalise the "no date" inputs to null before coercing.
+const optionalDate = z.preprocess(
+  (v) => (v === "" || v === undefined || v === null ? null : v),
+  z.coerce.date().nullable(),
+);
+
 // Base (unrefined) schema — exported separately so PATCH routes can call
 // `.partial()` on it (Zod v4 forbids `.partial()` on a schema that already
 // carries a `.superRefine`), matching the teamMemberSchema convention.
@@ -33,9 +42,9 @@ export const employeeBaseSchema = z.object({
     .default(""),
   phone: z.string().optional().default(""),
   cnic: z.string().regex(CNIC_REGEX, "CNIC must be in the format 12345-1234567-1"),
-  cnicIssueDate: z.coerce.date().optional().nullable(),
-  cnicExpiryDate: z.coerce.date().optional().nullable(),
-  dob: z.coerce.date().optional().nullable(),
+  cnicIssueDate: optionalDate,
+  cnicExpiryDate: optionalDate,
+  dob: optionalDate,
   bloodGroup: z
     .union([z.enum(BLOOD_GROUPS), z.literal("")])
     .optional()
@@ -46,7 +55,7 @@ export const employeeBaseSchema = z.object({
   emergencyContactPhone: z.string().optional().default(""),
   emergencyContactRelation: z.string().optional().default(""),
   photoKey: z.string().optional().nullable(),
-  joiningDate: z.coerce.date().optional().nullable(),
+  joiningDate: optionalDate,
 });
 
 export const employeeSchema = employeeBaseSchema.superRefine((data, ctx) => {
