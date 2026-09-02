@@ -42,27 +42,30 @@ const BLOCK_STYLES = [
 ]
 
 /**
- * Fixed text-colour / highlight swatches. Values are `var(--rte-*)` tokens —
- * never raw hex — so an authored colour resolves to an on-brand, ≥4.5:1 value
- * in both admin themes and on the public site. KEEP THE NAMES in sync with the
- * `--rte-text-*` / `--rte-hl-*` blocks in `src/app/globals.css` and with the
- * strict sanitiser's `STRICT_SAFE_STYLE` in `src/lib/sanitize-html.ts`.
+ * Fixed text-colour / highlight swatches. Values are CONCRETE colours, not
+ * `var(--token)` — TipTap's Color/BackgroundColor extensions parse the mark
+ * back from `element.style.color`, and Chrome returns `""` there for a `var()`
+ * value, so a token-based swatch silently drops on the next re-parse (reload /
+ * paste / setContent). The text hues are mid-tone so they stay legible on both
+ * the light and the dark admin surface; highlights are translucent so they
+ * adapt on their own. Near-black values are rejected by the sanitiser
+ * (`NON_BLACK_COLOR`), so keep these vivid.
  */
 const RTE_TEXT_SWATCHES = [
-  { label: "Brand", value: "var(--rte-text-brand)" },
-  { label: "Red", value: "var(--rte-text-red)" },
-  { label: "Amber", value: "var(--rte-text-amber)" },
-  { label: "Green", value: "var(--rte-text-green)" },
-  { label: "Blue", value: "var(--rte-text-blue)" },
-  { label: "Purple", value: "var(--rte-text-purple)" },
+  { label: "Red", value: "#dc2626" },
+  { label: "Orange", value: "#ea580c" },
+  { label: "Amber", value: "#b45309" },
+  { label: "Green", value: "#15803d" },
+  { label: "Blue", value: "#2563eb" },
+  { label: "Purple", value: "#9333ea" },
 ] as const
 
 const RTE_HIGHLIGHTS = [
-  { label: "Yellow", value: "var(--rte-hl-yellow)" },
-  { label: "Green", value: "var(--rte-hl-green)" },
-  { label: "Blue", value: "var(--rte-hl-blue)" },
-  { label: "Pink", value: "var(--rte-hl-pink)" },
-  { label: "Orange", value: "var(--rte-hl-orange)" },
+  { label: "Yellow", value: "rgba(250, 204, 21, 0.4)" },
+  { label: "Green", value: "rgba(74, 222, 128, 0.35)" },
+  { label: "Blue", value: "rgba(96, 165, 250, 0.35)" },
+  { label: "Pink", value: "rgba(244, 114, 182, 0.35)" },
+  { label: "Orange", value: "rgba(251, 146, 60, 0.4)" },
 ] as const
 
 /**

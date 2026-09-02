@@ -73,16 +73,16 @@ describe("sanitizeHtml — block elements", () => {
 
 describe("sanitizeHtml — inline colour / highlight marks (strict profile)", () => {
   it("keeps a <span> with an authored text colour", () => {
-    const out = sanitizeHtml('<p><span style="color:var(--rte-text-blue)">tint</span></p>')
+    const out = sanitizeHtml('<p><span style="color:#2563eb">tint</span></p>')
     expect(out).toContain("<span")
-    expect(out).toContain("color:var(--rte-text-blue)")
+    expect(out).toContain("color:#2563eb")
   })
 
   it("keeps a <span> highlight (background-color) and a <mark>", () => {
     const out = sanitizeHtml(
-      '<p><span style="background-color:rgb(250 204 21 / 0.35)">hl</span> <mark>m</mark></p>',
+      '<p><span style="background-color:rgba(250, 204, 21, 0.4)">hl</span> <mark>m</mark></p>',
     )
-    expect(out).toContain("background-color:rgb(250 204 21 / 0.35)")
+    expect(out).toMatch(/background-color:\s*rgba\(250, ?204, ?21, ?0\.4\)/)
     expect(out).toContain("<mark>m</mark>")
   })
 
@@ -97,10 +97,10 @@ describe("sanitizeHtml — inline colour / highlight marks (strict profile)", ()
 
   it("keeps an authored colour carrier nested inside a link", () => {
     const out = sanitizeHtml(
-      '<p><a href="https://x.com"><span style="color:var(--rte-text-green)">c</span></a></p>',
+      '<p><a href="https://x.com"><span style="color:#15803d">c</span></a></p>',
     )
     expect(out).toContain("<span")
-    expect(out).toContain("color:var(--rte-text-green)")
+    expect(out).toContain("color:#15803d")
   })
 
   it("still strips inline style from the <a> itself", () => {
