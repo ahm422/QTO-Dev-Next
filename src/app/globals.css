@@ -112,6 +112,41 @@
   --sidebar-ring: var(--theme-primary);
 }
 
+/*
+ * RichTextEditor swatch palette — the fixed set the editor toolbar's
+ * text-colour and highlight menus insert (authored as `var(--rte-*)`, never a
+ * raw hex), bound to per-surface values so an authored colour keeps ≥4.5:1
+ * contrast in the admin editor AND on the public site, in light and dark.
+ * Text swatches switch by surface; highlight swatches are translucent so they
+ * adapt on their own. `.admin-light` is listed explicitly (not just via `:root`)
+ * so an admin page rendered under `<html class="dark">` still gets the light
+ * values. KEEP THE NAMES in sync with `RTE_TEXT_SWATCHES` / `RTE_HIGHLIGHTS`
+ * in `src/components/ui/rich-text-editor.tsx`.
+ */
+:root,
+.admin-light {
+  --rte-text-brand: #c2410c;
+  --rte-text-red: #b91c1c;
+  --rte-text-amber: #b45309;
+  --rte-text-green: #15803d;
+  --rte-text-blue: #1d4ed8;
+  --rte-text-purple: #7e22ce;
+  --rte-hl-yellow: rgb(250 204 21 / 0.35);
+  --rte-hl-green: rgb(74 222 128 / 0.32);
+  --rte-hl-blue: rgb(96 165 250 / 0.32);
+  --rte-hl-pink: rgb(244 114 182 / 0.32);
+  --rte-hl-orange: rgb(251 146 60 / 0.34);
+}
+.dark,
+.admin-dark {
+  --rte-text-brand: #fb923c;
+  --rte-text-red: #f87171;
+  --rte-text-amber: #fbbf24;
+  --rte-text-green: #4ade80;
+  --rte-text-blue: #60a5fa;
+  --rte-text-purple: #c084fc;
+}
+
 /* Admin shell — scoped to .admin-dark / .admin-light wrapper on the admin layout root.
    Overrides shadcn semantic tokens so all shadcn primitives inherit the admin palette
    without touching the public site theme. */
@@ -987,24 +1022,55 @@ h6 {
 }
 
 /*
- * Links inside rich-text content must read as links: brand colour + underline,
- * distinct from body copy and from bold emphasis. `!important` + `:where()`
- * beat any inline `color` / `text-decoration` carried in from pasted Word /
- * Google Docs markup (the sanitiser strips those off the <a> itself, but a
- * wrapping <span style="color:…"> can still colour the link by inheritance).
- * `font-weight: inherit` keeps links != <strong> (coloured+underlined vs bold).
+ * Links inside rich-text content read as links by default — brand colour +
+ * underline — but toolbar marks now COMPOSE on top of that default:
+ *   - a wrapping / nested <strong> makes the link visibly bold,
+ *   - italic / underline-toggle / strikethrough show,
+ *   - an authored text-colour (toolbar swatch → inline `style` on a <span>, or
+ *     a <mark>) overrides the brand colour,
+ *   - a link inside a heading takes the heading's size + weight.
+ * So the default rule is NOT `!important` and carries no `font-weight` — the
+ * override rules below beat it on specificity alone. The only `!important`
+ * left guards inline `style` ON the <a> itself (pasted Word/Docs junk the
+ * sanitiser already strips — belt-and-braces).
  */
 .prose-style :where(a):not(:where([class~="not-prose"] *)) {
-  color: var(--primary) !important;
-  text-decoration: underline !important;
+  color: var(--primary);
+  text-decoration: underline;
   text-underline-offset: 2px;
-  font-weight: inherit;
 }
 .prose-style :where(a):not(:where([class~="not-prose"] *)):visited {
-  color: var(--primary) !important;
+  color: var(--primary);
 }
 .prose-style :where(a):not(:where([class~="not-prose"] *)):hover {
   color: color-mix(in srgb, var(--primary) 80%, black);
+}
+/* An authored colour carrier wrapping OR nested in the link wins (specificity
+   (0,2,0) > the (0,1,0) default; no !important). */
+.prose-style :where(span[style*="color"], mark) :where(a),
+.prose-style :where(a) :where(span[style*="color"], mark) {
+  color: inherit;
+}
+/* A composed <strong> makes the link visibly bold, whichever mark nests first. */
+.prose-style :where(strong) :where(a),
+.prose-style :where(a) :where(strong) {
+  font-weight: 700;
+}
+/* A link inside a heading inherits that heading's size + weight. */
+.prose-style :where(h1, h2, h3, h4, h5, h6) :where(a) {
+  font-size: inherit;
+  font-weight: inherit;
+}
+/* Highlight mark from pasted content (the toolbar emits <span style="bg">). */
+.prose-style :where(mark) {
+  background-color: var(--rte-hl-yellow);
+  color: inherit;
+  padding: 0.05em 0.15em;
+  border-radius: 0.15em;
+}
+/* Belt-and-braces: inline colour ON the <a> itself can never beat the brand. */
+.prose-style :where(a[style*="color"]):not(:where([class~="not-prose"] *)) {
+  color: var(--primary) !important;
 }
 
 /*
@@ -1049,6 +1115,26 @@ h6 {
 }
 .prose-style tbody tr:nth-child(even) {
   background: color-mix(in srgb, var(--color-surface-muted) 40%, transparent);
+}
+/* Header COLUMN (toolbar "toggle header column" → first cell of each body row
+   becomes a <th>): keep the header shading over the zebra stripe. The generic
+   `.prose-style th` rule above already handles weight/colour; this only needs
+   to out-specify `tbody tr:nth-child(even)`. */
+.prose-style tbody th {
+  background: var(--color-surface-muted);
+}
+/* Per-cell alignment. The toolbar writes `text-align` onto the cell's child
+   <p>/<h*>, which aligns natively; these cover alignment authored straight on
+   the cell (`align=` attr or inline style on pasted markup). */
+.prose-style :where(th, td)[align="center"],
+.prose-style :where(th, td)[style*="text-align: center"],
+.prose-style :where(th, td)[style*="text-align:center"] {
+  text-align: center;
+}
+.prose-style :where(th, td)[align="right"],
+.prose-style :where(th, td)[style*="text-align: right"],
+.prose-style :where(th, td)[style*="text-align:right"] {
+  text-align: right;
 }
 /* Collapse the body-copy paragraph/list rhythm inside cells (Word wraps every
    line in <p>; the renderer's [&_p]:mb-6 would otherwise pad each cell out). */
@@ -1146,11 +1232,33 @@ h6 {
   color: var(--foreground);
 }
 
-[data-slot="rich-text-editor"] .tiptap :where(p, li, blockquote, h1, h2, h3, h4, h5, h6, strong, em, code, a) {
+[data-slot="rich-text-editor"] .tiptap :where(p, li, blockquote, h1, h2, h3, h4, h5, h6, strong, em, code) {
   color: inherit;
 }
 [data-slot="rich-text-editor"] .tiptap :where(a) {
   color: var(--primary);
+}
+/* Marks compose on top of a link in the editing surface, matching the public
+   `.prose-style` rules: an authored colour (inline `style` on a nested/wrapping
+   <span>, or <mark>) overrides the brand colour, a nested <strong> stays bold,
+   and a link inside a heading takes the heading's size + weight. */
+[data-slot="rich-text-editor"] .tiptap :where(span[style*="color"], mark) :where(a),
+[data-slot="rich-text-editor"] .tiptap :where(a) :where(span[style*="color"], mark) {
+  color: inherit;
+}
+[data-slot="rich-text-editor"] .tiptap :where(strong) :where(a),
+[data-slot="rich-text-editor"] .tiptap :where(a) :where(strong) {
+  font-weight: 700;
+}
+[data-slot="rich-text-editor"] .tiptap :where(h1, h2, h3, h4, h5, h6) :where(a) {
+  font-size: inherit;
+  font-weight: inherit;
+}
+[data-slot="rich-text-editor"] .tiptap :where(mark) {
+  background-color: var(--rte-hl-yellow);
+  color: inherit;
+  padding: 0.05em 0.15em;
+  border-radius: 0.15em;
 }
 
 /* Tables in the editing surface — make rows/columns visible and give
@@ -1172,6 +1280,21 @@ h6 {
   font-weight: 600;
   text-align: left;
 }
+/* Header column (toggle-header-column) — the rule above already shades every
+   <th>; this just keeps a body-row <th> readable. Per-cell alignment rides on
+   the cell's child <p>/<h*> (`text-align` written by the toolbar Align menu)
+   and works natively; this covers alignment authored on the cell itself. */
+[data-slot="rich-text-editor"] .tiptap tbody th {
+  background: var(--muted);
+}
+[data-slot="rich-text-editor"] .tiptap :where(th, td)[style*="text-align: center"],
+[data-slot="rich-text-editor"] .tiptap :where(th, td)[style*="text-align:center"] {
+  text-align: center;
+}
+[data-slot="rich-text-editor"] .tiptap :where(th, td)[style*="text-align: right"],
+[data-slot="rich-text-editor"] .tiptap :where(th, td)[style*="text-align:right"] {
+  text-align: right;
+}
 [data-slot="rich-text-editor"] .tiptap .selectedCell::after {
   content: "";
   position: absolute;
@@ -1192,12 +1315,20 @@ h6 {
   cursor: col-resize;
 }
 
-/* Theme-independent contrast floor: pins editor text to a concrete colour per
-   admin theme so a token regression or a stale prose-invert bundle can never
-   wash it out. Higher specificity than the `color: var(--foreground)` rule
-   above by design — keep these hexes in sync with `--foreground` in the
-   .admin-light / .admin-dark blocks. Links keep `--primary` via the rule
-   below; headings inherit this colour (same value as the token). */
+/* Theme-independent contrast floor: pins editor text AND surface background to
+   a concrete value per admin theme so the two can never desync (the unscoped
+   `var(--background)` / `var(--foreground)` rule above is the fallback). A token
+   regression, a stale prose-invert bundle, or an ancestor `.dark`-keyed public
+   palette can no longer wash the text out. Higher specificity than the
+   `var(--*)` rules above by design — keep these hexes in sync with
+   `--background` / `--foreground` in the .admin-light / .admin-dark blocks.
+   Links keep `--primary`; headings inherit the text colour. */
+.admin-light [data-slot="rich-text-editor"] {
+  background-color: #ffffff;
+}
+.admin-dark [data-slot="rich-text-editor"] {
+  background-color: #0f0f12;
+}
 .admin-light [data-slot="rich-text-editor"] .tiptap {
   color: #09090b;
 }

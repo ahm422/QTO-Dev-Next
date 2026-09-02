@@ -6,6 +6,7 @@ import {
   stripHtml,
   linkifyPlainText,
   linkifyHtml,
+  wrapTables,
 } from "./sanitize-html"
 
 describe("sanitizeHtml — images", () => {
@@ -67,6 +68,112 @@ describe("sanitizeHtml — block elements", () => {
   it("keeps safe anchors, drops javascript: hrefs", () => {
     expect(sanitizeHtml('<a href="https://x.com">x</a>')).toContain('href="https://x.com"')
     expect(sanitizeHtml('<a href="javascript:alert(1)">x</a>')).not.toContain("javascript:")
+  })
+})
+
+describe("sanitizeHtml — inline colour / highlight marks (strict profile)", () => {
+  it("keeps a <span> with an authored text colour", () => {
+    const out = sanitizeHtml('<p><span style="color:var(--rte-text-blue)">tint</span></p>')
+    expect(out).toContain("<span")
+    expect(out).toContain("color:var(--rte-text-blue)")
+  })
+
+  it("keeps a <span> highlight (background-color) and a <mark>", () => {
+    const out = sanitizeHtml(
+      '<p><span style="background-color:rgb(250 204 21 / 0.35)">hl</span> <mark>m</mark></p>',
+    )
+    expect(out).toContain("background-color:rgb(250 204 21 / 0.35)")
+    expect(out).toContain("<mark>m</mark>")
+  })
+
+  it("keeps a bold link — <strong> and <a> both survive, either nesting", () => {
+    expect(sanitizeHtml('<p><strong><a href="/x">b</a></strong></p>')).toMatch(
+      /<strong><a[^>]*href="\/x"[^>]*>b<\/a><\/strong>/,
+    )
+    expect(sanitizeHtml('<p><a href="/x"><strong>b</strong></a></p>')).toMatch(
+      /<a[^>]*href="\/x"[^>]*><strong>b<\/strong><\/a>/,
+    )
+  })
+
+  it("keeps an authored colour carrier nested inside a link", () => {
+    const out = sanitizeHtml(
+      '<p><a href="https://x.com"><span style="color:var(--rte-text-green)">c</span></a></p>',
+    )
+    expect(out).toContain("<span")
+    expect(out).toContain("color:var(--rte-text-green)")
+  })
+
+  it("still strips inline style from the <a> itself", () => {
+    const out = sanitizeHtml(
+      '<a href="https://x.com" style="color:red;text-decoration:none">x</a>',
+    )
+    const anchor = out.slice(out.indexOf("<a"), out.indexOf("</a>"))
+    expect(anchor).not.toMatch(/style=/)
+  })
+
+  it("drops near-black colour and disallowed style props", () => {
+    expect(sanitizeHtml('<span style="color:black">x</span>')).not.toMatch(/color\s*:/i)
+    expect(sanitizeHtml('<span style="color:windowtext">x</span>')).not.toMatch(/color\s*:/i)
+    // font-size / position / line-height are not in STRICT_SAFE_STYLE
+    const out = sanitizeHtml('<span style="color:#e11d48;font-size:40px;position:fixed">x</span>')
+    expect(out).toContain("color:#e11d48")
+    expect(out).not.toContain("font-size")
+    expect(out).not.toContain("position")
+  })
+
+  it("still strips <script>, event handlers and javascript: from styled markup", () => {
+    const out = sanitizeHtml(
+      '<span style="color:#333" onclick="x()">hi</span><script>alert(1)</script>',
+    )
+    expect(out).not.toContain("<script")
+    expect(out).not.toContain("onclick")
+    expect(out).toContain("hi")
+  })
+
+  it("drops an empty <span> left behind by clearing a colour", () => {
+    expect(sanitizeHtml("<p>a<span></span>b</p>")).toBe("<p>ab</p>")
+  })
+})
+
+describe("sanitizeHtml — tables (strict profile)", () => {
+  it("keeps table structure, colspan/rowspan and per-cell text-align", () => {
+    const out = sanitizeHtml(
+      '<table><thead><tr><th colspan="2">h</th></tr></thead>' +
+        '<tbody><tr><td rowspan="2"><p style="text-align:center">c</p></td><td>d</td></tr></tbody></table>',
+    )
+    expect(out).toContain("<table>")
+    expect(out).toContain("<thead>")
+    expect(out).toContain('colspan="2"')
+    expect(out).toContain('rowspan="2"')
+    expect(out).toContain("text-align:center")
+  })
+
+  it("normalises anchors inside a table and drops nofollow", () => {
+    const out = sanitizeHtml(
+      '<table><tbody><tr><td><a href="/x" rel="nofollow">c</a></td></tr></tbody></table>',
+    )
+    expect(out).toContain("<td>")
+    expect(out).not.toContain("nofollow")
+  })
+})
+
+describe("wrapTables", () => {
+  it("wraps each <table> in a horizontal-scroll container", () => {
+    const out = wrapTables("<p>x</p><table><tbody><tr><td>a</td></tr></tbody></table>")
+    expect(out).toBe(
+      '<p>x</p><div class="overflow-x-auto"><table><tbody><tr><td>a</td></tr></tbody></table></div>',
+    )
+  })
+
+  it("wraps a <table> that carries attributes", () => {
+    expect(wrapTables('<table class="x"><tr><td>a</td></tr></table>')).toBe(
+      '<div class="overflow-x-auto"><table class="x"><tr><td>a</td></tr></table></div>',
+    )
+  })
+
+  it("is a no-op when there is no table", () => {
+    expect(wrapTables("<p>no tables here</p>")).toBe("<p>no tables here</p>")
+    expect(wrapTables("")).toBe("")
   })
 })
 

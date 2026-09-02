@@ -8,8 +8,10 @@ import Link from "@tiptap/extension-link"
 import Placeholder from "@tiptap/extension-placeholder"
 import Image from "@tiptap/extension-image"
 import { TableKit } from "@tiptap/extension-table"
+import { TextStyle, Color, BackgroundColor } from "@tiptap/extension-text-style"
+import TextAlign from "@tiptap/extension-text-align"
 import { toast } from "sonner"
-import { AlertCircle, Bold, Italic, Underline as UnderlineIcon, Strikethrough, List, ListOrdered, LinkIcon, Code, Undo2, Redo2, ChevronDown, Quote, Minus, ImageIcon, Loader2, Upload, Table2 } from "lucide-react"
+import { AlertCircle, Bold, Italic, Underline as UnderlineIcon, Strikethrough, List, ListOrdered, LinkIcon, Code, Undo2, Redo2, ChevronDown, Quote, Minus, ImageIcon, Loader2, Upload, Table2, Baseline, Highlighter, Check, Ban, AlignLeft, AlignCenter, AlignRight } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { useAdminTheme } from "@/components/admin/AdminThemeProvider"
@@ -21,8 +23,14 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Input } from "@/components/ui/input"
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
@@ -33,19 +41,29 @@ const BLOCK_STYLES = [
   { label: "Heading 3", isActive: (editor: Editor) => editor.isActive("heading", { level: 3 }), run: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 3 }).run() },
 ]
 
-/** Table toolbar actions. `insert` always runs; the rest need the caret to be
- * inside a table (`inTableOnly`), matching how TipTap's table commands no-op
- * outside one. */
-const TABLE_ACTIONS = [
-  { label: "Insert table", run: (editor: Editor) => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run() },
-  { label: "Add row above", inTableOnly: true, run: (editor: Editor) => editor.chain().focus().addRowBefore().run() },
-  { label: "Add row below", inTableOnly: true, run: (editor: Editor) => editor.chain().focus().addRowAfter().run() },
-  { label: "Delete row", inTableOnly: true, run: (editor: Editor) => editor.chain().focus().deleteRow().run() },
-  { label: "Add column left", inTableOnly: true, run: (editor: Editor) => editor.chain().focus().addColumnBefore().run() },
-  { label: "Add column right", inTableOnly: true, run: (editor: Editor) => editor.chain().focus().addColumnAfter().run() },
-  { label: "Delete column", inTableOnly: true, run: (editor: Editor) => editor.chain().focus().deleteColumn().run() },
-  { label: "Delete table", inTableOnly: true, run: (editor: Editor) => editor.chain().focus().deleteTable().run() },
-]
+/**
+ * Fixed text-colour / highlight swatches. Values are `var(--rte-*)` tokens —
+ * never raw hex — so an authored colour resolves to an on-brand, ≥4.5:1 value
+ * in both admin themes and on the public site. KEEP THE NAMES in sync with the
+ * `--rte-text-*` / `--rte-hl-*` blocks in `src/app/globals.css` and with the
+ * strict sanitiser's `STRICT_SAFE_STYLE` in `src/lib/sanitize-html.ts`.
+ */
+const RTE_TEXT_SWATCHES = [
+  { label: "Brand", value: "var(--rte-text-brand)" },
+  { label: "Red", value: "var(--rte-text-red)" },
+  { label: "Amber", value: "var(--rte-text-amber)" },
+  { label: "Green", value: "var(--rte-text-green)" },
+  { label: "Blue", value: "var(--rte-text-blue)" },
+  { label: "Purple", value: "var(--rte-text-purple)" },
+] as const
+
+const RTE_HIGHLIGHTS = [
+  { label: "Yellow", value: "var(--rte-hl-yellow)" },
+  { label: "Green", value: "var(--rte-hl-green)" },
+  { label: "Blue", value: "var(--rte-hl-blue)" },
+  { label: "Pink", value: "var(--rte-hl-pink)" },
+  { label: "Orange", value: "var(--rte-hl-orange)" },
+] as const
 
 /**
  * The editor's DropdownMenu / Popover content portals to `document.body`,
@@ -217,12 +235,163 @@ function ImageButton({ editor }: { editor: Editor }) {
   )
 }
 
+/** Shared fixed-swatch menu for the text-colour and highlight toolbar buttons.
+ * Portals to `document.body`, so it re-applies the admin theme class like the
+ * other editor menus. Works on any selection, including a linked one — the
+ * marks compose. */
+function SwatchMenu({
+  label,
+  icon,
+  swatches,
+  activeValue,
+  onPick,
+  onClear,
+}: {
+  label: string
+  icon: React.ReactNode
+  swatches: readonly { label: string; value: string }[]
+  activeValue: string | undefined
+  onPick: (value: string) => void
+  onClear: () => void
+}) {
+  const adminThemeClass = useAdminThemeClass()
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <span>
+          <ToolbarButton onClick={() => {}} active={!!activeValue} label={label}>
+            {icon}
+          </ToolbarButton>
+        </span>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className={cn(adminThemeClass, "w-auto")}>
+        <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">{label}</DropdownMenuLabel>
+        <div className="flex gap-1 px-1.5 pb-1">
+          {swatches.map((s) => (
+            <button
+              key={s.label}
+              type="button"
+              aria-label={s.label}
+              aria-pressed={activeValue === s.value}
+              onClick={() => onPick(s.value)}
+              className={cn(
+                "size-6 rounded border transition-transform hover:scale-110",
+                activeValue === s.value ? "border-primary ring-1 ring-primary" : "border-border",
+              )}
+              style={{ backgroundColor: s.value }}
+            />
+          ))}
+        </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={onClear}>
+          <Ban className="size-4" />
+          Remove {label.toLowerCase()}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+function ColorButton({ editor }: { editor: Editor }) {
+  return (
+    <SwatchMenu
+      label="Text colour"
+      icon={<Baseline className="size-4" />}
+      swatches={RTE_TEXT_SWATCHES}
+      activeValue={editor.getAttributes("textStyle").color as string | undefined}
+      onPick={(value) => editor.chain().focus().setColor(value).run()}
+      onClear={() => editor.chain().focus().unsetColor().run()}
+    />
+  )
+}
+
+function HighlightButton({ editor }: { editor: Editor }) {
+  return (
+    <SwatchMenu
+      label="Highlight"
+      icon={<Highlighter className="size-4" />}
+      swatches={RTE_HIGHLIGHTS}
+      activeValue={editor.getAttributes("textStyle").backgroundColor as string | undefined}
+      onPick={(value) => editor.chain().focus().setBackgroundColor(value).run()}
+      onClear={() => editor.chain().focus().unsetBackgroundColor().run()}
+    />
+  )
+}
+
+/** Hover / click an N×M grid to choose the table size (replaces the old fixed
+ * 3×3). Keyboard users can tab to a cell and press Enter. */
+function TableGridPicker({ onPick }: { onPick: (rows: number, cols: number) => void }) {
+  const MAX = 8
+  const [hover, setHover] = React.useState({ r: 0, c: 0 })
+  return (
+    <div className="p-1.5" onMouseLeave={() => setHover({ r: 0, c: 0 })}>
+      <div className="grid gap-0.5" style={{ gridTemplateColumns: `repeat(${MAX}, 1fr)` }}>
+        {Array.from({ length: MAX * MAX }).map((_, i) => {
+          const r = Math.floor(i / MAX) + 1
+          const c = (i % MAX) + 1
+          const on = r <= hover.r && c <= hover.c
+          return (
+            <button
+              key={i}
+              type="button"
+              aria-label={`${r} by ${c}`}
+              onMouseEnter={() => setHover({ r, c })}
+              onFocus={() => setHover({ r, c })}
+              onClick={() => onPick(r, c)}
+              className={cn(
+                "size-4 rounded-[2px] border",
+                on ? "border-primary bg-primary/25" : "border-border",
+              )}
+            />
+          )
+        })}
+      </div>
+      <p className="mt-1 text-center text-[11px] text-muted-foreground">
+        {hover.r > 0 ? `${hover.r} × ${hover.c}` : "Pick size"}
+      </p>
+    </div>
+  )
+}
+
+/** prosemirror-tables has no "reset widths" command; clear `colwidth` on every
+ * cell of the table holding the caret so the columns fall back to auto. */
+function resetColumnWidths(editor: Editor) {
+  const { state } = editor
+  const { $from } = state.selection
+  let depth = $from.depth
+  while (depth > 0 && $from.node(depth).type.name !== "table") depth -= 1
+  if (depth === 0) return
+  const table = $from.node(depth)
+  const tableStart = $from.start(depth)
+  const tr = state.tr
+  table.descendants((node, pos) => {
+    if (node.type.name === "tableCell" || node.type.name === "tableHeader") {
+      if (node.attrs.colwidth) {
+        tr.setNodeMarkup(tableStart + pos, undefined, { ...node.attrs, colwidth: null })
+      }
+      return false
+    }
+    return true
+  })
+  if (tr.docChanged) editor.view.dispatch(tr)
+  editor.commands.focus()
+}
+
 function TableButton({ editor }: { editor: Editor }) {
   const adminThemeClass = useAdminThemeClass()
   const inTable = editor.isActive("table")
+  const [open, setOpen] = React.useState(false)
+  const [headerRow, setHeaderRow] = React.useState(true)
+  const [confirmingDelete, setConfirmingDelete] = React.useState(false)
 
   return (
-    <DropdownMenu>
+    <DropdownMenu
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next)
+        if (!next) setConfirmingDelete(false)
+      }}
+    >
       <DropdownMenuTrigger asChild>
         <span>
           <ToolbarButton onClick={() => {}} active={inTable} label="Table">
@@ -230,16 +399,105 @@ function TableButton({ editor }: { editor: Editor }) {
           </ToolbarButton>
         </span>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className={adminThemeClass}>
-        {TABLE_ACTIONS.map((action) => (
-          <DropdownMenuItem
-            key={action.label}
-            disabled={action.inTableOnly && !inTable}
-            onSelect={() => action.run(editor)}
-          >
-            {action.label}
-          </DropdownMenuItem>
-        ))}
+      <DropdownMenuContent align="start" className={cn(adminThemeClass, "w-52")}>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>Insert table</DropdownMenuSubTrigger>
+          <DropdownMenuSubContent className={cn(adminThemeClass, "w-auto")}>
+            <DropdownMenuCheckboxItem
+              checked={headerRow}
+              onCheckedChange={setHeaderRow}
+              onSelect={(e) => e.preventDefault()}
+            >
+              Header row
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuSeparator />
+            <TableGridPicker
+              onPick={(rows, cols) => {
+                editor.chain().focus().insertTable({ rows, cols, withHeaderRow: headerRow }).run()
+                setOpen(false)
+              }}
+            />
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger disabled={!inTable}>Row</DropdownMenuSubTrigger>
+          <DropdownMenuSubContent className={adminThemeClass}>
+            <DropdownMenuItem onSelect={() => editor.chain().focus().addRowBefore().run()}>Insert above</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => editor.chain().focus().addRowAfter().run()}>Insert below</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => editor.chain().focus().deleteRow().run()}>Delete row</DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger disabled={!inTable}>Column</DropdownMenuSubTrigger>
+          <DropdownMenuSubContent className={adminThemeClass}>
+            <DropdownMenuItem onSelect={() => editor.chain().focus().addColumnBefore().run()}>Insert left</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => editor.chain().focus().addColumnAfter().run()}>Insert right</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => editor.chain().focus().deleteColumn().run()}>Delete column</DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger disabled={!inTable}>Headers</DropdownMenuSubTrigger>
+          <DropdownMenuSubContent className={adminThemeClass}>
+            <DropdownMenuItem onSelect={() => editor.chain().focus().toggleHeaderRow().run()}>Toggle header row</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => editor.chain().focus().toggleHeaderColumn().run()}>Toggle header column</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => editor.chain().focus().toggleHeaderCell().run()}>Toggle header cell</DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger disabled={!inTable}>Cells</DropdownMenuSubTrigger>
+          <DropdownMenuSubContent className={adminThemeClass}>
+            <DropdownMenuItem onSelect={() => editor.chain().focus().mergeCells().run()}>Merge cells</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => editor.chain().focus().splitCell().run()}>Split cell</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => editor.chain().focus().mergeOrSplit().run()}>Merge or split</DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger disabled={!inTable}>Align cell</DropdownMenuSubTrigger>
+          <DropdownMenuSubContent className={adminThemeClass}>
+            <DropdownMenuItem onSelect={() => editor.chain().focus().setTextAlign("left").run()}>
+              <AlignLeft className="size-4" />
+              Left
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => editor.chain().focus().setTextAlign("center").run()}>
+              <AlignCenter className="size-4" />
+              Center
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => editor.chain().focus().setTextAlign("right").run()}>
+              <AlignRight className="size-4" />
+              Right
+            </DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        <DropdownMenuItem disabled={!inTable} onSelect={() => resetColumnWidths(editor)}>
+          Reset column widths
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem
+          disabled={!inTable}
+          variant="destructive"
+          onSelect={(e) => {
+            if (!confirmingDelete) {
+              e.preventDefault()
+              setConfirmingDelete(true)
+              return
+            }
+            editor.chain().focus().deleteTable().run()
+            setConfirmingDelete(false)
+          }}
+        >
+          <Check className={cn("size-4", !confirmingDelete && "opacity-0")} />
+          {confirmingDelete ? "Click again to delete" : "Delete table"}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
@@ -311,6 +569,11 @@ function Toolbar({ editor }: { editor: Editor }) {
 
       <Separator orientation="vertical" className="mx-1 h-5" />
 
+      <ColorButton editor={editor} />
+      <HighlightButton editor={editor} />
+
+      <Separator orientation="vertical" className="mx-1 h-5" />
+
       <LinkButton editor={editor} />
       <ImageButton editor={editor} />
       <TableButton editor={editor} />
@@ -371,6 +634,14 @@ export function RichTextEditor({
         HTMLAttributes: { class: "rounded-md", loading: "lazy" },
       }),
       TableKit.configure({ table: { resizable: true } }),
+      // Text-colour + highlight marks (toolbar swatch menus). Color/BackgroundColor
+      // both build on TextStyle, so it must be listed first. Every value is a
+      // `var(--rte-*)` token — see `RTE_TEXT_SWATCHES` / globals.css.
+      TextStyle,
+      Color,
+      BackgroundColor,
+      // Per-cell alignment for the table tool (cell content is paragraphs).
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
       Placeholder.configure({ placeholder: placeholder ?? "" }),
     ],
     content: value || "",

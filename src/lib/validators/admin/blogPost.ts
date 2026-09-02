@@ -1,9 +1,6 @@
 import { z } from "zod"
 import { normalizeBlogCategory } from "@/config/blogCategories"
 
-const MIN_EXCERPT = 80
-const MIN_CONTENT_CHARS = 1200
-
 export const blogPostSchema = z
   .object({
     title: z.string().min(1, "Title is required"),
@@ -43,21 +40,6 @@ export const blogPostSchema = z
         code: z.ZodIssueCode.custom,
         message: "Category is required when publishing",
         path: ["category"],
-      })
-    }
-    if ((data.excerpt ?? "").trim().length < MIN_EXCERPT) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `Excerpt must be at least ${MIN_EXCERPT} characters when publishing`,
-        path: ["excerpt"],
-      })
-    }
-    const contentLen = (data.content ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().length
-    if (contentLen < MIN_CONTENT_CHARS) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `Content must be at least ~${MIN_CONTENT_CHARS} characters of text when publishing (thin pages hurt SEO)`,
-        path: ["content"],
       })
     }
   })

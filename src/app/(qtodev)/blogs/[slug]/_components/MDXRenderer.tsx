@@ -1,17 +1,7 @@
-import { sanitizeRichHtml, isHtmlBody } from "@/lib/sanitize-html";
+import { sanitizeRichHtml, isHtmlBody, wrapTables } from "@/lib/sanitize-html";
 
 interface MDXRendererProps {
   content: string;
-}
-
-/** Wrap every sanitised <table> in a horizontal-scroll container so wide
- * multi-column tables scroll on mobile instead of overflowing the page. The
- * input has already been through `sanitizeRichHtml`, so this only ever sees
- * vetted markup. */
-function wrapTables(html: string): string {
-  return html
-    .replace(/<table(\s|>)/g, '<div class="overflow-x-auto"><table$1')
-    .replace(/<\/table>/g, "</table></div>");
 }
 
 export function MDXRenderer({ content }: MDXRendererProps) {

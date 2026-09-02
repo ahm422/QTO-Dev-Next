@@ -8,7 +8,8 @@ import { AdminThemeProvider } from "@/components/admin/AdminThemeProvider"
 /**
  * Regression guard for #418 — editor text must stay legible in BOTH admin
  * themes, and the portaled block-style menu must carry the admin theme class
- * (it renders outside the .admin-* wrapper).
+ * (it renders outside the .admin-* wrapper). Also covers the toolbar's
+ * text-colour / highlight / table controls added for the CMS rich-text issue.
  *
  * jsdom does not run Tailwind and does NOT resolve `var()` in
  * getComputedStyle, so we inject the rules under test with the *resolved*
@@ -97,5 +98,30 @@ describe("RichTextEditor theming (#418)", () => {
     })
     expect(menu.className).toContain("admin-light")
     expect(menu.className).not.toContain("admin-dark")
+  })
+})
+
+describe("RichTextEditor toolbar — colour / highlight / table controls", () => {
+  it("renders the text-colour, highlight and table controls", async () => {
+    const { container } = await renderEditor("light")
+    for (const label of ["Text colour", "Highlight", "Table", "Link"]) {
+      expect(container.querySelector(`[aria-label="${label}"]`)).not.toBeNull()
+    }
+  })
+
+  it("portals the text-colour swatch menu with the admin theme class", async () => {
+    const { container } = await renderEditor("dark")
+    const trigger = container.querySelector<HTMLElement>('[aria-label="Text colour"]')!
+    trigger.focus()
+    fireEvent.keyDown(trigger, { key: "Enter" })
+    const menu = await waitFor(() => {
+      const el = document.querySelector<HTMLElement>('[role="menu"]')
+      if (!el) throw new Error("menu not open")
+      return el
+    })
+    expect(menu.className).toContain("admin-dark")
+    // the fixed swatch palette + a "remove colour" action
+    expect(menu.querySelectorAll('button[aria-label]').length).toBeGreaterThanOrEqual(6)
+    expect(menu.textContent).toMatch(/remove text colour/i)
   })
 })
