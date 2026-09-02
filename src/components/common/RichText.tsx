@@ -1,5 +1,5 @@
 import { cn } from "@/components/theme/cn"
-import { isHtmlBody, linkifyHtml, linkifyPlainText, sanitizeHtml } from "@/lib/sanitize-html"
+import { isHtmlBody, linkifyHtml, linkifyPlainText, sanitizeHtml, wrapTables } from "@/lib/sanitize-html"
 
 interface RichTextProps {
   html: string
@@ -32,7 +32,7 @@ export function RichText({ html, className, as = "div" }: RichTextProps) {
     return (
       <PlainComp
         className={cn("prose-style", className)}
-        dangerouslySetInnerHTML={{ __html: sanitizeHtml(linked) }}
+        dangerouslySetInnerHTML={{ __html: wrapTables(sanitizeHtml(linked)) }}
       />
     )
   }
@@ -41,7 +41,7 @@ export function RichText({ html, className, as = "div" }: RichTextProps) {
   return (
     <Comp
       className={cn("prose-style", className)}
-      dangerouslySetInnerHTML={{ __html: sanitizeHtml(linkifyHtml(html)) }}
+      dangerouslySetInnerHTML={{ __html: wrapTables(sanitizeHtml(linkifyHtml(html))) }}
     />
   )
 }
