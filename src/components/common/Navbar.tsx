@@ -9,13 +9,13 @@ import { AppIcon } from "@/components/ui/shared/AppIcon";
 import { useState } from "react";
 import { useTheme } from "@/components/theme/ThemeProvider";
 
-const navItems = [
+const navItems: { label: string; href: string; external?: boolean }[] = [
   { label: "Home", href: "/" },
   { label: "Products", href: "/products" },
   { label: "Services", href: "/services" },
   { label: "Projects", href: "/projects" },
   { label: "Blog", href: "/blogs" },
-  { label: "Careers", href: "/careers" },
+  { label: "Careers", href: "https://career.qtodev.com/", external: true },
   { label: "About", href: "/about" },
 ];
 
@@ -52,6 +52,7 @@ export function Navbar() {
                     key={item.href}
                     href={item.href}
                     aria-current={active ? "page" : undefined}
+                    {...(item.external && { target: "_blank", rel: "noopener noreferrer" })}
                     className={`text-sm font-medium transition-colors rounded-full px-3 py-1.5 lg:px-4 lg:py-2 ${
                       active
                         ? "bg-foreground text-background"
@@ -122,6 +123,7 @@ export function Navbar() {
                       href={item.href}
                       onClick={() => setIsMenuOpen(false)}
                       aria-current={active ? "page" : undefined}
+                      {...(item.external && { target: "_blank", rel: "noopener noreferrer" })}
                       className={`rounded-lg px-4 py-3 text-sm font-medium transition-colors text-center ${
                         active
                           ? "bg-foreground text-background"
