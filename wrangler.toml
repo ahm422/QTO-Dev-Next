@@ -28,6 +28,9 @@ binding = "IMAGES"
 [vars]
 EMAIL_FROM = "noreply@qtodev.com"
 EMAIL_ADMIN_TO = "admin@example.com"
+# Standalone chatbot Cloudflare Worker (see chatbot/worker/) — server-side only,
+# the chat widgets talk to /api/chat and /api/admin/chat, which proxy here.
+CHATBOT_SERVICE_URL = "https://qtodev-chatbot-worker.your-subdomain.workers.dev"
 
 #
 # Nightly token cleanup — fires at 03:00 UTC and calls GET /api/cron/cleanup-tokens
@@ -63,6 +66,7 @@ name = "qtodev-site-staging"
 [env.staging.vars]
 EMAIL_FROM = "staging@qtodev.com"
 EMAIL_ADMIN_TO = "admin@example.com"
+CHATBOT_SERVICE_URL = "https://qtodev-chatbot-worker.your-subdomain.workers.dev"
 
 [[env.staging.services]]
 binding = "WORKER_SELF_REFERENCE"

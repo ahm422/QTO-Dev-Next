@@ -2,6 +2,8 @@
 
 Standalone RAG chatbot for **qtodev.com**. Independent project in `chatbot/` — own `package.json`, own `node_modules`. Nothing in the parent `QTO-Dev-Next` app is imported or modified.
 
+> **Cloudflare Worker rebuild available**: [`chatbot/worker/`](worker/README.md) is a from-scratch port of this same service onto Cloudflare's platform (D1 binding, Vectorize instead of Qdrant, Workers AI instead of local transformers, KV instead of in-memory/file state, Cron Trigger instead of `setInterval`) — deployed and verified end-to-end. This directory's Express/Qdrant/local-transformers version is left as-is for now; see `chatbot/worker/README.md` §3 for the full comparison.
+
 **Status**: verified working end-to-end against real local D1 data — sync, retrieval, `/chat`, topic guardrails, prompt-injection resistance, and the 100-word input cap all tested live.
 
 ---
