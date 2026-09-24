@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { serviceSchema, type ServiceInput } from "@/lib/validators/admin/service"
 import FormSection from "@/components/admin/forms/FormSection"
+import FaqListField from "@/components/admin/forms/FaqListField"
 import FormActions from "@/components/admin/forms/FormActions"
 import FormGrid from "@/components/admin/forms/FormGrid"
 import IconPicker from "@/components/admin/forms/IconPicker"
@@ -72,6 +73,7 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
           imageAlt: defaultValues.imageAlt ?? "",
           order: defaultValues.order ?? 0,
           isPublished: defaultValues.isPublished ?? false,
+          faqs: defaultValues.faqs ?? [],
         }
       : {
           title: "",
@@ -85,6 +87,7 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
           imageAlt: "",
           order: 0,
           isPublished: false,
+          faqs: [],
         },
   })
 
@@ -301,6 +304,8 @@ export default function ServiceForm({ defaultValues }: ServiceFormProps) {
                 slug={`services/${watchedSlug}`}
               />
             </FormSection>
+
+            <FaqListField control={form.control} />
 
             <FormActions isSubmitting={isSubmitting} cancelHref="/admin/services" />
           </div>

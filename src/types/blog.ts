@@ -1,3 +1,5 @@
+import type { ContentFaq } from "@/types/faq";
+
 export interface BlogPost {
   id: string;
   slug: string;
@@ -12,6 +14,7 @@ export interface BlogPost {
   featured: boolean;
   category: string;
   tags: string[];
+  faqs: ContentFaq[];
   image?: string;
   coverImage?: {
     url: string;

@@ -1,4 +1,5 @@
 import type { AppIconName } from "@/components/ui/shared/AppIcon";
+import type { ContentFaq } from "@/types/faq";
 
 export interface ProcessStep {
   title: string;
@@ -59,6 +60,7 @@ export interface WebDevelopmentServiceData {
   relatedProjects: ServiceProjectCard[];
   packages: ServicePackage[];
   testimonials: ServiceTestimonial[];
+  faqs: ContentFaq[];
 }
 
 export const webDevelopmentServiceData: WebDevelopmentServiceData = {
@@ -312,4 +314,5 @@ export const webDevelopmentServiceData: WebDevelopmentServiceData = {
       photo: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=300&h=300&fit=crop",
     },
   ],
+  faqs: [],
 };

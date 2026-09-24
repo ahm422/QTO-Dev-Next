@@ -38,6 +38,7 @@ export const blogPosts: BlogPost[] = [
     featured: true,
     category: "Web Development",
     tags: ["Next.js", "React", "Tutorial"],
+    faqs: [],
     image: PEXELS_TECH_IMAGES[0],
     coverImage: {
       url: PEXELS_TECH_IMAGES[0],
@@ -78,6 +79,7 @@ export const blogPosts: BlogPost[] = [
     featured: true,
     category: "Performance",
     tags: ["Performance", "Optimization", "Web Vitals"],
+    faqs: [],
     image: PEXELS_TECH_IMAGES[1],
     coverImage: {
       url: PEXELS_TECH_IMAGES[1],
@@ -117,6 +119,7 @@ export const blogPosts: BlogPost[] = [
     featured: false,
     category: "React",
     tags: ["React", "Best Practices", "JavaScript"],
+    faqs: [],
     image: PEXELS_TECH_IMAGES[2],
     coverImage: {
       url: PEXELS_TECH_IMAGES[2],
@@ -157,6 +160,7 @@ export const blogPosts: BlogPost[] = [
     featured: false,
     category: "CSS",
     tags: ["Tailwind CSS", "CSS", "Styling"],
+    faqs: [],
     image: PEXELS_TECH_IMAGES[3],
     coverImage: {
       url: PEXELS_TECH_IMAGES[3],
@@ -195,6 +199,7 @@ export const blogPosts: BlogPost[] = [
     featured: false,
     category: BLOG_NEWS_CATEGORY,
     tags: ["Company", "Product", "Announcement"],
+    faqs: [],
     image: PEXELS_TECH_IMAGES[4],
     coverImage: {
       url: PEXELS_TECH_IMAGES[4],
@@ -233,6 +238,7 @@ export const blogPosts: BlogPost[] = [
     featured: false,
     category: BLOG_NEWS_CATEGORY,
     tags: ["Company", "Team", "Growth"],
+    faqs: [],
     image: PEXELS_TECH_IMAGES[5],
     coverImage: {
       url: PEXELS_TECH_IMAGES[5],

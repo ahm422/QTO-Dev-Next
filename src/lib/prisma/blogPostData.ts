@@ -5,6 +5,12 @@ import {
   orderedTagValues,
   replaceOrderedChildren,
 } from "@/lib/prisma/arrayFields";
+import {
+  createContentFaqs,
+  mapContentFaqRows,
+  replaceContentFaqs,
+  type ContentFaqRow,
+} from "@/lib/prisma/contentFaqs";
 
 const blogPostInclude = {
   tags: { orderBy: { sortOrder: "asc" as const } },
@@ -12,14 +18,21 @@ const blogPostInclude = {
 
 export const blogPostWithTagsInclude = blogPostInclude;
 
+export const blogPostDetailInclude = {
+  ...blogPostWithTagsInclude,
+  faqs: { orderBy: { sortOrder: "asc" as const } },
+} satisfies Prisma.BlogPostInclude;
+
 export type BlogPostWithTags = Prisma.BlogPostGetPayload<{
   include: typeof blogPostWithTagsInclude;
 }>;
 
-type BlogPostScalars = Omit<BlogPostInput, "tags" | "publishedAt">;
+export type BlogPostFaqSource = BlogPostWithTags & { faqs?: ContentFaqRow[] };
+
+type BlogPostScalars = Omit<BlogPostInput, "tags" | "publishedAt" | "faqs">;
 
 function toBlogPostScalars(input: BlogPostInput): BlogPostScalars {
-  const { tags: _t, ...scalars } = input;
+  const { tags: _tags, faqs: _faqs, publishedAt: _publishedAt, ...scalars } = input;
   return scalars;
 }
 
@@ -36,6 +49,7 @@ export function toPrismaBlogPostCreateData(
     imageAlt: scalars.imageAlt || null,
     readTime: Number.isFinite(scalars.readTime) ? scalars.readTime : null,
     tags: createOrderedChildren(input.tags),
+    faqs: createContentFaqs(input.faqs),
   };
 }
 
@@ -52,6 +66,7 @@ export function toPrismaBlogPostUpdateData(
     imageAlt: scalars.imageAlt || null,
     readTime: Number.isFinite(scalars.readTime) ? scalars.readTime : null,
     tags: replaceOrderedChildren(input.tags),
+    faqs: replaceContentFaqs(input.faqs),
   };
 }
 
@@ -74,11 +89,12 @@ export function toPrismaBlogPostPartialUpdateData(
   if (input.isHeadline !== undefined) data.isHeadline = input.isHeadline;
   if (input.isPublished !== undefined) data.isPublished = input.isPublished;
   if (input.tags !== undefined) data.tags = replaceOrderedChildren(input.tags);
+  if (input.faqs !== undefined) data.faqs = replaceContentFaqs(input.faqs);
   return data;
 }
 
-export function fromPrismaBlogPost(row: BlogPostWithTags) {
-  const { tags: tagRows, imageUrl, imageAlt, readTime, publishedAt, ...rest } = row;
+export function fromPrismaBlogPost(row: BlogPostFaqSource) {
+  const { tags: tagRows, faqs: faqRows, imageUrl, imageAlt, readTime, publishedAt, ...rest } = row;
   return {
     ...rest,
     imageUrl: imageUrl ?? "",
@@ -86,5 +102,6 @@ export function fromPrismaBlogPost(row: BlogPostWithTags) {
     readTime: readTime ?? undefined,
     publishedAt: publishedAt?.toISOString().slice(0, 10) ?? undefined,
     tags: orderedTagValues(tagRows),
+    faqs: mapContentFaqRows(faqRows),
   };
 }

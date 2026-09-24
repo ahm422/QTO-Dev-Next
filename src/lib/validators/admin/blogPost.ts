@@ -1,8 +1,8 @@
 import { z } from "zod"
 import { normalizeBlogCategory } from "@/config/blogCategories"
+import { contentFaqListSchema } from "@/lib/validators/admin/contentFaq"
 
-export const blogPostSchema = z
-  .object({
+export const blogPostObjectSchema = z.object({
     title: z.string().min(1, "Title is required"),
     slug: z
       .string()
@@ -32,8 +32,10 @@ export const blogPostSchema = z
     isFeatured: z.boolean().default(false),
     isHeadline: z.boolean().default(false),
     isPublished: z.boolean().default(false),
-  })
-  .superRefine((data, ctx) => {
+    faqs: contentFaqListSchema,
+})
+
+export const blogPostSchema = blogPostObjectSchema.superRefine((data, ctx) => {
     if (!data.isPublished) return
     if (!data.category.trim()) {
       ctx.addIssue({

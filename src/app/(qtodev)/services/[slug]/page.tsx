@@ -10,6 +10,7 @@ import { OverviewSection } from "./components/OverviewSection";
 import { ProblemsWeSolve } from "./components/ProblemsWeSolve";
 import { ProcessTimeline } from "./components/ProcessTimeline";
 import { RelevantWorkAndCTA } from "./components/RelevantWorkAndCTA";
+import { ContentFaqSection } from "@/components/faq";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -61,6 +62,7 @@ export default async function ServiceOfferingPage({ params }: PageProps) {
       <OverviewSection service={service} blurDataURL={BLUR_DATA_URL} />
       <ProblemsWeSolve service={service} />
       <ProcessTimeline service={service} />
+      <ContentFaqSection items={service.faqs} idPrefix="service-faq" />
       <RelevantWorkAndCTA service={service} blurDataURL={BLUR_DATA_URL} />
     </main>
   );

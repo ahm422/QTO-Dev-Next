@@ -8,3 +8,9 @@ export interface Faq {
   /** The answer text shown when expanded */
   answer: string;
 }
+
+/** FAQ attached to one Blog post or Service. Plain text only. */
+export interface ContentFaq {
+  question: string
+  answer: string
+}

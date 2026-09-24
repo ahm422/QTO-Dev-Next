@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { blogPostSchema, type BlogPostInput } from "@/lib/validators/admin/blogPost"
 import AdminForm from "@/components/admin/AdminForm"
+import FaqListField from "@/components/admin/forms/FaqListField"
 import FormGrid from "@/components/admin/forms/FormGrid"
 import MediaUpload from "@/components/admin/MediaUpload"
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
@@ -54,6 +55,7 @@ const emptyDefaults: BlogPostInput = {
   isFeatured: false,
   isHeadline: false,
   isPublished: false,
+  faqs: [],
 }
 
 function publishSuccessToast(data: BlogPostInput) {
@@ -274,6 +276,7 @@ export default function BlogPostForm({ defaultValues }: { defaultValues?: BlogPo
               <FormItem><div className="flex items-center gap-3"><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} id="headline" /></FormControl><Label htmlFor="headline">Headline</Label></div><FormMessage /></FormItem>
             )} />
           </div>
+          <FaqListField control={form.control} />
         </AdminForm>
       </form>
     </Form>

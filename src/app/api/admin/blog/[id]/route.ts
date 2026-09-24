@@ -7,10 +7,11 @@ import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { writeContentAudit } from "@/lib/auth/audit";
 import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
-import { blogPostSchema } from "@/lib/validators/admin/blogPost";
+import { blogPostObjectSchema } from "@/lib/validators/admin/blogPost";
 import { revalidateBlogCaches } from "@/lib/revalidate";
+import { faqsFromRawBody } from "@/lib/prisma/contentFaqs";
 import {
-  blogPostWithTagsInclude,
+  blogPostDetailInclude,
   fromPrismaBlogPost,
   toPrismaBlogPostPartialUpdateData,
   toPrismaBlogPostUpdateData,
@@ -23,7 +24,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   try {
     const item = await prisma.blogPost.findUnique({
       where: { id },
-      include: blogPostWithTagsInclude,
+      include: blogPostDetailInclude,
     });
     if (!item) return apiError(404, "Not found");
     return apiSuccess({ item: fromPrismaBlogPost(item) });
@@ -38,7 +39,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const { id } = await params;
   const { body, error: bodyError } = await parseJsonBody(request);
   if (bodyError) return bodyError;
-  const parsed = blogPostSchema.partial().safeParse(body);
+  const parsed = blogPostObjectSchema.partial().safeParse(body);
   if (!parsed.success)
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
@@ -48,10 +49,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       : parsed.data.isPublished && !existing?.publishedAt
         ? new Date()
         : existing?.publishedAt ?? null;
+    const parsedData = faqsFromRawBody(body, parsed.data);
     const updateData =
-      Object.keys(parsed.data).length === Object.keys(blogPostSchema.shape).length
-        ? toPrismaBlogPostUpdateData(parsed.data as Parameters<typeof toPrismaBlogPostUpdateData>[0])
-        : toPrismaBlogPostPartialUpdateData(parsed.data);
+      Object.keys(parsedData).length === Object.keys(blogPostObjectSchema.shape).length
+        ? toPrismaBlogPostUpdateData(parsedData as Parameters<typeof toPrismaBlogPostUpdateData>[0])
+        : toPrismaBlogPostPartialUpdateData(parsedData);
     const item = await prisma.blogPost.update({
       where: { id },
       data: {
@@ -60,7 +62,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
           ? { publishedAt }
           : {}),
       },
-      include: blogPostWithTagsInclude,
+      include: blogPostDetailInclude,
     });
     revalidateBlogCaches(item.slug);
     const justPublished = item.isPublished && !existing?.publishedAt;

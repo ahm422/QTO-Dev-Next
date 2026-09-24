@@ -1,7 +1,7 @@
 import { getServerSession } from "@/lib/auth/session"
 import { notFound, redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { fromPrismaService, serviceWithTagsInclude } from "@/lib/prisma/serviceData"
+import { fromPrismaService, serviceDetailInclude } from "@/lib/prisma/serviceData"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import ServiceForm from "./ServiceForm"
 
@@ -19,7 +19,7 @@ export default async function ServiceFormPage({
   if (!isNew) {
     const service = await prisma.service.findUnique({
       where: { id },
-      include: serviceWithTagsInclude,
+      include: serviceDetailInclude,
     })
     if (!service) notFound()
 
