@@ -72,18 +72,13 @@ export class KvChatMessageHistory extends BaseListChatMessageHistory {
 }
 
 /**
- * Thin session-lifecycle wrapper — same public surface as the old in-memory
- * `ConversationStore` (`createSession`/`hasSession`/`getHistory`/`appendTurn`) so
- * `rag/chatService.ts` doesn't need to change. `hasSession` is async here (a KV read)
- * where the old one was a synchronous Map lookup — callers await it.
+ * Thin session-lifecycle wrapper over the KV history. There is no existence check: callers
+ * supply their own session id (see api/routes/chat.ts) and an id with no stored history is
+ * simply a new session.
  */
 class ConversationStore {
   createSession(): string {
     return crypto.randomUUID();
-  }
-
-  async hasSession(sessionId: string): Promise<boolean> {
-    return (await requireKv().get(sessionKey(sessionId), "text")) !== null;
   }
 
   getHistory(sessionId: string): KvChatMessageHistory {

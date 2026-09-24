@@ -18,9 +18,12 @@ function wordCount(text: string): number {
 // Deliberately loose here — no length limits in the schema itself. Length/word-count
 // checks are done manually below so each failure gets its own friendly, specific
 // message instead of Zod's technical "message must be at most N characters" text.
+// sessionId is the caller's own id (the main site sends its localStorage widget session id),
+// used directly as the KV key — so history survives across isolates without any id mapping.
+// Restricted to a safe charset/length since it becomes part of a KV key.
 const chatRequestSchema = z.object({
   message: z.string(),
-  sessionId: z.string().uuid().optional(),
+  sessionId: z.string().regex(/^[A-Za-z0-9_-]{8,128}$/).optional(),
 });
 
 interface ValidatedChatRequest {
@@ -72,10 +75,9 @@ async function validateChatRequest(
     };
   }
 
-  const sessionId =
-    parsed.data.sessionId && (await conversationStore.hasSession(parsed.data.sessionId))
-      ? parsed.data.sessionId
-      : conversationStore.createSession();
+  // A caller-supplied id is used as-is, whether or not it has history yet — an unknown id
+  // simply starts a fresh session under that key. Only a missing id gets a server-generated one.
+  const sessionId = parsed.data.sessionId ?? conversationStore.createSession();
 
   return { message, sessionId };
 }
