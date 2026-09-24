@@ -20,7 +20,7 @@ Rather than patch around these, each was replaced with the Cloudflare-native equ
 
 ## 2. Architecture
 
-**Sync** (cron-triggered every `SYNC_INTERVAL_MINUTES`, or via `POST /sync/run` / `POST /sync/reindex`):
+**Sync** (cron-triggered every `SYNC_INTERVAL_MINUTES`; immediately for the changed table after every admin-panel save — see §7a; or manually via `POST /sync/run` / `POST /sync/reindex`):
 
 ```
 ┌────────────────────────────┐
@@ -117,7 +117,7 @@ unpublished / deleted in D1  →  delete vectors + state
 | Vector store | Qdrant (`QdrantVectorStore`) | Cloudflare Vectorize, via `@langchain/cloudflare`'s `CloudflareVectorizeStore` — [src/vectorstore/vectorize.ts](src/vectorstore/vectorize.ts) |
 | Embeddings | `Xenova/all-MiniLM-L6-v2`, local inference | Workers AI `@cf/baai/bge-small-en-v1.5` (384-dim, same as before), via `CloudflareWorkersAIEmbeddings` |
 | HTTP framework | Express | Hono — [src/api/server.ts](src/api/server.ts) |
-| Conversation history | In-memory `Map` + `InMemoryChatMessageHistory` | `CHATBOT_KV`, one TTL'd key per session — [src/conversation/store.ts](src/conversation/store.ts) |
+| Conversation history | In-memory `Map` + `InMemoryChatMessageHistory` | `CHATBOT_KV`, one TTL'd key per session, keyed by the caller's own session id — [src/conversation/store.ts](src/conversation/store.ts), see §7b |
 | Rate limiting | In-memory, per-process (explicitly not safe multi-instance) | `CHATBOT_KV`, fixed-window per IP — actually holds across Cloudflare's edge — [src/api/middleware/rateLimit.ts](src/api/middleware/rateLimit.ts) |
 | Sync state | `data/sync-state.json` on disk | `CHATBOT_KV`, one JSON blob per table — [src/sync/stateStore.ts](src/sync/stateStore.ts) |
 | Scheduling | `setInterval` loop in-process | Cron Trigger (`wrangler.jsonc` → `triggers.crons`) + `scheduled()` export in [src/index.ts](src/index.ts) |
@@ -134,7 +134,7 @@ Everything else — ingestion sources (14 D1 tables), chunking, the `list_record
 | `DB` | D1 database `qtodev-d1` | Same database the main `qto-dev-next` Worker uses — read-only in code (`assertSelectOnly`), even though the binding itself is full read/write |
 | `VECTORIZE` | Vectorize index `qtodev-chatbot-kb` | 384 dimensions, cosine metric; metadata indexes on `isPublished` (boolean), `table`, `slug` (string) |
 | `AI` | Workers AI | Embeddings model configured via `EMBEDDING_MODEL` var, not a separate binding-level setting |
-| `CHATBOT_KV` | KV namespace `qtodev-chatbot-state` | Key-prefixed: `session:<id>` (conversation history), `ratelimit:<ip>:<windowStart>`, `syncstate:<table>` / `syncstate:_meta:lastFullSyncAt` |
+| `CHATBOT_KV` | KV namespace `qtodev-chatbot-state` | Key-prefixed: `session:<id>` (conversation history; `<id>` is e.g. `public_sess_…` / `admin_sess_…` from the main site), `ratelimit:<ip>:<windowStart>`, `syncstate:<table>` / `syncstate:_meta:lastFullSyncAt` |
 | cron trigger | `*/15 * * * *` | Must be kept in sync with `SYNC_INTERVAL_MINUTES` below if changed |
 
 Provisioned via:
@@ -182,17 +182,39 @@ Secrets (never in `wrangler.jsonc` — set via `wrangler secret put <NAME>`, pro
 | Secret | Purpose |
 |---|---|
 | `LLM_API_KEY` | DeepSeek (or other OpenAI-compatible provider) API key |
-| `SYNC_TRIGGER_TOKEN` | Required in the `x-sync-token` header for `POST /sync/run` and `POST /sync/reindex`. Generate with `openssl rand -hex 32`. Leave unset to disable the check (not recommended in production). |
+| `SYNC_TRIGGER_TOKEN` | Required in the `x-sync-token` header for `POST /sync/run` and `POST /sync/reindex`. Generate with `openssl rand -hex 32`. Leave unset to disable the check — **not recommended in production**: anyone could then trigger re-embedding and burn Workers AI quota. |
+
+```bash
+cd chatbot/worker
+npx wrangler secret put LLM_API_KEY
+npx wrangler secret put SYNC_TRIGGER_TOKEN
+npx wrangler secret list
+```
+
+Or in the dashboard: **Workers & Pages → qtodev-chatbot-worker → Settings → Variables and Secrets → Add** (type **Secret**).
+
+The main site's Worker (`qto-dev-next`, repo root) needs one matching secret for the instant admin sync (§7a):
+
+| Secret (on `qto-dev-next`) | Purpose |
+|---|---|
+| `CHATBOT_SYNC_TOKEN` | Must equal this Worker's `SYNC_TRIGGER_TOKEN`. Set from the repo root with `npx wrangler secret put CHATBOT_SYNC_TOKEN`. |
+
+For `wrangler dev`, put the same values in `chatbot/worker/.dev.vars` (git-ignored):
+
+```
+LLM_API_KEY=sk-...
+SYNC_TRIGGER_TOKEN=...
+```
 
 ## 6. API endpoints
 
 | Method | Path | Purpose | Auth |
 |---|---|---|---|
-| `POST` | `/chat` | Send a message → `{ sessionId, reply }` (non-streaming) | rate-limited |
+| `POST` | `/chat` | Send `{ message, sessionId? }` → `{ sessionId, reply }` (non-streaming). `sessionId` must match `^[A-Za-z0-9_-]{8,128}$`; omit it to get a server-generated one | rate-limited |
 | `POST` | `/chat/stream` | Same contract, SSE (`token`/`done`/`error` events) — **this is what the main site's public/admin chat widgets call**, via `src/lib/chat/backendChatProvider.ts` in the root app | rate-limited |
 | `GET` | `/health` | D1 + Vectorize connectivity, sync-in-progress state | none |
 | `GET` | `/metrics` | Table-access count/list, retrieval config, sync state | none |
-| `POST` | `/sync/run` | Trigger a full sync pass | optional `x-sync-token` |
+| `POST` | `/sync/run` | Trigger a sync pass. No body = full sync, returns the summary. Optional JSON body `{ "tables": ["faqs"], "background": true }` syncs only those tables and, with `background`, returns `202` immediately and finishes in `waitUntil` (used by the admin panel, §7a). Unknown table names → `400`; a sync already running on the isolate → `409`. | optional `x-sync-token` |
 | `POST` | `/sync/reindex` | Full rebuild — deletes every tracked vector, wipes KV sync state, re-syncs from scratch. Worker-native replacement for the old service's `npm run reindex:all` CLI script. | optional `x-sync-token` |
 | `GET` | `/sync/status` | Last sync summary (per-isolate — see §8) | none |
 
@@ -214,15 +236,45 @@ curl -X POST https://qtodev-chatbot-worker.your-subdomain.workers.dev/chat/strea
   -d '{"message": "What services does QTO Dev offer?"}'
 ```
 
-For Cloudflare Workers Builds connected to this monorepo, set **Root directory** to
-`chatbot/worker`, **Build command** to `npm run typecheck`, and **Deploy command** to
-`npm run deploy` in the Worker's **Settings → Build**. The older `chatbot/`
-directory is a separate Node/Express service; its `npm run build` only runs
-TypeScript and does not package this Worker.
+### Cloudflare Workers Builds (git-connected deploys)
+
+In the Worker's **Settings → Build**:
+
+| Setting | Value |
+|---|---|
+| Branch | one that actually contains `chatbot/worker/` (currently `chatbot-cloudflare` — `main` doesn't have it yet) |
+| Root directory | `chatbot/worker` |
+| Build command | `npm run typecheck` (or leave empty — `wrangler deploy` bundles on its own) |
+| Deploy command | `npm run deploy` |
+
+The Worker name connected in the dashboard must match `"name"` in `wrangler.jsonc` (`qtodev-chatbot-worker`).
+
+**Common mistake:** if the build log shows `> qtodev-chatbot@0.1.0 build > tsc`, the root directory is set to `chatbot` — that's the old Node/Express service, which can't run on Workers (`better-sqlite3`, local HuggingFace models). Its `npm run build` only runs TypeScript and never packages this Worker. Point the root directory at `chatbot/worker`.
+
+## 7a. Instant sync from the admin panel
+
+The cron still runs every 15 minutes as a safety net, but content edits don't have to wait for it. Every create / update / delete / publish-toggle / reorder in the main site's admin panel — both the server actions in `src/app/admin/(dashboard)/<section>/actions.ts` and the `src/app/api/admin/<section>/` routes — calls `triggerChatbotSync("<table>")` ([src/lib/chat/triggerChatbotSync.ts](../../src/lib/chat/triggerChatbotSync.ts) in the root app).
+
+That helper sends `POST /sync/run` with `{ tables: [<table>], background: true }` and the `x-sync-token` header. It is fire-and-forget, handed to the runtime via `waitUntil`, so the admin save is never slowed down and never fails because of the chatbot. The Worker returns `202` and re-syncs just that one table, which keeps the work small enough for the post-response `waitUntil` budget. Typically the change is live in chat within seconds.
+
+Covered tables: `about_content`, `blog_posts`, `chatbot_faqs`, `engagement_models`, `faqs`, `industries`, `jobs`, `process_steps`, `products`, `projects`, `services`, `team_members`, `testimonials`. `technologies` is intentionally not triggered — it isn't embedded, and `list_records` reads it live from D1.
+
+If a trigger is lost, the next cron pass still applies the change. That covers a `409` because a sync is already running on that isolate, a network error, or a token mismatch (`401`, which is logged in the main site as `[chatbot-sync] …`).
+
+Setup: `CHATBOT_SYNC_TOKEN` on the main site must equal `SYNC_TRIGGER_TOKEN` here (see §5).
+
+## 7b. Conversation memory (per session)
+
+The bot remembers earlier turns within one chat session, e.g. "tell me more about the second one" works after a list answer.
+
+- The main site's widget keeps a session id in `localStorage`, generated with `crypto.randomUUID()` (`src/hooks/useChatPersistence.ts`). `backendChatProvider.ts` sends it as `sessionId`, prefixed `public_` or `admin_` so the two widgets never share history.
+- This Worker uses that id directly as the KV key `session:<id>`. There is deliberately **no server-side id mapping**. An earlier version mapped widget ids to backend UUIDs in an in-memory `Map` in the Next.js app, which was lost between Worker isolates, so the bot forgot every previous message.
+- History is capped at `CHAT_MAX_HISTORY_MESSAGES` (40 messages = 20 turns) and expires after `CHAT_SESSION_TTL_MINUTES` (60) of inactivity. Clearing the browser's storage starts a new session.
 
 ## 8. Known limitations
 
 - **`lastSync` resets per isolate**: `GET /health` and `GET /sync/status`'s `lastSync` field comes from an in-memory variable in `sync/syncEngine.ts` (ported unchanged from the Node service), which isn't shared across Worker isolates or persisted to KV. The sync itself is fully durable (Vectorize + `CHATBOT_KV`) — only this one status field can read as `null` on a cold isolate even though the last sync succeeded. Fixable by persisting the summary to KV in a follow-up if reliable "when did sync last run" reporting is needed.
+- **Sync lock is per isolate**: `syncInProgress` is an in-memory flag, so two isolates (e.g. cron + an admin-triggered sync) can run at the same time. This is safe in practice, because point ids are deterministic (UUIDv5), so concurrent upserts overwrite rather than duplicate. The worst case is one redundant re-embed.
 - KV-based rate limiting is eventually consistent (approximate under concurrent bursts) — an accepted trade-off, same spirit as the old limiter's documented single-instance-only caveat, but this one actually holds across the whole edge instead of not at all.
 
 **Resolved**: the root Next.js app's `CHATBOT_SERVICE_URL` (in `wrangler.toml` → `[vars]`, both production and `[env.staging.vars]`) now points at this Worker's live URL and has been redeployed — production chat traffic reaches this service.
