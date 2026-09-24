@@ -68,6 +68,11 @@ export async function POST(request: NextRequest) {
   });
 
   return new Response(stream, {
-    headers: { "Content-Type": "application/x-ndjson; charset=utf-8" },
+    headers: {
+      "Content-Type": "application/x-ndjson; charset=utf-8",
+      // Keep proxies/Cloudflare from compressing or buffering the stream — tokens must flush as sent.
+      "Cache-Control": "no-cache, no-transform",
+      "X-Accel-Buffering": "no",
+    },
   });
 }

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isAsyncIterable, type ChatProvider } from "@/lib/chat/chatClient";
 import { useChatPersistence, type ChatLauncherPosition } from "@/hooks/useChatPersistence";
+import { createTypewriter } from "@/lib/chat/typewriter";
 import type { ChatMessage, ChatVariant, QuickReply } from "@/types/chat";
 
 function id(prefix: string): string {
@@ -116,41 +117,45 @@ export function useChatWidget({ provider, variant, enabled = true }: UseChatWidg
 
         if (isAsyncIterable(result)) {
           let assistantId: string | null = null;
+          const updateAssistant = (update: (m: ChatMessage) => ChatMessage) =>
+            setMessages((prev) => prev.map((m) => (m.id === assistantId ? update(m) : m)));
+
+          // Chunks go through a typewriter rather than straight into the message, so the reply
+          // visibly types out even when the model/network deliver it in one burst.
+          const typewriter = createTypewriter((text) =>
+            updateAssistant((m) => ({ ...m, content: m.content + text }))
+          );
+          controller.signal.addEventListener("abort", () => typewriter.cancel());
 
           for await (const chunk of result) {
             if (controller.signal.aborted) return;
-            assistantId ??= chunk.messageId;
 
-            setMessages((prev) => {
-              const existing = prev.find((m) => m.id === assistantId);
-              if (!existing) {
-                return [
-                  ...prev,
-                  {
-                    id: assistantId!,
-                    role: "assistant",
-                    content: chunk.delta,
-                    createdAt: new Date().toISOString(),
-                    pending: !chunk.done,
-                    structuredData: chunk.structuredData,
-                    quickReplies: chunk.quickReplies,
-                  },
-                ];
-              }
-              return prev.map((m) =>
-                m.id === assistantId
-                  ? {
-                      ...m,
-                      content: m.content + chunk.delta,
-                      pending: !chunk.done,
-                      structuredData: chunk.done ? chunk.structuredData : m.structuredData,
-                      quickReplies: chunk.done ? chunk.quickReplies : m.quickReplies,
-                    }
-                  : m
-              );
-            });
+            if (assistantId === null) {
+              assistantId = chunk.messageId;
+              setMessages((prev) => [
+                ...prev,
+                {
+                  id: assistantId!,
+                  role: "assistant",
+                  content: "",
+                  createdAt: new Date().toISOString(),
+                  pending: true,
+                },
+              ]);
+            }
+
+            typewriter.push(chunk.delta);
 
             if (chunk.done) {
+              // Finish typing before marking the message complete and showing quick replies.
+              await typewriter.drain();
+              if (controller.signal.aborted) return;
+              updateAssistant((m) => ({
+                ...m,
+                pending: false,
+                structuredData: chunk.structuredData,
+                quickReplies: chunk.quickReplies,
+              }));
               setQuickReplies(chunk.quickReplies ?? []);
               bumpUnread();
             }
