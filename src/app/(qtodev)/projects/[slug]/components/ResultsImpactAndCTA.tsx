@@ -4,7 +4,9 @@ import { Project } from "@/content/projects/types";
 import { Container } from "@/components/common/Container";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Reveal } from "@/components/animations/Reveal";
+import { RichText } from "@/components/common/RichText";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
+import { cmsBodyNeedsRichText } from "@/lib/sanitize-html";
 
 interface ResultsImpactAndCTAProps {
   project: Project;
@@ -58,7 +60,11 @@ export function ResultsImpactAndCTA({ project }: ResultsImpactAndCTAProps) {
                     <AppIcon name="bolt" size="sm" className="!text-[10px]" />
                   </span>
                   <span className="text-sm font-medium leading-snug text-foreground-muted">
-                    {outcome}
+                    {cmsBodyNeedsRichText(outcome) ? (
+                      <RichText html={outcome} as="span" />
+                    ) : (
+                      outcome
+                    )}
                   </span>
                 </div>
               ))}

@@ -1,5 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import type { ServiceInput } from "@/lib/validators/admin/service";
+import { normalizeStoredHtml } from "@/lib/sanitize-html";
 import {
   createOrderedChildren,
   orderedTagValues,
@@ -35,6 +36,7 @@ export function toPrismaServiceCreateData(
     ...scalars,
     imageUrl: scalars.imageUrl || null,
     imageAlt: scalars.imageAlt || null,
+    description: normalizeStoredHtml(scalars.description || ""),
     features: stringifyStringArray(input.features),
     technologyTags: createOrderedChildren(input.technologyTags),
   };
@@ -48,6 +50,7 @@ export function toPrismaServiceUpdateData(
     ...scalars,
     imageUrl: scalars.imageUrl || null,
     imageAlt: scalars.imageAlt || null,
+    description: normalizeStoredHtml(scalars.description || ""),
     features: stringifyStringArray(input.features),
     technologyTags: replaceOrderedChildren(input.technologyTags),
   };
@@ -61,7 +64,7 @@ export function toPrismaServicePartialUpdateData(
   if (input.title !== undefined) data.title = input.title;
   if (input.slug !== undefined) data.slug = input.slug;
   if (input.shortDescription !== undefined) data.shortDescription = input.shortDescription;
-  if (input.description !== undefined) data.description = input.description;
+  if (input.description !== undefined) data.description = normalizeStoredHtml(input.description);
   if (input.icon !== undefined) data.icon = input.icon;
   if (input.imageUrl !== undefined) data.imageUrl = input.imageUrl || null;
   if (input.imageAlt !== undefined) data.imageAlt = input.imageAlt || null;

@@ -261,6 +261,77 @@ export function isHtmlBody(body: string): boolean {
   return /<[a-z][\s\S]*>/i.test(body)
 }
 
+/** Entity-encoded markup (`&lt;p`, `&lt;a`) with no real tag yet. */
+const ENCODED_MARKUP = /&lt;\s*\/?\s*[a-z]/i
+
+const NAMED_ENTITIES: Record<string, string> = {
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  quot: '"',
+  apos: "'",
+  nbsp: "\u00a0",
+}
+
+function looksLikeEncodedMarkup(value: string): boolean {
+  return ENCODED_MARKUP.test(value) && !isHtmlBody(value)
+}
+
+/** One pass only. A second decode would turn a literal `&amp;` into `&`. */
+function decodeHtmlEntitiesOnce(text: string): string {
+  return text.replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (entity, body: string) => {
+    if (body[0] === "#") {
+      const hex = body[1] === "x" || body[1] === "X"
+      const code = parseInt(body.slice(hex ? 2 : 1), hex ? 16 : 10)
+      if (!Number.isFinite(code) || code < 0 || code > 0x10ffff) return entity
+      try {
+        return String.fromCodePoint(code)
+      } catch {
+        return entity
+      }
+    }
+    return NAMED_ENTITIES[body.toLowerCase()] ?? entity
+  })
+}
+
+const MARKDOWN_LINK = /\[([^\]\n]+)\]\(([^)\s]+)\)/g
+
+function convertMarkdownLinks(value: string): string {
+  if (!value.includes("](")) return value
+  return value.replace(MARKDOWN_LINK, (_match, label: string, url: string) => {
+    return `<a href="${escapeHtml(url)}">${escapeHtml(label)}</a>`
+  })
+}
+
+/**
+ * Repairs CMS bodies stored as escaped tags or markdown links.
+ * Bare `http(s)://` and `www.` URLs are left for `linkifyHtml` / `linkifyPlainText`.
+ * Decode runs at most once, and only when the string is entity-encoded markup.
+ */
+export function normalizeCmsHtml(value: string): string {
+  if (!value) return ""
+  const decoded = looksLikeEncodedMarkup(value) ? decodeHtmlEntitiesOnce(value) : value
+  return convertMarkdownLinks(decoded)
+}
+
+/** True when public render should use the rich-text path instead of a text node. */
+export function cmsBodyNeedsRichText(value: string): boolean {
+  if (!value) return false
+  const normalized = normalizeCmsHtml(value)
+  return isHtmlBody(normalized) || /https?:\/\/|www\./i.test(normalized)
+}
+
+/**
+ * HTML safe to store. Plain sentences (including bare URLs) stay plain;
+ * escaped markup and markdown links become sanitized HTML.
+ */
+export function normalizeStoredHtml(value: string): string {
+  if (!value) return ""
+  const normalized = normalizeCmsHtml(value)
+  if (!isHtmlBody(normalized)) return normalized
+  return sanitizeHtml(linkifyHtml(normalized))
+}
+
 const HTML_ESCAPES: Record<string, string> = {
   "&": "&amp;",
   "<": "&lt;",
@@ -365,9 +436,21 @@ export function wrapTables(html: string): string {
  */
 export function stripHtml(html: string): string {
   if (!html) return ""
-  if (!isHtmlBody(html)) return html
-  return sanitizeHtml(html)
+  const normalized = normalizeCmsHtml(html)
+  if (!isHtmlBody(normalized)) return normalized
+  return sanitizeHtml(normalized)
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .trim()
+}
+
+/**
+ * Public HTML for `RichText`: normalize stored shapes, linkify bare URLs,
+ * then sanitize. Sanitizing stays the XSS boundary.
+ */
+export function prepareCmsHtml(value: string): string {
+  if (!value) return ""
+  const normalized = normalizeCmsHtml(value)
+  const linked = isHtmlBody(normalized) ? linkifyHtml(normalized) : linkifyPlainText(normalized)
+  return wrapTables(sanitizeHtml(linked))
 }

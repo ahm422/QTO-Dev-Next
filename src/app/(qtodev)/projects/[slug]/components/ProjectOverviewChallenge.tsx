@@ -6,6 +6,7 @@ import { Reveal } from "@/components/animations/Reveal";
 import { RichText } from "@/components/common/RichText";
 import { AppIcon } from "@/components/ui/shared/AppIcon";
 import type { AppIconName } from "@/components/ui/shared/AppIcon";
+import { cmsBodyNeedsRichText } from "@/lib/sanitize-html";
 
 interface ProjectOverviewChallengeProps {
   project: Project;
@@ -89,11 +90,32 @@ export function ProjectOverviewChallenge({ project }: ProjectOverviewChallengePr
                       <span className="mt-1.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-error/10 text-error">
                         <AppIcon name="xmark" size="sm" className="!text-[10px]" />
                       </span>
-                      <span>{item}</span>
+                      <CmsInline html={item} />
                     </li>
                   ))}
                 </ul>
               </article>
+
+              {project.solution.length > 0 ? (
+                <article className="rounded-2xl border border-border bg-surface p-6 shadow-sm ring-1 ring-black/[0.03] md:p-7">
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                      <AppIcon name="check" size="sm" />
+                    </span>
+                    <h3 className="text-lg font-semibold text-foreground">Solution</h3>
+                  </div>
+                  <ul className="mt-5 space-y-3 text-sm leading-7 text-foreground-muted">
+                    {project.solution.map((item) => (
+                      <li key={item} className="flex items-start gap-3">
+                        <span className="mt-1.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                          <AppIcon name="check" size="sm" className="!text-[10px]" />
+                        </span>
+                        <CmsInline html={item} />
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              ) : null}
             </div>
 
             <aside
@@ -139,6 +161,11 @@ export function ProjectOverviewChallenge({ project }: ProjectOverviewChallengePr
       </Container>
     </section>
   );
+}
+
+function CmsInline({ html }: { html: string }) {
+  if (!cmsBodyNeedsRichText(html)) return <span>{html}</span>
+  return <RichText html={html} as="span" />
 }
 
 function MetaCard({

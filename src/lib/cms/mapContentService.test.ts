@@ -55,5 +55,23 @@ describe("mapPrismaToContentService", () => {
     expect(result.subheadline).toBe(
       "Premium web development and design services from QTO Dev."
     );
+    expect(result.overviewText).toBe("");
+  });
+
+  it("uses description only for overviewText, even when shortDescription is set", () => {
+    const html = "<p>Full <a href=\"https://example.com\">overview</a>.</p>";
+    const result = mapPrismaToContentService(
+      makeRow({ shortDescription: "Card blurb.", description: html })
+    );
+    expect(result.overviewText).toBe(html);
+    expect(result.subheadline).toBe("Card blurb.");
+  });
+
+  it("leaves overviewText empty when description is empty", () => {
+    const result = mapPrismaToContentService(
+      makeRow({ shortDescription: "Card blurb.", description: "" })
+    );
+    expect(result.overviewText).toBe("");
+    expect(result.subheadline).toBe("Card blurb.");
   });
 });

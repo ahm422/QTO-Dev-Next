@@ -1,5 +1,5 @@
 import { revalidatePath, revalidateTag } from "next/cache";
-import { blogPaths, productPaths } from "@/lib/revalidate-paths";
+import { blogPaths, productPaths, projectPaths, servicePaths } from "@/lib/revalidate-paths";
 
 export function revalidatePaths(paths: string[]) {
   for (const path of paths) {
@@ -11,6 +11,25 @@ export function revalidatePaths(paths: string[]) {
 export function revalidateBlogCaches(slug?: string | null) {
   revalidatePaths([...blogPaths(slug)]);
   revalidateTag("blog", "max");
+}
+
+/** Path + tag invalidation for public service CMS reads (`tags: ["services"]`). */
+export function revalidateServiceCaches(slug?: string | null) {
+  revalidatePaths([...servicePaths(slug)]);
+  revalidateTag("services", "max");
+}
+
+/** Path + tag invalidation for public project CMS reads (`tags: ["projects"]`). */
+export function revalidateProjectCaches(
+  projectSlug?: string | null,
+  ...serviceSlugs: (string | null | undefined)[]
+) {
+  const paths = [...projectPaths(projectSlug)];
+  for (const slug of serviceSlugs) {
+    if (slug) paths.push(...servicePaths(slug));
+  }
+  revalidatePaths(paths);
+  revalidateTag("projects", "max");
 }
 
 /** Path + tag invalidation for public team / founder CMS reads (`tags: ["team"]`). */

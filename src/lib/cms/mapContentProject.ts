@@ -91,9 +91,7 @@ export function mapPrismaToContentProject(
     problem: item.challenge
       ? [item.challenge]
       : ["Legacy workflows slowed operations and increased delivery risk."],
-    solution: item.solution
-      ? [item.solution]
-      : ["Implemented scalable architecture with strong QA and clearer user flows."],
+    solution: item.solution ? [item.solution] : [],
     outcomes:
       results.length > 0
         ? results

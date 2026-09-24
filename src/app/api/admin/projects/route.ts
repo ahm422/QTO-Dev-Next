@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { apiSuccess, apiError } from "@/lib/apiResponses";
 import { formatZodFieldErrors } from "@/lib/validators/http";
@@ -9,6 +8,7 @@ import { handleRouteError } from "@/lib/api/handleRouteError";
 import { writeContentAudit } from "@/lib/auth/audit";
 import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { projectSchema } from "@/lib/validators/admin/project";
+import { revalidateProjectCaches } from "@/lib/revalidate";
 import {
   fromPrismaProject,
   projectWithRelationsInclude,
@@ -45,8 +45,7 @@ export async function POST(request: NextRequest) {
       data: toPrismaProjectCreateData(parsed.data),
       include: projectWithRelationsInclude,
     });
-    revalidatePath("/");
-    revalidatePath("/projects");
+    revalidateProjectCaches(item.slug, item.serviceSlug);
     await writeContentAudit({
       session,
       action: AUDIT_ACTIONS.CONTENT_CREATED,
