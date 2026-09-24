@@ -244,7 +244,7 @@ In the Worker's **Settings → Build**:
 |---|---|
 | Branch | one that actually contains `chatbot/worker/` (currently `chatbot-cloudflare` — `main` doesn't have it yet) |
 | Root directory | `chatbot/worker` |
-| Build command | `npm run typecheck` (or leave empty — `wrangler deploy` bundles on its own) |
+| Build command | `npm run build` (= `tsc --noEmit`, a type check only), or leave empty — `wrangler deploy` bundles on its own |
 | Deploy command | `npm run deploy` |
 
 The Worker name connected in the dashboard must match `"name"` in `wrangler.jsonc` (`qtodev-chatbot-worker`).

@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "build": "tsc --noEmit",
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
     "start": "wrangler dev",
@@ -14,6 +15,7 @@
     "@cloudflare/vitest-plugin": "^1.0.0",
     "@cloudflare/workers-types": "^5.20260921.1",
     "@types/node": "^26.6.2",
+    "@types/uuid": "^9.0.8",
     "typescript": "^5.5.2",
     "vitest": "~4.1.0",
     "wrangler": "^4.136.3"
@@ -26,5 +28,9 @@
     "hono": "^4.13.8",
     "uuid": "^9.0.1",
     "zod": "^3.25.76"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "workerd@1.20260921.1": true
   }
 }
