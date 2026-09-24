@@ -30,8 +30,14 @@ function storageKey(variant: ChatVariant): string {
   return `chat:${variant}:state`;
 }
 
+// The backend keys conversation history by this id, so it must be unguessable — a random
+// UUID where available (all modern browsers), Math.random only as a last-resort fallback.
 function generateSessionId(): string {
-  return `sess_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+  const random =
+    typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID().replace(/-/g, "")
+      : `${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+  return `sess_${random}`;
 }
 
 function readState(variant: ChatVariant): PersistedChatState {

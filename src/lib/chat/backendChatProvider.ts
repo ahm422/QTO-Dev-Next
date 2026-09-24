@@ -15,16 +15,15 @@ import { getChatbotServiceTimeoutMs, getChatbotServiceUrl } from "@/config/chat"
 const UNAVAILABLE_MESSAGE = "The assistant is temporarily unavailable. Please try again shortly.";
 
 /**
- * Maps our locally-generated session ids (e.g. "sess_...", see `useChatPersistence.ts`) to the
- * backend's UUID session ids (`z.string().uuid()` in `chatbot/src/api/routes/chat.ts`) — the two
- * formats aren't compatible, so a session's first turn omits `sessionId` and we remember whatever
- * UUID the backend hands back. In-memory, per-instance — resets on restart/redeploy, same
- * limitation the backend's own `conversationStore` already has.
+ * The backend keys conversation history (KV, see `chatbot/worker/src/conversation/store.ts`)
+ * directly by the session id we send, so we pass the widget's own localStorage session id
+ * (see `useChatPersistence.ts`) — prefixed by variant so public and admin chats never share
+ * history. No server-side id mapping: that would live in per-isolate memory and be lost
+ * between requests on Workers, which is what used to make the bot forget earlier turns.
  */
-const sessionIdMaps: Record<ChatVariant, Map<string, string>> = {
-  public: new Map(),
-  admin: new Map(),
-};
+function backendSessionId(variant: ChatVariant, sessionId: string): string {
+  return `${variant}_${sessionId}`;
+}
 
 interface SseEvent {
   event: string;
@@ -81,8 +80,6 @@ export async function* sendBackendChatMessage(
   clientIp?: string
 ): AsyncIterable<ChatChunk> {
   const messageId = newMessageId();
-  const sessionMap = sessionIdMaps[variant];
-  const backendSessionId = sessionMap.get(sessionId);
 
   const timeoutSignal = AbortSignal.timeout(getChatbotServiceTimeoutMs());
   const combinedSignal = signal ? AbortSignal.any([signal, timeoutSignal]) : timeoutSignal;
@@ -97,7 +94,7 @@ export async function* sendBackendChatMessage(
       },
       body: JSON.stringify({
         message: text,
-        ...(backendSessionId ? { sessionId: backendSessionId } : {}),
+        sessionId: backendSessionId(variant, sessionId),
       }),
       signal: combinedSignal,
     });
@@ -129,8 +126,6 @@ export async function* sendBackendChatMessage(
           const parsed = JSON.parse(evt.data) as { content: string };
           yield { messageId, delta: parsed.content, done: false };
         } else if (evt.event === "done") {
-          const parsed = JSON.parse(evt.data) as { sessionId: string; reply: string };
-          sessionMap.set(sessionId, parsed.sessionId);
           completed = true;
           yield { messageId, delta: "", done: true };
           return;
