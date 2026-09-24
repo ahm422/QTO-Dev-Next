@@ -30,7 +30,8 @@ import type { StatsNumbersItem, StatsNumbersVariant } from "@/types/statsNumbers
 import type { TestimonialItem } from "@/types/testimonials";
 import type { WhyChooseUsItem } from "@/types/whyChooseUs";
 import type { LeadershipMember } from "@/types/leadership";
-import type { BlogPostWithTags } from "@/lib/prisma/blogPostData";
+import type { BlogPostFaqSource } from "@/lib/prisma/blogPostData";
+import { mapContentFaqRows } from "@/lib/prisma/contentFaqs";
 import type { ProductWithFeatures } from "@/lib/prisma/productData";
 import type { ProjectWithRelations } from "@/lib/prisma/projectData";
 import type { ServiceWithTags } from "@/lib/prisma/serviceData";
@@ -191,7 +192,7 @@ export function mapFaq(row: PrismaFaq): Faq {
   };
 }
 
-export function mapBlogPost(row: BlogPostWithTags): BlogPost {
+export function mapBlogPost(row: BlogPostFaqSource): BlogPost {
   const rawDate = row.publishedAt ?? row.createdAt;
   const iso = rawDate.toISOString().slice(0, 10);
   const publishedAt = Number.isNaN(new Date(iso).getTime())
@@ -210,6 +211,7 @@ export function mapBlogPost(row: BlogPostWithTags): BlogPost {
     featured: row.isFeatured,
     category: row.category,
     tags: orderedTagValues(row.tags),
+    faqs: mapContentFaqRows(row.faqs),
     image: resolveMediaUrl(row.imageUrl),
     coverImage: row.imageUrl
       ? { url: resolveMediaUrlOrEmpty(row.imageUrl), alt: row.imageAlt ?? row.title }

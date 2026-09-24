@@ -1,4 +1,5 @@
-import type { ServiceWithTags } from "@/lib/prisma/serviceData";
+import type { ServiceFaqSource } from "@/lib/prisma/serviceData";
+import { mapContentFaqRows } from "@/lib/prisma/contentFaqs";
 import {
   orderedTagValues,
   parseStringArray,
@@ -24,7 +25,7 @@ const fallbackOverview =
  * relatedProjects come from DB (passed in); never inherit the seed list.
  */
 export function mapPrismaToContentService(
-  row: ServiceWithTags,
+  row: ServiceFaqSource,
   relatedProjects: ServiceProjectCard[] = []
 ): WebDevelopmentServiceData {
   const features = parseStringArray(row.features);
@@ -60,5 +61,6 @@ export function mapPrismaToContentService(
         ? technologyTags
         : webDevelopmentServiceData.technologies,
     relatedProjects,
+    faqs: mapContentFaqRows(row.faqs),
   };
 }

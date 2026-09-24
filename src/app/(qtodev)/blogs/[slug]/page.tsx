@@ -10,6 +10,7 @@ import { ArticleSidebar } from './_components/ArticleSidebar';
 import { ArticleEndCTA } from './_components/ArticleEndCTA';
 import { RelatedArticlesAsync } from "./_components/RelatedArticlesAsync";
 import { RelatedArticlesSkeleton } from "@/components/common/skeletons/RelatedArticlesSkeleton";
+import { ContentFaqSection } from "@/components/faq";
 
 interface BlogDetailPageProps {
   params: Promise<{
@@ -69,6 +70,7 @@ export default async function BlogDetailPage({
           {/* Main Content (2/3) */}
           <div className="lg:col-span-2">
             <ArticleBody post={post} />
+            <ContentFaqSection items={post.faqs} idPrefix="blog-faq" />
           </div>
 
           {/* Sidebar (1/3) */}

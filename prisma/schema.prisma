@@ -84,6 +84,7 @@ model Service {
   updatedAt        DateTime @updatedAt @map("updated_at")
 
   technologyTags ServiceTechnologyTag[]
+  faqs           ServiceFaq[]
 
   @@index([slug])
   @@index([order])
@@ -101,6 +102,19 @@ model ServiceTechnologyTag {
   @@index([serviceId])
   @@index([value])
   @@map("service_technology_tags")
+}
+
+model ServiceFaq {
+  id        String @id @default(uuid())
+  serviceId String @map("service_id")
+  question  String
+  answer    String
+  sortOrder Int    @default(0) @map("sort_order")
+
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@index([serviceId])
+  @@map("service_faqs")
 }
 
 // ─── PRODUCTS (Products page: ERP, Construct Quest, etc.) ───────────────────
@@ -312,6 +326,7 @@ model BlogPost {
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
   tags BlogPostTag[]
+  faqs BlogPostFaq[]
 
   @@index([slug])
   @@index([category])
@@ -330,6 +345,19 @@ model BlogPostTag {
   @@index([blogPostId])
   @@index([value])
   @@map("blog_post_tags")
+}
+
+model BlogPostFaq {
+  id         String   @id @default(uuid())
+  blogPostId String   @map("blog_post_id")
+  question   String
+  answer     String
+  sortOrder  Int      @default(0) @map("sort_order")
+
+  blogPost BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+
+  @@index([blogPostId])
+  @@map("blog_post_faqs")
 }
 
 // ─── TECHNOLOGIES (Tech Stack) ───────────────────────────────────────────────

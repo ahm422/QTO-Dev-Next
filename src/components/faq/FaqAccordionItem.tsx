@@ -18,6 +18,7 @@ export interface FaqAccordionItemProps {
   id?: string;
   controlsId?: string;
   index?: number;
+  answerClassName?: string;
 }
 
 export function FaqAccordionItem({
@@ -28,6 +29,7 @@ export function FaqAccordionItem({
   id,
   controlsId,
   index,
+  answerClassName,
 }: FaqAccordionItemProps) {
   return (
     <Accordion
@@ -102,7 +104,7 @@ export function FaqAccordionItem({
               "bg-gradient-to-b from-transparent to-primary/[0.03]"
             )}
           >
-            <Text size="base" color="muted" className="leading-relaxed pt-3">
+            <Text size="base" color="muted" className={cn("leading-relaxed pt-3", answerClassName)}>
               {answer}
             </Text>
           </div>

@@ -1,7 +1,7 @@
 import { getServerSession } from "@/lib/auth/session"
 import { notFound, redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { fromPrismaBlogPost, blogPostWithTagsInclude } from "@/lib/prisma/blogPostData"
+import { fromPrismaBlogPost, blogPostDetailInclude } from "@/lib/prisma/blogPostData"
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader"
 import BlogPostForm from "./BlogPostForm"
 
@@ -19,7 +19,7 @@ export default async function BlogPostFormPage({ params }: { params: Promise<{ i
     )
   }
 
-  const record = await prisma.blogPost.findUnique({ where: { id }, include: blogPostWithTagsInclude })
+  const record = await prisma.blogPost.findUnique({ where: { id }, include: blogPostDetailInclude })
   if (!record) notFound()
 
   return (

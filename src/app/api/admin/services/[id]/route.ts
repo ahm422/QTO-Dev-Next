@@ -7,10 +7,11 @@ import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { writeContentAudit } from "@/lib/auth/audit";
 import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
-import { serviceSchema } from "@/lib/validators/admin/service";
+import { serviceObjectSchema } from "@/lib/validators/admin/service";
+import { faqsFromRawBody } from "@/lib/prisma/contentFaqs";
 import {
   fromPrismaService,
-  serviceWithTagsInclude,
+  serviceDetailInclude,
   toPrismaServicePartialUpdateData,
   toPrismaServiceUpdateData,
 } from "@/lib/prisma/serviceData";
@@ -23,7 +24,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   try {
     const item = await prisma.service.findUnique({
       where: { id },
-      include: serviceWithTagsInclude,
+      include: serviceDetailInclude,
     });
     if (!item) return apiError(404, "Not found");
     return apiSuccess({ item: fromPrismaService(item) });
@@ -38,18 +39,19 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const { id } = await params;
   const { body, error: bodyError } = await parseJsonBody(request);
   if (bodyError) return bodyError;
-  const parsed = serviceSchema.partial().safeParse(body);
+  const parsed = serviceObjectSchema.partial().safeParse(body);
   if (!parsed.success)
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
+    const parsedData = faqsFromRawBody(body, parsed.data);
     const updateData =
-      Object.keys(parsed.data).length === Object.keys(serviceSchema.shape).length
-        ? toPrismaServiceUpdateData(parsed.data as Parameters<typeof toPrismaServiceUpdateData>[0])
-        : toPrismaServicePartialUpdateData(parsed.data);
+      Object.keys(parsedData).length === Object.keys(serviceObjectSchema.shape).length
+        ? toPrismaServiceUpdateData(parsedData as Parameters<typeof toPrismaServiceUpdateData>[0])
+        : toPrismaServicePartialUpdateData(parsedData);
     const item = await prisma.service.update({
       where: { id },
       data: updateData,
-      include: serviceWithTagsInclude,
+      include: serviceDetailInclude,
     });
     revalidateServiceCaches(item.slug);
     await writeContentAudit({

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { mapPrismaToContentService } from "@/lib/cms/mapContentService";
-import type { ServiceWithTags } from "@/lib/prisma/serviceData";
+import type { ServiceFaqSource } from "@/lib/prisma/serviceData";
 
-function makeRow(overrides: Partial<ServiceWithTags> = {}): ServiceWithTags {
+function makeRow(overrides: Partial<ServiceFaqSource> = {}): ServiceFaqSource {
   return {
     id: "svc-1",
     slug: "web-development",
@@ -19,7 +19,7 @@ function makeRow(overrides: Partial<ServiceWithTags> = {}): ServiceWithTags {
     updatedAt: new Date(),
     technologyTags: [],
     ...overrides,
-  } as ServiceWithTags;
+  } as ServiceFaqSource;
 }
 
 describe("mapPrismaToContentService", () => {
@@ -73,5 +73,24 @@ describe("mapPrismaToContentService", () => {
     );
     expect(result.overviewText).toBe("");
     expect(result.subheadline).toBe("Card blurb.");
+  });
+
+  it("returns FAQs in sortOrder from the service row only", () => {
+    const result = mapPrismaToContentService(
+      makeRow({
+        faqs: [
+          { question: "Second?", answer: "B", sortOrder: 1 },
+          { question: "First?", answer: "A", sortOrder: 0 },
+        ],
+      })
+    );
+    expect(result.faqs).toEqual([
+      { question: "First?", answer: "A" },
+      { question: "Second?", answer: "B" },
+    ]);
+  });
+
+  it("returns an empty FAQ list when the relation is absent", () => {
+    expect(mapPrismaToContentService(makeRow()).faqs).toEqual([]);
   });
 });

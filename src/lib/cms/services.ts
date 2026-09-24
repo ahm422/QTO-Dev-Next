@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { getCachedReadPrisma } from "@/lib/prisma/cachedRead";
-import { serviceWithTagsInclude } from "@/lib/prisma/serviceData";
+import { serviceDetailInclude, serviceWithTagsInclude } from "@/lib/prisma/serviceData";
 import { orderedTagValues, parseStringArray } from "@/lib/prisma/arrayFields";
 import { resolveMediaUrl } from "@/config/staticImages";
 import { mapService } from "./mappers";
@@ -85,7 +85,7 @@ export const findContentServiceBySlug = cache(
       const prisma = await getCachedReadPrisma();
       const row = await prisma.service.findFirst({
         where: { slug, isPublished: true },
-        include: serviceWithTagsInclude,
+        include: serviceDetailInclude,
       });
       if (!row) return null;
 

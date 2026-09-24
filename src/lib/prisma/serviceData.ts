@@ -8,6 +8,12 @@ import {
   replaceOrderedChildren,
   stringifyStringArray,
 } from "@/lib/prisma/arrayFields";
+import {
+  createContentFaqs,
+  mapContentFaqRows,
+  replaceContentFaqs,
+  type ContentFaqRow,
+} from "@/lib/prisma/contentFaqs";
 
 const serviceInclude = {
   technologyTags: { orderBy: { sortOrder: "asc" as const } },
@@ -15,16 +21,24 @@ const serviceInclude = {
 
 export const serviceWithTagsInclude = serviceInclude;
 
+export const serviceDetailInclude = {
+  ...serviceWithTagsInclude,
+  faqs: { orderBy: { sortOrder: "asc" as const } },
+} satisfies Prisma.ServiceInclude;
+
 export type ServiceWithTags = Prisma.ServiceGetPayload<{
   include: typeof serviceWithTagsInclude;
 }>;
 
-type ServiceScalars = Omit<ServiceInput, "features" | "technologyTags">;
+export type ServiceFaqSource = ServiceWithTags & { faqs?: ContentFaqRow[] };
+
+type ServiceScalars = Omit<ServiceInput, "features" | "technologyTags" | "faqs">;
 
 function toServiceScalars(input: ServiceInput): ServiceScalars {
   const scalars = { ...input };
   delete (scalars as Partial<ServiceInput>).features;
   delete (scalars as Partial<ServiceInput>).technologyTags;
+  delete (scalars as Partial<ServiceInput>).faqs;
   return scalars as ServiceScalars;
 }
 
@@ -39,6 +53,7 @@ export function toPrismaServiceCreateData(
     description: normalizeStoredHtml(scalars.description || ""),
     features: stringifyStringArray(input.features),
     technologyTags: createOrderedChildren(input.technologyTags),
+    faqs: createContentFaqs(input.faqs),
   };
 }
 
@@ -53,6 +68,7 @@ export function toPrismaServiceUpdateData(
     description: normalizeStoredHtml(scalars.description || ""),
     features: stringifyStringArray(input.features),
     technologyTags: replaceOrderedChildren(input.technologyTags),
+    faqs: replaceContentFaqs(input.faqs),
   };
 }
 
@@ -74,15 +90,18 @@ export function toPrismaServicePartialUpdateData(
   if (input.technologyTags !== undefined) {
     data.technologyTags = replaceOrderedChildren(input.technologyTags);
   }
+  if (input.faqs !== undefined) data.faqs = replaceContentFaqs(input.faqs);
 
   return data;
 }
 
 /** Map Prisma row (with included tags) to API/form shape with string arrays. */
-export function fromPrismaService(row: ServiceWithTags) {
+export function fromPrismaService(row: ServiceFaqSource) {
+  const { faqs: faqRows, ...rest } = row;
   return {
-    ...row,
+    ...rest,
     features: parseStringArray(row.features),
     technologyTags: orderedTagValues(row.technologyTags),
+    faqs: mapContentFaqRows(faqRows),
   };
 }

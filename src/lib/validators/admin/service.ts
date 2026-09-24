@@ -1,7 +1,7 @@
 import { z } from "zod"
+import { contentFaqListSchema } from "@/lib/validators/admin/contentFaq"
 
-export const serviceSchema = z
-  .object({
+export const serviceObjectSchema = z.object({
     title: z.string().min(1, "Title is required"),
     slug: z
       .string()
@@ -16,8 +16,10 @@ export const serviceSchema = z
     imageAlt: z.string().optional().default(""),
     order: z.coerce.number().int().default(0),
     isPublished: z.boolean().default(false),
-  })
-  .superRefine((data, ctx) => {
+    faqs: contentFaqListSchema,
+})
+
+export const serviceSchema = serviceObjectSchema.superRefine((data, ctx) => {
     if (!data.isPublished) return
     if (data.shortDescription.trim().length < 80) {
       ctx.addIssue({
