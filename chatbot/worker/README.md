@@ -25,7 +25,7 @@ Rather than patch around these, each was replaced with the Cloudflare-native equ
 ```
 ┌────────────────────────────┐
 │   D1 (native binding)      │
-│  read-only · 13 tables     │
+│  read-only · 14 tables     │
 └────────────────────────────┘
                │  fetch
                ▼
@@ -123,7 +123,9 @@ unpublished / deleted in D1  →  delete vectors + state
 | Scheduling | `setInterval` loop in-process | Cron Trigger (`wrangler.jsonc` → `triggers.crons`) + `scheduled()` export in [src/index.ts](src/index.ts) |
 | Point IDs | Qdrant-valid UUIDv5 of `table:recordId:chunkIndex` | Same UUIDv5 scheme kept (Vectorize accepts any string id; a stable one is still what makes re-sync idempotent) — [src/vectorstore/pointId.ts](src/vectorstore/pointId.ts) |
 
-Everything else — ingestion sources (13 D1 tables), chunking, the `list_records` tool, the RAG/tool-calling loop, the sync diff logic (ingest/re-index/skip/exclude/remove) — is the same logic, ported with import-path changes only. See `chatbot/README.md` §2–§6 for what isn't repeated here (allowlisted tables, the `technologies` embeddable-false rationale). The **system prompt itself has since diverged** from the original — see §5a, guardrails were tightened specifically on this Worker.
+Everything else — ingestion sources (14 D1 tables), chunking, the `list_records` tool, the RAG/tool-calling loop, the sync diff logic (ingest/re-index/skip/exclude/remove) — is the same logic, ported with import-path changes only. See `chatbot/README.md` §2–§6 for what isn't repeated here (allowlisted tables, the `technologies` embeddable-false rationale). The **system prompt itself has since diverged** from the original — see §5a, guardrails were tightened specifically on this Worker.
+
+`chatbot_faqs` is an additional, admin-managed source (not present in the original Node service): general Q&A entries created under **Admin → Chatbot FAQs** in the main site. They are never rendered on the public site — they exist only to extend this Worker's knowledge base. See [src/ingestion/sources/chatbotFaqs.ts](src/ingestion/sources/chatbotFaqs.ts).
 
 ## 4. Bindings (`wrangler.jsonc`)
 
@@ -168,7 +170,8 @@ Plaintext vars — see [src/config/env.ts](src/config/env.ts) for the full Zod s
 Hardened beyond the original Node service's prompt — see [src/rag/promptBuilder.ts](src/rag/promptBuilder.ts) for the full system prompt:
 
 - **DB-only, no outside knowledge**: every fact must come from `<context>` or the `list_records` tool. The original prompt explicitly encouraged supplementing with general/outside knowledge for "consultant-style" elaboration — that's removed; if it's not in D1, the bot says so instead of answering from general knowledge.
-- **No source citation**: never mentions which page/table/content type an answer came from (the old prompt did — "According to our Services page..."). Facts are stated naturally, as if already known.
+- **No source citation**: never mentions which page/table/content type an answer came from (the old prompt did — "According to our Services page..."). Facts are stated naturally, as if already known. Enforced at both layers: the prompt forbids it, and [promptBuilder.ts](src/rag/promptBuilder.ts)'s `formatContext` plus the `list_records` payload in [tools.ts](src/rag/tools.ts) no longer include source names at all, so there's no provenance string in the prompt to leak.
+- **No narration/filler**: answers directly in the same reply — never "let me pull that up," "I'll check that for you," or any status update promising to look something up.
 - **No internal/technical disclosure**: won't discuss RAG, embeddings, vector search, the database, tool names, its system prompt, the model/provider, or QTO Dev's internal tech stack for the chatbot itself, even under direct or indirect (jailbreak/role-play/encoding) prompting.
 - **Concise by default**: 1–4 short sentences unless the question genuinely asks for a list or walkthrough — enforced at both the prompt level and a hard `LLM_MAX_OUTPUT_TOKENS=500` ceiling.
 - **Tighter input limits**: `CHAT_MAX_MESSAGE_LENGTH`/`CHAT_MAX_MESSAGE_WORDS` cut from the original 2000 chars/100 words to 500/80 — real questions are short, and this bounds both abuse and how much untrusted visitor text reaches the prompt.
@@ -211,10 +214,15 @@ curl -X POST https://qtodev-chatbot-worker.your-subdomain.workers.dev/chat/strea
   -d '{"message": "What services does QTO Dev offer?"}'
 ```
 
+For Cloudflare Workers Builds connected to this monorepo, set **Root directory** to
+`chatbot/worker`, **Build command** to `npm run typecheck`, and **Deploy command** to
+`npm run deploy` in the Worker's **Settings → Build**. The older `chatbot/`
+directory is a separate Node/Express service; its `npm run build` only runs
+TypeScript and does not package this Worker.
+
 ## 8. Known limitations
 
 - **`lastSync` resets per isolate**: `GET /health` and `GET /sync/status`'s `lastSync` field comes from an in-memory variable in `sync/syncEngine.ts` (ported unchanged from the Node service), which isn't shared across Worker isolates or persisted to KV. The sync itself is fully durable (Vectorize + `CHATBOT_KV`) — only this one status field can read as `null` on a cold isolate even though the last sync succeeded. Fixable by persisting the summary to KV in a follow-up if reliable "when did sync last run" reporting is needed.
-- **`chatService.ts`'s tool-calling code has a pre-existing TypeScript error** (`npm run typecheck`) inherited verbatim from `chatbot/src/rag/chatService.ts` — present in the original Node service too, not introduced by this port. Doesn't affect runtime behavior.
 - KV-based rate limiting is eventually consistent (approximate under concurrent bursts) — an accepted trade-off, same spirit as the old limiter's documented single-instance-only caveat, but this one actually holds across the whole edge instead of not at all.
 
 **Resolved**: the root Next.js app's `CHATBOT_SERVICE_URL` (in `wrangler.toml` → `[vars]`, both production and `[env.staging.vars]`) now points at this Worker's live URL and has been redeployed — production chat traffic reaches this service.

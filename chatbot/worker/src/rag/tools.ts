@@ -9,7 +9,6 @@ const TABLE_NAMES = SOURCE_REGISTRY.map((s) => s.table) as [string, ...string[]]
 
 interface ListedRecord {
   title: string;
-  url: string | null;
   summary: string;
 }
 
@@ -37,7 +36,6 @@ async function listTable(table: string): Promise<ListedRecord[]> {
     .filter((r) => r.isPublished)
     .map((r) => ({
       title: r.title,
-      url: typeof r.metadata.url === "string" ? r.metadata.url : null,
       summary: truncate(r.content, 280),
     }));
 
@@ -60,7 +58,10 @@ export const listRecordsTool = tool(
   async ({ table }: { table: string }) => {
     logger.debug("list_records tool called", { table });
     const entries = await listTable(table);
-    return JSON.stringify({ table, count: entries.length, records: entries });
+    // Intentionally omits the `table` name from the payload the model sees — the model is
+    // forbidden from disclosing where data came from, and not naming the source here removes
+    // that string from the prompt entirely (same rationale as formatContext in promptBuilder).
+    return JSON.stringify({ count: entries.length, records: entries });
   },
   {
     name: "list_records",

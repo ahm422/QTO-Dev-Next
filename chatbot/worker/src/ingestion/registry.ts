@@ -9,6 +9,7 @@ import { teamMembersSource } from "./sources/teamMembers.js";
 import { testimonialsSource } from "./sources/testimonials.js";
 import { engagementModelsSource } from "./sources/engagementModels.js";
 import { faqsSource } from "./sources/faqs.js";
+import { chatbotFaqsSource } from "./sources/chatbotFaqs.js";
 import { technologiesSource } from "./sources/technologies.js";
 import { processStepsSource } from "./sources/processSteps.js";
 import { jobsSource } from "./sources/jobs.js";
@@ -34,6 +35,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
   testimonialsSource,
   engagementModelsSource,
   faqsSource,
+  chatbotFaqsSource,
   technologiesSource,
   processStepsSource,
   jobsSource,

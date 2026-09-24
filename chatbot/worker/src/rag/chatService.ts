@@ -16,7 +16,7 @@ function getChatModelWithTools() {
   if (!chatModelWithToolsInstance) chatModelWithToolsInstance = getChatModel().bindTools(ragTools);
   return chatModelWithToolsInstance;
 }
-const toolsByName = new Map(ragTools.map((t) => [t.name, t]));
+const toolsByName = new Map<string, (typeof ragTools)[number]>(ragTools.map((t) => [t.name, t]));
 
 // One tool-decision round trip is typically enough (the model calls list_records once,
 // then answers); this caps runaway loops. If the model still wants tools after this many
@@ -130,14 +130,20 @@ export async function* streamChatMessage(
         toolCallCount++;
         toolsUsed.add(call.name);
         const toolFn = toolsByName.get(call.name);
-        let result: string;
         try {
-          result = toolFn ? await toolFn.invoke(call.args) : `Unknown tool: ${call.name}`;
+          const result = toolFn ? await toolFn.invoke(call) : `Unknown tool: ${call.name}`;
+          messages.push(
+            result instanceof ToolMessage
+              ? result
+              : new ToolMessage({ content: result, tool_call_id: call.id ?? call.name })
+          );
         } catch (err) {
           logger.error(`Tool "${call.name}" failed`, err);
-          result = `Tool "${call.name}" failed to execute.`;
+          messages.push(new ToolMessage({
+            content: `Tool "${call.name}" failed to execute.`,
+            tool_call_id: call.id ?? call.name,
+          }));
         }
-        messages.push(new ToolMessage({ content: result, tool_call_id: call.id ?? call.name }));
       }
     }
   } catch (err) {
