@@ -15,6 +15,7 @@ import {
   toPrismaProductPartialUpdateData,
   toPrismaProductUpdateData,
 } from "@/lib/prisma/productData";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET(
   _req: NextRequest,
@@ -69,6 +70,7 @@ export async function PATCH(
       entityId: item.id,
       label: item.title,
     });
+    triggerChatbotSync("products");
     return apiSuccess({ item: fromPrismaProduct(item) });
   } catch (e) {
     return handleRouteError("PATCH /api/admin/products/[id]", e);
@@ -98,6 +100,7 @@ export async function DELETE(
       entityId: id,
       label: existing?.title,
     });
+    triggerChatbotSync("products");
     return apiSuccess({ id });
   } catch (e) {
     return handleRouteError("DELETE /api/admin/products/[id]", e);

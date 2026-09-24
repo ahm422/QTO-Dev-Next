@@ -11,6 +11,7 @@ import {
   fromPrismaEngagementModel,
   toPartialPrismaEngagementModelData,
 } from "@/lib/prisma/jsonModelData";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error } = await requireAdminSession();
@@ -40,6 +41,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       data: toPartialPrismaEngagementModelData(parsed.data),
     });
     revalidatePath("/");
+    triggerChatbotSync("engagement_models");
     return apiSuccess({ item: fromPrismaEngagementModel(item) });
   } catch (e) {
     return handleRouteError("PATCH /api/admin/engagement-models/[id]", e);
@@ -53,6 +55,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   try {
     await prisma.engagementModel.delete({ where: { id } });
     revalidatePath("/");
+    triggerChatbotSync("engagement_models");
     return apiSuccess({ id });
   } catch (e) {
     return handleRouteError("DELETE /api/admin/engagement-models/[id]", e);

@@ -6,6 +6,7 @@ import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { chatbotFaqSchema } from "@/lib/validators/admin/chatbotFaq";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET(request: NextRequest) {
   const { error } = await requireAdminSession();
@@ -33,6 +34,7 @@ export async function POST(request: NextRequest) {
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
     const item = await prisma.chatbotFaq.create({ data: parsed.data });
+    triggerChatbotSync("chatbot_faqs");
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/chatbot-faqs", e);

@@ -7,6 +7,7 @@ import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { processStepSchema } from "@/lib/validators/admin/processStep";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error } = await requireAdminSession();
@@ -34,6 +35,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const item = await prisma.processStep.update({ where: { id }, data: parsed.data });
     revalidatePath("/");
     revalidatePath("/services");
+    triggerChatbotSync("process_steps");
     return apiSuccess({ item });
   } catch (e) {
     return handleRouteError("PATCH /api/admin/process-steps/[id]", e);
@@ -48,6 +50,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     await prisma.processStep.delete({ where: { id } });
     revalidatePath("/");
     revalidatePath("/services");
+    triggerChatbotSync("process_steps");
     return apiSuccess({ id });
   } catch (e) {
     return handleRouteError("DELETE /api/admin/process-steps/[id]", e);

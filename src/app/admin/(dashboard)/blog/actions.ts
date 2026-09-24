@@ -9,6 +9,7 @@ import {
   toPrismaBlogPostCreateData,
   toPrismaBlogPostUpdateData,
 } from "@/lib/prisma/blogPostData"
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync"
 
 
 export async function createBlogPost(data: BlogPostInput) {
@@ -26,6 +27,7 @@ export async function createBlogPost(data: BlogPostInput) {
     },
   })
   revalidateBlogCaches(parsed.slug)
+  triggerChatbotSync("blog_posts")
   await persistD1Bookmark()
   return { success: true }
 }
@@ -47,6 +49,7 @@ export async function updateBlogPost(id: string, data: BlogPostInput) {
     },
   })
   revalidateBlogCaches(parsed.slug)
+  triggerChatbotSync("blog_posts")
   await persistD1Bookmark()
   return { success: true }
 }
@@ -56,6 +59,7 @@ export async function deleteBlogPost(id: string) {
   const post = await prisma.blogPost.findUnique({ where: { id }, select: { slug: true } })
   await prisma.blogPost.delete({ where: { id } })
   revalidateBlogCaches(post?.slug)
+  triggerChatbotSync("blog_posts")
   await persistD1Bookmark()
 }
 
@@ -65,5 +69,6 @@ export async function toggleBlogPostPublished(id: string, value: boolean) {
   const publishedAt = value && !existing?.publishedAt ? new Date() : existing?.publishedAt ?? null
   await prisma.blogPost.update({ where: { id }, data: { isPublished: value, publishedAt } })
   revalidateBlogCaches(existing?.slug)
+  triggerChatbotSync("blog_posts")
   await persistD1Bookmark()
 }

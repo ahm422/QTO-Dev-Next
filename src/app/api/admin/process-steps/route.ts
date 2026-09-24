@@ -7,6 +7,7 @@ import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { processStepSchema } from "@/lib/validators/admin/processStep";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET(request: NextRequest) {
   const { error } = await requireAdminSession();
@@ -36,6 +37,7 @@ export async function POST(request: NextRequest) {
     const item = await prisma.processStep.create({ data: parsed.data });
     revalidatePath("/");
     revalidatePath("/services");
+    triggerChatbotSync("process_steps");
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/process-steps", e);

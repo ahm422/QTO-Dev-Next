@@ -43,8 +43,12 @@ export function isSyncInProgress(): boolean {
  *   - unpublished record (still exists, is_published = false) -> exclude (delete vectors + state)
  *   - deleted record (no longer present in D1 at all)          -> remove (delete vectors + state)
  * Unchanged published records are skipped without calling the embedding model or Qdrant.
+ *
+ * Pass `tables` to sync only those sources (the main site's admin panel does this right after
+ * a save, so the change is live in seconds instead of waiting for the next cron). A partial
+ * run doesn't count as a full sync, so it leaves `lastFullSyncAt` untouched.
  */
-export async function runFullSync(): Promise<FullSyncSummary> {
+export async function runFullSync(options: { tables?: string[] } = {}): Promise<FullSyncSummary> {
   if (syncInProgress) {
     throw new Error("A sync is already in progress");
   }
@@ -52,9 +56,13 @@ export async function runFullSync(): Promise<FullSyncSummary> {
   const startedAt = new Date().toISOString();
   const t0 = Date.now();
   const sources: SourceSyncSummary[] = [];
+  const onlyTables = options.tables ? new Set(options.tables) : null;
+  const selectedSources = onlyTables
+    ? SOURCE_REGISTRY.filter((s) => onlyTables.has(s.table))
+    : SOURCE_REGISTRY;
 
   try {
-    for (const source of SOURCE_REGISTRY) {
+    for (const source of selectedSources) {
       try {
         if (source.embeddable === false) {
           sources.push(await purgeNonEmbeddableSource(source));
@@ -74,7 +82,7 @@ export async function runFullSync(): Promise<FullSyncSummary> {
         });
       }
     }
-    await syncStateStore.markFullSyncComplete();
+    if (!onlyTables) await syncStateStore.markFullSyncComplete();
     await syncStateStore.save();
   } finally {
     syncInProgress = false;

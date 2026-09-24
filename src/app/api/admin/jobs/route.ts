@@ -8,6 +8,7 @@ import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { jobSchema } from "@/lib/validators/admin/job";
 import { fromPrismaJob, toPrismaJobData } from "@/lib/prisma/jsonModelData";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET() {
   const { error } = await requireAdminSession();
@@ -32,6 +33,7 @@ export async function POST(request: NextRequest) {
     const item = await prisma.job.create({ data: toPrismaJobData(parsed.data) });
     revalidatePath("/");
     revalidatePath("/careers");
+    triggerChatbotSync("jobs");
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/jobs", e);

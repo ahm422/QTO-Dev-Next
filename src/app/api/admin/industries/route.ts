@@ -8,6 +8,7 @@ import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { industrySchema } from "@/lib/validators/admin/industry";
 import { fromPrismaIndustry, toPrismaIndustryData } from "@/lib/prisma/jsonModelData";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET() {
   const { error } = await requireAdminSession();
@@ -32,6 +33,7 @@ export async function POST(request: NextRequest) {
     const item = await prisma.industry.create({ data: toPrismaIndustryData(parsed.data) });
     revalidatePath("/");
     revalidatePath("/industries");
+    triggerChatbotSync("industries");
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/industries", e);

@@ -11,6 +11,7 @@ import {
   toPrismaServiceCreateData,
   toPrismaServiceUpdateData,
 } from "@/lib/prisma/serviceData"
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync"
 
 
 export async function createService(data: ServiceInput) {
@@ -18,6 +19,7 @@ export async function createService(data: ServiceInput) {
   const parsed = serviceSchema.parse(data)
   await prisma.service.create({ data: toPrismaServiceCreateData(parsed) })
   revalidatePaths([...servicePaths(parsed.slug)])
+  triggerChatbotSync("services")
   await persistD1Bookmark()
   return { success: true }
 }
@@ -27,6 +29,7 @@ export async function updateService(id: string, data: ServiceInput) {
   const parsed = serviceSchema.parse(data)
   await prisma.service.update({ where: { id }, data: toPrismaServiceUpdateData(parsed) })
   revalidatePaths([...servicePaths(parsed.slug)])
+  triggerChatbotSync("services")
   await persistD1Bookmark()
   return { success: true }
 }
@@ -36,6 +39,7 @@ export async function deleteService(id: string) {
   const service = await prisma.service.findUnique({ where: { id }, select: { slug: true } })
   await prisma.service.delete({ where: { id } })
   revalidatePaths([...servicePaths(service?.slug)])
+  triggerChatbotSync("services")
   await persistD1Bookmark()
 }
 
@@ -45,6 +49,7 @@ export async function reorderServices(items: { id: string; order: number }[]) {
     prisma.service.update({ where: { id }, data: { order } })
   )
   revalidatePaths([...servicePaths()])
+  triggerChatbotSync("services")
   await persistD1Bookmark()
 }
 
@@ -53,5 +58,6 @@ export async function toggleServicePublished(id: string, value: boolean) {
   const service = await prisma.service.findUnique({ where: { id }, select: { slug: true } })
   await prisma.service.update({ where: { id }, data: { isPublished: value } })
   revalidatePaths([...servicePaths(service?.slug)])
+  triggerChatbotSync("services")
   await persistD1Bookmark()
 }

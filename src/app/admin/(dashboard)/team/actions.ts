@@ -6,6 +6,7 @@ import { persistD1Bookmark } from "@/lib/d1/session"
 import { teamMemberSchema, type TeamMemberInput } from "@/lib/validators/admin/teamMember"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
 import { revalidateTeamCaches } from "@/lib/revalidate"
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync"
 
 async function enforceSingleFounder(excludeId?: string) {
   await prisma.teamMember.updateMany({
@@ -22,6 +23,7 @@ export async function createTeamMember(data: TeamMemberInput) {
   }
   await prisma.teamMember.create({ data: parsed })
   revalidateTeamCaches()
+  triggerChatbotSync("team_members")
   await persistD1Bookmark()
   return { success: true }
 }
@@ -34,6 +36,7 @@ export async function updateTeamMember(id: string, data: TeamMemberInput) {
   }
   await prisma.teamMember.update({ where: { id }, data: parsed })
   revalidateTeamCaches()
+  triggerChatbotSync("team_members")
   await persistD1Bookmark()
   return { success: true }
 }
@@ -42,6 +45,7 @@ export async function deleteTeamMember(id: string) {
   await requireDeleteAction()
   await prisma.teamMember.delete({ where: { id } })
   revalidateTeamCaches()
+  triggerChatbotSync("team_members")
   await persistD1Bookmark()
 }
 
@@ -49,6 +53,7 @@ export async function toggleTeamMemberPublished(id: string, value: boolean) {
   await requireAdminAction()
   await prisma.teamMember.update({ where: { id }, data: { isPublished: value } })
   revalidateTeamCaches()
+  triggerChatbotSync("team_members")
   await persistD1Bookmark()
 }
 
@@ -58,5 +63,6 @@ export async function reorderTeamMembers(items: { id: string; order: number }[])
     prisma.teamMember.update({ where: { id }, data: { order } })
   )
   revalidateTeamCaches()
+  triggerChatbotSync("team_members")
   await persistD1Bookmark()
 }

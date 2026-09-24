@@ -11,6 +11,7 @@ import {
   fromPrismaEngagementModel,
   toPrismaEngagementModelData,
 } from "@/lib/prisma/jsonModelData";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET() {
   const { error } = await requireAdminSession();
@@ -34,6 +35,7 @@ export async function POST(request: NextRequest) {
   try {
     const item = await prisma.engagementModel.create({ data: toPrismaEngagementModelData(parsed.data) });
     revalidatePath("/");
+    triggerChatbotSync("engagement_models");
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/engagement-models", e);

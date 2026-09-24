@@ -8,6 +8,7 @@ import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { jobSchema } from "@/lib/validators/admin/job";
 import { fromPrismaJob, toPartialPrismaJobData } from "@/lib/prisma/jsonModelData";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error } = await requireAdminSession();
@@ -38,6 +39,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     });
     revalidatePath("/");
     revalidatePath("/careers");
+    triggerChatbotSync("jobs");
     return apiSuccess({ item: fromPrismaJob(item) });
   } catch (e) {
     return handleRouteError("PATCH /api/admin/jobs/[id]", e);
@@ -52,6 +54,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     await prisma.job.delete({ where: { id } });
     revalidatePath("/");
     revalidatePath("/careers");
+    triggerChatbotSync("jobs");
     return apiSuccess({ id });
   } catch (e) {
     return handleRouteError("DELETE /api/admin/jobs/[id]", e);

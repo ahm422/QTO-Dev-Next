@@ -6,6 +6,7 @@ import { persistD1Bookmark } from "@/lib/d1/session"
 import { revalidatePath } from "next/cache"
 import { aboutContentSchema, type AboutContentInput } from "@/lib/validators/admin/aboutContent"
 import { stringifyMetadata } from "@/lib/metadata"
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync"
 
 export async function upsertAboutContent(data: AboutContentInput) {
   await requireAdminAction()
@@ -35,6 +36,7 @@ export async function upsertAboutContent(data: AboutContentInput) {
     },
   })
   revalidatePath("/about")
+  triggerChatbotSync("about_content")
   await persistD1Bookmark()
   return { success: true }
 }
@@ -43,5 +45,6 @@ export async function deleteAboutContent(section: string) {
   await requireDeleteAction()
   await prisma.aboutContent.delete({ where: { section } })
   revalidatePath("/about")
+  triggerChatbotSync("about_content")
   await persistD1Bookmark()
 }

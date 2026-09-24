@@ -14,6 +14,7 @@ import {
   fromPrismaBlogPost,
   toPrismaBlogPostCreateData,
 } from "@/lib/prisma/blogPostData";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET(request: NextRequest) {
   const { error } = await requireAdminSession();
@@ -66,6 +67,7 @@ export async function POST(request: NextRequest) {
       entityId: item.id,
       label: item.title,
     });
+    triggerChatbotSync("blog_posts");
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/blog", e);

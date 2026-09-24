@@ -12,6 +12,7 @@ import {
   toPrismaProjectCreateData,
   toPrismaProjectUpdateData,
 } from "@/lib/prisma/projectData"
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync"
 
 function revalidateProjectCaches(
   projectSlug?: string | null,
@@ -30,6 +31,7 @@ export async function createProject(data: ProjectInput) {
   const parsed = projectSchema.parse(data)
   await prisma.project.create({ data: toPrismaProjectCreateData(parsed) })
   revalidateProjectCaches(parsed.slug, parsed.serviceSlug)
+  triggerChatbotSync("projects")
   await persistD1Bookmark()
   return { success: true }
 }
@@ -47,6 +49,7 @@ export async function updateProject(id: string, data: ProjectInput) {
     parsed.serviceSlug,
     previous?.serviceSlug
   )
+  triggerChatbotSync("projects")
   await persistD1Bookmark()
   return { success: true }
 }
@@ -59,6 +62,7 @@ export async function deleteProject(id: string) {
   })
   await prisma.project.delete({ where: { id } })
   revalidateProjectCaches(project?.slug, project?.serviceSlug)
+  triggerChatbotSync("projects")
   await persistD1Bookmark()
 }
 
@@ -70,6 +74,7 @@ export async function toggleProjectPublished(id: string, value: boolean) {
   })
   await prisma.project.update({ where: { id }, data: { isPublished: value } })
   revalidateProjectCaches(project?.slug, project?.serviceSlug)
+  triggerChatbotSync("projects")
   await persistD1Bookmark()
 }
 
@@ -80,5 +85,6 @@ export async function reorderProjects(items: { id: string; order: number }[]) {
   )
   revalidatePaths([...projectPaths()])
   revalidateTag("projects", "max")
+  triggerChatbotSync("projects")
   await persistD1Bookmark()
 }

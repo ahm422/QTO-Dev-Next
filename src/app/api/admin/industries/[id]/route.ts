@@ -8,6 +8,7 @@ import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { industrySchema } from "@/lib/validators/admin/industry";
 import { fromPrismaIndustry, toPartialPrismaIndustryData } from "@/lib/prisma/jsonModelData";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error } = await requireAdminSession();
@@ -39,6 +40,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     revalidatePath("/");
     revalidatePath("/industries");
     if (item.slug) revalidatePath(`/industries/${item.slug}`);
+    triggerChatbotSync("industries");
     return apiSuccess({ item: fromPrismaIndustry(item) });
   } catch (e) {
     return handleRouteError("PATCH /api/admin/industries/[id]", e);
@@ -55,6 +57,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     revalidatePath("/");
     revalidatePath("/industries");
     if (existing?.slug) revalidatePath(`/industries/${existing.slug}`);
+    triggerChatbotSync("industries");
     return apiSuccess({ id });
   } catch (e) {
     return handleRouteError("DELETE /api/admin/industries/[id]", e);

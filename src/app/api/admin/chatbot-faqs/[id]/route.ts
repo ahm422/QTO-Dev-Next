@@ -6,6 +6,7 @@ import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { chatbotFaqSchema } from "@/lib/validators/admin/chatbotFaq";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error } = await requireAdminSession();
@@ -31,6 +32,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     return apiError(400, "Validation failed", { fieldErrors: formatZodFieldErrors(parsed.error) });
   try {
     const item = await prisma.chatbotFaq.update({ where: { id }, data: parsed.data });
+    triggerChatbotSync("chatbot_faqs");
     return apiSuccess({ item });
   } catch (e) {
     return handleRouteError("PATCH /api/admin/chatbot-faqs/[id]", e);
@@ -43,6 +45,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   const { id } = await params;
   try {
     await prisma.chatbotFaq.delete({ where: { id } });
+    triggerChatbotSync("chatbot_faqs");
     return apiSuccess({ id });
   } catch (e) {
     return handleRouteError("DELETE /api/admin/chatbot-faqs/[id]", e);
