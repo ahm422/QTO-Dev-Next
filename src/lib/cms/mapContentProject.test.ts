@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { mapPrismaToContentProject } from "@/lib/cms/mapContentProject";
 import type { ProjectWithRelations } from "@/lib/prisma/projectData";
+import { prepareCmsHtml } from "@/lib/sanitize-html";
 
 function makeRow(overrides: Partial<ProjectWithRelations> = {}): ProjectWithRelations {
   return {
@@ -63,5 +64,20 @@ describe("mapPrismaToContentProject", () => {
     expect(result.subtitle).toBe(
       "A product engagement focused on measurable outcomes and clear delivery."
     );
+  });
+
+  it("keeps an escaped description as a value RichText turns into an anchor", () => {
+    const escaped =
+      '&lt;p&gt;See &lt;a href="https://example.com"&gt;Example&lt;/a&gt;.&lt;/p&gt;';
+    const result = mapPrismaToContentProject(
+      makeRow({ excerpt: "", description: escaped }),
+      []
+    );
+    expect(result.about.overview).toBe(escaped);
+    const html = prepareCmsHtml(result.about.overview);
+    expect(html).toContain('href="https://example.com"');
+    expect(html).toContain(">Example<");
+    expect(result.subtitle).not.toContain("<");
+    expect(result.subtitle).toContain("Example");
   });
 });

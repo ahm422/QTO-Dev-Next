@@ -1,5 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import type { ProjectInput } from "@/lib/validators/admin/project";
+import { normalizeStoredHtml } from "@/lib/sanitize-html";
 import {
   createOrderedChildren,
   orderedTagValues,
@@ -35,9 +36,9 @@ export function toPrismaProjectCreateData(
     client: scalars.client || null,
     category: scalars.category || "",
     excerpt: scalars.excerpt || "",
-    description: scalars.description || "",
-    challenge: scalars.challenge || null,
-    solution: scalars.solution || null,
+    description: normalizeStoredHtml(scalars.description || ""),
+    challenge: normalizeStoredHtml(scalars.challenge || "") || null,
+    solution: normalizeStoredHtml(scalars.solution || "") || null,
     coverImageUrl: scalars.coverImageUrl || null,
     liveUrl: scalars.liveUrl || null,
     serviceSlug: scalars.serviceSlug || null,
@@ -58,9 +59,9 @@ export function toPrismaProjectUpdateData(
     client: scalars.client || null,
     category: scalars.category || "",
     excerpt: scalars.excerpt || "",
-    description: scalars.description || "",
-    challenge: scalars.challenge || null,
-    solution: scalars.solution || null,
+    description: normalizeStoredHtml(scalars.description || ""),
+    challenge: normalizeStoredHtml(scalars.challenge || "") || null,
+    solution: normalizeStoredHtml(scalars.solution || "") || null,
     coverImageUrl: scalars.coverImageUrl || null,
     liveUrl: scalars.liveUrl || null,
     serviceSlug: scalars.serviceSlug || null,
@@ -81,7 +82,7 @@ export function toPrismaProjectPartialUpdateData(
   if (input.slug !== undefined) data.slug = input.slug;
   if (input.category !== undefined) data.category = input.category;
   if (input.excerpt !== undefined) data.excerpt = input.excerpt;
-  if (input.description !== undefined) data.description = input.description;
+  if (input.description !== undefined) data.description = normalizeStoredHtml(input.description);
   if (input.isFeatured !== undefined) data.isFeatured = input.isFeatured;
   if (input.order !== undefined) data.order = input.order;
   if (input.isPublished !== undefined) data.isPublished = input.isPublished;
@@ -91,8 +92,8 @@ export function toPrismaProjectPartialUpdateData(
   if (input.coverImageUrl !== undefined) data.coverImageUrl = input.coverImageUrl || null;
   if (input.liveUrl !== undefined) data.liveUrl = input.liveUrl || null;
   if (input.serviceSlug !== undefined) data.serviceSlug = input.serviceSlug || null;
-  if (input.challenge !== undefined) data.challenge = input.challenge || null;
-  if (input.solution !== undefined) data.solution = input.solution || null;
+  if (input.challenge !== undefined) data.challenge = normalizeStoredHtml(input.challenge) || null;
+  if (input.solution !== undefined) data.solution = normalizeStoredHtml(input.solution) || null;
   if (input.completedAt !== undefined) {
     data.completedAt = input.completedAt ? new Date(input.completedAt) : null;
   }

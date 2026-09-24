@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { apiSuccess, apiError } from "@/lib/apiResponses";
 import { formatZodFieldErrors } from "@/lib/validators/http";
@@ -9,6 +8,7 @@ import { handleRouteError } from "@/lib/api/handleRouteError";
 import { writeContentAudit } from "@/lib/auth/audit";
 import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { projectSchema } from "@/lib/validators/admin/project";
+import { revalidateProjectCaches } from "@/lib/revalidate";
 import {
   fromPrismaProject,
   projectWithRelationsInclude,
@@ -51,9 +51,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       data: updateData,
       include: projectWithRelationsInclude,
     });
-    revalidatePath("/");
-    revalidatePath("/projects");
-    if (item.slug) revalidatePath(`/projects/${item.slug}`);
+    revalidateProjectCaches(item.slug, item.serviceSlug);
     await writeContentAudit({
       session,
       action: AUDIT_ACTIONS.CONTENT_UPDATED,
@@ -72,11 +70,9 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   if (error) return error;
   const { id } = await params;
   try {
-    const existing = await prisma.project.findUnique({ where: { id }, select: { slug: true, title: true } });
+    const existing = await prisma.project.findUnique({ where: { id }, select: { slug: true, title: true, serviceSlug: true } });
     await prisma.project.delete({ where: { id } });
-    revalidatePath("/");
-    revalidatePath("/projects");
-    if (existing?.slug) revalidatePath(`/projects/${existing.slug}`);
+    revalidateProjectCaches(existing?.slug, existing?.serviceSlug);
     await writeContentAudit({
       session,
       action: AUDIT_ACTIONS.CONTENT_DELETED,

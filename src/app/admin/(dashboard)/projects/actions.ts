@@ -3,27 +3,13 @@
 import { requireAdminAction, requireCreateAction, requireDeleteAction } from "@/lib/auth/requireServerAction"
 import { prisma } from "@/lib/prisma"
 import { persistD1Bookmark } from "@/lib/d1/session"
-import { revalidateTag } from "next/cache"
 import { projectSchema, type ProjectInput } from "@/lib/validators/admin/project"
-import { revalidatePaths } from "@/lib/revalidate"
-import { projectPaths, servicePaths } from "@/lib/revalidate-paths"
+import { revalidateProjectCaches } from "@/lib/revalidate"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
 import {
   toPrismaProjectCreateData,
   toPrismaProjectUpdateData,
 } from "@/lib/prisma/projectData"
-
-function revalidateProjectCaches(
-  projectSlug?: string | null,
-  ...serviceSlugs: (string | null | undefined)[]
-) {
-  const paths = [...projectPaths(projectSlug)]
-  for (const slug of serviceSlugs) {
-    if (slug) paths.push(...servicePaths(slug))
-  }
-  revalidatePaths(paths)
-  revalidateTag("projects", "max")
-}
 
 export async function createProject(data: ProjectInput) {
   await requireCreateAction()
@@ -78,7 +64,6 @@ export async function reorderProjects(items: { id: string; order: number }[]) {
   await persistOrderUpdates(items, (id, order) =>
     prisma.project.update({ where: { id }, data: { order } })
   )
-  revalidatePaths([...projectPaths()])
-  revalidateTag("projects", "max")
+  revalidateProjectCaches()
   await persistD1Bookmark()
 }

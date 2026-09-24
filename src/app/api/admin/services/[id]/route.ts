@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { apiSuccess, apiError } from "@/lib/apiResponses";
 import { formatZodFieldErrors } from "@/lib/validators/http";
@@ -15,6 +14,7 @@ import {
   toPrismaServicePartialUpdateData,
   toPrismaServiceUpdateData,
 } from "@/lib/prisma/serviceData";
+import { revalidateServiceCaches } from "@/lib/revalidate";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error } = await requireAdminSession();
@@ -51,10 +51,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       data: updateData,
       include: serviceWithTagsInclude,
     });
-    revalidatePath("/");
-    revalidatePath("/services");
-    revalidatePath("/sitemap.xml");
-    if (item.slug) revalidatePath(`/services/${item.slug}`);
+    revalidateServiceCaches(item.slug);
     await writeContentAudit({
       session,
       action: AUDIT_ACTIONS.CONTENT_UPDATED,
@@ -75,10 +72,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   try {
     const existing = await prisma.service.findUnique({ where: { id }, select: { slug: true, title: true } });
     await prisma.service.delete({ where: { id } });
-    revalidatePath("/");
-    revalidatePath("/services");
-    revalidatePath("/sitemap.xml");
-    if (existing?.slug) revalidatePath(`/services/${existing.slug}`);
+    revalidateServiceCaches(existing?.slug);
     await writeContentAudit({
       session,
       action: AUDIT_ACTIONS.CONTENT_DELETED,

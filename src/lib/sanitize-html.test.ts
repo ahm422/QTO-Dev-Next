@@ -7,6 +7,7 @@ import {
   linkifyPlainText,
   linkifyHtml,
   wrapTables,
+  prepareCmsHtml,
 } from "./sanitize-html"
 
 describe("sanitizeHtml — images", () => {
@@ -415,5 +416,40 @@ describe("isHtmlBody / stripHtml", () => {
 
   it("strips tags from HTML", () => {
     expect(stripHtml("<p>hello <strong>world</strong></p>")).toBe("hello world")
+  })
+})
+
+describe("prepareCmsHtml — stored link shapes", () => {
+  it("renders an entity-encoded anchor as a safe link", () => {
+    const out = prepareCmsHtml(
+      '&lt;p&gt;See &lt;a href="https://example.com"&gt;Example&lt;/a&gt;.&lt;/p&gt;',
+    )
+    expect(out).toContain('href="https://example.com"')
+    expect(out).toContain("Example")
+    expect(out).not.toContain("&lt;a")
+    expect(out).toContain('target="_blank"')
+    expect(out).toContain('rel="noopener noreferrer"')
+  })
+
+  it("turns a markdown link into an anchor", () => {
+    const out = prepareCmsHtml("See [Example](https://example.com).")
+    expect(out).toContain('href="https://example.com"')
+    expect(out).toContain("Example")
+    expect(out).not.toContain("[Example]")
+  })
+
+  it("linkifies a bare URL", () => {
+    const out = prepareCmsHtml("See https://example.com.")
+    expect(out).toContain('href="https://example.com"')
+    expect(out).toContain("https://example.com")
+  })
+
+  it("drops a javascript: href inside encoded markup", () => {
+    const out = prepareCmsHtml(
+      '&lt;a href="javascript:alert(1)"&gt;Example&lt;/a&gt;',
+    )
+    expect(out).not.toContain("javascript:")
+    expect(out).not.toContain("&lt;a")
+    expect(out).toContain("Example")
   })
 })

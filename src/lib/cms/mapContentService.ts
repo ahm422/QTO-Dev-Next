@@ -48,10 +48,7 @@ export function mapPrismaToContentService(
       url: resolveMediaUrl(row.imageUrl) ?? fallbackHero,
       alt: row.imageAlt ?? `${title} service hero`,
     },
-    overviewText:
-      description ||
-      shortDescription ||
-      "We bring strategic product thinking and high-quality engineering to deliver outcomes your business can measure. Our process is transparent, collaborative, and focused on speed without sacrificing reliability.",
+    overviewText: description,
     overviewBenefits:
       features.length > 0 ? features : webDevelopmentServiceData.overviewBenefits,
     overviewImage: {

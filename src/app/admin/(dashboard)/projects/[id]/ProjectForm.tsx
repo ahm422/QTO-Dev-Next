@@ -113,10 +113,10 @@ export default function ProjectForm({
             <FormItem><FormLabel>Description</FormLabel><FormControl><RichTextEditor value={field.value} onChange={field.onChange} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem>
           )} />
           <FormField control={form.control} name="challenge" render={({ field }) => (
-            <FormItem><FormLabel>Challenge</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>
+            <FormItem><FormLabel>Challenge</FormLabel><FormControl><RichTextEditor value={field.value} onChange={field.onChange} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem>
           )} />
           <FormField control={form.control} name="solution" render={({ field }) => (
-            <FormItem><FormLabel>Solution</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>
+            <FormItem><FormLabel>Solution</FormLabel><FormControl><RichTextEditor value={field.value} onChange={field.onChange} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem>
           )} />
           <FormField control={form.control} name="results" render={({ field }) => (
             <FormItem><FormLabel>Results (one per line)</FormLabel><FormControl><LineListTextarea value={field.value} onChange={field.onChange} rows={3} /></FormControl><FormMessage /></FormItem>

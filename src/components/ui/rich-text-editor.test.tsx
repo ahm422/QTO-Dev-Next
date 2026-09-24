@@ -125,3 +125,24 @@ describe("RichTextEditor toolbar — colour / highlight / table controls", () =>
     expect(menu.textContent).toMatch(/remove text colour/i)
   })
 })
+
+describe("RichTextEditor — escaped stored links", () => {
+  it("mounts an entity-encoded anchor as a link, not as source text", async () => {
+    window.localStorage.setItem("admin-theme", "light")
+    const { container } = render(
+      <AdminThemeProvider>
+        <RichTextEditor
+          value={'&lt;p&gt;See &lt;a href="https://example.com"&gt;Example&lt;/a&gt;&lt;/p&gt;'}
+          onChange={() => {}}
+        />
+      </AdminThemeProvider>,
+    )
+    const link = await waitFor(() => {
+      const el = container.querySelector<HTMLAnchorElement>('a[href="https://example.com"]')
+      if (!el) throw new Error("link not mounted")
+      return el
+    })
+    expect(link.textContent).toBe("Example")
+    expect(container.textContent).not.toContain("&lt;")
+  })
+})

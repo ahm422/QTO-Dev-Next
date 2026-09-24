@@ -26,13 +26,6 @@ export const serviceSchema = z
         path: ["shortDescription"],
       })
     }
-    if ((data.description ?? "").trim().length < 80) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Description must be at least 80 characters when publishing",
-        path: ["description"],
-      })
-    }
   })
 
 export type ServiceInput = z.infer<typeof serviceSchema>

@@ -47,7 +47,7 @@ export interface WebDevelopmentServiceData {
   subheadline: string;
   proofChips: string[];
   heroImage: { url: string; alt: string };
-  /** Legacy overview prose — retained for mapper/CMS back-compat; not shown on detail IA */
+  /** Service Overview body on the detail page. CMS `description` overwrites the seed. */
   overviewText: string;
   overviewBenefits: string[];
   overviewImage: { url: string; alt: string };

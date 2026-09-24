@@ -14,6 +14,7 @@ import { toast } from "sonner"
 import { AlertCircle, Bold, Italic, Underline as UnderlineIcon, Strikethrough, List, ListOrdered, LinkIcon, Code, Undo2, Redo2, ChevronDown, Quote, Minus, ImageIcon, Loader2, Upload, Table2, Baseline, Highlighter, Check, Ban, AlignLeft, AlignCenter, AlignRight } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { isHtmlBody, linkifyHtml, normalizeCmsHtml, sanitizeHtml } from "@/lib/sanitize-html"
 import { useAdminTheme } from "@/components/admin/AdminThemeProvider"
 import { uploadEditorImage } from "@/lib/admin/uploadEditorImage"
 import { Label } from "@/components/ui/label"
@@ -584,6 +585,16 @@ function Toolbar({ editor }: { editor: Editor }) {
   )
 }
 
+/** External value only — not called from onUpdate, so typing is not re-normalized. */
+function editorHtml(value: string | undefined): string {
+  const raw = value || ""
+  if (!raw) return ""
+  const normalized = normalizeCmsHtml(raw)
+  if (normalized === raw) return raw
+  if (!isHtmlBody(normalized)) return normalized
+  return sanitizeHtml(linkifyHtml(normalized))
+}
+
 interface RichTextEditorProps extends Omit<React.ComponentProps<"div">, "onChange" | "children"> {
   value?: string
   onChange?: (html: string) => void
@@ -647,7 +658,7 @@ export function RichTextEditor({
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Placeholder.configure({ placeholder: placeholder ?? "" }),
     ],
-    content: value || "",
+    content: editorHtml(value),
     editable: !disabled,
     editorProps: {
       attributes: {
@@ -674,7 +685,7 @@ export function RichTextEditor({
   React.useEffect(() => {
     if (!editor) return
     const current = editor.isEmpty ? "" : editor.getHTML()
-    const next = value || ""
+    const next = editorHtml(value)
     if (next !== current) {
       editor.commands.setContent(next, { emitUpdate: false })
     }
