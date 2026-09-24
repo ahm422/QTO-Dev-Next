@@ -7,6 +7,7 @@ import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { aboutContentSchema } from "@/lib/validators/admin/aboutContent";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET() {
   const { error } = await requireAdminSession();
@@ -40,6 +41,7 @@ export async function POST(request: NextRequest) {
       },
     });
     revalidatePath("/about");
+    triggerChatbotSync("about_content");
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/about", e);

@@ -33,6 +33,9 @@ EMAIL_ADMIN_TO = "admin@example.com"
 # host. `.env`/`.env.example` only cover local dev; the deployed Worker
 # needs it declared here too.
 NEXT_PUBLIC_SITE_URL = "https://qtodev.com"
+# Standalone chatbot Cloudflare Worker (see chatbot/worker/) — server-side only,
+# the chat widgets talk to /api/chat and /api/admin/chat, which proxy here.
+CHATBOT_SERVICE_URL = "https://qtodev-chatbot-worker.your-subdomain.workers.dev"
 
 #
 # Nightly token cleanup — fires at 03:00 UTC and calls GET /api/cron/cleanup-tokens
@@ -69,6 +72,7 @@ name = "qtodev-site-staging"
 EMAIL_FROM = "staging@qtodev.com"
 EMAIL_ADMIN_TO = "admin@example.com"
 NEXT_PUBLIC_SITE_URL = "https://qtodev-site-staging.your-subdomain.workers.dev"
+CHATBOT_SERVICE_URL = "https://qtodev-chatbot-worker.your-subdomain.workers.dev"
 
 [[env.staging.services]]
 binding = "WORKER_SELF_REFERENCE"

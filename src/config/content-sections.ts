@@ -28,6 +28,7 @@ import {
   ClipboardList,
   Package,
   IdCard,
+  Bot,
 } from "lucide-react"
 
 export type SectionGroup = "main" | "content" | "settings"
@@ -43,6 +44,7 @@ export type PrismaModelName =
   | "Industry"
   | "EngagementModel"
   | "Faq"
+  | "ChatbotFaq"
   | "BlogPost"
   | "Technology"
   | "Project"
@@ -101,6 +103,7 @@ export const contentSections: ContentSection[] = [
   { key: "industries",        label: "Industries",        href: "/admin/industries",        icon: Building2,      group: "content", model: "Industry",        countable: true,  publishable: true,  hasTimestamps: true },
   { key: "engagement-models", label: "Engagement Models", href: "/admin/engagement-models", icon: Layers,         group: "content", model: "EngagementModel", countable: true,  publishable: true,  hasTimestamps: true },
   { key: "faqs",              label: "FAQs",              href: "/admin/faqs",              icon: HelpCircle,     group: "content", model: "Faq",             countable: true,  publishable: true,  hasTimestamps: true },
+  { key: "chatbot-faqs",      label: "Chatbot FAQs",      href: "/admin/chatbot-faqs",      icon: Bot,            group: "content", model: "ChatbotFaq",      countable: true,  publishable: true,  hasTimestamps: true,  color: "#8B5CF6" },
   { key: "blog",              label: "Blog",              href: "/admin/blog",              icon: BookOpen,       group: "content", model: "BlogPost",        countable: true,  publishable: true,  hasTimestamps: true,  color: "#3B82F6" },
   { key: "technologies",      label: "Technologies",      href: "/admin/technologies",      icon: Cpu,            group: "content", model: "Technology",      countable: true,  publishable: true,  hasTimestamps: true },
   { key: "projects",          label: "Projects",          href: "/admin/projects",          icon: FolderKanban,   group: "content", model: "Project",         countable: true,  publishable: true,  hasTimestamps: true,  color: "#A855F7" },

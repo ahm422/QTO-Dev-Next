@@ -9,6 +9,7 @@ import { writeContentAudit } from "@/lib/auth/audit";
 import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { teamMemberBaseSchema } from "@/lib/validators/admin/teamMember";
 import { revalidateTeamCaches } from "@/lib/revalidate";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error } = await requireAdminSession();
@@ -61,6 +62,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       entityId: item.id,
       label: item.name,
     });
+    triggerChatbotSync("team_members");
     return apiSuccess({ item });
   } catch (e) {
     return handleRouteError("PATCH /api/admin/team/[id]", e);
@@ -82,6 +84,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
       entityId: id,
       label: existing?.name,
     });
+    triggerChatbotSync("team_members");
     return apiSuccess({ id });
   } catch (e) {
     return handleRouteError("DELETE /api/admin/team/[id]", e);

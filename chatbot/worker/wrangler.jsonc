@@ -1,0 +1,80 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"account_id": "YOUR_CLOUDFLARE_ACCOUNT_ID",
+	"name": "qtodev-chatbot-worker",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-09-21",
+	"compatibility_flags": ["nodejs_compat"],
+	"observability": {
+		"enabled": true
+	},
+	"upload_source_maps": true,
+	// Same D1 database the main qto-dev-next worker uses (read-only access from this worker).
+	// https://developers.cloudflare.com/d1/
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "qtodev-d1",
+			"database_id": "YOUR_D1_DATABASE_ID"
+		}
+	],
+	// Knowledge base vector index — replaces the old standalone Qdrant service.
+	// https://developers.cloudflare.com/vectorize/
+	"vectorize": [
+		{
+			"binding": "VECTORIZE",
+			"index_name": "qtodev-chatbot-kb"
+		}
+	],
+	// Embeddings model (@cf/baai/bge-small-en-v1.5, 384-dim) — replaces local @huggingface/transformers.
+	// https://developers.cloudflare.com/workers-ai/
+	"ai": {
+		"binding": "AI"
+	},
+	// Conversation history, rate limiting, and sync state (key-prefixed, see conversation/store.ts,
+	// api/middleware/rateLimit.ts, sync/stateStore.ts). https://developers.cloudflare.com/kv/
+	"kv_namespaces": [
+		{
+			"binding": "CHATBOT_KV",
+			"id": "YOUR_KV_NAMESPACE_ID"
+		}
+	],
+	// Drives the background content sync — see the `scheduled` handler in src/index.ts.
+	// Matches SYNC_INTERVAL_MINUTES below; keep the two in sync if you change this.
+	"triggers": {
+		"crons": ["*/15 * * * *"]
+	},
+	// Plaintext config — see src/config/env.ts for the full schema and defaults.
+	// Secrets (LLM_API_KEY, SYNC_TRIGGER_TOKEN) are set via `wrangler secret put`, not here.
+	"vars": {
+		"CHAT_CORS_ORIGIN": "*",
+		"CHAT_MAX_MESSAGE_LENGTH": "500",
+		"CHAT_MAX_MESSAGE_WORDS": "80",
+		"CHAT_MAX_HISTORY_MESSAGES": "40",
+		"CHAT_SESSION_TTL_MINUTES": "60",
+		"CHAT_EXPOSE_DEBUG_INFO": "false",
+		"CHAT_RATE_LIMIT_MAX": "20",
+		"CHAT_RATE_LIMIT_WINDOW_SECONDS": "60",
+		"RETRIEVAL_TOP_K": "5",
+		"RETRIEVAL_SCORE_THRESHOLD": "0.3",
+		"CHUNK_MAX_CHARS": "1500",
+		"CHUNK_OVERLAP_CHARS": "150",
+		"SYNC_INTERVAL_MINUTES": "15",
+		"LLM_PROVIDER_BASE_URL": "https://api.deepseek.com/v1",
+		"LLM_MODEL": "deepseek-chat",
+		"LLM_TEMPERATURE": "0.3",
+		"LLM_MAX_OUTPUT_TOKENS": "500",
+		"EMBEDDING_MODEL": "@cf/baai/bge-small-en-v1.5",
+		"EMBEDDING_DIMENSIONS": "384",
+		"LOG_LEVEL": "info"
+	}
+	/**
+	 * Smart Placement
+	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
+	 */
+	// "placement": {  "mode": "smart" }
+}

@@ -14,6 +14,7 @@ import {
   serviceWithTagsInclude,
   toPrismaServiceCreateData,
 } from "@/lib/prisma/serviceData";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET() {
   const { error } = await requireAdminSession();
@@ -50,6 +51,7 @@ export async function POST(request: NextRequest) {
       entityId: item.id,
       label: item.title,
     });
+    triggerChatbotSync("services");
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/services", e);

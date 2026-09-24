@@ -14,6 +14,7 @@ import {
   productWithFeaturesInclude,
   toPrismaProductCreateData,
 } from "@/lib/prisma/productData";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET() {
   const { error } = await requireAdminSession();
@@ -54,6 +55,7 @@ export async function POST(request: NextRequest) {
       entityId: item.id,
       label: item.title,
     });
+    triggerChatbotSync("products");
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/products", e);

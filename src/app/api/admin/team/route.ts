@@ -9,6 +9,7 @@ import { writeContentAudit } from "@/lib/auth/audit";
 import { AUDIT_ACTIONS } from "@/lib/auth/auditActions";
 import { teamMemberSchema } from "@/lib/validators/admin/teamMember";
 import { revalidateTeamCaches } from "@/lib/revalidate";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET() {
   const { error } = await requireAdminSession();
@@ -45,6 +46,7 @@ export async function POST(request: NextRequest) {
       entityId: item.id,
       label: item.name,
     });
+    triggerChatbotSync("team_members");
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/team", e);

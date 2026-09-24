@@ -7,6 +7,7 @@ import { requireAdminSession } from "@/lib/api/requireAdminSession";
 import { parseJsonBody } from "@/lib/api/parseJsonBody";
 import { handleRouteError } from "@/lib/api/handleRouteError";
 import { faqSchema } from "@/lib/validators/admin/faq";
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync";
 
 export async function GET(request: NextRequest) {
   const { error } = await requireAdminSession();
@@ -35,6 +36,7 @@ export async function POST(request: NextRequest) {
   try {
     const item = await prisma.faq.create({ data: parsed.data });
     revalidatePath("/");
+    triggerChatbotSync("faqs");
     return apiSuccess({ id: item.id }, 201);
   } catch (e) {
     return handleRouteError("POST /api/admin/faqs", e);

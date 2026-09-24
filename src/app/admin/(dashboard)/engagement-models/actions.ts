@@ -7,11 +7,13 @@ import { toPrismaEngagementModelData } from "@/lib/prisma/jsonModelData"
 import { revalidatePath } from "next/cache"
 import { engagementModelSchema, type EngagementModelInput } from "@/lib/validators/admin/engagementModel"
 import { persistOrderUpdates } from "@/lib/admin/reorder"
+import { triggerChatbotSync } from "@/lib/chat/triggerChatbotSync"
 
 export async function createEngagementModel(data: EngagementModelInput) {
   await requireCreateAction()
   await prisma.engagementModel.create({ data: toPrismaEngagementModelData(engagementModelSchema.parse(data)) })
   revalidatePath("/")
+  triggerChatbotSync("engagement_models")
   await persistD1Bookmark()
   return { success: true }
 }
@@ -20,6 +22,7 @@ export async function updateEngagementModel(id: string, data: EngagementModelInp
   await requireAdminAction()
   await prisma.engagementModel.update({ where: { id }, data: toPrismaEngagementModelData(engagementModelSchema.parse(data)) })
   revalidatePath("/")
+  triggerChatbotSync("engagement_models")
   await persistD1Bookmark()
   return { success: true }
 }
@@ -28,6 +31,7 @@ export async function deleteEngagementModel(id: string) {
   await requireDeleteAction()
   await prisma.engagementModel.delete({ where: { id } })
   revalidatePath("/")
+  triggerChatbotSync("engagement_models")
   await persistD1Bookmark()
 }
 
@@ -35,6 +39,7 @@ export async function toggleEngagementModelPublished(id: string, value: boolean)
   await requireAdminAction()
   await prisma.engagementModel.update({ where: { id }, data: { isPublished: value } })
   revalidatePath("/")
+  triggerChatbotSync("engagement_models")
   await persistD1Bookmark()
 }
 
@@ -44,5 +49,6 @@ export async function reorderEngagementModels(items: { id: string; order: number
     prisma.engagementModel.update({ where: { id }, data: { order } })
   )
   revalidatePath("/")
+  triggerChatbotSync("engagement_models")
   await persistD1Bookmark()
 }

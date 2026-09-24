@@ -304,6 +304,26 @@ model Faq {
   @@map("faqs")
 }
 
+// ─── CHATBOT FAQs (general Q&A managed from admin, fed to the chatbot LLM) ───
+// Deliberately separate from `faqs` (the public /faqs page). Rows here are NOT
+// rendered anywhere on the website — they only extend the chatbot worker's RAG
+// knowledge base via its `chatbot_faqs` ingestion source (see
+// chatbot/worker/src/ingestion/sources/chatbotFaqs.ts).
+model ChatbotFaq {
+  id          String   @id @default(uuid())
+  question    String
+  answer      String
+  category    String   @default("general")
+  order       Int      @default(0)
+  isPublished Boolean  @default(true) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([category])
+  @@index([order])
+  @@map("chatbot_faqs")
+}
+
 // ─── BLOG POSTS ───────────────────────────────────────────────────────────────
 // String[] migration decisions (Phase 1):
 //   tags → join table BlogPostTag (tag pages / filtering likely)
