@@ -5,7 +5,7 @@ import { getChatbotServiceTimeoutMs, getChatbotServiceUrl } from "@/config/chat"
  * Streams replies from the standalone `chatbot/` RAG service (see `chatbot/src/api/routes/chat.ts`,
  * `POST /chat/stream`) and translates its SSE wire format into the `ChatChunk` shape the route
  * handlers (`src/app/api/chat/route.ts`, `src/app/api/admin/chat/route.ts`) write out as NDJSON —
- * see docs/chat-widget-contract.md for the contract those handlers must satisfy either way.
+ * see src/types/chat.ts for the contract those handlers must satisfy either way.
  *
  * `getGreeting`/`getQuickReplies` are deliberately NOT proxied here — the backend has no such
  * concept, and the existing `mockChatProvider` canned copy for those two is static UI text, not

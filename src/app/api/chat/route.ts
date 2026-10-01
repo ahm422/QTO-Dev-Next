@@ -7,7 +7,7 @@ import type { ChatChunk } from "@/types/chat";
 /**
  * Public chat endpoint. Greeting/quick-replies are static UI copy, served from the mock
  * provider; message sending is proxied to the real `chatbot/` RAG service (see
- * `src/lib/chat/backendChatProvider.ts`). Wire shape is documented in docs/chat-widget-contract.md.
+ * `src/lib/chat/backendChatProvider.ts`). Wire shape is defined in src/types/chat.ts.
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);

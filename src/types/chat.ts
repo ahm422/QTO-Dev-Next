@@ -5,8 +5,6 @@
  *  - `ChatProvider` implementations (mock / http) — see `src/lib/chat/`.
  *  - The headless `useChatWidget` hook — see `src/hooks/useChatWidget.ts`.
  *  - The presentational components — see `src/components/chat/`.
- *
- * See `docs/chat-widget-contract.md` for the full contract writeup.
  */
 
 export type ChatRole = "user" | "assistant" | "system";
